@@ -151,9 +151,6 @@ def get_attachments_by_batch_id(batch_id, get_thumb=True):
         docservers = get_context_var('docservers', 9)
         for attachment in _attachments:
             path = docservers['SPLITTER_ATTACHMENTS' ] + '/' + attachment['path']
-            # Older attachments are stored in VERIFIER_ATTACHMENTS (bug fixed in v4)
-            if not os.path.isfile(path):
-                path = docservers['VERIFIER_ATTACHMENTS' ] + '/' + attachment['path']
 
             if not os.path.isfile(path):
                 continue
@@ -228,9 +225,6 @@ def unbind_attachment(args):
             max_source_page = len(pdf.pages)
             if batch:
                 file_path = docservers['SPLITTER_ATTACHMENTS'] + '/' + attachment['path']
-                # Older attachments are stored in VERIFIER_ATTACHMENTS (bug fixed in v4)
-                if not os.path.isfile(file_path):
-                    file_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
                 thumb_folder = docservers['SPLITTER_THUMB'] + '/' + batch['batch_folder']
                 batch_folder = docservers['SPLITTER_BATCHES'] + '/' + batch['batch_folder']
                 if os.path.isfile(file_path):

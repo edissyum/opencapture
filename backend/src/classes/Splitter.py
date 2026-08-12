@@ -29,9 +29,9 @@ import tempfile
 from .. import shared
 from xml.dom import minidom
 from datetime import datetime
-from ..models import workflow
 from flask_babel import gettext
 from unidecode import unidecode
+from ..models import workflow, custom_fields
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
 from ..scripting_functions import launch_script_splitter
@@ -267,6 +267,13 @@ class Splitter:
 
             md5 = hash_file_content(clean_path, hash_algorithm='md5')
             sha256 = hash_file_content(clean_path, hash_algorithm='sha256')
+
+            if upload_args.get('msg'):
+                if upload_args['msg'].get('custom_fields'):
+                    for cf in upload_args['msg']['custom_fields']:
+                        for _custom_field in custom_fields:
+                            if _custom_field['id'] == cf:
+                                default_values['batch'][_custom_field['label_short']] = upload_args['msg']['custom_fields'][cf]
 
             args = {
                 'table': 'splitter_batches',

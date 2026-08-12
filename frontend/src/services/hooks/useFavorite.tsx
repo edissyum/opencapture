@@ -15,10 +15,13 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { useEffect, useState } from "react";
 
 import { useUser } from "./useUser";
 import { axiosApiCall } from "./axiosApiCall";
+
+import { showToast } from "../../components/ToastProvider.tsx";
 
 type Favorite = {
     id?: string;
@@ -66,9 +69,11 @@ export function useFavorites() {
 
         if (existing) {
             await removeFavorite(existing.id!);
+            showToast(t("SETTINGS.favorites_removed"));
             setTimeout(() => setLoadingFavorites(false), 200);
         } else {
             await addFavorite(route);
+            showToast(t("SETTINGS.favorites_added"));
             setTimeout(() => setLoadingFavorites(false), 200);
         }
     }

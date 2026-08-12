@@ -660,8 +660,7 @@ SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+
 FROM docservers ds
 WHERE ds.docserver_id = 'SPLITTER_THUMB' AND a.batch_id is not NULL;
 
--- Jusqu'à présent les attachments étaient toujours insérés avec le chemin du VERIFIER
-UPDATE attachments a
-SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
-FROM docservers ds
-WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.batch_id is not NULL AND a.path LIKE '%' || ds.path || '%';
+-- Ajout de la possibilité de stocker l'expéditeur, le destinataire et les copies lors de la capture MailCollect
+ALTER TABLE mailcollect ADD COLUMN "copy_custom_id" INTEGER DEFAULT NULL;
+ALTER TABLE mailcollect ADD COLUMN "sender_custom_id" INTEGER DEFAULT NULL;
+ALTER TABLE mailcollect ADD COLUMN "recipient_custom_id" INTEGER DEFAULT NULL;

@@ -345,6 +345,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         'positions': {}
     }
 
+    if args.get('msg'):
+        if args['msg'].get('custom_fields'):
+            for cf in args['msg']['custom_fields']:
+                datas['datas'].update({f'custom_{cf}': args['msg']['custom_fields'][cf]})
+
     nb_pages = 1
     original_file = os.path.basename(file)
     if file.lower().endswith('.pdf'):

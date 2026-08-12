@@ -15,12 +15,16 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-/* Overlay popup on small screen */
-
 .mantine-Popover-dropdown {
     @apply p-3;
     @apply z-40!;
     @apply overflow-auto;
+    @apply bg-(--bg-primary);
+    @apply border-(--border-secondary);
+}
+
+.mantine-Autocomplete-option:hover {
+    @apply bg-(--bg-secondary);
 }
 
 @media only screen and (max-width: 1400px) {

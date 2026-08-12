@@ -4,6 +4,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -14,23 +15,13 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { pdfjs } from 'react-pdf';
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client'
-import { MantineProvider } from "@mantine/core";
+.mantine-Radio-radio:not(:checked) {
+    @apply bg-(--bg-primary);
+    @apply border-(--border-secondary);
+}
 
-import './index.css'
-import { App } from "./App";
-import { ToastProvider } from "./components/ToastProvider";
-import { mantineCssVariablesResolver, mantineTheme } from "./services/mantineTheme";
-
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <ToastProvider/>
-        <MantineProvider theme={ mantineTheme } cssVariablesResolver={ mantineCssVariablesResolver }>
-            <App/>
-        </MantineProvider>
-    </StrictMode>,
-);
+.mantine-Radio-root:where([data-checked]) .mantine-Radio-body .mantine-Radio-inner {
+    & .mantine-Radio-icon {
+        @apply text-(--bg-secondary);
+    }
+}

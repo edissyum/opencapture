@@ -24,6 +24,11 @@
     @apply h-12!;
     @apply text-base!;
     @apply cursor-pointer!;
+    @apply bg-(--bg-primary);
+}
+
+.mantine-Select-option:hover {
+    @apply bg-(--bg-secondary);
 }
 
 .mantine-Select-option:where([data-checked]) {

@@ -15,6 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { PinOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { type ReactNode, useState } from "react";
@@ -45,13 +46,16 @@ export function SettingsCard({
     const [hovered, setHovered] = useState(false);
 
     return (
-        <Link to={ to } className={ `${ className } relative flex gap-4 justify-start items-center max-w-full p-3
+        <Link to={ to } className={ `${ className } relative flex gap-4 justify-start items-center max-w-full p-2 px-3
                                      border border-(--border-secondary) rounded-md hover:border-gray-400 transition-colors` }>
             <div onMouseEnter={ () => setHovered(true) } onMouseLeave={ () => setHovered(false) }
                  className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
             >
                 { unpinFav && hovered ? (
-                    <PinOff onClick={ (e) => {
+                    <PinOff
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content={ t("SETTINGS.remove_favorite") }
+                        onClick={ (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         if (unpinFav) unpinFav();

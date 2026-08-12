@@ -371,7 +371,12 @@
         "enter_new_process_name_create": "Enter the name of the new MailCollect process",
         "ldap_connection_successful": "LDAP connection successful",
         "ocr_attachments": "OCR attachments",
-        "ocr_attachments_hint": "If enabled, attachments will be OCR'd before being processed by Open-Capture. Only works with PDF attachments."
+        "ocr_attachments_hint": "If enabled, attachments will be OCR'd before being processed by Open-Capture. Only works with PDF attachments.",
+        "correspondants_informations": "Correspondents informations",
+        "correspondants_description": "Stock the corresponding information (expediter, recipient, copy) of the mail",
+        "select_sender_custom_id": "Sender's custom field",
+        "select_copy_custom_id": "Copy's custom field",
+        "select_recipient_custom_id": "Recipient's custom field"
     },
     "ONBOARD": {
         "select_module": "Choose the default module",
@@ -590,7 +595,10 @@
         "navigate_to_settings": "Navigate to a setting",
         "add_favorite_details": "Find your favorite settings in one click for quick access. Once added, your favorites will be accessible here",
         "certified_copy": "Certified copy",
-        "certified_copy_description": "Compliance with standard NF Z42-020/26"
+        "certified_copy_description": "Compliance with standard NF Z42-020/26",
+        "favorites_added": "Favorites added successfully",
+        "favorites_removed": "Favorites removed successfully",
+        "remove_favorite": "Remove from favorites"
     },
     "SMTP": {
         "authentication": "Authentication",

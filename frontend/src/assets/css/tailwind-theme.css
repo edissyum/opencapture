@@ -28,4 +28,5 @@
 
     --color-gray-300: oklch(0.931 0 0); /* HEX CODE #E8E8E8 */
     --color-gray-400: oklch(0.662 0.0133 280.96); /* HEX CODE #91929B */
+    --color-gray-600: oklch(27.8% .033 256.848); /* HEX CODE #474747 */
 }

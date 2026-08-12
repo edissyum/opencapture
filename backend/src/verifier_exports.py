@@ -106,6 +106,7 @@ def export_xml(data, log, document_info, database, enable_log=True):
 
     log.debug('XML filename : ' + filename)
     log.debug('XML path : ' + folder_out + '/' + filename)
+    docservers = get_context_var('docservers', 9)
 
     # Fill XML with document informations
     if os.path.isdir(folder_out):
@@ -127,7 +128,11 @@ def export_xml(data, log, document_info, database, enable_log=True):
                     if technical in ['path', 'filename', 'register_date', 'nb_pages', 'original_filename', 'md5', 'sha256', 'supplier_id']:
                         if technical in document_info and document_info[technical]:
                             new_field = Et.SubElement(xml_technical, technical)
-                            new_field.text = str(document_info[technical])
+
+                            if technical == 'path':
+                                new_field.text = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info[technical]
+                            else:
+                                new_field.text = str(document_info[technical])
 
                 for document_data in document_info['datas']:
                     value = document_data

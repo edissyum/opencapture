@@ -246,7 +246,7 @@ export function VerifierListPage() {
         {
             id: 'thumbnail',
             header: '',
-            className: 'w-10 cursor-default!',
+            className: 'pl-2! w-10 cursor-default!',
             body: (item: any) => (
                 <div onClick={ (e) => {
                     e.preventDefault();

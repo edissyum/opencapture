@@ -15,6 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Table-table {
+    --table-border-color: var(--border-primary);
+}
+
 .mantine-Table-table thead {
     @apply h-14;
 
@@ -24,21 +28,21 @@
     }
 }
 
-.mantine-Table-table tbody tr:last-child > td {
+.mantine-Table-tr:last-child > td {
     @apply border-b-0!;
 }
 
-.mantine-Table-table tbody tr:nth-child(even) {
+.mantine-Table-tr:nth-child(even) {
     @apply bg-(--bg-primary);
     @apply text-(--text-primary);
 }
 
-.mantine-Table-table tbody tr:nth-child(odd) {
+.mantine-Table-tr:nth-child(odd) {
     @apply bg-(--bg-primary)/30;
     @apply text-(--text-primary);
 }
 
-.checkbox tbody td:nth-child(2) {
+.mantine-Table-td:nth-child(2) {
     @apply pl-3;
 }
 
@@ -47,15 +51,16 @@
     @apply border-(--border-secondary);
 }
 
-.mantine-Table-table tbody tr {
+.mantine-Table-tr {
     @apply h-14;
+    @apply border-(--border-secondary);
 }
 
-.mantine-Table-table tbody tr:hover {
+.mantine-Table-tr:hover {
     @apply bg-(--bg-selected)!;
 }
 
-.mantine-Table-table tbody td.truncate-data span:first-child {
+.mantine-Table-td.truncate-data span:first-child {
     @apply block;
     @apply w-[98%];
     @apply truncate;

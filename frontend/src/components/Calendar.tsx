@@ -92,7 +92,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                     value={ isoToDate(value) }
                     locale={ localeLang }
                     valueFormat={ valueFormat }
-                    placeholder={ label }
+                    placeholder={ label && !floating ? undefined : label }
                     rightSection={ <CalendarIcon size={ 18 }/> }
                 />
 

@@ -21,4 +21,5 @@
 
 .mantine-Pagination-control {
     @apply border-0!;
+    @apply bg-(--bg-primary);
 }
