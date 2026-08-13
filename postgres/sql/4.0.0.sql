@@ -637,28 +637,28 @@ INSERT INTO "configurations" ("label", "data") VALUES ('informalContactDtype', '
 UPDATE documents d
 SET path = REGEXP_REPLACE(REPLACE(d.path, ds.path, ''), '^/+', '')
 FROM docservers ds
-WHERE ds.docserver_id = 'VERIFIER_ORIGINAL_DOC';
+WHERE ds.docserver_id = 'VERIFIER_ORIGINAL_DOC' AND d.path LIKE ds.path || '%';
 
 -- Modification de la table attachments pour supprimer les chemins absolus
 UPDATE attachments a
 SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
 FROM docservers ds
-WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.document_id is not NULL AND a.path LIKE '%' || ds.path || '%';
+WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.document_id is not NULL AND a.path LIKE ds.path || '%';
 
 UPDATE attachments a
 SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+', '')
 FROM docservers ds
-WHERE ds.docserver_id = 'VERIFIER_THUMB' AND a.document_id is not NULL;
+WHERE ds.docserver_id = 'VERIFIER_THUMB' AND a.document_id is not NULL AND a.thumbnail_path LIKE ds.path || '%';
 
 UPDATE attachments a
 SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
 FROM docservers ds
-WHERE ds.docserver_id = 'SPLITTER_ATTACHMENTS' AND a.batch_id is not NULL AND a.path LIKE '%' || ds.path || '%';
+WHERE ds.docserver_id = 'SPLITTER_ATTACHMENTS' AND a.batch_id is not NULL AND a.path LIKE ds.path || '%';
 
 UPDATE attachments a
 SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+', '')
 FROM docservers ds
-WHERE ds.docserver_id = 'SPLITTER_THUMB' AND a.batch_id is not NULL;
+WHERE ds.docserver_id = 'SPLITTER_THUMB' AND a.batch_id is not NULL AND a.thumbnail_path LIKE ds.path || '%';
 
 -- Ajout de la possibilité de stocker l'expéditeur, le destinataire et les copies lors de la capture MailCollect
 ALTER TABLE mailcollect ADD COLUMN "copy_custom_id" INTEGER DEFAULT NULL;
