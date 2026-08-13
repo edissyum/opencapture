@@ -113,6 +113,22 @@ export function SplitterListPage() {
             command: () => handleDelete()
         },
         {
+            label: t('VERIFIER.associated_form'),
+            icon: <LayoutTemplate size={ 16 }/>,
+            items: Array.isArray(listForms)
+                ? listForms.map((form: any) => ({
+                    label: (
+                        <span
+                            className={ row?.form_id === form.id ? "text-(--color-primary) font-semibold" : "" }
+                        >
+                            { form.label }
+                        </span>
+                    ),
+                    command: () => handleChangeForm(form.id)
+                }))
+                : []
+        },
+        {
             label: t('VERIFIER.associated_customer'),
             icon: <Briefcase size={ 16 }/>,
             items: Array.isArray(listCustomers)
@@ -297,6 +313,28 @@ export function SplitterListPage() {
 
         retrieveTotals().then();
     }, [loadingBatches]);
+
+    const handleChangeForm = async (formId: string) => {
+        if (selectedBatches.length === 0) return;
+        if (selectedBatches.length > 1) {
+            showToast(t('VERIFIER.select_single_document_form'), 'error');
+        }
+        if (selectedBatches[0].form_id === formId) {
+            return;
+        }
+
+        setLoadingBatches(true);
+        try {
+            await put(`splitter/changeForm`, { "formId": formId, "batchId": selectedBatches[0].id });
+            showToast(t('VERIFIER.document_form_changed_success'), 'success');
+        } catch (err) {
+            console.error("Error changing batch form:", err);
+        } finally {
+            setSelectedBatches([]);
+            setTotalBatches(0);
+            setLazyParams({ ...lazyParams, first: 0 });
+        }
+    }
 
     const handleChangeCustomer = async (customerId: string) => {
         if (selectedBatches.length === 0) return;

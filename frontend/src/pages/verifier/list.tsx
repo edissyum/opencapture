@@ -383,7 +383,6 @@ export function VerifierListPage() {
             setTotalDocuments(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-
     }
 
     const handleChangeCustomer = async (customerId: string) => {
