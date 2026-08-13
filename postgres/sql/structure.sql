@@ -1,16 +1,16 @@
 CREATE EXTENSION IF NOT EXISTS "unaccent";
 
 CREATE TABLE "users" (
-    "id"                SERIAL      UNIQUE PRIMARY KEY,
-    "username"          VARCHAR(50) UNIQUE NOT NULL,
-    "firstname"         VARCHAR(255)       NOT NULL,
-    "lastname"          VARCHAR(255)       NOT NULL,
-    "password"          VARCHAR(255)       NOT NULL,
-    "creation_date"     TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
-    "enabled"           BOOLEAN     DEFAULT True,
-    "status"            VARCHAR(5)  DEFAULT 'OK',
-    "mode"              VARCHAR(10) DEFAULT 'standard',
-    "role"              INTEGER     NOT NULL,
+    "id"                SERIAL          UNIQUE PRIMARY KEY,
+    "username"          VARCHAR(50)     UNIQUE NOT NULL,
+    "firstname"         VARCHAR(255)    NOT NULL,
+    "lastname"          VARCHAR(255)    NOT NULL,
+    "password"          VARCHAR(255)    NOT NULL,
+    "creation_date"     TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP),
+    "enabled"           BOOLEAN         DEFAULT True,
+    "status"            VARCHAR(20)     DEFAULT 'OK',
+    "mode"              VARCHAR(10)     DEFAULT 'standard',
+    "role"              INTEGER         NOT NULL,
     "last_connection"   TIMESTAMP,
     "email"             TEXT,
     "refresh_token"     TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE "form_models" (
     "enabled"       BOOLEAN       DEFAULT True,
     "outputs"       TEXT[],
     "module"        VARCHAR(10),
-    "status"        VARCHAR(5)    DEFAULT 'OK',
+    "status"        VARCHAR(20)   DEFAULT 'OK',
     "settings"      JSONB         DEFAULT '{}',
     "labels"        JSONB         DEFAULT '{}'
 );
@@ -44,7 +44,7 @@ CREATE TABLE "positions_masks" (
     "positions"   JSONB         DEFAULT '{}',
     "pages"       JSONB         DEFAULT '{}',
     "regex"       JSONB         DEFAULT '{}',
-    "status"      VARCHAR(5)    DEFAULT 'OK',
+    "status"      VARCHAR(20)   DEFAULT 'OK',
     "filename"    VARCHAR(255),
     "width"       VARCHAR(10),
     "nb_pages"    INTEGER
@@ -61,9 +61,9 @@ CREATE TABLE "outputs" (
     "output_type_id" VARCHAR(255),
     "output_label"   VARCHAR(255),
     "compress_type"  VARCHAR(12),
-    "ocrise"         BOOLEAN DEFAULT FALSE,
+    "ocrise"         BOOLEAN        DEFAULT FALSE,
     "module"         VARCHAR(10),
-    "status"         VARCHAR(3)     DEFAULT 'OK',
+    "status"         VARCHAR(20)    DEFAULT 'OK',
     "data"           JSONB          DEFAULT '{
         "options": {
             "auth": [],
@@ -93,7 +93,7 @@ CREATE TABLE "custom_fields" (
     "type"         VARCHAR(10),
     "module"       VARCHAR(10),
     "settings"     JSONB        DEFAULT '{}',
-    "status"       VARCHAR(5)   DEFAULT 'OK'
+    "status"       VARCHAR(20)  DEFAULT 'OK'
 );
 
 CREATE TABLE "users_customers" (
@@ -122,7 +122,7 @@ CREATE TABLE "roles" (
     "id"            SERIAL        UNIQUE PRIMARY KEY,
     "label_short"   VARCHAR(255),
     "label"         VARCHAR(255),
-    "status"        VARCHAR(3)    DEFAULT 'OK',
+    "status"        VARCHAR(20)   DEFAULT 'OK',
     "editable"      BOOLEAN       DEFAULT True,
     "assign_roles"  JSONB         DEFAULT '[]',
     "default_route" VARCHAR(255)
@@ -164,7 +164,7 @@ CREATE TABLE "accounts_supplier" (
     "function"                  VARCHAR(255),
     "civility"                  INTEGER,
     "document_lang"             VARCHAR(10)   DEFAULT 'fra',
-    "status"                    VARCHAR(3)    DEFAULT 'OK',
+    "status"                    VARCHAR(20)    DEFAULT 'OK',
     "informal_contact"          BOOLEAN       DEFAULT False,
     "get_only_raw_footer"       BOOLEAN       DEFAULT False,
     "skip_auto_validate"        BOOLEAN       DEFAULT False,
@@ -184,7 +184,7 @@ CREATE TABLE "accounts_customer" (
     "company_number" VARCHAR(10),
     "address_id"     INTEGER,
     "module"         VARCHAR(10),
-    "status"         VARCHAR(3)     DEFAULT 'OK',
+    "status"         VARCHAR(20)    DEFAULT 'OK',
     "creation_date"  TIMESTAMP      DEFAULT (CURRENT_TIMESTAMP)
 );
 
@@ -207,9 +207,9 @@ CREATE TABLE "accounting_plan" (
 CREATE TABLE "documents" (
     "id"                SERIAL              UNIQUE PRIMARY KEY,
     "supplier_id"       INTEGER,
-    "customer_id"       INTEGER             DEFAULT 0,
-    "form_id"           INTEGER             DEFAULT null,
-    "workflow_id"       INTEGER             DEFAULT null,
+    "customer_id"       INTEGER             DEFAULT '0',
+    "form_id"           INTEGER             DEFAULT NULL,
+    "workflow_id"       INTEGER             DEFAULT NULL,
     "filename"          VARCHAR(255)        NOT NULL,
     "original_filename" VARCHAR(255),
     "path"              VARCHAR(255)        NOT NULL,
@@ -271,15 +271,15 @@ CREATE TABLE "splitter_batches" (
 );
 
 CREATE TABLE "splitter_documents" (
-    "id"            SERIAL      UNIQUE PRIMARY KEY,
-    "batch_id"      INTEGER     NOT NULL,
-    "split_index"   INTEGER     NOT NULL,
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
+    "batch_id"      INTEGER         NOT NULL,
+    "split_index"   INTEGER         NOT NULL,
     "display_order" INTEGER,
-    "status"        VARCHAR(10) DEFAULT 'NEW':: CHARACTER VARYING,
+    "status"        VARCHAR(20)     DEFAULT 'NEW',
     "doctype_key"   VARCHAR(200),
     "sha256"        VARCHAR(64),
     "md5"           VARCHAR(32),
-    "data"          JSON        DEFAULT '{}'::json
+    "data"          JSON            DEFAULT '{}'::json
 );
 
 CREATE TABLE "splitter_pages" (
@@ -289,7 +289,7 @@ CREATE TABLE "splitter_pages" (
     "source_page"   INTEGER,
     "display_order" INTEGER,
     "rotation"      INTEGER         DEFAULT 0,
-    "status"        VARCHAR(255)    DEFAULT 'NEW'
+    "status"        VARCHAR(20)     DEFAULT 'NEW'
 );
 
 CREATE TABLE "doctypes" (
@@ -298,7 +298,7 @@ CREATE TABLE "doctypes" (
     "label"      VARCHAR,
     "code"       VARCHAR(255),
     "is_default" BOOLEAN        DEFAULT False,
-    "status"     VARCHAR(3)     DEFAULT 'OK':: CHARACTER VARYING,
+    "status"     VARCHAR(20)    DEFAULT 'OK',
     "type"       VARCHAR(10),
     "form_id"    INTEGER
 );
@@ -356,7 +356,7 @@ CREATE TABLE "mailcollect" (
     "method"                        VARCHAR(20)  DEFAULT 'imap',
     "options"                       JSONB        DEFAULT '{}',
     "secured_connection"            BOOLEAN      DEFAULT True,
-    "status"                        VARCHAR(10)  DEFAULT 'OK',
+    "status"                        VARCHAR(20)  DEFAULT 'OK',
     "is_splitter"                   BOOLEAN      DEFAULT False,
     "enabled"                       BOOLEAN      DEFAULT True,
     "ocr_attachments"               BOOLEAN      DEFAULT False,
@@ -382,7 +382,7 @@ CREATE TABLE "ai_models" (
     "train_time"        REAL,
     "accuracy_score"    REAL,
     "min_proba"         INTEGER,
-    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "status"            VARCHAR(20)  DEFAULT 'OK',
     "percentage"        VARCHAR(10),
     "documents"         JSONB        DEFAULT '[]',
     "module"            VARCHAR(10)
@@ -392,7 +392,7 @@ CREATE TABLE "monitoring" (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
     "token"              VARCHAR(255),
     "workflow_id"        INTEGER        DEFAULT null,
-    "status"             VARCHAR(10),
+    "status"             VARCHAR(20),
     "elapsed_time"       VARCHAR(20),
     "document_ids"       INTEGER[],
     "error"              BOOLEAN        DEFAULT False,
@@ -410,7 +410,7 @@ CREATE TABLE "workflows" (
     "workflow_id"       VARCHAR(255) NOT NULL,
     "label"             VARCHAR(255) NOT NULL,
     "module"            VARCHAR(10)  NOT NULL,
-    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "status"            VARCHAR(20)  DEFAULT 'OK',
     "input"             JSONB        DEFAULT '{}',
     "process"           JSONB        DEFAULT '{}',
     "output"            JSONB        DEFAULT '{}',
@@ -424,7 +424,7 @@ CREATE TABLE "attachments" (
     "filename"          VARCHAR(255),
     "path"              VARCHAR(255),
     "thumbnail_path"    VARCHAR(255),
-    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "status"            VARCHAR(20)  DEFAULT 'OK',
     "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -436,7 +436,7 @@ CREATE TABLE "ai_llm" (
     "api_key"      VARCHAR(255),
     "json_content" JSONB        DEFAULT '{}',
     "settings"     JSONB        DEFAULT '{}',
-    "status"       VARCHAR(10)  DEFAULT 'OK'
+    "status"       VARCHAR(20)  DEFAULT 'OK'
 );
 
 CREATE TABLE "settings_favorites" (
