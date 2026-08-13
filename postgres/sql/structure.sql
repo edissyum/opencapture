@@ -47,13 +47,15 @@ CREATE TABLE "positions_masks" (
     "status"      VARCHAR(20)   DEFAULT 'OK',
     "filename"    VARCHAR(255),
     "width"       VARCHAR(10),
-    "nb_pages"    INTEGER
+    "nb_pages"    INTEGER,
+    FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "form_models_field" (
     "id"      SERIAL    UNIQUE PRIMARY KEY,
     "form_id" INTEGER,
-    "fields"  JSONB     DEFAULT '{}'
+    "fields"  JSONB     DEFAULT '{}',
+    FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "outputs" (
@@ -155,7 +157,7 @@ CREATE TABLE "accounts_supplier" (
     "duns"                      VARCHAR(12)   UNIQUE,
     "bic"                       VARCHAR(11),
     "rccm"                      VARCHAR(30),
-    "email"                     VARCHAR,
+    "email"                     VARCHAR(255),
     "phone"                     VARCHAR(20),
     "address_id"                INTEGER,
     "form_id"                   INTEGER,
@@ -204,6 +206,18 @@ CREATE TABLE "accounting_plan" (
     "ecriture_lib"  VARCHAR
 );
 
+CREATE TABLE "workflows" (
+    "id"                SERIAL       UNIQUE PRIMARY KEY,
+    "workflow_id"       VARCHAR(255) NOT NULL,
+    "label"             VARCHAR(255) NOT NULL,
+    "module"            VARCHAR(10)  NOT NULL,
+    "status"            VARCHAR(20)  DEFAULT 'OK',
+    "input"             JSONB        DEFAULT '{}',
+    "process"           JSONB        DEFAULT '{}',
+    "output"            JSONB        DEFAULT '{}',
+    CONSTRAINT          "unique_workflow_per_module" UNIQUE ("workflow_id", "module")
+);
+
 CREATE TABLE "documents" (
     "id"                SERIAL              UNIQUE PRIMARY KEY,
     "supplier_id"       INTEGER,
@@ -226,7 +240,11 @@ CREATE TABLE "documents" (
     "sha256"            VARCHAR(64),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
-    "datas"             JSONB               DEFAULT '{}'
+    "datas"             JSONB               DEFAULT '{}',
+    FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE SET NULL,
+    FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE SET NULL,
+    FOREIGN KEY (supplier_id) REFERENCES accounts_supplier(id) ON DELETE SET NULL,
+    FOREIGN KEY (customer_id) REFERENCES accounts_customer(id) ON DELETE SET NULL
 );
 
 CREATE TABLE "history" (
@@ -246,7 +264,8 @@ CREATE TABLE "status" (
     "id"         VARCHAR(20),
     "label"      VARCHAR(200),
     "label_long" VARCHAR(200),
-    "module"     VARCHAR(10)
+    "module"     VARCHAR(10),
+    CONSTRAINT "status_pkey" PRIMARY KEY ("id", "module")
 );
 
 CREATE TABLE "splitter_batches" (
@@ -267,7 +286,10 @@ CREATE TABLE "splitter_batches" (
     "locked_by"         VARCHAR(50),
     "md5"               VARCHAR(32),
     "sha256"            VARCHAR(64),
-    "data"              JSON            DEFAULT '{}'::json
+    "data"              JSON            DEFAULT '{}'::JSON,
+    FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE SET NULL,
+    FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE SET NULL,
+    FOREIGN KEY (customer_id) REFERENCES accounts_customer(id) ON DELETE SET NULL
 );
 
 CREATE TABLE "splitter_documents" (
@@ -279,7 +301,8 @@ CREATE TABLE "splitter_documents" (
     "doctype_key"   VARCHAR(200),
     "sha256"        VARCHAR(64),
     "md5"           VARCHAR(32),
-    "data"          JSON            DEFAULT '{}'::json
+    "data"          JSON            DEFAULT '{}'::JSON,
+    FOREIGN KEY (batch_id) REFERENCES splitter_batches(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "splitter_pages" (
@@ -289,27 +312,30 @@ CREATE TABLE "splitter_pages" (
     "source_page"   INTEGER,
     "display_order" INTEGER,
     "rotation"      INTEGER         DEFAULT 0,
-    "status"        VARCHAR(20)     DEFAULT 'NEW'
+    "status"        VARCHAR(20)     DEFAULT 'NEW',
+    FOREIGN KEY (document_id) REFERENCES splitter_documents(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "doctypes" (
     "id"         SERIAL         UNIQUE PRIMARY KEY,
     "key"        VARCHAR(255)   NOT NULL,
-    "label"      VARCHAR,
+    "label"      VARCHAR(255),
     "code"       VARCHAR(255),
     "is_default" BOOLEAN        DEFAULT False,
     "status"     VARCHAR(20)    DEFAULT 'OK',
     "type"       VARCHAR(10),
-    "form_id"    INTEGER
+    "form_id"    INTEGER,
+    FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "metadata" (
-    "id"            SERIAL      UNIQUE PRIMARY KEY,
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
     "external_id"   VARCHAR(20),
-    "last_edit"     DATE        DEFAULT now(),
+    "last_edit"     DATE            DEFAULT now(),
     "type"          VARCHAR(20),
     "form_id"       INTEGER,
-    "data"          JSONB
+    "data"          JSONB,
+    FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "configurations" (
@@ -368,7 +394,11 @@ CREATE TABLE "mailcollect" (
     "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False,
     "sender_custom_id"              INTEGER      DEFAULT NULL,
     "copy_custom_id"                INTEGER      DEFAULT NULL,
-    "recipient_custom_id"           INTEGER      DEFAULT NULL
+    "recipient_custom_id"           INTEGER      DEFAULT NULL,
+    FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE SET NULL,
+    FOREIGN KEY (copy_custom_id) REFERENCES custom_fields(id) ON DELETE SET NULL,
+    FOREIGN KEY (sender_custom_id) REFERENCES custom_fields(id) ON DELETE SET NULL,
+    FOREIGN KEY (recipient_custom_id) REFERENCES custom_fields(id) ON DELETE SET NULL
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
@@ -376,7 +406,7 @@ COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential dem
 
 CREATE TABLE "ai_models" (
     "id"                SERIAL       PRIMARY KEY,
-    "model_label"       VARCHAR,
+    "model_label"       VARCHAR(255),
     "model_path"        VARCHAR(50),
     "type"              VARCHAR(15),
     "train_time"        REAL,
@@ -405,18 +435,6 @@ CREATE TABLE "monitoring" (
     "steps"              JSONB          DEFAULT '{}'
 );
 
-CREATE TABLE "workflows" (
-    "id"                SERIAL       UNIQUE PRIMARY KEY,
-    "workflow_id"       VARCHAR(255) NOT NULL,
-    "label"             VARCHAR(255) NOT NULL,
-    "module"            VARCHAR(10)  NOT NULL,
-    "status"            VARCHAR(20)  DEFAULT 'OK',
-    "input"             JSONB        DEFAULT '{}',
-    "process"           JSONB        DEFAULT '{}',
-    "output"            JSONB        DEFAULT '{}',
-    CONSTRAINT          "unique_workflow_per_module" UNIQUE ("workflow_id", "module")
-);
-
 CREATE TABLE "attachments" (
     "id"                SERIAL       UNIQUE PRIMARY KEY,
     "document_id"       INTEGER,
@@ -425,7 +443,9 @@ CREATE TABLE "attachments" (
     "path"              VARCHAR(255),
     "thumbnail_path"    VARCHAR(255),
     "status"            VARCHAR(20)  DEFAULT 'OK',
-    "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
+    FOREIGN KEY (batch_id) REFERENCES splitter_batches(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "ai_llm" (
@@ -445,7 +465,9 @@ CREATE TABLE "settings_favorites" (
     "route"      VARCHAR(255)
 );
 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_form_id ON documents (form_id);
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_locked_by ON documents (locked_by);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_workflow_id ON documents (workflow_id);
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_customer_status_regdate ON documents (customer_id, status, register_date DESC);
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_supplier_status_regdate ON documents (supplier_id, status, register_date DESC);
 
