@@ -106,11 +106,26 @@ export function SplitterListPage() {
     );
     const [hovered, setHovered] = useState<string | null>(null);
 
-    const getActionsLine: any = () => [
+    const getActionsLine: any = (row: any) => [
         {
             label: <span className='critical'>{ t('SPLITTER.delete_batch') } </span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
+        },
+        {
+            label: t('VERIFIER.associated_customer'),
+            icon: <Briefcase size={ 16 }/>,
+            items: Array.isArray(listCustomers)
+                ? listCustomers.map((customer: any) => ({
+                    label: (
+                        <span
+                            className={ row?.customer_id === customer.id ? "text-(--color-primary) font-semibold" : "" }>
+                            { customer.name }
+                        </span>
+                    ),
+                    command: () => handleChangeCustomer(customer.id)
+                }))
+                : []
         }
     ];
 
@@ -139,7 +154,7 @@ export function SplitterListPage() {
         {
             id: 'filename',
             header: t('VERIFIER.filename'),
-            className: 'truncate-data w-md! max-w-md!',
+            className: 'w-6/12',
             body: (item: any) => (
                 <span className="font-semibold" title={ item['subject'] ? item['subject'] : item['file_name'] }>
                     { item['subject'] ? item['subject'] : item['file_name'] }
@@ -215,9 +230,7 @@ export function SplitterListPage() {
 
         const fetchCustomers = async () => {
             const res = await get(`/accounts/customers/list/splitter/${ user.id }`);
-            let customers = [{ id: 0, name: t('ACCOUNTS.no_customer_associated') }];
-            customers = customers.concat(res.customers || []);
-            setListCustomers(customers);
+            setListCustomers(res.customers || []);
         }
 
         fetchCustomers().then();
@@ -284,6 +297,30 @@ export function SplitterListPage() {
 
         retrieveTotals().then();
     }, [loadingBatches]);
+
+    const handleChangeCustomer = async (customerId: string) => {
+        if (selectedBatches.length === 0) return;
+        if (selectedBatches.length > 1) {
+            showToast(t('VERIFIER.select_single_document_customer'), 'error');
+            return;
+        }
+        if (selectedBatches[0].customer_id === customerId) {
+            return;
+        }
+
+        setLoadingBatches(true);
+
+        try {
+            await put(`splitter/${ selectedBatches[0].id }/updateCustomer`, { "customer_id": customerId });
+            showToast(t('VERIFIER.associated_customer_changed_success'), 'success');
+        } catch (err) {
+            console.error("Error changing batch associated customer:", err);
+        } finally {
+            setSelectedBatches([]);
+            setTotalBatches(0);
+            setLazyParams({ ...lazyParams, first: 0 });
+        }
+    }
 
     const handleDelete = async () => {
         if (selectedBatches.length === 0) return;
