@@ -17,13 +17,13 @@
 
 import React from "react";
 import DOMPurify from "dompurify";
-import { toast, ToastContainer, type ToastOptions } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
-export const showToast = (message: any, type: "success" | "warning" | "error" | "info" = "success", options?: ToastOptions) => {
+export const showToast = (message: any, type: "success" | "warning" | "error" | "info" = "success", toastId?: string) => {
     let content: React.ReactNode = message;
 
     if (typeof message === "string" && message.includes("<")) {
-        content = <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message) }} />;
+        content = <div dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>;
     }
 
     const autoClose =
@@ -32,7 +32,7 @@ export const showToast = (message: any, type: "success" | "warning" | "error" | 
                 type === "success" ? 4000 :
                     4000;
 
-    toast(content, { type, autoClose, toastId: message, ...options });
+    toast(content, { type, autoClose, toastId: toastId ? toastId : message });
 };
 
 export const ToastProvider: React.FC = () => {
