@@ -172,7 +172,7 @@ export function VerifierListPage() {
         },
         {
             id: 'name',
-            className: 'w-4/12',
+            className: 'w-6/12',
             header: t('VERIFIER.name'),
             body: (item: any) => (
                 <div className="font-semibold flex items-center gap-2" title={ item.supplier_name }>
