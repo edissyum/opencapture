@@ -576,18 +576,34 @@ class Splitter:
         return True, xml_file_path
 
     @staticmethod
+    def fill_json(json_body, _custom_fields, key=None):
+        if isinstance(json_body, str):
+            return ''.join(construct_with_var(json_body, _custom_fields, key))
+        elif isinstance(json_body, dict):
+            for sub_key in json_body:
+                json_body[sub_key] = Splitter.fill_json(json_body[sub_key], _custom_fields, sub_key)
+            return json_body
+        return json_body
+
+    @staticmethod
+    def override_datas(json_body, tmp_body, document):
+        for key in tmp_body:
+            if isinstance(tmp_body[key], dict):
+                json_body[key] = Splitter.override_datas(json_body[key], tmp_body[key], document)
+            elif tmp_body[key] == 'doctype':
+                json_body[key] = document['doctype_key']
+            elif isinstance(tmp_body[key], str) and tmp_body[key] in document['data']['custom_fields']:
+                json_body[key] = document['data']['custom_fields'][tmp_body[key]]
+        return json_body
+
+    @staticmethod
     def export_verifier(batch, metadata, parameters, docservers, regex):
         from ..controllers import verifier
 
         parameters['body_template'] = re.sub(regex['splitter_xml_comment'], '', parameters['body_template'])
         json_body = json.loads(parameters['body_template'])
 
-        if isinstance(json_body['datas'], str):
-            json_body['datas'] = ''.join(construct_with_var(json_body['datas'], metadata['custom_fields']))
-        elif isinstance(json_body['datas'], dict):
-            for sub_key in json_body['datas']:
-                json_body['datas'][sub_key] = ''.join(construct_with_var(json_body['datas'][sub_key],
-                                                                         metadata['custom_fields'], sub_key))
+        json_body['datas'] = Splitter.fill_json(json_body['datas'], metadata['custom_fields'])
 
         if isinstance(json_body['workflowId'], str):
             _w = workflow.get_workflows({
@@ -604,21 +620,8 @@ class Splitter:
         tmp_json_body = json.loads(parameters['body_template'])
         for document in batch['documents']:
             json_body['files'] = []
-            if isinstance(json_body['datas'], str):
-                json_body['datas'] = ''.join(
-                    construct_with_var(tmp_json_body['datas'], document['data']['custom_fields']))
-            elif isinstance(json_body['datas'], dict):
-                for sub_key in json_body['datas']:
-                    json_body['datas'][sub_key] = ''.join(construct_with_var(tmp_json_body['datas'][sub_key],
-                                                                             document['data']['custom_fields'],
-                                                                             sub_key))
-
-            for key in tmp_json_body['datas']:
-                if tmp_json_body['datas'][key] == 'doctype':
-                    json_body['datas'][key] = document['doctype_key']
-
-                if tmp_json_body['datas'][key] in document['data']['custom_fields']:
-                    json_body['datas'][key] = document['data']['custom_fields'][tmp_json_body['datas'][key]]
+            json_body['datas'] = Splitter.fill_json(json_body['datas'], document['data']['custom_fields'])
+            json_body['datas'] = Splitter.override_datas(json_body['datas'], tmp_json_body['datas'], document)
 
             pdf_writer = pypdf.PdfWriter()
             with tempfile.NamedTemporaryFile() as tf:
