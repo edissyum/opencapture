@@ -1490,7 +1490,7 @@ export function SplitterViewerPage() {
                             <div className='flex flex-col gap-2'>
                                 { documents.map((document: any) => (
                                     <Panel key={ document.id } header={
-                                        <div className="flex items-center gap-1.5">
+                                        <div className="flex items-center gap-1.5 ">
                                             <div
                                                 className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
                                                 onClick={ () => !disabledBatch && typeDocument(document) }>
@@ -1556,88 +1556,90 @@ export function SplitterViewerPage() {
                                             </div>
                                         </div>
                                     }>
-                                        { documentMetadata.length > 0 && document.pages.length > 0 && (
-                                            <div className='p-4 pb-0'>
-                                                <h3 className='font-semibold text-(--text-secondary) flex items-center cursor-pointer gap-1'
-                                                    onClick={ () => setDocumentMetadataOpen(prev => !prev) }
-                                                >
-                                                    { t('FORMS.metadata_document') }
-                                                    <ChevronDown
-                                                        size={ 16 }
-                                                        className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
-                                                    />
-                                                </h3>
-                                                <div className='grid transition-all mb-4'
-                                                     style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
-                                                >
-                                                    <div className="overflow-hidden">
-                                                        { documentMetadata.map((line: any, index: number) => (
-                                                            <div key={ index } className='flex gap-4 mt-4'>
-                                                                { line.map((field: any) => (
-                                                                    <div key={ field.id }
-                                                                         className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                                        { field.type === 'date' && (
-                                                                            <ISOCalendar
-                                                                                id={ field.id }
-                                                                                key={ field.id }
-                                                                                label={ t(field.label) }
-                                                                                disabled={ disabledBatch }
-                                                                                required={ field.required }
-                                                                                value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                                onChange={ (e) => {
-                                                                                    handleUpdateDocumentMetadataValues(document.id, field, e)
-                                                                                } }
-                                                                            />
-                                                                        ) }
-                                                                        { field.type == 'text' && (
-                                                                            <Input
-                                                                                id={ field.id }
-                                                                                key={ field.id }
-                                                                                type={ field.type }
-                                                                                label={ t(field.label) }
-                                                                                disabled={ disabledBatch }
-                                                                                required={ field.required }
-                                                                                value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                                onChange={ (e) => {
-                                                                                    handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
-                                                                                } }
-                                                                            />
-                                                                        ) }
-                                                                        { field.type == 'select' && (
-                                                                            <Select
+                                        <div className='p-4'>
+                                            { documentMetadata.length > 0 && document.pages.length > 0 && (
+                                                <div className='mb-4'>
+                                                    <h3 className='font-semibold text-(--text-secondary) flex items-center cursor-pointer gap-1'
+                                                        onClick={ () => setDocumentMetadataOpen(prev => !prev) }
+                                                    >
+                                                        { t('FORMS.metadata_document') }
+                                                        <ChevronDown
+                                                            size={ 16 }
+                                                            className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
+                                                        />
+                                                    </h3>
+                                                    <div className='grid transition-all'
+                                                         style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
+                                                    >
+                                                        <div className="overflow-hidden">
+                                                            { documentMetadata.map((line: any, index: number) => (
+                                                                <div key={ index } className='flex gap-4 mt-4'>
+                                                                    { line.map((field: any) => (
+                                                                        <div key={ field.id }
+                                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                            { field.type === 'date' && (
+                                                                                <ISOCalendar
+                                                                                    id={ field.id }
+                                                                                    key={ field.id }
+                                                                                    label={ t(field.label) }
+                                                                                    disabled={ disabledBatch }
+                                                                                    required={ field.required }
+                                                                                    value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                                    onChange={ (e) => {
+                                                                                        handleUpdateDocumentMetadataValues(document.id, field, e)
+                                                                                    } }
+                                                                                />
+                                                                            ) }
+                                                                            { field.type == 'text' && (
+                                                                                <Input
+                                                                                    id={ field.id }
+                                                                                    key={ field.id }
+                                                                                    type={ field.type }
+                                                                                    label={ t(field.label) }
+                                                                                    disabled={ disabledBatch }
+                                                                                    required={ field.required }
+                                                                                    value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                                    onChange={ (e) => {
+                                                                                        handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
+                                                                                    } }
+                                                                                />
+                                                                            ) }
+                                                                            { field.type == 'select' && (
+                                                                                <Select
 
-                                                                                id={ field.id }
-                                                                                label={ t(field.label) }
-                                                                                disabled={ disabledBatch }
-                                                                                required={ field.required }
-                                                                                value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                                options={ getFilteredConditionalOptions(document.id, field) }
-                                                                                onChange={ (value) => {
-                                                                                    handleUpdateDocumentMetadataValues(document.id, field, value)
-                                                                                } }
-                                                                            />
-                                                                        ) }
-                                                                    </div>
-                                                                )) }
-                                                            </div>
-                                                        )) }
+                                                                                    id={ field.id }
+                                                                                    label={ t(field.label) }
+                                                                                    disabled={ disabledBatch }
+                                                                                    required={ field.required }
+                                                                                    value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                                    options={ getFilteredConditionalOptions(document.id, field) }
+                                                                                    onChange={ (value) => {
+                                                                                        handleUpdateDocumentMetadataValues(document.id, field, value)
+                                                                                    } }
+                                                                                />
+                                                                            ) }
+                                                                        </div>
+                                                                    )) }
+                                                                </div>
+                                                            )) }
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ) }
-                                        <SortableContext strategy={ verticalListSortingStrategy }
-                                                         items={ document.pages.map((p: any) => `page-${ p.id }`) }>
-                                            <DroppableDocumentZone
-                                                pages={ document.pages }
-                                                documentId={ document.id }
-                                                menuItems={ pageMenuItems }
-                                                isEmpty={ document.pages.length === 0 }
-                                                disabled={ disabledBatch || certifiedCopy }
-                                                selectedPageIds={ selectedPages.map(p => p.id) }
-                                                onSelectionChange={ handleSelectionChange }
-                                                onZoom={ handlePreview }
-                                            />
-                                        </SortableContext>
+                                            ) }
+                                            <SortableContext strategy={ verticalListSortingStrategy }
+                                                             items={ document.pages.map((p: any) => `page-${ p.id }`) }>
+                                                <DroppableDocumentZone
+                                                    pages={ document.pages }
+                                                    documentId={ document.id }
+                                                    menuItems={ pageMenuItems }
+                                                    isEmpty={ document.pages.length === 0 }
+                                                    disabled={ disabledBatch || certifiedCopy }
+                                                    selectedPageIds={ selectedPages.map(p => p.id) }
+                                                    onSelectionChange={ handleSelectionChange }
+                                                    onZoom={ handlePreview }
+                                                />
+                                            </SortableContext>
+                                        </div>
                                     </Panel>
                                 )) }
                             </div>
