@@ -218,12 +218,20 @@ CREATE TABLE "workflows" (
     CONSTRAINT          "unique_workflow_per_module" UNIQUE ("workflow_id", "module")
 );
 
+CREATE TABLE "docservers" (
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
+    "docserver_id"  VARCHAR(32)     UNIQUE,
+    "path"          VARCHAR(255),
+    "description"   VARCHAR(255)
+);
+
 CREATE TABLE "documents" (
     "id"                SERIAL              UNIQUE PRIMARY KEY,
     "supplier_id"       INTEGER,
     "customer_id"       INTEGER             DEFAULT '0',
     "form_id"           INTEGER             DEFAULT NULL,
     "workflow_id"       INTEGER             DEFAULT NULL,
+    "docserver_id"      VARCHAR(32)         DEFAULT NULL,
     "filename"          VARCHAR(255)        NOT NULL,
     "original_filename" VARCHAR(255),
     "path"              VARCHAR(255)        NOT NULL,
@@ -243,6 +251,7 @@ CREATE TABLE "documents" (
     "datas"             JSONB               DEFAULT '{}',
     FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE SET NULL,
     FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE SET NULL,
+    FOREIGN KEY (docserver_id) REFERENCES docservers(id) ON DELETE SET NULL,
     FOREIGN KEY (supplier_id) REFERENCES accounts_supplier(id) ON DELETE SET NULL,
     FOREIGN KEY (customer_id) REFERENCES accounts_customer(id) ON DELETE SET NULL
 );
@@ -345,13 +354,6 @@ CREATE TABLE "configurations" (
     "display"   BOOLEAN     DEFAULT true
 );
 
-CREATE TABLE "docservers" (
-    "id"            SERIAL          UNIQUE PRIMARY KEY,
-    "docserver_id"  VARCHAR(32)     UNIQUE,
-    "path"          VARCHAR(255),
-    "description"   VARCHAR(255)
-);
-
 CREATE TABLE "regex" (
     "id"            SERIAL          UNIQUE PRIMARY KEY,
     "regex_id"      VARCHAR(20),
@@ -436,15 +438,17 @@ CREATE TABLE "monitoring" (
 );
 
 CREATE TABLE "attachments" (
-    "id"                SERIAL       UNIQUE PRIMARY KEY,
+    "id"                SERIAL          UNIQUE PRIMARY KEY,
     "document_id"       INTEGER,
     "batch_id"          INTEGER,
+    "docserver_id"      VARCHAR(32)     DEFAULT NULL,
     "filename"          VARCHAR(255),
     "path"              VARCHAR(255),
     "thumbnail_path"    VARCHAR(255),
-    "status"            VARCHAR(20)  DEFAULT 'OK',
-    "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    "status"            VARCHAR(20)     DEFAULT 'OK',
+    "creation_date"     TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
+    FOREIGN KEY (docserver_id) REFERENCES docservers(id) ON DELETE SET NULL,
     FOREIGN KEY (batch_id) REFERENCES splitter_batches(id) ON DELETE CASCADE
 );
 
