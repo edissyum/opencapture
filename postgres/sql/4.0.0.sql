@@ -650,7 +650,7 @@ WHERE ds.docserver_id = 'VERIFIER_ORIGINAL_DOC' AND d.path LIKE ds.path || '%';
 
 -- Modification de la table attachments pour supprimer les chemins absolus
 UPDATE attachments a
-SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', ''), docserver_id = 'VERIFIER_ATTACHMENTS'
+SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
 FROM docservers ds
 WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.document_id IS NOT NULL AND a.path LIKE ds.path || '%';
 
