@@ -21,6 +21,7 @@ import sys
 import time
 import json
 import traceback
+import shutil
 from kuyruk import Kuyruk
 from src.backend import app
 from flask_babel import gettext
@@ -158,6 +159,7 @@ def launch(args):
                 except OSError:
                     pass
 
+                error = False
                 attachments = []
                 if 'attachments' in args and args['attachments']:
                     attachments = args['attachments']
@@ -201,11 +203,19 @@ def launch(args):
                                         if split_res :
                                             created_batches = split_res['batches_id']
                                             log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
+                                        else :
+                                            error = True
                     else:
                         log.error("The workflow_id doesn't exists in database")
+                        error = True
         except (Exception,):
             _e = str(traceback.format_exc())
             log.error(_e)
+            error = True
+        
+        if error and os.path.exists(batch_folder_path) and os.path.exists(batch_thumbs_path):
+            shutil.rmtree(batch_folder_path)
+            shutil.rmtree(batch_thumbs_path)
 
         end = time.time()
         _timer = timer(start, end)
