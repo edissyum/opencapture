@@ -17,8 +17,9 @@
 
 import { t } from "i18next";
 import { useState } from "react";
-import { ChevronsUpDown, CloudUpload, Package } from "lucide-react";
+import { CloudUpload, Package } from "lucide-react";
 
+import { Select } from "./Select";
 import { Button } from "./Button";
 import { hasRequiredPermissions } from "./auth/auth";
 
@@ -41,15 +42,10 @@ export default function TopBar() {
     ];
 
     const { user, loadingUser } = useUser();
-    const [img, setImg] = useState<string | null>(null);
     const [selected, setSelected] = useState<string | null>(null);
 
     const handleSelect = (option: string) => {
         setSelected(option);
-        const optionInfo = options.find(o => o.id === option);
-        if (optionInfo) {
-            setImg(optionInfo['img'])
-        }
         localStorage.setItem('selectedModule', option);
         window.dispatchEvent(new Event("updateModule"));
     };
@@ -61,31 +57,35 @@ export default function TopBar() {
 
     if (loadingUser) return;
 
+    const selectedOption = options.find(o => o.id === selected);
+    const moduleOptions = options.map((option) => ({
+        img: option.img,
+        value: option.id,
+        label: option.label,
+        disabled: !hasRequiredPermissions(user, [option.privilege])
+    }));
+
     return (
         <header
             className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b border-(--border-secondary)">
             <div className="flex items-center gap-4">
-                <div className="relative inline-block w-64">
-                    <select
-                        value={ selected || '' } style={ { backgroundImage: `url('${ img }')` } }
-                        onChange={ (e) => {
-                            handleSelect(e.target.value)
-                        } }
-                        className='w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px]
-                                   rounded-lg py-2.5 border border-(--border-secondary) appearance-none cursor-pointer'
-                    >
-                        { options.map((option) => (
-                            <option key={ option['id'] } value={ option['id'] }
-                                    disabled={ !hasRequiredPermissions(user, [option['privilege']])}
-                                    className="cursor-pointer px-4 py-2 hover:bg-(--bg-secondary)">
-                                { option['label'] }
-                            </option>
-                        )) }
-                    </select>
-                    <span className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'>
-                        { <ChevronsUpDown size={ 20 }/> }
-                    </span>
-                </div>
+                <Select
+                    id="module-select"
+                    searchable={ false }
+                    value={ selected || '' }
+                    className="module-TopBar"
+                    options={ moduleOptions }
+                    onChange={ (value) => value && handleSelect(value) }
+                    leftSection={ selectedOption && (
+                        <img src={ selectedOption.img } alt="" className="object-contain"/>
+                    ) }
+                    renderOption={ ({ option }: { option: any }) => (
+                        <div className="flex items-center gap-2">
+                            <img src={ option.img } alt={ option.label } className="size-8 object-contain"/>
+                            <span>{ option.label }</span>
+                        </div>
+                    ) }
+                />
                 <Button to="/home" icon={ <Package size={ 24 }/> } className="font-semibold p-2.5!" size='md'>
                     { storedModule === 'verifier' ? t('VERIFIER.documents') : t('GLOBAL.batches') }
                 </Button>
