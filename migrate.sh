@@ -545,9 +545,7 @@ cmd_import() {
         done
 
         log "  patch des chemins dans la base"
-        patch_db_paths "$cid" "$POSTGRES_USER" "$POSTGRES_DB" \
-            "${DOCSERVERS_SRC%/}" "${SHARE_SRC%/}" "$APP_CUSTOM" \
-            "$(dirname "${DOCSERVERS_SRC%/}")" "${OC_ROOT%/}"
+        patch_db_paths "$cid" "$POSTGRES_USER" "$POSTGRES_DB" "$tdir"
 
         # Renommage du custom (dossier bundle renommé <> CUSTOM_ID de meta.env,
         # écrit à l'export = l'id SOURCE) : patch_db_paths ne réécrit que le
@@ -786,9 +784,43 @@ rewrite_paths_in_dir() {
 # colonnes post-4.0.0 + chemins -> /app). Ordre imposé.
 # 4.0.0.sql n'est PAS idempotent -> UNE passe sur un import frais ; on retire
 # d'abord settings_favorites (table v4-only survivante au dump, sinon son CREATE échoue).
+# Pièces jointes de lots : la v3 les écrivait toutes sous VERIFIER_ATTACHMENTS, y
+# compris celles des lots splitter, alors que le backend v4 les résout via
+# SPLITTER_ATTACHMENTS (backend/src/controllers/attachments.py). On déplace les
+# fichiers et on réécrit le segment de chemin, sans toucher au reste de la valeur.
+# À jouer AVANT 4.0.0.sql : lui relativise les chemins, le segment disparaît.
+move_batch_attachments() {
+    local cid="$1" pguser="$2" pgdb="$3" tdir="$4"
+    local src="$tdir/docservers/verifier/attachments"
+    local dst="$tdir/docservers/splitter/attachments"
+    local rels
+    rels="$(dc "$cid" exec -T postgres psql -tA -U "$pguser" -d "$pgdb" -c \
+        "SELECT split_part(path, 'verifier/attachments/', 2) FROM attachments
+          WHERE batch_id IS NOT NULL AND path LIKE '%verifier/attachments/%'" 2>/dev/null | tr -d '\r')"
+    if [ -z "$rels" ]; then
+        log "    aucune pièce jointe de lot à déplacer"
+        return 0
+    fi
+
+    local moved=0 missing=0 rel
+    while IFS= read -r rel; do
+        [ -n "$rel" ] || continue
+        if [ -f "$src/$rel" ]; then
+            mkdir -p "$dst/$(dirname "$rel")"
+            mv -n "$src/$rel" "$dst/$rel" && moved=$((moved + 1))
+        else
+            missing=$((missing + 1))
+        fi
+    done <<< "$rels"
+
+    dc "$cid" exec -T postgres psql -q -U "$pguser" -d "$pgdb" -c \
+        "UPDATE attachments SET path = REPLACE(path, 'verifier/attachments/', 'splitter/attachments/')
+          WHERE batch_id IS NOT NULL AND path LIKE '%verifier/attachments/%'" >/dev/null
+    log "    pièces jointes de lots : $moved déplacée(s), $missing fichier(s) source absent(s)"
+}
+
 patch_db_paths() {
-    local cid="$1" pguser="$2" pgdb="$3" docs_src="$4" share_src="$5" app_custom="$6"
-    local docs_root="${7:-/var/docservers/opencapture}" oc_root="${8:-/var/www/html/opencapture}"
+    local cid="$1" pguser="$2" pgdb="$3" tdir="$4"
     local V400="$REPO_ROOT/postgres/sql/4.0.0.sql" VRES="$REPO_ROOT/postgres/sql/4.0.0+.sql"
     [ -f "$V400" ] && [ -f "$VRES" ] || die "[$cid] postgres/sql/4.0.0.sql ou 4.0.0+.sql introuvable"
     [ -n "$docs_src" ] && [ -n "$share_src" ] || die "[$cid] docs_src/share_src vides"
@@ -796,14 +828,22 @@ patch_db_paths() {
     dc "$cid" exec -T postgres psql -q -U "$pguser" -d "$pgdb" \
         -c "DROP TABLE IF EXISTS settings_favorites CASCADE;" >/dev/null 2>&1 || true
 
+    # Pièces jointes de lots : la v3 les écrivait sous VERIFIER_ATTACHMENTS alors que le
+    # backend v4 les résout via SPLITTER_ATTACHMENTS. Déplacement AVANT 4.0.0.sql, qui
+    # relativise ensuite les chemins (le script s'appuie sur le segment verifier/attachments/).
+    # Passé sur stdin : postgres/sql/ n'est pas embarqué dans l'image backend.
+    # Pièces jointes de lots : AVANT 4.0.0.sql, qui relativise les chemins et fait
+    # disparaître le segment 'verifier/attachments/' sur lequel s'appuie le déplacement.
+    move_batch_attachments "$cid" "$pguser" "$pgdb" "$tdir"
+
     log "    montée 4.0.0 (script officiel)"
     dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$pguser" -d "$pgdb" < "$V400" >/dev/null
 
+    # 4.0.0+.sql dérive lui-même les chemins source depuis docservers ; seul le nom du
+    # tenant cible est transmis (il ne figure nulle part dans la base en cas de renommage).
     log "    résiduel Docker (4.0.0+.sql)"
     dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$pguser" -d "$pgdb" \
-        -v cid="$cid" -v docs_src="$docs_src" -v docs_root="$docs_root" \
-        -v share_src="$share_src" -v app_custom="$app_custom" -v oc_root="$oc_root" \
-        < "$VRES" >/dev/null
+        -v cid="$cid" < "$VRES" >/dev/null
 }
 
 wait_pg_healthy() {
