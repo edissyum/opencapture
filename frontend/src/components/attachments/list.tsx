@@ -317,7 +317,7 @@ export function AttachmentsList({
                                             </div>
                                         </div>
                                         <div className='pl-4 pr-3 py-3'>
-                                            <div className='flex mb-2'>
+                                            <div className='flex'>
                                                 <p className='font-semibold text-(--text-primary) truncate'>{ attachment.filename }</p>
                                                 <div className="ml-auto">
                                                     <Menu position="bottom-end" withinPortal>
