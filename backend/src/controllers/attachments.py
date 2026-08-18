@@ -58,6 +58,12 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False, c
             file = Files.move_to_docservers(docservers, filename, attachments=True, module=module)
             if file:
                 extension = os.path.splitext(original_filename)[1]
+                docserver = docservers['VERIFIER_THUMB']
+                docserver_id = 'VERIFIER_ATTACHMENTS'
+                if module == 'splitter':
+                    docserver = docservers['SPLITTER_THUMB']
+                    docserver_id = 'SPLITTER_ATTACHMENTS'
+
                 if extension.lower() in ['.pdf', '.heif', '.heic']:
                     tmp_file = file
                     thumb_filename = str(uuid.uuid4()) + '.jpg'
@@ -66,10 +72,6 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False, c
                         with open(shared.tmp_path + thumb_filename, 'wb') as _f:
                             image.save(_f, 'JPEG')
                             tmp_file = shared.tmp_path + thumb_filename
-
-                    docserver = docservers['VERIFIER_THUMB']
-                    if module == 'splitter':
-                        docserver = docservers['SPLITTER_THUMB']
 
                     thumb_path = Files.move_to_docservers_image(docserver, tmp_file, thumb_filename, copy=True)
                     thumb_path = thumb_path.replace('//', '/')
@@ -88,8 +90,9 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False, c
                 args = {
                     'columns': {
                         'path': file,
-                        'document_id': document_id,
                         'batch_id': batch_id,
+                        'document_id': document_id,
+                        'docserver_id': docserver_id,
                         'thumbnail_path': thumb_path,
                         'filename': original_filename
                     }
@@ -124,10 +127,14 @@ def get_attachments_by_document_id(document_id, get_thumb=True):
     if _attachments and get_thumb:
         docservers = get_context_var('docservers', 9)
         for attachment in _attachments:
-            path = docservers['VERIFIER_ATTACHMENTS' ] + '/' + attachment['path']
+            path = docservers[attachment['docserver_id']] + '/' + attachment['path']
             extension = os.path.splitext(attachment['filename'])[1]
 
-            thumbnail_path = docservers['VERIFIER_THUMB'] + '/' + attachment['thumbnail_path'] if attachment.get('thumbnail_path') else None
+            docserver_thumb = docservers['VERIFIER_THUMB']
+            if attachment['batch_id']:
+                docserver_thumb = docservers['SPLITTER_THUMB']
+
+            thumbnail_path = docserver_thumb + '/' + attachment['thumbnail_path'] if attachment.get('thumbnail_path') else ''
             if os.path.isfile(path) and extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
                 with open(path, 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
@@ -193,9 +200,7 @@ def download_attachment(attachment_id, module):
         mime = magic.Magic(mime=True)
         docservers = get_context_var('docservers', 9)
 
-        path = docservers['VERIFIER_ATTACHMENTS'] + '/' + _attachment['path']
-        if module == 'splitter':
-            path = docservers['SPLITTER_ATTACHMENTS'] + '/' + _attachment['path']
+        path = docservers[_attachment['docserver_id']] + '/' + _attachment['path']
 
         if not os.path.isfile(path):
             return None, ''
@@ -224,13 +229,14 @@ def unbind_attachment(args):
             pdf = pypdf.PdfReader(original_filepath, strict=False)
             max_source_page = len(pdf.pages)
             if batch:
-                file_path = docservers['SPLITTER_ATTACHMENTS'] + '/' + attachment['path']
+                attachment_path = docservers[attachment['docserver_id']] + '/' + attachment['path']
                 thumb_folder = docservers['SPLITTER_THUMB'] + '/' + batch['batch_folder']
                 batch_folder = docservers['SPLITTER_BATCHES'] + '/' + batch['batch_folder']
-                if os.path.isfile(file_path):
-                    extension = os.path.splitext(file_path)[1]
+
+                if os.path.isfile(attachment_path):
+                    extension = os.path.splitext(attachment_path)[1]
                     if extension.lower() == '.pdf':
-                        images = convert_from_path(file_path, dpi=300)
+                        images = convert_from_path(attachment_path, dpi=300)
                         for i, image in enumerate(images):
                             new_source_page = max_source_page + i + 1
                             full_filename = f"page-{new_source_page:03d}.jpg"
@@ -252,7 +258,7 @@ def unbind_attachment(args):
                             for page in range(len(pdf.pages)):
                                 merged_pdf.add_page(pdf.pages[page])
 
-                            new_pdf = pypdf.PdfReader(file_path, strict=False)
+                            new_pdf = pypdf.PdfReader(attachment_path, strict=False)
                             for page in range(len(new_pdf.pages)):
                                 merged_pdf.add_page(new_pdf.pages[page])
                             merged_pdf.write(original_filepath)

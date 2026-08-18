@@ -636,9 +636,13 @@ INSERT INTO "configurations" ("label", "data") VALUES ('informalContactDtype', '
 -- Ajout d'une colonne docserver_id dans tables attachments, documents et splitter_batches
 ALTER TABLE documents ADD COLUMN IF NOT EXISTS docserver_id VARCHAR(32) DEFAULT NULL;
 ALTER TABLE attachments ADD COLUMN IF NOT EXISTS docserver_id VARCHAR(32) DEFAULT NULL;
-ALTER TABLE splitter_batches ADD COLUMN IF NOT EXISTS docserver_id VARCHAR(32) DEFAULT NULL;
 
 UPDATE documents SET docserver_id = 'VERIFIER_ORIGINAL_DOC' WHERE docserver_id IS NULL;
+
+-- Si les PJ sont ajoutés via le Splitter, puit que le lot est transféré au Verifier via API, les PJ ne sont pas dupliquées
+-- dans la table attachments. Seule une référence au nouveau document est ajoutée, et la PJ d'origine reste dans les docservers Splitter.
+UPDATE attachments SET docserver_id = 'SPLITTER_ATTACHMENTS' WHERE docserver_id IS NULL AND batch_id IS NOT NULL AND document_id IS NOT NULL;
+
 UPDATE attachments SET docserver_id = 'SPLITTER_ATTACHMENTS' WHERE docserver_id IS NULL AND batch_id IS NOT NULL;
 UPDATE attachments SET docserver_id = 'VERIFIER_ATTACHMENTS' WHERE docserver_id IS NULL AND document_id IS NOT NULL;
 
@@ -652,7 +656,7 @@ WHERE ds.docserver_id = 'VERIFIER_ORIGINAL_DOC' AND d.path LIKE ds.path || '%';
 UPDATE attachments a
 SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
 FROM docservers ds
-WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.document_id IS NOT NULL AND a.path LIKE ds.path || '%';
+WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.document_id IS NOT NULL AND a.batch_id IS NULL AND a.path LIKE ds.path || '%';
 
 UPDATE attachments a
 SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+', '')
@@ -662,7 +666,7 @@ WHERE ds.docserver_id = 'VERIFIER_THUMB' AND a.document_id IS NOT NULL AND a.thu
 UPDATE attachments a
 SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
 FROM docservers ds
-WHERE ds.docserver_id = 'SPLITTER_ATTACHMENTS' AND a.batch_id IS NOT NULL AND a.path LIKE ds.path || '%';
+WHERE ds.docserver_id = 'SPLITTER_ATTACHMENTS' AND a.batch_id IS NOT NULL AND a.document_id IS NULL AND a.path LIKE ds.path || '%';
 
 UPDATE attachments a
 SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+', '')
