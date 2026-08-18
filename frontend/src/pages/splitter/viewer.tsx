@@ -1303,7 +1303,10 @@ export function SplitterViewerPage() {
                                 hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
                                     ${ (documents.length === 0 || documents.length > 1) && 'opacity-50 pointer-events-none' }`
                                 }
-                                     onClick={ () => setShowAttachments(true) }
+                                     onClick={ () => {
+                                         setShowBatches(false);
+                                         setShowAttachments(true);
+                                     } }
                                      data-tooltip-id="tooltip"
                                      data-tooltip-content={ t('VERIFIER.show_attachments') }
                                 >
