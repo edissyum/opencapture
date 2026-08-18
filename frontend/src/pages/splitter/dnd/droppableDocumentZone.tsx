@@ -83,8 +83,7 @@ export function DroppableDocumentZone({
             ) }
 
             { pages.length > 0 && (
-                <div ref={ scrollRef }
-                     className="overflow-x-auto h-100 p-4 pt-0">
+                <div ref={ scrollRef } className="overflow-x-auto h-94.5">
                     <div style={ { width: totalWidth, position: 'relative' } }>
                         { virtualItems.map((virtualItem) => {
                             const page = pages[virtualItem.index];

@@ -37,7 +37,7 @@ pip install -r backend/pip-requirements.txt
 
 4. **Install NVM**:
 ```bash
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
 
 source ~/.bashrc
 nvm install --lts

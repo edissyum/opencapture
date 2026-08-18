@@ -184,6 +184,7 @@ export function axiosApiCall() {
                 if (err.response && err.response.data && err.response.data.message || err.response?.status === 429) {
                     const title = err.response?.status === 429 ? t('ERROR.too_many_requests') : err.response.data.errors;
                     const details = err.response?.status === 429 ? t('ERROR.too_many_requests_details') : err.response.data.message;
+                    const toastId = title + details;
 
                     showToast(
                         <div>
@@ -193,7 +194,7 @@ export function axiosApiCall() {
                                 </strong>
                             </h4>
                             <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(details) }}/>
-                        </div>, "error"
+                        </div>, "error", toastId
                     )
                 } else {
                     if (err.response?.status === 429) {

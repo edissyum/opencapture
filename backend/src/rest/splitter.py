@@ -228,7 +228,7 @@ def create_document():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('splitter/changeForm', methods=['POST'])
+@bp.route('splitter/changeForm', methods=['PUT'])
 @auth.token_required
 def change_form():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):

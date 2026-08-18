@@ -21,10 +21,7 @@ import sys
 import time
 import json
 import traceback
-<<<<<<< HEAD
-from kuyruk import Kuyruk, Config
-=======
->>>>>>> main
+import shutil
 from src import app, shared
 from flask_babel import gettext
 from src.classes.Log import Log
@@ -43,10 +40,6 @@ rabbit_custom.RABBIT_USER = os.environ.get('RABBIT_USER', 'guest')
 rabbit_custom.RABBIT_PASSWORD = os.environ.get('RABBIT_PASSWORD', 'guest')
 rabbit_custom.RABBIT_VIRTUAL_HOST = os.environ.get('RABBIT_VIRTUAL_HOST', '/')
 kuyruk = Kuyruk(config=rabbit_custom)
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 
 @kuyruk.task(queue='splitter_§§CUSTOM_ID§§')
 def launch(args):
@@ -181,6 +174,7 @@ def launch(args):
                 except OSError:
                     pass
 
+                error = False
                 attachments = []
                 if 'attachments' in args and args['attachments']:
                     attachments = args['attachments']
@@ -230,11 +224,19 @@ def launch(args):
                                         if split_res :
                                             created_batches = split_res['batches_id']
                                             log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
+                                        else :
+                                            error = True
                     else:
                         log.error("The workflow_id doesn't exists in database")
+                        error = True
         except (Exception,):
             _e = str(traceback.format_exc())
             log.error(_e)
+            error = True
+        
+        if error and os.path.exists(batch_folder_path) and os.path.exists(batch_thumbs_path):
+            shutil.rmtree(batch_folder_path)
+            shutil.rmtree(batch_thumbs_path)
 
         end = time.time()
         _timer = timer(start, end)

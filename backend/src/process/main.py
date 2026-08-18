@@ -428,26 +428,31 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     supplier = None
     supplier_lang_different = False
 
-    if 'supplier' in args and args['supplier']:
+    if args.get('supplier') or (args.get('datas') and args['datas'].get('supplier')):
+        if args['datas']['supplier']:
+            for key in args['datas']['supplier']:
+                args['supplier'] = {
+                    'column': key,
+                    'value': args['datas']['supplier'][key]
+                }
+
         log.debug('Supplier informations provided in upload, try to find supplier in database using given informations')
-        if 'column' in args['supplier'] and args['supplier']['column']:
-            if 'value' in args['supplier'] and args['supplier']['value']:
-                column = args['supplier']['column']
-                value = args['supplier']['value']
+        if args['supplier'].get('column') and args['supplier'].get('value'):
+            value = args['supplier']['value']
+            column = args['supplier']['column']
 
-                supplier_found = database.select({
-                    'select': ['accounts_supplier.id as supplier_id', '*'],
-                    'table': ['accounts_supplier', 'addresses'],
-                    'left_join': ['accounts_supplier.address_id = addresses.id'],
-                    'where': [column + ' = %s', 'accounts_supplier.status <> %s'],
-                    'data': [value, 'DEL']
-                })
+            supplier_found = database.select({
+                'select': ['accounts_supplier.id as supplier_id', '*'],
+                'table': ['accounts_supplier', 'addresses'],
+                'left_join': ['accounts_supplier.address_id = addresses.id'],
+                'where': [column + ' = %s', 'accounts_supplier.status <> %s'],
+                'data': [value, 'DEL']
+            })
 
-                if supplier_found:
-                    supplier = [supplier_found[0]['vat_number'], (('', ''), ('', '')), supplier_found[0], False,
-                                column]
-                    log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] +
-                             ' using ' + column.upper() + ' : ' + value)
+            if supplier_found:
+                supplier = [supplier_found[0]['vat_number'], (('', ''), ('', '')), supplier_found[0], False, column]
+                log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] +
+                         ' using ' + column.upper() + ' : ' + value)
 
     customer_id = None
     if not supplier or not supplier[0] or not supplier[2]:

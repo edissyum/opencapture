@@ -652,72 +652,71 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
   }
 }', 'splitter');
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (11, 'export_verifier', 'Export Verifier','{
-  "options": {
-    "parameters": [
-        {
-            "id": "body_template",
-            "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-            "type": "textarea",
-            "label": "Contenu de l''appel API",
-            "required": true,
-            "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\"\n\t}\n}"
-        }
-    ]
-  }
+    "options": {
+        "parameters": [
+            {
+                "id": "body_template",
+                "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "textarea",
+                "label": "Contenu de l''appel API",
+                "required": true,
+                "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\",\n\t\t\"supplier\": {\n\t\t\t\"email\": \"sender_informations\"\n\t\t}\n\t}\n}"
+            }
+        ]
+    }
 }', 'splitter');
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (12, 'export_openads', 'Export OpenADS','{
-  "options": {
-    "auth": [
-      {
-        "id": "openads_api",
-        "type": "text",
-        "label": "OpenAds API",
-        "required": "true",
-        "placeholder": "https://example.com/demo/openads"
-      },
-      {
-        "id": "login",
-        "type": "text",
-        "label": "Pseudo de l''utilisateur WS",
-        "required": "true",
-        "placeholder": "opencapture"
-      },
-      {
-        "id": "password",
-        "type": "password",
-        "label": "Mot de passe de l''utilisateur WS",
-        "required": "true",
-        "placeholder": "opencapture"
-      }
+    "options": {
+        "auth": [
+        {
+            "id": "openads_api",
+            "type": "text",
+            "label": "OpenAds API",
+            "required": "true",
+            "placeholder": "https://example.com/demo/openads"
+        },
+        {
+            "id": "login",
+            "type": "text",
+            "label": "Pseudo de l''utilisateur WS",
+            "required": "true",
+            "placeholder": "opencapture"
+        },
+        {
+            "id": "password",
+            "type": "password",
+            "label": "Mot de passe de l''utilisateur WS",
+            "required": "true",
+            "placeholder": "opencapture"
+        }
     ],
     "parameters": [
-      {
-        "id": "pdf_filename",
-        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "text",
-        "label": "Nom du fichier PDF",
-        "required": "true",
-        "placeholder": "doctype#random"
-      },
-      {
-        "id": "separator",
-        "hint": "",
-        "type": "text",
-        "label": "Séparateur",
-        "required": "true",
-        "placeholder": "_"
-      },
-      {
-        "id": "folder_id",
-        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "text",
-        "label": "Identifiant du dossier",
-        "required": "true",
-        "placeholder": "_"
-      }
+        {
+            "id": "pdf_filename",
+            "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+            "type": "text",
+            "label": "Nom du fichier PDF",
+            "required": "true",
+            "placeholder": "doctype#random"
+        },
+        {
+            "id": "separator",
+            "hint": "",
+            "type": "text",
+            "label": "Séparateur",
+            "required": "true",
+            "placeholder": "_"
+        },
+        {
+            "id": "folder_id",
+            "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+            "type": "text",
+            "label": "Identifiant du dossier",
+            "required": "true",
+            "placeholder": "_"
+        }
     ]
-  }
-}', 'splitter');
+}}', 'splitter');
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (13, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{
     "options": {
         "auth": [
@@ -1395,10 +1394,16 @@ INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VAL
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (6, 'recipient_informations', 'Informations destinataire', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (7, 'sender_informations', 'Informations expéditeur', 'text', 'splitter');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (8, 'copy_informations', 'Informations personnes en copie', 'text', 'splitter');
 
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE VERIFIER
-INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module", settings) VALUES (6, 'iban', 'Numéro IBAN', 'regex', 'verifier', '{"regex": {"test": null, "format": "iban", "content": "(E|F)(R|A)[0-9]{2}(?:[ ]?[0-9-A-Z]){16,24}", "remove_spaces": true, "remove_keyword": null, "remove_special_char": true}, "options": null}');
-ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 7;
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module", settings) VALUES (9, 'iban', 'Numéro IBAN', 'regex', 'verifier', '{"regex": {"test": null, "format": "iban", "content": "(E|F)(R|A)[0-9]{2}(?:[ ]?[0-9-A-Z]){16,24}", "remove_spaces": true, "remove_keyword": null, "remove_special_char": true}, "options": null}');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (10, 'recipient_informations', 'Informations destinataire', 'text', 'verifier');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (11, 'sender_informations', 'Informations expéditeur', 'text', 'verifier');
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (12, 'copy_informations', 'Informations personnes en copie', 'text', 'verifier');
+ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 13;
 
 -- CRÉATION DES PRIVILEGES
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');
