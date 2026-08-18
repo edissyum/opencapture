@@ -16,7 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import * as XLSX from "xlsx";
+import Papa from "papaparse";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -36,7 +36,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
     const [editedColumns, setEditedColumns] = useState<string[]>(columns);
 
     const [file, setFile] = useState<File | null>(null);
-    const [sheet, setSheet] = useState<XLSX.WorkSheet | null>(null);
+    const [sheet, setSheet] = useState<string[][] | null>(null);
 
     const [rows, setRows] = useState<string[][]>([]);
     const [headers, setHeaders] = useState<string[]>([]);
@@ -54,33 +54,25 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
 
         setFile(file);
 
-        const buffer = await file.arrayBuffer();
-        const workbook = XLSX.read(buffer, {
-            type: "array",
-            codepage: 65001
-        });
+        const text = await file.text();
+        const { data } = Papa.parse<string[]>(text, { skipEmptyLines: true });
 
-        const _sheet = workbook.Sheets[workbook.SheetNames[0]];
-        setSheet(_sheet);
-
-        loadDatas(_sheet);
+        setSheet(data);
+        loadDatas(data);
     }
 
-    const loadDatas = (sheet: any) => {
-        const data = XLSX.utils.sheet_to_json(sheet, {
-            header: 1,
-            defval: (
-                <div className='text-(--text-secondary)'>
-                    { t('GLOBAL.no_data') }
-                </div>
-            )
-        }) as string[][];
+    const loadDatas = (data: string[][]) => {
+        const formatted = data.map((row) => row.map((cell) => (
+            cell === '' || cell === undefined || cell === null
+                ? <div className='text-(--text-secondary)'>{ t('GLOBAL.no_data') }</div>
+                : cell
+        ))) as string[][];
 
-        setHeaders(data[0] as string[]);
+        setHeaders(formatted[0] as string[]);
         if (skipHeader) {
-            setRows(data.slice(1) as string[][]);
+            setRows(formatted.slice(1) as string[][]);
         } else {
-            setRows(data as string[][]);
+            setRows(formatted as string[][]);
         }
     }
 
