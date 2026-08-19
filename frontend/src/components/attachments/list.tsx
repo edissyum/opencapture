@@ -299,10 +299,11 @@ export function AttachmentsList({
                                 className={ `grid ${ module === 'verifier' ? 'grid-cols-2' : 'grid-cols-3' } gap-4 px-6 pb-6` }>
                                 { attachments.map((attachment) => (
                                     <div key={ attachment.id } onClick={ () => handleAttachementView(attachment) }
-                                         className="border border-(--border-secondary) hover:border-(--text-secondary)
-                                            rounded-md cursor-pointer bg-(--bg-primary) transition-colors">
+                                         className="cursor-pointer bg-(--bg-primary) rounded-md group">
                                         <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6
-                                                pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
+                                                pb-0 rounded-md flex items-center justify-center text-(--text-secondary)
+                                                border border-b-0 border-(--border-secondary) group-hover:border-(--text-secondary)
+                                                transition-colors">
                                             <div className="w-full h-40 relative">
                                                 { attachment['thumb'] ? (
                                                     <img alt={ attachment.filename }
@@ -316,7 +317,9 @@ export function AttachmentsList({
                                                 ) }
                                             </div>
                                         </div>
-                                        <div className='pl-4 pr-3 py-3'>
+                                        <div className='pl-4 pr-3 py-3 border border-t-0 border-(--border-secondary)
+                                                        group-hover:border-(--text-secondary) transition-colors
+                                                        rounded-t-none rounded-md'>
                                             <div className='flex'>
                                                 <p className='font-semibold text-(--text-primary) truncate'>{ attachment.filename }</p>
                                                 <div className="ml-auto">
