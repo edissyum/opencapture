@@ -94,11 +94,12 @@
     select:-webkit-autofill,
     select:-webkit-autofill:hover,
     select:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
-        box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
-        -webkit-text-fill-color: var(--text-primary) !important;
-        transition: background-color 5000s ease-in-out 0s;
+        @apply rounded-md;
         caret-color: var(--text-primary);
+        transition: background-color 5000s ease-in-out 0s;
+        -webkit-text-fill-color: var(--text-primary) !important;
+        box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
+        -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
     }
 
     @apply bg-(--bg-primary);

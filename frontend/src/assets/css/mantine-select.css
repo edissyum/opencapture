@@ -21,7 +21,7 @@
 }
 
 .mantine-Select-input {
-    @apply h-12;
+    @apply h-12.5;
     @apply text-base;
     @apply cursor-pointer;
     @apply bg-(--bg-primary);

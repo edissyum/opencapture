@@ -20,7 +20,7 @@
 }
 
 .mantine-Autocomplete-wrapper input {
-    @apply h-12.5;
+    @apply h-12;
     @apply text-base;
     @apply rounded-md;
     @apply border-(--border-secondary);
