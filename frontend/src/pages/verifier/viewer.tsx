@@ -420,7 +420,7 @@ export function VerifierViewerPage() {
                                     }
                                 }
 
-                                updateDocumentData(field, value, true, false);
+                                updateDocumentData(field, value, true, true);
                                 if (errors[field.id]) return;
 
                                 prepareDocumentData(field, value);

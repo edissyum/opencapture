@@ -210,7 +210,11 @@ export function VerifierListPage() {
             id: 'form_label',
             className: 'w-3/12',
             header: t('VERIFIER.form'),
-            field: 'form_label'
+            body: (item: any) => (
+                <span title={ item.form_label }>
+                    { item.form_label }
+                </span>
+            )
         },
         {
             id: 'filename',
