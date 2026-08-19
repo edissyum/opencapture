@@ -168,8 +168,8 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                 { currentAttachmentData && (() => {
                     if (currentAttachmentData.mime.startsWith('image/')) {
                         return (
-                            <div className='h-full flex justify-center pb-2'>
-                                <img src={ currentAttachmentData.url } alt="Attachment" className="max-w-full"/>
+                            <div className='h-full flex justify-center px-4 pb-2'>
+                                <img src={ currentAttachmentData.url } alt="Attachment" className="max-w-full object-contain"/>
                             </div>
                         );
                     } else if (currentAttachmentData.mime === 'application/pdf') {
