@@ -16,15 +16,22 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 .mantine-Select-input#rowsPerPage {
-    @apply h-10!;
+    @apply h-10;
     @apply text-(--text-secondary);
 }
 
 .mantine-Select-input {
-    @apply h-12!;
-    @apply text-base!;
-    @apply cursor-pointer!;
+    @apply h-12;
+    @apply text-base;
+    @apply cursor-pointer;
     @apply bg-(--bg-primary);
+}
+
+.mantine-Select-wrapper input:focus,
+.mantine-Select-wrapper input:hover {
+    @apply shadow-none;
+    @apply outline-none;
+    @apply border-(--color-primary);
 }
 
 .mantine-Select-option:hover {
@@ -37,5 +44,17 @@
 
     & svg {
         @apply hidden;
+    }
+}
+
+.module-TopBar {
+    @apply w-64;
+
+    & .mantine-Select-section {
+        @apply ml-3;
+    }
+
+    & .mantine-Select-input {
+        @apply ps-14;
     }
 }

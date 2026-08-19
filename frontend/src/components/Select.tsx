@@ -35,8 +35,10 @@ interface SelectProps {
     editable?: boolean;
     required?: boolean;
     searchable?: boolean;
-    withinPortal?: boolean;
     placeholder?: string;
+    withinPortal?: boolean;
+    leftSection?: React.ReactNode;
+    renderOption?: (input: { option: any; checked?: boolean }) => React.ReactNode;
     onChange: (value: string) => void;
     options: { value: any; label: string }[];
 }
@@ -55,7 +57,9 @@ export const Select: React.FC<SelectProps> = ({
     disabled = false,
     placeholder = "",
     searchable = true,
-    withinPortal = true
+    withinPortal = true,
+    leftSection = undefined,
+    renderOption = undefined
 }) => {
     const hasValue = value !== undefined && value !== null && value !== '';
     const { floating, onFocus, onBlur } = useFloatingLabel(hasValue);
@@ -125,9 +129,10 @@ export const Select: React.FC<SelectProps> = ({
                         allowDeselect={ false }
                         searchable={ searchable }
                         placeholder={ placeholder }
+                        leftSection={ leftSection }
                         comboboxProps={ { withinPortal } }
-                        renderOption={ mantineRenderOption }
                         searchValue={ !hasValue ? '' : (editable ? search : undefined) }
+                        renderOption={ renderOption ? renderOption : mantineRenderOption }
                         onSearchChange={ editable ? setSearch : undefined }
                         onChange={ (value) => {
                             onChange(value)
