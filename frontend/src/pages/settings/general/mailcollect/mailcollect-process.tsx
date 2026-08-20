@@ -71,18 +71,18 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         { label: t('MAILCOLLECT.none'), hint: t('MAILCOLLECT.none_hint'), value: 'none', logo: <Ban/> },
         { label: t('MAILCOLLECT.move'), hint: t('MAILCOLLECT.move_hint'), value: 'move', logo: <CornerUpRight/> }
     ];
+    const [actionAfterProcess, setActionAfterProcess] = useState<"none" | "move">("move");
 
     const modulesSchema: any = z.object({
         module: z.enum(['verifier', 'splitter']).default('verifier'),
         is_splitter: z.boolean().default(false),
         ocr_attachments: z.boolean().optional(),
         verifier_insert_body_as_doc: z.boolean().optional(),
-        verifier_workflow_id: z.any().optional(),
         splitter_insert_body_as_doc: z.boolean().optional(),
         workflow_id: z.any().optional(),
-        copy_custom_id: z.number().optional(),
-        sender_custom_id: z.number().optional(),
-        recipient_custom_id: z.number().optional()
+        copy_custom_id: z.number().optional().nullable(),
+        sender_custom_id: z.number().optional().nullable(),
+        recipient_custom_id: z.number().optional().nullable()
     });
     const {
         control: modulesControl,
@@ -95,7 +95,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
     const foldersSchema: any = z.object({
         folder_to_crawl: z.string().min(1),
-        folder_destination: z.string().min(1),
+        folder_destination: z.string().optional(),
         action_after_process: z.enum(['none', 'move']).default('move')
     });
     const {
@@ -120,6 +120,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
     // Set form values from process on load
     useEffect(() => {
+        setActionAfterProcess(process.action_after_process);
         setValueAuth("securedConnection", process.secured_connection);
         Object.keys(process.options).forEach((key: any) => {
             if (authSchema.shape[key] && [null, undefined].indexOf(process.options[key]) === -1) {
@@ -275,7 +276,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             control={ controlAuth }
                             name='port'
                             render={ ({ field }) => (
-                                <Input className='w-1/9'
+                                <Input className='w-1/6'
                                        { ...field }
                                        label={ t("SMTP.port") }
                                        error={ authErrors.port?.message }/>
@@ -477,6 +478,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     control={ foldersControl }
                     render={ ({ field }) => (
                         <Select
+                            required={ true }
                             className="w-full"
                             id="folder_to_crawl"
                             value={ field.value }
@@ -495,7 +497,10 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         <div className='flex gap-4 my-6'>
                             { actionsAfterProcessValues.map((action: any) => (
                                 <div key={ action.value }
-                                     onClick={ () => field.onChange(action.value) }
+                                     onClick={ () => {
+                                         field.onChange(action.value);
+                                         setActionAfterProcess(action.value);
+                                     } }
                                      className={ `cursor-pointer border w-1/2 py-5 rounded-md text-(--text-primary)
                                                 ${ field.value === action.value ? "bg-(--bg-selected) border-(--border-primary)" : "border-(--border-secondary) hover:border-(--text-secondary)" }
                                                 text-center` }>
@@ -520,6 +525,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             value={ field.value }
                             id="folder_destination"
                             className="w-full mb-2"
+                            required={ actionAfterProcess === "move" }
                             disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_destination") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
@@ -663,6 +669,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     <div className='relative w-full'>
                                         <Select
                                             filter
+                                            clearable={ true }
                                             id="sender_custom_id"
                                             value={ field.value }
                                             label={ t("MAILCOLLECT.select_sender_custom_id") }
@@ -691,6 +698,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     <div className='relative w-full'>
                                         <Select
                                             filter
+                                            clearable={ true }
                                             id="copy_custom_id"
                                             value={ field.value }
                                             label={ t("MAILCOLLECT.select_copy_custom_id") }
@@ -719,8 +727,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     <div className='relative w-full'>
                                         <Select
                                             filter
-                                            id="recipient_custom_id"
+                                            clearable={ true }
                                             value={ field.value }
+                                            id="recipient_custom_id"
                                             label={ t("MAILCOLLECT.select_recipient_custom_id") }
                                             options={ customFields[selectedModule].map((custom: any) => ({
                                                 label: custom.label,

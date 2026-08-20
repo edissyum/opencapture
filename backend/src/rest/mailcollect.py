@@ -79,12 +79,10 @@ def update_process(process_id):
         {'id': 'copy_custom_id', 'type': int, 'mandatory': False},
         {'id': 'sender_custom_id', 'type': int, 'mandatory': False},
         {'id': 'ocr_attachments', 'type': bool, 'mandatory': False},
-        {'id': 'folder_destination', 'type': str, 'mandatory': True},
+        {'id': 'folder_destination', 'type': str, 'mandatory': False},
         {'id': 'recipient_custom_id', 'type': int, 'mandatory': False},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},
-        {'id': 'verifier_workflow_id', 'type': str, 'mandatory': False},
-        {'id': 'splitter_workflow_id', 'type': str, 'mandatory': False}
     ])
 
     if not check:
@@ -133,8 +131,6 @@ def create_process():
         {'id': 'folder_destination', 'type': str, 'mandatory': False},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},
-        {'id': 'verifier_workflow_id', 'type': str, 'mandatory': False},
-        {'id': 'splitter_workflow_id', 'type': str, 'mandatory': False}
     ])
 
     if not check:
