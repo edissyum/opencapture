@@ -34,6 +34,7 @@ from .classes.Spreadsheet import Spreadsheet
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 from .functions import get_custom_array, retrieve_config_from_custom_id, retrieve_custom_path
 
+
 def init_shared_from_custom_id(custom_id):
     custom_path = retrieve_custom_path(custom_id)
     if not custom_path:
@@ -47,6 +48,7 @@ def init_shared_from_custom_id(custom_id):
     shared.error_path = custom_path + '/data/error/'
     shared.upload_path = custom_path + '/instance/upload/'
     return True
+
 
 def create_database_class(custom_id):
     config_file = retrieve_config_from_custom_id(custom_id)
