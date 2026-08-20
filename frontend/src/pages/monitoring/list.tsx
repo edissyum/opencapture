@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { Activity, ChevronDown, Filter, Loader2, Package, RotateCw } from "lucide-react";
+import { Activity, ChevronDown, CircleCheckBig, Filter, Loader2, Package, RotateCw } from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
@@ -274,7 +274,7 @@ export function MonitoringList() {
                         <div className="p-4 flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
                             </div>
                             <ChevronDown

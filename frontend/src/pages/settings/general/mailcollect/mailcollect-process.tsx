@@ -32,7 +32,7 @@ import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import { useCustomFields } from "../../../../services/hooks/useCustomFields.tsx";
+import { useCustomFields } from "../../../../services/hooks/useCustomFields";
 
 export function MailCollectProcess({ process, workflows }: { process: any, workflows: any }) {
     const { post } = axiosApiCall();

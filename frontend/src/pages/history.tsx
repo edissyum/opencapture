@@ -18,7 +18,7 @@ import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { Activity, ChevronDown, Filter, Package } from "lucide-react";
+import { Activity, ChevronDown, Filter, Package, Package2, User } from "lucide-react";
 
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
@@ -168,7 +168,7 @@ export function HistoryList() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, user: !open.user }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <User className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('HISTORY.user') }</h3>
                             </div>
                             <ChevronDown
@@ -179,14 +179,13 @@ export function HistoryList() {
                         { open.user && (
                             <div className='p-4 pt-0'>
                                 <Select
-                                    
-                                    value={ selectedUser.toString() }
                                     id="folder_destination"
                                     className="w-full mb-2"
-                                    label={ t('HISTORY.user') }
+                                    value={ selectedUser.toString() }
+                                    placeholder={ t('HISTORY.user') }
                                     options={ listUsers.map((user: any) => ({
-                                        label: user.lastname + ' ' + user.firstname + ' (' + user.username + ')',
-                                        value: user.id.toString()
+                                        value: user.id.toString(),
+                                        label: user.lastname + ' ' + user.firstname + ' (' + user.username + ')'
                                     })) }
                                     onChange={ (value) => setSelectedUser(value.toString()) }
                                 />
@@ -229,7 +228,7 @@ export function HistoryList() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <Package2 className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('HISTORY.submodule') }</h3>
                             </div>
                             <ChevronDown
@@ -240,11 +239,10 @@ export function HistoryList() {
                         { open.submodule && (
                             <div className='p-4 pt-0'>
                                 <Select
-                                    
-                                    value={ selectedSubModule.toString() }
                                     id="folder_destination"
                                     className="w-full mb-2"
-                                    label={ t('HISTORY.submodule') }
+                                    value={ selectedSubModule.toString() }
+                                    placeholder={ t('HISTORY.submodule') }
                                     options={ listSubModules.map((submodule: any) => ({
                                         label: submodule.label,
                                         value: submodule.id.toString()

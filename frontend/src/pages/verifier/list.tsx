@@ -22,13 +22,12 @@ import {
     Briefcase,
     Building2,
     ChevronDown,
-    CircleCheckBig,
+    CircleCheckBig, Clock,
     Eye,
     FileText,
     Filter,
     LayoutGrid,
     LayoutTemplate,
-    Package,
     Paperclip,
     Rows3,
     Trash2
@@ -490,7 +489,7 @@ export function VerifierListPage() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <Clock className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
@@ -551,6 +550,34 @@ export function VerifierListPage() {
                         ) }
                     </div>
                     <div
+                        className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
+                            <div className="flex items-center gap-2">
+                                <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
+                            </div>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
+                        </div>
+
+                        { open.forms && (
+                            <div className='p-4 pt-0'>
+                                <Select
+                                    id="search_form"
+                                    className="w-full mb-2"
+                                    value={ selectedForm.toString() }
+                                    placeholder={ t('VERIFIER.search_form') }
+                                    options={ listForms.map((form: any) => ({
+                                        label: form.label,
+                                        value: form.id.toString()
+                                    })) }
+                                    onChange={ (value: any) => setSelectedForm(value.toString()) }
+                                />
+                            </div>
+                        ) }
+                    </div>
+                    <div
                         className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
@@ -574,35 +601,6 @@ export function VerifierListPage() {
                                     onChange={ (e) => {
                                         setSelectedCustomers(e.value);
                                     } }
-                                />
-                            </div>
-                        ) }
-                    </div>
-                    <div
-                        className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="p-4 cursor-pointer flex items-center justify-between"
-                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
-                            <div className="flex items-center gap-2">
-                                <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
-                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
-                            </div>
-                            <ChevronDown size={ 18 }
-                                         className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
-                        </div>
-
-                        { open.forms && (
-                            <div className='p-4 pt-0'>
-                                <Select
-
-                                    id="search_form"
-                                    className="w-full mb-2"
-                                    value={ selectedForm.toString() }
-                                    placeholder={ t('VERIFIER.search_form') }
-                                    options={ listForms.map((form: any) => ({
-                                        label: form.label,
-                                        value: form.id.toString()
-                                    })) }
-                                    onChange={ (value: any) => setSelectedForm(value.toString()) }
                                 />
                             </div>
                         ) }

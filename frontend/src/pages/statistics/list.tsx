@@ -17,13 +17,13 @@
 import { t } from "i18next";
 import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { ChevronDown, Filter, Package } from "lucide-react";
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
-
-import { statisticsFunctions } from "./functions";
+import { Calendar, ChartSpline, ChevronDown, Filter, Package } from "lucide-react";
 
 import { Button } from "../../components/Button";
 import { Select } from "../../components/Select";
+
+import { statisticsFunctions } from "./functions";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
@@ -168,6 +168,7 @@ export function StatisticsPage() {
     }
 
     const handleResetFilters = () => {
+        setSelectedYear(null);
         setSelectedModule(undefined);
         setSelectedStatisticId(undefined);
         setFilteredStatisticsOptions(statisticsOptions);
@@ -217,7 +218,7 @@ export function StatisticsPage() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, statistics: !open.statistics }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <ChartSpline className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.statistics') }</h3>
                             </div>
                             <ChevronDown size={ 18 } className={ `transition-transform ${ open.statistics && "rotate-180" }` }/>
@@ -242,7 +243,7 @@ export function StatisticsPage() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, year: !open.year }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <Calendar className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('STATISTICS.year_optionnal') }</h3>
                             </div>
                             <ChevronDown size={ 18 } className={ `transition-transform ${ open.year && "rotate-180" }` }/>
