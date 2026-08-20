@@ -21,7 +21,7 @@ import warnings
 from ... import app
 from werkzeug.security import check_password_hash
 from datetime import datetime, timezone, timedelta
-from ...tests import CUSTOM_ID, get_db, get_token
+from ...tests import CUSTOM_ID, get_db, get_token, get_secret_key
 
 
 class UserTest(unittest.TestCase):
@@ -116,7 +116,7 @@ class UserTest(unittest.TestCase):
             'iat': datetime.now(timezone.utc),
             'sub': str(user.json['id'])
         }
-        reset_token = jwt.encode(payload, app.config['SECRET_KEY'].replace("\n", ""), algorithm='HS512')
+        reset_token = jwt.encode(payload, get_secret_key(), algorithm='HS512')
         self.database.execute('UPDATE users SET reset_token = %s WHERE id = %s', (reset_token, user.json['id']))
         response = self.app.put(f'/{CUSTOM_ID}/ws/users/resetPassword',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
