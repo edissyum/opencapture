@@ -71,7 +71,7 @@ export function HistoryList() {
 
     const columns: any = [
         { id: 'history_module', field: 'history_module', header: t('MAILCOLLECT.module'), sortable: true, className: 'w-1/12' },
-        { id: 'history_submodule', field: 'history_submodule', header: t('HISTORY.submodule'), sortable: true, className: 'w-3/24' },
+        { id: 'history_submodule', field: 'history_submodule', header: t('HISTORY.submodule'), sortable: true, className: 'w-3/24 pl-0!' },
         { id: 'history_date', field: 'date', header: t('HISTORY.event_date'), sortable: true, className: 'w-3/24' },
         { id: 'user_info', field: 'user_info', header: t('HISTORY.user_info'), className: 'w-2/12' },
         {

@@ -85,7 +85,7 @@ export function MonitoringList() {
             id: 'creation_date',
             field: 'creation_date',
             header: t('MONITORING.creation_date'),
-            className: 'w-3/24'
+            className: 'w-3/24 pl-0!'
         },
         {
             id: 'end_date',
