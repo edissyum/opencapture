@@ -138,6 +138,10 @@
     --text-secondary: theme(colors.gray.400);
 }
 
+::selection {
+    @apply bg-(--color-primary)/30;
+}
+
 a {
     @apply cursor-pointer;
 }
