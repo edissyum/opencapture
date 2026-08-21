@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { CSS } from "@dnd-kit/utilities";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import {
@@ -47,16 +47,16 @@ import { showToast } from "../../ToastProvider";
 import { ImportSpreadSheet } from "../ImportSpreadSheet";
 
 function DoctypeNode({
-                          node,
-                          depth,
-                          editor,
-                          expandedKeys,
-                          selectedKey,
-                          renderLabel,
-                          onToggle,
-                          onNodeClick,
-                          onNodeDoubleClick
-                      }: {
+    node,
+    depth,
+    editor,
+    expandedKeys,
+    selectedKey,
+    renderLabel,
+    onToggle,
+    onNodeClick,
+    onNodeDoubleClick
+}: {
     node: DoctypeTreeNode;
     depth: number;
     editor?: boolean;

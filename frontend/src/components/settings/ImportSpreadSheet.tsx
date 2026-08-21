@@ -42,8 +42,8 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
     const [rows, setRows] = useState<string[][]>([]);
     const [headers, setHeaders] = useState<string[]>([]);
 
-    const [skipHeader, setSkipHeader] = useState<boolean>(true);
     const [parsing, setParsing] = useState<boolean>(false);
+    const [skipHeader, setSkipHeader] = useState<boolean>(true);
 
     useEffect(() => {
         if (!sheet) return;
