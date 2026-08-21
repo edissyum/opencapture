@@ -139,7 +139,7 @@
 }
 
 ::selection {
-    @apply bg-(--color-primary)/30;
+    @apply bg-(--color-primary)/20;
 }
 
 a {
