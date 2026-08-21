@@ -27,12 +27,13 @@ from ldap3 import Server, ALL
 from flask_babel import gettext
 from ..controllers import privileges
 from ..helpers import get_context_var
+from ..functions import get_secret_key
 from ldap3.core.exceptions import LDAPException
 from ldap3.utils.conv import escape_filter_chars
 from datetime import datetime, timezone, timedelta
 from ..models import auth, user, roles, monitoring, history
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import request, g as current_context, jsonify, current_app, session
+from flask import request, g as current_context, jsonify, session
 
 
 def handle_login(data):
@@ -121,7 +122,7 @@ def get_user(user_info):
 def refresh(token):
     user_id = None
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms="HS512")
+        payload = jwt.decode(token, get_secret_key(request), algorithms="HS512")
         user_id = payload['sub']
 
         user_info = user.get_user_by_id({'select': ['refresh_token'], 'user_id': user_id})
@@ -167,7 +168,7 @@ def check_connection():
 
 def check_token(token):
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms="HS512")
+        payload = jwt.decode(token, get_secret_key(request), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
@@ -188,7 +189,7 @@ def generate_token(user_id, days_before_exp):
         }
         return jwt.encode(
             payload,
-            current_app.config['SECRET_KEY'],
+            get_secret_key(request),
             algorithm='HS512'
         ), 200
     except (Exception,) as _e:
@@ -214,7 +215,7 @@ def encode_auth_token(user_id, refresh_token=False):
 
         return jwt.encode(
             payload,
-            current_app.config['SECRET_KEY'],
+            get_secret_key(request),
             algorithm='HS512'
         ), minutes_before_exp
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
@@ -263,7 +264,7 @@ def generate_unique_url_token(token, workflow_id, module):
         }
         return jwt.encode(
             payload,
-            current_app.config['SECRET_KEY'],
+            get_secret_key(request),
             algorithm='HS512'
         )
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
@@ -283,7 +284,7 @@ def generate_reset_token(user_id):
         }
         return jwt.encode(
             payload,
-            current_app.config['SECRET_KEY'],
+            get_secret_key(request),
             algorithm='HS512'
         )
     except (Exception,) as _e:
@@ -292,7 +293,7 @@ def generate_reset_token(user_id):
 
 def decode_reset_token(token):
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+        decoded_token = jwt.decode(str(token), get_secret_key(request), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
@@ -306,7 +307,7 @@ def decode_reset_token(token):
 
 def decode_unique_url_token(token):
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+        decoded_token = jwt.decode(str(token), get_secret_key(request), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
@@ -361,7 +362,7 @@ def logout(user_id):
 
 
 def login(username, password, lang, method='default'):
-    if 'SECRET_KEY' not in current_app.config or not current_app.config['SECRET_KEY']:
+    if not get_secret_key(request):
         return {
             "errors": gettext('LOGIN_ERROR'),
             "message": 'missing_secret_key'
@@ -417,7 +418,7 @@ def login_with_token(token, lang):
     session['lang'] = lang
 
     try:
-        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+        decoded_token = jwt.decode(str(token), get_secret_key(request), algorithms="HS512")
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
@@ -481,7 +482,7 @@ def token_required(view):
             if 'Bearer' in request.headers['Authorization']:
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
                 try:
-                    token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+                    token = jwt.decode(str(token), get_secret_key(request), algorithms="HS512")
                     if 'refresh' in token:
                         allowed_refresh_url = ['/ws/auth/login/refresh', '/ws/auth/logout']
                         allow_refresh = [url for url in allowed_refresh_url if url in request.url]
