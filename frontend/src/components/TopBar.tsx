@@ -70,18 +70,17 @@ export default function TopBar() {
             className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <Select
-                    id="module-select"
+                    id="module-TopBar"
                     searchable={ false }
                     value={ selected || '' }
-                    className="module-TopBar"
                     options={ moduleOptions }
                     onChange={ (value) => value && handleSelect(value) }
                     leftSection={ selectedOption && (
-                        <img src={ selectedOption.img } alt="" className="object-contain"/>
+                        <img src={ selectedOption.img } alt="" className="object-contain select-none"/>
                     ) }
                     renderOption={ ({ option }: { option: any }) => (
                         <div className="flex items-center gap-2">
-                            <img src={ option.img } alt={ option.label } className="size-8 object-contain"/>
+                            <img src={ option.img } alt={ option.label } className="size-8 object-contain select-none"/>
                             <span>{ option.label }</span>
                         </div>
                     ) }

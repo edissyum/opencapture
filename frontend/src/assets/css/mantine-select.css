@@ -47,7 +47,7 @@
     }
 }
 
-.module-TopBar {
+#module-TopBar {
     @apply w-64;
 
     & .mantine-Select-section {
