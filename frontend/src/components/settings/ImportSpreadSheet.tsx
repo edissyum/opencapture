@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 
 import { Button } from "../Button";
 import { Select } from "../Select";
+import { Loader } from "../loader/Loader";
 import { InputSwitch } from "../InputSwitch";
 
 import UploadDropzone from "../upload/Dropzone";
@@ -42,6 +43,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
     const [headers, setHeaders] = useState<string[]>([]);
 
     const [skipHeader, setSkipHeader] = useState<boolean>(true);
+    const [parsing, setParsing] = useState<boolean>(false);
 
     useEffect(() => {
         if (!sheet) return;
@@ -53,12 +55,17 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
         if (!file) return;
 
         setFile(file);
+        setParsing(true);
 
-        const text = await file.text();
-        const { data } = Papa.parse<string[]>(text, { skipEmptyLines: true });
+        try {
+            const text = await file.text();
+            const { data } = Papa.parse<string[]>(text, { skipEmptyLines: true });
 
-        setSheet(data);
-        loadDatas(data);
+            setSheet(data);
+            loadDatas(data);
+        } finally {
+            setParsing(false);
+        }
     }
 
     const loadDatas = (data: string[][]) => {
@@ -123,7 +130,13 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
                             </div>
                         </div>
 
-                        { rows.length > 0 && (
+                        { parsing && (
+                            <div className='h-full min-h-0 flex flex-col items-center justify-center gap-2 p-4'>
+                                <Loader/>
+                            </div>
+                        ) }
+
+                        { !parsing && rows.length > 0 && (
                             <div className='h-full min-h-0 flex flex-col overflow-y-auto p-4'>
                                 <div className='flex pb-4 gap-8'>
                                     { editedColumns.map((col, idx) => (
@@ -160,7 +173,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
                         <Button variant={ "no_bg" } onClick={ () => onClose() }>
                             { t('GLOBAL.cancel') }
                         </Button>
-                        <Button disabled={ rows.length == 0 || headers.length == 0 || loading }
+                        <Button disabled={ rows.length == 0 || headers.length == 0 || loading || parsing }
                                 onClick={ handleValidate }>
                             { loading ? t('GLOBAL.importing') : t('GLOBAL.import') }
                         </Button>
