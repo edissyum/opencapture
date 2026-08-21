@@ -73,6 +73,7 @@ export default function TopBar() {
                     id="module-TopBar"
                     searchable={ false }
                     value={ selected || '' }
+                    className="module-TopBar"
                     options={ moduleOptions }
                     onChange={ (value) => value && handleSelect(value) }
                     leftSection={ selectedOption && (
