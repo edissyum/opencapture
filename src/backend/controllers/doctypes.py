@@ -272,8 +272,13 @@ def csv_preview(files):
         rows = []
         for file in files:
             _f = files[file]
+
+            sample_bytes = _f.stream.read(2048)
+            sample_text = sample_bytes.decode("utf-8", errors="ignore")
+            delimiter = csv.Sniffer().sniff(sample_text).delimiter
+
             stream = codecs.iterdecode(_f.stream, 'utf-8')
-            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel, delimiter=delimiter)):
                 if row:
                     rows.append(row)
                 if cpt > 10:

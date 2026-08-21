@@ -705,8 +705,13 @@ def delete_supplier(supplier_id):
 
 def import_suppliers(args):
     for file in args['files']:
+        sample_bytes = args['files'][file].stream.read(2048)
+        sample_text = sample_bytes.decode("utf-8", errors="ignore")
+        delimiter = csv.Sniffer().sniff(sample_text).delimiter
+
+        args['files'][file].stream.seek(0)
         stream = codecs.iterdecode(args['files'][file].stream, 'utf-8')
-        for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+        for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel, delimiter=delimiter)):
             if args['skip_header'] and cpt == 0:
                 continue
             footer_coherence = row[args['selected_columns'].index('footer_coherence')]
