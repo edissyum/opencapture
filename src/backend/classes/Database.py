@@ -187,7 +187,8 @@ class Database:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])
                 return True, ''
-            except (psycopg.OperationalError, psycopg.errors.InvalidTextRepresentation) as pgsql_error:
+            except (psycopg.OperationalError, psycopg.errors.InvalidTextRepresentation,
+                    psycopg.errors.UniqueViolation) as pgsql_error:
                 self.log.error('Error while querying UPDATE : ' + str(pgsql_error), False)
                 return False, pgsql_error
 
