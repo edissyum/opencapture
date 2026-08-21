@@ -69,7 +69,7 @@ def process(args):
     if result_batches == [[]] :
         args['splitter'].log.error("The document is not valid because it contains no usable pages.")
         return 0
-    else :
+    else:
         process_res = args['splitter'].create_batches(args, file, original_file)
         return process_res
 
