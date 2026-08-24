@@ -32,8 +32,9 @@ export function HistoryList() {
 
     const [history, setHistory] = useState<any[]>([]);
     const [totalHistory, setTotalHistory] = useState(0);
-    const [displayFilters, setDisplayFilters] = useState(false);
     const [loadingHistory, setLoadingHistory] = useState(false);
+    const [displayFilters, setDisplayFilters] = useState(false);
+    const [filtersChanged, setFiltersChanged] = useState(false);
 
     const [open, setOpen] = useState({
         user: true,
@@ -70,7 +71,13 @@ export function HistoryList() {
     );
 
     const columns: any = [
-        { id: 'history_module', field: 'history_module', header: t('MAILCOLLECT.module'), sortable: true, className: 'w-1/12' },
+        {
+            id: 'history_module',
+            field: 'history_module',
+            header: t('MAILCOLLECT.module'),
+            sortable: true,
+            className: `w-1/12 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
+        },
         { id: 'history_submodule', field: 'history_submodule', header: t('HISTORY.submodule'), sortable: true, className: 'w-3/24 pl-0!' },
         { id: 'history_date', field: 'date', header: t('HISTORY.event_date'), sortable: true, className: 'w-3/24' },
         { id: 'user_info', field: 'user_info', header: t('HISTORY.user_info'), className: 'w-2/12' },
@@ -151,6 +158,12 @@ export function HistoryList() {
         setSelectedModule('');
         setSelectedSubModule('');
     }
+
+    // Check if filters have changed
+    useEffect(() => {
+        const isFiltersChanged = selectedModule !== '' || selectedSubModule !== '' || selectedUser !== '';
+        setFiltersChanged(isFiltersChanged);
+    }, [selectedModule, selectedSubModule, selectedUser]);
 
     return (
         <div className='flex h-full bg-(--bg-secondary) w-full overflow-hidden'>
@@ -257,8 +270,15 @@ export function HistoryList() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
-                            onClick={ () => setDisplayFilters(!displayFilters) } selected={ displayFilters }>
+                    <Button
+                        variant='bg_white_rounded'
+                        icon={
+                            filtersChanged && !displayFilters ?
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter size={ 14 }/>
+                        }
+                        onClick={ () => setDisplayFilters(!displayFilters) }
+                        selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

@@ -35,9 +35,11 @@ export function MonitoringList() {
     const [processes, setProcesses] = useState<any[]>([]);
     const [totalProcesses, setTotalProcesses] = useState(0);
     const [searchFilename, setSearchFilename] = useState('');
-    const [displayFilters, setDisplayFilters] = useState(false);
     const [loadingProcesses, setLoadingProcesses] = useState(false);
     const [debouncedSearchFilename, setDebouncedSearchFilename] = useState('');
+
+    const [filtersChanged, setFiltersChanged] = useState(false);
+    const [displayFilters, setDisplayFilters] = useState(false);
 
     const [open, setOpen] = useState({
         module: true,
@@ -72,6 +74,12 @@ export function MonitoringList() {
     );
 
     const columns: any = [
+        {
+            id: 'id',
+            field: 'id',
+            sortable: true,
+            className: `w-1/20 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
+        },
         {
             id: 'module',
             field: 'module',
@@ -210,6 +218,12 @@ export function MonitoringList() {
         setSelectedStatus('');
     }
 
+    // Check if filters have changed
+    useEffect(() => {
+        const isFiltersChanged = selectedModule !== '' || selectedStatus !== '';
+        setFiltersChanged(isFiltersChanged);
+    }, [selectedModule, selectedStatus]);
+
     const handleRetryProcess = async (id: string) => {
         if (!id) return;
 
@@ -307,8 +321,15 @@ export function MonitoringList() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
-                            onClick={ () => setDisplayFilters(!displayFilters) } selected={ displayFilters }>
+                    <Button
+                        variant='bg_white_rounded'
+                        icon={
+                            filtersChanged && !displayFilters ?
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter size={ 14 }/>
+                        }
+                        onClick={ () => setDisplayFilters(!displayFilters) }
+                        selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

@@ -475,10 +475,12 @@ export function VerifierListPage() {
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full shrink-0 transition-all border-r-2 border-(--border-secondary) pb-16
                             ${ displayFilters ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
+                <div
+                    className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
-                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
-                          onClick={ handleResetFilters }>
+                    <span
+                        className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
+                        onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
@@ -656,13 +658,15 @@ export function VerifierListPage() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={
-                        filtersChanged && !displayFilters ?
-                            <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
-                            <Filter size={ 14 }/>
-                    }
-                            onClick={ handleDisplayFilters }
-                            selected={ displayFilters }>
+                    <Button
+                        variant='bg_white_rounded'
+                        icon={
+                            filtersChanged && !displayFilters ?
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter size={ 14 }/>
+                        }
+                        onClick={ handleDisplayFilters }
+                        selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>
