@@ -31,7 +31,7 @@ export function SettingsVerifierFormsDetails({
     isSubmitting,
     formSettings,
     setFormSettings,
-submitLabelLoading,
+    submitLabelLoading,
 }: {
     formSettings: any;
     submitLabel: string;
@@ -119,7 +119,7 @@ submitLabelLoading,
                 <div className='flex items-center gap-2'>
                     <InputSwitch
                         id="allow_learning"
-                        checked={ formSettings.allow_learning }
+                        checked={ formSettings.settings.allow_learning }
                         label={ t('FORMS.allow_learning') }
                         onChange={ (value) => setFormSettings({
                             ...formSettings,

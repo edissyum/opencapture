@@ -298,6 +298,7 @@ def update_docserver(docserver_id):
 
 
 @bp.route('config/gitInfo', methods=['GET'])
+@auth.token_required
 def get_git_info():
     return make_response({
         'git_latest': config.get_last_git_version()
@@ -305,6 +306,7 @@ def get_git_info():
 
 
 @bp.route('config/packages', methods=['GET'])
+@auth.token_required
 def get_packages():
     return make_response({
         'packages': config.get_packages()

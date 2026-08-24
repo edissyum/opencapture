@@ -48,7 +48,8 @@
 }
 
 .module-TopBar {
-    @apply w-64;
+    @apply w-56;
+    @apply flex;
 
     & .mantine-Select-section {
         @apply ml-3;
@@ -56,5 +57,6 @@
 
     & .mantine-Select-input {
         @apply ps-14;
+        @apply h-11.5;
     }
 }

@@ -79,7 +79,7 @@ class VerifierTest(unittest.TestCase):
         )
 
         return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload', content_type='multipart/form-data',
-                             data={"file": my_file, "workflowId": 'default_workflow'},
+                             data={"file": my_file, "workflowId": 1},
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
     def test_successful_upload_file(self):

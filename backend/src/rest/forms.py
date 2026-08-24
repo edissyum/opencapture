@@ -157,26 +157,6 @@ def update_form_label(form_id, category_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/updateDisplay/<int:form_id>', methods=['PUT'])
-@auth.token_required
-def update_form_display(form_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'verifier_settings']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/updateDisplay/{form_id}'}), 403
-
-    check, message = rest_validator(request.json['args'], [
-        {'id': 'subtitles', 'type': list, 'mandatory': True}
-    ])
-
-    if not check:
-        return make_response({
-            "errors": gettext('BAD_REQUEST'),
-            "message": message
-        }, 400)
-
-    res = forms.update_form(form_id, {"settings": {"display": request.json['args']}}, 'verifier')
-    return make_response(jsonify(res[0])), res[1]
-
-
 @bp.route('forms/updateUniqueUrl/<int:form_id>', methods=['PUT'])
 @auth.token_required
 def update_form_unique_url(form_id):

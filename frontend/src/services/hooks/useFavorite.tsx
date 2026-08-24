@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "./useUser";
 import { axiosApiCall } from "./axiosApiCall";
 
-import { showToast } from "../../components/ToastProvider.tsx";
+import { showToast } from "../../components/ToastProvider";
 
 type Favorite = {
     id?: string;

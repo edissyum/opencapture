@@ -28,9 +28,9 @@ from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
 from .rest._swagger import definitions, parameters
-from flask import request, g as current_context, Flask, session, jsonify
+from flask import request, g as current_context, Flask, session, jsonify, has_request_context
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_custom_path, is_custom_exists_from_url, \
-    retrieve_custom_id_from_url
+    retrieve_custom_id_from_url, get_secret_key
 from .rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
     smtp, monitoring, workflow, coog, opencaptureformem, attachments, opencrm
@@ -58,7 +58,7 @@ class Middleware:
                 path = retrieve_custom_path(custom_id.replace('/', ''))
                 if os.path.isfile(path + '/config/secret_key'):
                     with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
-                        app.config['SECRET_KEY'] = secret_file.read().replace('\n', '')
+                        environ['oc.secret_key'] = secret_file.read().replace('\n', '')
 
         if splitted_request[0] != '/':
             custom_id = splitted_request[0]
@@ -68,13 +68,13 @@ class Middleware:
                 path = retrieve_custom_path(custom_id.replace('/', ''))
                 if os.path.isfile(path + '/config/secret_key'):
                     with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
-                        app.config['SECRET_KEY'] = secret_file.read().replace('\n', '')
+                        environ['oc.secret_key'] = secret_file.read().replace('\n', '')
 
         return self.middleware_app(environ, start_response)
 
 
 def get_locale():
-    if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
+    if not has_request_context() or not get_secret_key(request):
         return 'fr'
 
     if 'lang' not in session:
@@ -93,6 +93,10 @@ def get_locale():
 app = Flask(__name__)
 app.wsgi_app = Middleware(app.wsgi_app)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_host=1, x_port=1)
+
+# Used only to sign Flask's own session cookie (e.g. the selected locale) - unrelated to the
+# per-tenant JWT secret, which is resolved per-request by the Middleware (see get_secret_key()).
+app.config['SECRET_KEY'] = os.urandom(32)
 
 swagger_template = {
     "info": {
@@ -121,7 +125,7 @@ limiter.init_app(app)
 @app.teardown_appcontext
 def close_database(_exception):
     database = getattr(current_context, 'database', None)
-    if database is not None:
+    if database:
         database.close()
 
 @app.errorhandler(Exception)
@@ -137,7 +141,7 @@ def handle_postgresql_exception(error):
     if isinstance(error, (psycopg.OperationalError, psycopg.ProgrammingError)):
         return jsonify({
             "errors": "DATABASE_CONNECTION_ERROR",
-            "message": "Database connection error, please check your configuration and database status."
+            "message": f"Database connection error, please check your configuration and database status : {str(error)}"
         }), 500
     else:
         pass

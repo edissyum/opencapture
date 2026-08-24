@@ -22,13 +22,12 @@ import {
     Briefcase,
     Building2,
     ChevronDown,
-    CircleCheckBig,
+    CircleCheckBig, Clock,
     Eye,
     FileText,
     Filter,
     LayoutGrid,
     LayoutTemplate,
-    Package,
     Paperclip,
     Rows3,
     Trash2
@@ -476,7 +475,8 @@ export function VerifierListPage() {
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full shrink-0 transition-all border-r-2 border-(--border-secondary) pb-16
                             ${ displayFilters ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
+                <div
+                    className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span
                         className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
@@ -490,7 +490,7 @@ export function VerifierListPage() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <Clock className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
@@ -551,6 +551,34 @@ export function VerifierListPage() {
                         ) }
                     </div>
                     <div
+                        className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
+                            <div className="flex items-center gap-2">
+                                <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
+                            </div>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
+                        </div>
+
+                        { open.forms && (
+                            <div className='p-4 pt-0'>
+                                <Select
+                                    id="search_form"
+                                    className="w-full mb-2"
+                                    value={ selectedForm.toString() }
+                                    placeholder={ t('VERIFIER.search_form') }
+                                    options={ listForms.map((form: any) => ({
+                                        label: form.label,
+                                        value: form.id.toString()
+                                    })) }
+                                    onChange={ (value: any) => setSelectedForm(value.toString()) }
+                                />
+                            </div>
+                        ) }
+                    </div>
+                    <div
                         className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
@@ -574,35 +602,6 @@ export function VerifierListPage() {
                                     onChange={ (e) => {
                                         setSelectedCustomers(e.value);
                                     } }
-                                />
-                            </div>
-                        ) }
-                    </div>
-                    <div
-                        className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="p-4 cursor-pointer flex items-center justify-between"
-                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
-                            <div className="flex items-center gap-2">
-                                <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
-                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
-                            </div>
-                            <ChevronDown size={ 18 }
-                                         className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
-                        </div>
-
-                        { open.forms && (
-                            <div className='p-4 pt-0'>
-                                <Select
-
-                                    id="search_form"
-                                    className="w-full mb-2"
-                                    value={ selectedForm.toString() }
-                                    placeholder={ t('VERIFIER.search_form') }
-                                    options={ listForms.map((form: any) => ({
-                                        label: form.label,
-                                        value: form.id.toString()
-                                    })) }
-                                    onChange={ (value: any) => setSelectedForm(value.toString()) }
                                 />
                             </div>
                         ) }
@@ -659,13 +658,15 @@ export function VerifierListPage() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={
-                        filtersChanged && !displayFilters ?
-                            <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
-                            <Filter size={ 14 }/>
-                    }
-                            onClick={ handleDisplayFilters }
-                            selected={ displayFilters }>
+                    <Button
+                        variant='bg_white_rounded'
+                        icon={
+                            filtersChanged && !displayFilters ?
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter size={ 14 }/>
+                        }
+                        onClick={ handleDisplayFilters }
+                        selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

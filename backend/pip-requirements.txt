@@ -7,7 +7,7 @@ msal==1.37.0
 ldap3==2.9.1
 pyocr==0.8.5
 flask==3.1.3
-pypdf==6.16.1
+pypdf==6.16.2
 pyjwt==2.13.0
 deskew==1.6.1
 pyzbar==0.1.9
@@ -47,12 +47,12 @@ python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.121
+ultralytics==8.4.127
 python-magic==0.4.27
-transformers==5.15.0
+transformers==5.15.1
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0
-pypdf[crypto]==6.16.1
+pypdf[crypto]==6.16.2
 qwen-vl-utils==0.0.14
 opencv-python==5.0.0.93
 --extra-index-url https://download.pytorch.org/whl/cpu

@@ -251,9 +251,9 @@ CREATE TABLE "documents" (
     "datas"             JSONB               DEFAULT '{}',
     FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE SET NULL,
     FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE SET NULL,
-    FOREIGN KEY (docserver_id) REFERENCES docservers(id) ON DELETE SET NULL,
     FOREIGN KEY (supplier_id) REFERENCES accounts_supplier(id) ON DELETE SET NULL,
-    FOREIGN KEY (customer_id) REFERENCES accounts_customer(id) ON DELETE SET NULL
+    FOREIGN KEY (customer_id) REFERENCES accounts_customer(id) ON DELETE SET NULL,
+    FOREIGN KEY (docserver_id) REFERENCES docservers(docserver_id) ON DELETE SET NULL
 );
 
 CREATE TABLE "history" (
@@ -392,11 +392,11 @@ CREATE TABLE "mailcollect" (
     "folder_to_crawl"               VARCHAR(255) NOT NULL,
     "folder_destination"            VARCHAR(255) NOT NULL,
     "action_after_process"          VARCHAR(255) NOT NULL,
-    "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
-    "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False,
     "sender_custom_id"              INTEGER      DEFAULT NULL,
     "copy_custom_id"                INTEGER      DEFAULT NULL,
     "recipient_custom_id"           INTEGER      DEFAULT NULL,
+    "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
+    "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False,
     FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE SET NULL,
     FOREIGN KEY (copy_custom_id) REFERENCES custom_fields(id) ON DELETE SET NULL,
     FOREIGN KEY (sender_custom_id) REFERENCES custom_fields(id) ON DELETE SET NULL,
@@ -448,8 +448,8 @@ CREATE TABLE "attachments" (
     "status"            VARCHAR(20)     DEFAULT 'OK',
     "creation_date"     TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
-    FOREIGN KEY (docserver_id) REFERENCES docservers(id) ON DELETE SET NULL,
-    FOREIGN KEY (batch_id) REFERENCES splitter_batches(id) ON DELETE CASCADE
+    FOREIGN KEY (batch_id) REFERENCES splitter_batches(id) ON DELETE CASCADE,
+    FOREIGN KEY (docserver_id) REFERENCES docservers(docserver_id) ON DELETE SET NULL
 );
 
 CREATE TABLE "ai_llm" (

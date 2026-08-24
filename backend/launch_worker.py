@@ -41,12 +41,21 @@ with app.app_context():
     _vars = create_classes_from_custom_id(args['custom_id'])
     database = _vars[0]
 
-    workflow_id = database.select({
-        'select': ['id'],
-        'table': ['workflows'],
-        'where': ['module = %s', 'workflow_id = %s'],
-        'values': ['verifier', args['workflow_id']]
-    })
+    try:
+        args['workflow_id'] = int(args['workflow_id'])
+    except ValueError:
+        pass
+
+    if not isinstance(args['workflow_id'], int):
+        workflow_id = database.select({
+            'select': ['id'],
+            'table': ['workflows'],
+            'where': ['module = %s', 'workflow_id = %s'],
+            'data': ['verifier', args['workflow_id']]
+        })
+    else:
+        workflow_id = [{'id': args['workflow_id']}]
+
     if not workflow_id:
         sys.exit('Workflow not found')
 

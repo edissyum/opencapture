@@ -34,6 +34,7 @@ export function Paginator({ first, rows, totalRecords, rowsPerPageOptions, onCha
             <div className='w-16'>
                 <Select
                     id="rowsPerPage"
+                    searchable={ false }
                     value={ String(rows) }
                     options={ rowsPerPageOptions }
                     onChange={ (value) => {

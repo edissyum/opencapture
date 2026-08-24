@@ -677,3 +677,6 @@ WHERE ds.docserver_id = 'SPLITTER_THUMB' AND a.batch_id IS NOT NULL AND a.thumbn
 ALTER TABLE mailcollect ADD COLUMN "copy_custom_id" INTEGER DEFAULT NULL;
 ALTER TABLE mailcollect ADD COLUMN "sender_custom_id" INTEGER DEFAULT NULL;
 ALTER TABLE mailcollect ADD COLUMN "recipient_custom_id" INTEGER DEFAULT NULL;
+
+-- Nettoyage des paramètres non utilisés dans les formulaires
+UPDATE form_models SET settings = settings - 'display' WHERE settings ? 'display';
