@@ -67,7 +67,7 @@ export default function TopBar() {
 
     return (
         <header
-            className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b border-(--border-secondary)">
+            className="w-full flex shrink-0 items-center justify-between px-6 py-4 bg-(--bg-primary) border-b border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <Select
                     id="module-TopBar"
