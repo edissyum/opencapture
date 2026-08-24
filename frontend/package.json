@@ -41,7 +41,7 @@
         "dompurify": "^3.4.14",
         "fs-extra": "^11.4.0",
         "i18next": "^26.4.0",
-        "papaparse": "^5.6.0",
+        "papaparse": "^5.7.0",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
         "react-dropzone": "^20.1.1",
