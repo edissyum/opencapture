@@ -48,7 +48,7 @@
 }
 
 .module-TopBar {
-    @apply w-64;
+    @apply w-56;
 
     & .mantine-Select-section {
         @apply ml-3;

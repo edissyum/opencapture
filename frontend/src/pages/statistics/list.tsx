@@ -178,7 +178,7 @@ export function StatisticsPage() {
         <div className="flex h-full w-full overflow-hidden bg-(--bg-secondary)">
             <div className={ `h-full shrink-0 transition-all border-r border-(--border-secondary)
                             ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
+                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
                           onClick={ handleResetFilters }>
