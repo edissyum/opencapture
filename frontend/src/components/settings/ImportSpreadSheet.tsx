@@ -32,7 +32,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
     columns: string[],
     loading?: boolean,
     onClose: () => void,
-    onValidate: (formData: any) => void
+    onValidate: (formData: FormData) => void
 }) {
     const [editedColumns, setEditedColumns] = useState<string[]>(columns);
 
@@ -70,9 +70,8 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
 
     const loadDatas = (data: string[][]) => {
         const formatted = data.map((row) => row.map((cell) => (
-            cell === '' || cell === undefined || cell === null
-                ? <div className='text-(--text-secondary)'>{ t('GLOBAL.no_data') }</div>
-                : cell
+            cell === '' || cell === undefined || cell === null ?
+                <div className='text-(--text-secondary)'>{ t('GLOBAL.no_data') }</div> : cell
         ))) as string[][];
 
         setHeaders(formatted[0] as string[]);

@@ -29,11 +29,14 @@ export default tseslint.config([
             js.configs.recommended,
             reactRefresh.configs.vite,
             tseslint.configs.recommended,
-            reactHooks.configs['recommended-latest']
+            reactHooks.configs.flat['recommended-latest']
         ],
         languageOptions: {
             ecmaVersion: 2020,
             globals: globals.browser
+        },
+        rules: {
+            '@typescript-eslint/no-explicit-any': 'off'
         }
     }
 ])

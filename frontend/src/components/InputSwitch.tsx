@@ -30,7 +30,7 @@ export function InputSwitch({ id, label, checked, disabled, onChange }: {
         onChange(event.target.checked);
     }
 
-    return(
+    return (
         <Switch
             id={ id }
             key={ id }
