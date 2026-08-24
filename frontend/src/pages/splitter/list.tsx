@@ -649,17 +649,18 @@ export function SplitterListPage() {
                             { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
                         </span>
                     </span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10' autoFocus
-                           value={ searchTerm } placeholder={ t('GLOBAL.search') } onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
+                           autoFocus value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                           onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
                               onClick={ () => setView('list') }
-                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md border` }>
                             <Rows3 size={ 20 }/>
                         </span>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
                               onClick={ () => setView('grid') }
-                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md border` }>
                             <LayoutGrid size={ 20 }/>
                         </span>
                     </span>
