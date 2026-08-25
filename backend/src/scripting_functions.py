@@ -27,7 +27,7 @@ from flask_babel import gettext
 from .main import launch, create_classes_from_custom_id
 
 
-def check_code(code, docserver_path, input_path):
+def check_code(code, input_path, module, share_path):
     for line in code.split('\n'):
         if line:
             not_allowed = ['import subprocess', 'from subprocess', ', subprocess', ',subprocess', 'sys.modules',
@@ -50,9 +50,10 @@ def check_code(code, docserver_path, input_path):
 
                         if path:
                             current_dir = os.getcwd()
+                            share_path = f'{share_path}/export/{module}'
                             path_to_access = re.sub(r'(/){2,}', '/', path)
-                            docserver_path = re.sub(r'(/){2,}', '/', docserver_path)
-                            if not path_to_access.startswith(docserver_path) and not path_to_access.startswith(input_path):
+                            share_path = re.sub(r'(/){2,}', '/', share_path)
+                            if not path_to_access.startswith(share_path) and not path_to_access.startswith(input_path):
                                 return False, line
 
                             path_to_access = os.path.dirname(path_to_access)
@@ -62,7 +63,7 @@ def check_code(code, docserver_path, input_path):
                                 return False, line
                             new_dir = os.getcwd() + '/'
 
-                            if docserver_path not in new_dir and input_path not in new_dir:
+                            if share_path not in new_dir and input_path not in new_dir:
                                 try:
                                     os.chdir(current_dir)
                                 except FileNotFoundError:
@@ -166,8 +167,8 @@ def execute_output_splitter(args):
 def launch_script_verifier(workflow_settings, docservers, step, log, file, database, args, config, files, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
-        check_res, message = check_code(script, docservers['VERIFIER_SHARE'],
-                                        workflow_settings['input']['input_folder'])
+        check_res, message = check_code(script, workflow_settings['input']['input_folder'],
+                                        'verifier', docservers['SHARE_PATH'])
 
         if not check_res:
             log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
@@ -229,8 +230,8 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
 def launch_script_splitter(workflow_settings, docservers, step, log, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
-        check_res, message = check_code(script, docservers['SPLITTER_SHARE'],
-                                        workflow_settings['input']['input_folder'])
+        check_res, message = check_code(script, workflow_settings['input']['input_folder'],
+                                        'splitter', docservers['SHARE_PATH'])
 
         if not check_res:
             log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +

@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { Activity, ChevronDown, Filter, Loader2, Package, RotateCw } from "lucide-react";
+import { Activity, ChevronDown, CircleCheckBig, Filter, Loader2, Package, RotateCw } from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
@@ -35,9 +35,11 @@ export function MonitoringList() {
     const [processes, setProcesses] = useState<any[]>([]);
     const [totalProcesses, setTotalProcesses] = useState(0);
     const [searchFilename, setSearchFilename] = useState('');
-    const [displayFilters, setDisplayFilters] = useState(false);
     const [loadingProcesses, setLoadingProcesses] = useState(false);
     const [debouncedSearchFilename, setDebouncedSearchFilename] = useState('');
+
+    const [filtersChanged, setFiltersChanged] = useState(false);
+    const [displayFilters, setDisplayFilters] = useState(false);
 
     const [open, setOpen] = useState({
         module: true,
@@ -73,6 +75,12 @@ export function MonitoringList() {
 
     const columns: any = [
         {
+            id: 'id',
+            field: 'id',
+            sortable: true,
+            className: `w-1/20 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
+        },
+        {
             id: 'module',
             field: 'module',
             className: 'w-1/12',
@@ -85,7 +93,7 @@ export function MonitoringList() {
             id: 'creation_date',
             field: 'creation_date',
             header: t('MONITORING.creation_date'),
-            className: 'w-3/24'
+            className: 'w-3/24 pl-0!'
         },
         {
             id: 'end_date',
@@ -210,6 +218,12 @@ export function MonitoringList() {
         setSelectedStatus('');
     }
 
+    // Check if filters have changed
+    useEffect(() => {
+        const isFiltersChanged = selectedModule !== '' || selectedStatus !== '';
+        setFiltersChanged(isFiltersChanged);
+    }, [selectedModule, selectedStatus]);
+
     const handleRetryProcess = async (id: string) => {
         if (!id) return;
 
@@ -230,7 +244,7 @@ export function MonitoringList() {
         <div className='flex h-full w-full overflow-hidden bg-(--bg-secondary)'>
             <div className={ `h-full shrink-0 transition-all border-r border-(--border-secondary) pb-16
                             ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
+                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
                           onClick={ handleResetFilters }>
@@ -274,7 +288,7 @@ export function MonitoringList() {
                         <div className="p-4 flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
                             </div>
                             <ChevronDown
@@ -307,8 +321,15 @@ export function MonitoringList() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
-                            onClick={ () => setDisplayFilters(!displayFilters) } selected={ displayFilters }>
+                    <Button
+                        variant='bg_white_rounded'
+                        icon={
+                            filtersChanged && !displayFilters ?
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter size={ 14 }/>
+                        }
+                        onClick={ () => setDisplayFilters(!displayFilters) }
+                        selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

@@ -160,7 +160,6 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     }
 });
 
-
 export const executeAuthFunction = async (functionName: string, functionArgs: any, api: any) => {
     const functionsMap: any = createAuthFunctionsMap(api);
     const func = functionsMap[functionName];

@@ -44,9 +44,13 @@ def get_db():
     return cursor
 
 
-def get_token(user_id):
+def get_secret_key():
     with open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/secret_key', encoding='utf-8') as secret_key_file:
-        secret_key = secret_key_file.read().replace('\n', '')
+        return secret_key_file.read().replace('\n', '')
+
+
+def get_token(user_id):
+    secret_key = get_secret_key()
 
     try:
         payload = {

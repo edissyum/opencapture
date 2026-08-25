@@ -20,20 +20,20 @@ import { useEffect, useState } from "react";
 import {
     Briefcase,
     ChevronDown,
-    CircleCheckBig,
+    CircleCheckBig, Clock,
     Combine,
     Eye,
     FileText,
     Filter,
     LayoutGrid,
     LayoutTemplate,
-    Package,
     Paperclip,
     Rows3,
     Trash2,
     X
 } from "lucide-react";
 import DOMPurify from "dompurify";
+import { Radio } from "@mantine/core";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
@@ -48,7 +48,6 @@ import { Table } from "../../components/list/Table";
 import { Thumbnail } from "../../components/Thumbnail";
 import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
-import { Radio } from "@mantine/core";
 
 export function SplitterListPage() {
     const { user, loadingUser } = useUser();
@@ -434,7 +433,7 @@ export function SplitterListPage() {
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full shrink-0 transition-all border-r-2 border-(--border-secondary) pb-10
                             ${ displayFilters ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
+                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>
                         { t('VERIFIER.filters') }
                     </h1>
@@ -448,7 +447,7 @@ export function SplitterListPage() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <Clock className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
                             </div>
                             <ChevronDown
@@ -508,33 +507,6 @@ export function SplitterListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="p-4 cursor-pointer flex items-center justify-between"
-                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
-                            <div className="flex items-center gap-2 whitespace-nowrap">
-                                <Briefcase className="text-(--color-primary)" size={ 20 }/>
-                                <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
-                            </div>
-                            <ChevronDown size={ 18 }
-                                         className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
-                        </div>
-
-                        { open.customers && (
-                            <div className='p-4 pt-0'>
-                                <MultiSelectInput
-                                    optionValue="id"
-                                    optionLabel="name"
-                                    id="customers_select"
-                                    options={ listCustomers }
-                                    value={ selectedCustomers?.map(Number) ?? [] }
-                                    placeholder={ t('ACCOUNTS.search_customers') }
-                                    onChange={ (e) => {
-                                        setSelectedCustomers(e.value);
-                                    } }
-                                />
-                            </div>
-                        ) }
-                    </div>
                     <div className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
@@ -559,6 +531,33 @@ export function SplitterListPage() {
                                     })) }
                                     onChange={ (value) => setSelectedForm(value.toString()) }
                                     className="w-full mb-2"
+                                />
+                            </div>
+                        ) }
+                    </div>
+                    <div className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
+                            <div className="flex items-center gap-2 whitespace-nowrap">
+                                <Briefcase className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
+                            </div>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
+                        </div>
+
+                        { open.customers && (
+                            <div className='p-4 pt-0'>
+                                <MultiSelectInput
+                                    optionValue="id"
+                                    optionLabel="name"
+                                    id="customers_select"
+                                    options={ listCustomers }
+                                    value={ selectedCustomers?.map(Number) ?? [] }
+                                    placeholder={ t('ACCOUNTS.search_customers') }
+                                    onChange={ (e) => {
+                                        setSelectedCustomers(e.value);
+                                    } }
                                 />
                             </div>
                         ) }
@@ -650,17 +649,18 @@ export function SplitterListPage() {
                             { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
                         </span>
                     </span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10' autoFocus
-                           value={ searchTerm } placeholder={ t('GLOBAL.search') } onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
+                           autoFocus value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                           onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
                               onClick={ () => setView('list') }
-                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md border` }>
                             <Rows3 size={ 20 }/>
                         </span>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
                               onClick={ () => setView('grid') }
-                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md border` }>
                             <LayoutGrid size={ 20 }/>
                         </span>
                     </span>

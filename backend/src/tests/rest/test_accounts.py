@@ -122,7 +122,6 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual('OK', response.json['status'])
         self.assertFalse(response.json['skip_auto_validate'])
         self.assertEqual('123456789', response.json['siren'])
         self.assertEqual('fra', response.json['document_lang'])

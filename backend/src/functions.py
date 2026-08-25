@@ -250,6 +250,10 @@ def retrieve_custom_from_url(request):
     return custom_id.replace('/', '')
 
 
+def get_secret_key(request):
+    return request.environ.get('oc.secret_key')
+
+
 def get_custom_path(custom_id):
     custom_ini_file = _get_custom_ini_file()
     path = False

@@ -18,7 +18,7 @@ import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { Activity, ChevronDown, Filter, Package } from "lucide-react";
+import { Activity, ChevronDown, Filter, Package, Package2, User } from "lucide-react";
 
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
@@ -32,8 +32,9 @@ export function HistoryList() {
 
     const [history, setHistory] = useState<any[]>([]);
     const [totalHistory, setTotalHistory] = useState(0);
-    const [displayFilters, setDisplayFilters] = useState(false);
     const [loadingHistory, setLoadingHistory] = useState(false);
+    const [displayFilters, setDisplayFilters] = useState(false);
+    const [filtersChanged, setFiltersChanged] = useState(false);
 
     const [open, setOpen] = useState({
         user: true,
@@ -70,8 +71,14 @@ export function HistoryList() {
     );
 
     const columns: any = [
-        { id: 'history_module', field: 'history_module', header: t('MAILCOLLECT.module'), sortable: true, className: 'w-1/12' },
-        { id: 'history_submodule', field: 'history_submodule', header: t('HISTORY.submodule'), sortable: true, className: 'w-3/24' },
+        {
+            id: 'history_module',
+            field: 'history_module',
+            header: t('MAILCOLLECT.module'),
+            sortable: true,
+            className: `w-1/12 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
+        },
+        { id: 'history_submodule', field: 'history_submodule', header: t('HISTORY.submodule'), sortable: true, className: 'w-3/24 pl-0!' },
         { id: 'history_date', field: 'date', header: t('HISTORY.event_date'), sortable: true, className: 'w-3/24' },
         { id: 'user_info', field: 'user_info', header: t('HISTORY.user_info'), className: 'w-2/12' },
         {
@@ -152,11 +159,17 @@ export function HistoryList() {
         setSelectedSubModule('');
     }
 
+    // Check if filters have changed
+    useEffect(() => {
+        const isFiltersChanged = selectedModule !== '' || selectedSubModule !== '' || selectedUser !== '';
+        setFiltersChanged(isFiltersChanged);
+    }, [selectedModule, selectedSubModule, selectedUser]);
+
     return (
         <div className='flex h-full bg-(--bg-secondary) w-full overflow-hidden'>
             <div className={ `h-full shrink-0 transition-all border-r-2 border-(--border-secondary)
                             ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
+                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
                           onClick={ handleResetFilters }>
@@ -168,7 +181,7 @@ export function HistoryList() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, user: !open.user }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <User className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('HISTORY.user') }</h3>
                             </div>
                             <ChevronDown
@@ -179,14 +192,13 @@ export function HistoryList() {
                         { open.user && (
                             <div className='p-4 pt-0'>
                                 <Select
-                                    
-                                    value={ selectedUser.toString() }
                                     id="folder_destination"
                                     className="w-full mb-2"
-                                    label={ t('HISTORY.user') }
+                                    value={ selectedUser.toString() }
+                                    placeholder={ t('HISTORY.user') }
                                     options={ listUsers.map((user: any) => ({
-                                        label: user.lastname + ' ' + user.firstname + ' (' + user.username + ')',
-                                        value: user.id.toString()
+                                        value: user.id.toString(),
+                                        label: user.lastname + ' ' + user.firstname + ' (' + user.username + ')'
                                     })) }
                                     onChange={ (value) => setSelectedUser(value.toString()) }
                                 />
@@ -229,7 +241,7 @@ export function HistoryList() {
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }>
                             <div className="flex items-center gap-2">
-                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <Package2 className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('HISTORY.submodule') }</h3>
                             </div>
                             <ChevronDown
@@ -240,11 +252,10 @@ export function HistoryList() {
                         { open.submodule && (
                             <div className='p-4 pt-0'>
                                 <Select
-                                    
-                                    value={ selectedSubModule.toString() }
                                     id="folder_destination"
                                     className="w-full mb-2"
-                                    label={ t('HISTORY.submodule') }
+                                    value={ selectedSubModule.toString() }
+                                    placeholder={ t('HISTORY.submodule') }
                                     options={ listSubModules.map((submodule: any) => ({
                                         label: submodule.label,
                                         value: submodule.id.toString()
@@ -259,8 +270,15 @@ export function HistoryList() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
-                            onClick={ () => setDisplayFilters(!displayFilters) } selected={ displayFilters }>
+                    <Button
+                        variant='bg_white_rounded'
+                        icon={
+                            filtersChanged && !displayFilters ?
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter size={ 14 }/>
+                        }
+                        onClick={ () => setDisplayFilters(!displayFilters) }
+                        selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

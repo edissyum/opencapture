@@ -46,7 +46,7 @@ export default function BreadCrumbTopbar() {
 
     return (
         <header
-            className="w-full h-16 flex shrink-0 items-center justify-between px-6 border-b border-(--border-secondary) text-(--text-secondary)">
+            className="w-full flex shrink-0 items-center justify-between px-6 py-2 border-b border-(--border-secondary) text-(--text-secondary)">
             <div className="w-full flex items-center gap-4">
                 { breadcrumbs.map((match: any, idx) => {
                     const isLast = idx === breadcrumbs.length - 1;

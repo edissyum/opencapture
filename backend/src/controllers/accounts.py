@@ -92,7 +92,8 @@ def get_suppliers(_args):
 
 
 def get_supplier_by_id(supplier_id):
-    select = ["id", "name, lastname, vat_number, siret, siren, iban, duns, email, phone, address_id"]
+    select = ["id", "name, lastname, vat_number, siret, siren, iban, duns, email, phone, address_id, "
+              "skip_auto_validate", "document_lang"]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id, 'select': select})
 
     if error is None:
@@ -766,7 +767,26 @@ def import_suppliers(args):
         for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel, delimiter=delimiter)):
             if args['skip_header'] and cpt == 0:
                 continue
-            footer_coherence = row[args['selected_columns'].index('footer_coherence')]
+
+            try:
+                country = row[args['selected_columns'].index('country')]
+            except IndexError:
+                country = None
+
+            try:
+                document_lang = row[args['selected_columns'].index('document_lang')]
+            except IndexError:
+                document_lang = None
+
+            try:
+                footer_coherence = row[args['selected_columns'].index('footer_coherence')]
+            except IndexError:
+                footer_coherence = None
+
+            try:
+                default_currency = row[args['selected_columns'].index('default_currency')]
+            except IndexError:
+                default_currency = None
 
             get_only_raw_footer = True
             if footer_coherence == 'True' or footer_coherence == 'true':
@@ -794,15 +814,15 @@ def import_suppliers(args):
                     'iban': row[args['selected_columns'].index('iban')],
                     'get_only_raw_footer': get_only_raw_footer,
                     'vat_number': vat_number,
-                    'document_lang': row[args['selected_columns'].index('document_lang')],
-                    'default_currency': row[args['selected_columns'].index('default_currency')]
+                    'document_lang': document_lang,
+                    'default_currency': default_currency
                 },
                 'address': {
                     'address1': row[args['selected_columns'].index('address1')],
                     'address2': row[args['selected_columns'].index('address2')],
                     'postal_code': row[args['selected_columns'].index('postal_code')],
                     'city': row[args['selected_columns'].index('city')],
-                    'country': row[args['selected_columns'].index('country')]
+                    'country': country
                 }
             }
 

@@ -1,8 +1,12 @@
 -- Récupération de l'ancien chemin du projet pour le stocker dans une variable
 SELECT path as old_path FROM docservers WHERE docserver_id = 'PROJECT_PATH'; \gset
 
+-- Récupération du share
+SELECT split_part(path, 'export', 1) as share_path FROM docservers WHERE docserver_id = 'VERIFIER_SHARE'; \gset
+
 -- Remplacer les chemins dans les docservers
 UPDATE docservers SET path = REPLACE(path, :'old_path', './');
+INSERT INTO docservers (docserver_id, path) VALUES ('SHARE_PATH', :'share_path') ON CONFLICT (docserver_id) DO NOTHING;
 
 -- Supprimer les privilèges obsolètes
 DELETE FROM privileges WHERE label = 'update_login_bottom_message';
@@ -14,6 +18,8 @@ DELETE FROM docservers WHERE docserver_id = 'LOCALE_PATH';
 DELETE FROM docservers WHERE docserver_id = 'ASSETS_PATH';
 DELETE FROM docservers WHERE docserver_id = 'CONFIG_PATH';
 DELETE FROM docservers WHERE docserver_id = 'SCRIPTS_PATH';
+DELETE FROM docservers WHERE docserver_id = 'VERIFIER_SHARE';
+DELETE FROM docservers WHERE docserver_id = 'SPLITTER_SHARE';
 DELETE FROM docservers WHERE docserver_id = 'SEPARATOR_QR_TMP';
 DELETE FROM docservers WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF';
 DELETE FROM docservers WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA';
@@ -677,3 +683,6 @@ WHERE ds.docserver_id = 'SPLITTER_THUMB' AND a.batch_id IS NOT NULL AND a.thumbn
 ALTER TABLE mailcollect ADD COLUMN "copy_custom_id" INTEGER DEFAULT NULL;
 ALTER TABLE mailcollect ADD COLUMN "sender_custom_id" INTEGER DEFAULT NULL;
 ALTER TABLE mailcollect ADD COLUMN "recipient_custom_id" INTEGER DEFAULT NULL;
+
+-- Nettoyage des paramètres non utilisés dans les formulaires
+UPDATE form_models SET settings = settings - 'display' WHERE settings ? 'display';

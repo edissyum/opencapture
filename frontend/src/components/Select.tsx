@@ -34,6 +34,7 @@ interface SelectProps {
     disabled?: boolean;
     editable?: boolean;
     required?: boolean;
+    clearable?: boolean;
     searchable?: boolean;
     placeholder?: string;
     withinPortal?: boolean;
@@ -56,6 +57,7 @@ export const Select: React.FC<SelectProps> = ({
     editable = false,
     disabled = false,
     placeholder = "",
+    clearable = false,
     searchable = true,
     withinPortal = true,
     leftSection = undefined,
@@ -127,6 +129,7 @@ export const Select: React.FC<SelectProps> = ({
                         data={ selectData }
                         disabled={ disabled }
                         allowDeselect={ false }
+                        clearable={ clearable }
                         searchable={ searchable }
                         placeholder={ placeholder }
                         leftSection={ leftSection }

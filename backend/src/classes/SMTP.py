@@ -30,12 +30,12 @@ from flask_babel import gettext
 class SMTP:
     def __init__(self, enabled, host, port, login, pwd, protocole_secure, dest_mail, delay, auth, from_mail):
         self.pwd = pwd
+        self.auth = auth
         self.conn = None
         self.port = port
         self.host = host
         self.is_up = False
         self.login = login
-        self.auth = auth
         self.enabled = enabled
         self.delay = int(delay)
         self.dest_mail = dest_mail
@@ -44,7 +44,8 @@ class SMTP:
         self.messsage_delay = '\n\n Attention, durant les ' + str(self.delay) + \
                               ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
 
-        self.test_connection()
+        if self.host and self.port:
+            self.test_connection()
 
     def test_connection(self, return_error=False):
         """

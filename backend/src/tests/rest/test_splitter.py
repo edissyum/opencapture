@@ -56,7 +56,7 @@ class SplitterTest(unittest.TestCase):
             content_type="application/pdf"
         )
         return self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload', content_type='multipart/form-data',
-                             data={"file": my_file, "workflowId": 'default_workflow', "userId": 1},
+                             data={"file": my_file, "workflowId": 4, "userId": 1},
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
     def test_create_batch(self):

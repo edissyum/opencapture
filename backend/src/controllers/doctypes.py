@@ -257,29 +257,6 @@ def export_doctypes(args):
         return response, 500
 
 
-def csv_preview(files):
-    try:
-        rows = []
-        for file in files:
-            _f = files[file]
-            stream = codecs.iterdecode(_f.stream, 'utf-8')
-            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
-                if row:
-                    rows.append(row)
-                if cpt > 10:
-                    break
-        response = {
-            'rows': rows
-        }
-        return response, 200
-    except (Exception,) as e:
-        response = {
-            "errors": gettext("DOCTYPE_ERROR"),
-            "message": str(e)
-        }
-        return response, 500
-
-
 def import_from_csv(args):
     try:
         for file in args['files']:

@@ -430,7 +430,7 @@ def test_script(args):
     docservers = get_context_var('docservers', 9)
 
     try:
-        check_res, message = check_code(args['codeContent'], docservers['VERIFIER_SHARE'], args['input_folder'])
+        check_res, message = check_code(args['codeContent'], args['input_folder'], 'verifier', docservers['SHARE_PATH'])
         if not check_res:
             result_str = gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + ' <strong>(' + message.strip() + ')</strong>'
             return {
