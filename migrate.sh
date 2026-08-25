@@ -784,11 +784,9 @@ rewrite_paths_in_dir() {
 # colonnes post-4.0.0 + chemins -> /app). Ordre imposé.
 # 4.0.0.sql n'est PAS idempotent -> UNE passe sur un import frais ; on retire
 # d'abord settings_favorites (table v4-only survivante au dump, sinon son CREATE échoue).
-# Pièces jointes de lots : la v3 les écrivait toutes sous VERIFIER_ATTACHMENTS, y
-# compris celles des lots splitter, alors que le backend v4 les résout via
-# SPLITTER_ATTACHMENTS (backend/src/controllers/attachments.py). On déplace les
-# fichiers et on réécrit le segment de chemin, sans toucher au reste de la valeur.
-# À jouer AVANT 4.0.0.sql : lui relativise les chemins, le segment disparaît.
+# La v3 écrivait TOUTES les pièces jointes sous VERIFIER_ATTACHMENTS, y compris celles
+# des lots, que le backend v4 résout via SPLITTER_ATTACHMENTS. À jouer AVANT 4.0.0.sql,
+# qui relativise les chemins et fait disparaître le segment recherché.
 move_batch_attachments() {
     local cid="$1" pguser="$2" pgdb="$3" tdir="$4"
     local src="$tdir/docservers/verifier/attachments"
@@ -832,18 +830,15 @@ patch_db_paths() {
     # backend v4 les résout via SPLITTER_ATTACHMENTS. Déplacement AVANT 4.0.0.sql, qui
     # relativise ensuite les chemins (le script s'appuie sur le segment verifier/attachments/).
     # Passé sur stdin : postgres/sql/ n'est pas embarqué dans l'image backend.
-    # Pièces jointes de lots : AVANT 4.0.0.sql, qui relativise les chemins et fait
-    # disparaître le segment 'verifier/attachments/' sur lequel s'appuie le déplacement.
     move_batch_attachments "$cid" "$pguser" "$pgdb" "$tdir"
 
     log "    montée 4.0.0 (script officiel)"
     dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$pguser" -d "$pgdb" < "$V400" >/dev/null
 
-    # 4.0.0+.sql dérive lui-même les chemins source depuis docservers ; seul le nom du
-    # tenant cible est transmis (il ne figure nulle part dans la base en cas de renommage).
+    # 4.0.0+.sql dérive tout depuis docservers : aucun paramètre.
     log "    résiduel Docker (4.0.0+.sql)"
     dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$pguser" -d "$pgdb" \
-        -v cid="$cid" < "$VRES" >/dev/null
+        < "$VRES" >/dev/null
 }
 
 wait_pg_healthy() {
