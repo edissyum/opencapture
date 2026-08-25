@@ -139,7 +139,7 @@ tournent le même code, depuis la même image.
 ### Règle à respecter dans `infra/`
 
 Tout nouveau service qui persiste des données dans `infra/docker-compose.yml` doit consommer
-une variable `${..._PATH}` (avec un fallback `../data/...`) plutôt qu'un chemin en dur — c'est
+une variable `${..._PATH}` (avec un repli `${OC_DATA_ROOT:?...}/...`) plutôt qu'un chemin en dur — c'est
 ce qui permet à chaque tenant de surcharger ce chemin dans son `.env` (vers `/opt/edissyum/opencapture/tenants/<id>/...`).
 
 ### Quand un tenant a besoin de code spécifique

@@ -169,7 +169,7 @@ $EDITOR stub-tenants/$DEST_ID/.env     # fill in BY HAND:
 > startup).
 
 > Check that `docker compose` resolves the expected volume correctly (should show
-> the intended path, not a stray `../data`):
+> the intended path; if `OC_DATA_ROOT` is missing the command fails instead of resolving a stray path):
 > ```bash
 > docker compose --project-directory stub-tenants/$DEST_ID \
 >   -f stub-tenants/$DEST_ID/docker-compose.yml config | grep -E "source:.*$DEST_ID"

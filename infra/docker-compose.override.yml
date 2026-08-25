@@ -9,8 +9,9 @@
 #   - source bind mounts so code edits hit the running containers
 #   - gunicorn --reload + DEBUG log level on the API
 #   - postgres/rabbit/backend ports re-exposed for local introspection
-#   - named volumes for custom/docservers/share are replaced by bind
-#     mounts under ../data/ so files are visible on the host
+#   - data paths are NOT redefined here: compose merges volume lists, so
+#     custom/docservers/share/ai-models come from docker-compose.yml and
+#     resolve to the same OC_DATA_ROOT location as in prod
 #   - frontend runs the Vite dev server (HMR) instead of nginx
 
 x-backend-dev-volumes: &backend-dev-volumes
@@ -19,12 +20,6 @@ x-backend-dev-volumes: &backend-dev-volumes
     - ./docker-bootstrap.sh:/app/docker-bootstrap.sh
     - ./docker-entrypoint.sh:/app/docker-entrypoint.sh
     - ../postgres/sql:/app/postgres/sql:ro
-    - ../data/custom:/app/custom
-    - ../data/docservers:/app/docservers
-    - ../data/share:/app/share
-    # Same host location as in prod for the shared AI models.
-    # Nested mount under /app/instance: this sub-path takes precedence.
-    - ${SHARED_AI_MODELS_PATH:-../data/ai-models}:/app/instance/artificial_intelligence
 
 services:
     postgres:

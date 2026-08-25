@@ -168,7 +168,7 @@ $EDITOR stub-tenants/$DEST_ID/.env     # renseigner À LA MAIN :
 > `ALTER USER` en base (déjà initialisée au 1er démarrage postgres).
 
 > Vérifier que `docker compose` résout bien le volume attendu (doit afficher le chemin
-> voulu, pas un `../data` parasite) :
+> voulu ; si `OC_DATA_ROOT` manque, la commande échoue au lieu de résoudre un chemin parasite) :
 > ```bash
 > docker compose --project-directory stub-tenants/$DEST_ID \
 >   -f stub-tenants/$DEST_ID/docker-compose.yml config | grep -E "source:.*$DEST_ID"

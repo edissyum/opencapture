@@ -41,10 +41,10 @@ services:
         user: "${APP_UID:-1000}:${APP_GID:-1000}"
         volumes:
             # The tenant's share = WebDAV root (served under /dav by Apache).
-            - ${SHARE_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/share}:/data
+            - ${SHARE_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/share}:/data
             # Tenant's htpasswd (Basic auth), outside the repo, read-only.
             # Provisioned by new-webdav-account.sh; locked out while absent.
-            - ${WEBDAV_CONF_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/webdav}:/conf:ro
+            - ${WEBDAV_CONF_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/webdav}:/conf:ro
         depends_on:
             init:
                 condition: service_completed_successfully

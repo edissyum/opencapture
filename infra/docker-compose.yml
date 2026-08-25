@@ -105,15 +105,15 @@ x-backend-extra-hosts: &backend-extra-hosts
 x-backend-volumes: &backend-volumes
     # Direct bind mounts: Docker creates the host folder if it doesn't exist.
     # Paths DERIVED from ONE root: ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/...
-    #   OC_DATA_ROOT: prod /opt/edissyum/opencapture; local dev defaults to ../data.
+    #   OC_DATA_ROOT is MANDATORY (no default): compose fails if unset or empty.
     # To move EVERYTHING: change OC_DATA_ROOT in .env (+ mv the folders).
     # An explicit *_PATH in .env still takes priority (one-off override).
-    - ${CUSTOM_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/custom}:/app/custom
-    - ${DOCSERVERS_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/docservers}:/app/docservers
-    - ${SHARE_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/share}:/app/share
+    - ${CUSTOM_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/custom}:/app/custom
+    - ${DOCSERVERS_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/docservers}:/app/docservers
+    - ${SHARE_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/share}:/app/share
     # SHARED AI models (rotate_document.pt + contact/), dropped in from the host.
     # rotate is seeded at bootstrap if absent; empty contact => contact AI disabled.
-    - ${SHARED_AI_MODELS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/ai-models}:/app/instance/artificial_intelligence
+    - ${SHARED_AI_MODELS_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/ai-models}:/app/instance/artificial_intelligence
 
 
 # --- QoS: resource profiles -----------------------------------------------
@@ -167,7 +167,7 @@ services:
             PGDATA:            /var/lib/postgresql/data/pgdata
             TZ:                ${TZ:-Europe/Paris}
         volumes:
-            - ${PGDATA_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/pgdata}:/var/lib/postgresql/data
+            - ${PGDATA_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/pgdata}:/var/lib/postgresql/data
             - ../postgres/sql/structure.sql:/docker-entrypoint-initdb.d/01_structure.sql:ro
             - ../postgres/sql/data_fr.sql:/docker-entrypoint-initdb.d/02_data_fr.sql:ro
             - ../postgres/sql/global.sql:/docker-entrypoint-initdb.d/03_global.sql:ro
@@ -188,7 +188,7 @@ services:
             RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
             TZ:                     ${TZ:-Europe/Paris}
         volumes:
-            - ${RABBITMQ_DATA_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/rabbitmq}:/var/lib/rabbitmq
+            - ${RABBITMQ_DATA_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/rabbitmq}:/var/lib/rabbitmq
         healthcheck:
             test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
             interval: 10s
@@ -343,7 +343,7 @@ services:
 # No more volumes: section:
 # The direct bind mounts declared at the service level are enough.
 # Docker auto-creates the host folders if they don't exist.
-# Paths derived from ONE .env variable: OC_DATA_ROOT (defaults to ../data in dev).
+# Paths derived from ONE .env variable: OC_DATA_ROOT (MANDATORY, no default).
 #   -> ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/{pgdata,rabbitmq,custom,docservers,share}
 #   -> ${OC_DATA_ROOT}/shared-by-tenants/ai-models
 # One-off override possible via an explicit *_PATH (PGDATA_PATH, etc.).

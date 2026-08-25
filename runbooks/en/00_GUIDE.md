@@ -54,7 +54,8 @@ covers, in order:
 6. **Shared Traefik** (single daemon, paths derived from `OC_DATA_ROOT`).
 
 > ⚠️ First export the root for the whole session: `export OC_DATA_ROOT=/opt/edissyum/opencapture`
-> (otherwise `${OC_DATA_ROOT:-../data}` falls back to `../data` and creates stray paths).
+> — or set it in the `.env`. The variable is **mandatory**: without a value, compose stops
+> with `required variable OC_DATA_ROOT is missing a value`.
 
 ---
 
@@ -761,7 +762,7 @@ docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB
 ### Host ↔ container volume mapping
 
 Per tenant — the host paths are the `.env` `*_PATH` values (in prod:
-`${OC_DATA_ROOT}/tenants/<id>/…`; compose default if not set: `../data/<id>/…`):
+`${OC_DATA_ROOT}/tenants/<id>/…`; `OC_DATA_ROOT` is mandatory, with no default):
 
 | Host (prod) | Container | Content |
 |---|---|---|

@@ -50,7 +50,7 @@ volumes:
         driver_opts:
             type: none
             o: bind
-            device: ${LETSENCRYPT_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/letsencrypt}
+            device: ${LETSENCRYPT_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/traefik/letsencrypt}
 
 services:
     traefik:
@@ -112,12 +112,12 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - letsencrypt:/letsencrypt
             # Dynamic config (file provider): certs' tls.yml fragments.
-            # Derived from OC_DATA_ROOT (defaults to ../data in dev;
+            # Derived from OC_DATA_ROOT (MANDATORY, no default;
             # prod OC_DATA_ROOT=/opt/edissyum/opencapture). Override: OC_DYNAMIC_PATH.
-            - ${OC_DYNAMIC_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/dynamic}:/dynamic:ro
+            - ${OC_DYNAMIC_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/traefik/dynamic}:/dynamic:ro
             # Client certs (PEM + key). Host folder NOT versioned: a
             # private key must NEVER be committed there. Override: OC_CERTS_PATH.
-            - ${OC_CERTS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/certs}:/certs:ro
+            - ${OC_CERTS_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/traefik/certs}:/certs:ro
 
         networks:
             - frontend

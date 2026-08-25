@@ -95,7 +95,7 @@ docker compose --project-directory infra -f infra/docker-compose.yml build backe
 
 # Traefik partagé (daemon unique). Lit OC_DATA_ROOT + LETSENCRYPT_EMAIL depuis le
 # .env (via le symlink infra/.env -> ../.env) : PAS de préfixe inline, sinon un
-# $OC_DATA_ROOT vide écraserait la valeur du .env -> retombée sur ../data.
+# $OC_DATA_ROOT vide écraserait la valeur du .env -> échec du compose.
 # (Pour Let's Encrypt : renseigne LETSENCRYPT_EMAIL dans le .env.)
 docker compose -f infra/docker-compose.traefik-server.yml up -d
 

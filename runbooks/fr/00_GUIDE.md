@@ -55,7 +55,8 @@ copier-coller). Il couvre, dans l'ordre :
 6. **Traefik partagé** (daemon unique, chemins dérivés d'`OC_DATA_ROOT`).
 
 > ⚠️ Exporter d'abord la racine pour toute la session : `export OC_DATA_ROOT=/opt/edissyum/opencapture`
-> (sinon `${OC_DATA_ROOT:-../data}` retombe sur `../data` et crée des chemins parasites).
+> — ou la définir dans le `.env`. La variable est **obligatoire** : sans valeur, le compose
+> s'arrête avec `required variable OC_DATA_ROOT is missing a value`.
 
 ---
 
@@ -768,7 +769,7 @@ docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB
 ### Lien volumes hôte ↔ conteneur
 
 Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
-`${OC_DATA_ROOT}/tenants/<id>/…` ; défaut compose si non renseigné : `../data/<id>/…`) :
+`${OC_DATA_ROOT}/tenants/<id>/…` ; `OC_DATA_ROOT` est obligatoire, sans défaut) :
 
 | Hôte (prod) | Conteneur | Contenu |
 |---|---|---|
