@@ -36,4 +36,4 @@ infra/SCHEDULING.md
 infra-host/sftp/ftpd.passwd
 
 .claude/
-.vscode/
+.vscode/__pycache__/
