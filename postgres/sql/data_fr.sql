@@ -72,9 +72,9 @@ INSERT INTO "configurations" ("label", "data") VALUES ('informalContactDtype', '
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', './');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('DOCSERVERS_PATH', 'Chemin vers la zone de stockage', '/var/docservers/opencapture/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SHARE_PATH', 'Chemin vers le dossier d''export', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('REFERENTIALS_PATH', 'Chemin vers le dossier contenant les fichiers de référentiel', './instance/referencial/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/verifier/thumbs/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_SHARE', '[VERIFIER] Chemin pour le stockage des documents liés aux chaînes sortantes', '/var/share/export/verifier/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_IMAGE_FULL', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/opencapture/verifier/full/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_POSITIONS_MASKS', '[VERIFIER] Chemin pour le stockage des images nécessaire aux masques de positionnement', '/var/docservers/opencapture/verifier/positions_masks/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_TRAIN_PATH_FILES', '[VERIFIER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/verifier/ai/train_data');
@@ -86,7 +86,6 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_DOC', '[SPLITTER] Chemin vers le dossier contenant les documents originaux', '/var/docservers/opencapture/splitter/original_doc/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_TRAIN_PATH_FILES', '[SPLITTER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/splitter/ai/train_data');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/splitter/ai/models/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_SHARE', '[SPLITTER] Chemin pour le stockage des documents liés aux chaînes sortantes', '/var/share/export/splitter/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ATTACHMENTS', '[SPLITTER] Chemin pour le stockage des pièces jointes', '/var/docservers/opencapture/splitter/attachments/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
