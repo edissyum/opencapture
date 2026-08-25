@@ -84,7 +84,7 @@ deux raisons :
 | `infra/webdav/docker-compose.yml` | Overlay **opt-in** : ajoute le conteneur `webdav` (réseau interne, `user: APP_UID`). |
 | bloc `location ^~ /dav/` dans `infra/nginx.conf.template` | Proxy frontend -> `webdav:8080` (501 si non activé). |
 | `/opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd` | Comptes WebDAV du tenant. **Secret**, hors dépôt. |
-| `../../new-webdav-account.sh` | Crée/complète l'accès WebDAV d'un tenant. |
+| `./new-webdav-account.sh` | Crée/complète l'accès WebDAV d'un tenant. |
 | `../../runbooks/fr/06-webdav-server.md` | Exploitation pas-à-pas. |
 
 ## Activation (opt-in)
@@ -103,7 +103,7 @@ Puis :
 
 1. `./deploy.sh <id>` — construit l'image partagée `opencapture-webdav` (dès
    qu'un tenant inclut l'overlay) et démarre le conteneur `webdav`.
-2. `sudo ./new-webdav-account.sh <id>` — crée le compte (htpasswd ; **aucun
+2. `sudo ./infra/webdav/new-webdav-account.sh <id>` — crée le compte (htpasswd ; **aucun
    reload** — Apache le relit à chaque requête).
 
 ## Comptes (login / mot de passe)
@@ -114,7 +114,7 @@ est stocké dans `/opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd` (hors 
 
 | Action | Commande |
 |---|---|
-| Créer / ajouter un login | `sudo ./new-webdav-account.sh <id> <login>` |
+| Créer / ajouter un login | `sudo ./infra/webdav/new-webdav-account.sh <id> <login>` |
 | Changer un mot de passe | relancer avec le **même** login |
 | Supprimer un compte | `docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav htpasswd -D /work/htpasswd <login>` |
 

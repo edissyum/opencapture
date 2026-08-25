@@ -10,7 +10,7 @@
 # -> AUCUN reload, ni recréation du conteneur, après ajout d'un compte.
 #
 # Usage (en root sur le serveur, depuis le dépôt) :
-#   sudo ./new-webdav-account.sh <id> [user]
+#   sudo ./infra/webdav/new-webdav-account.sh <id> [user]
 #     <id>   : identifiant du tenant (= dossier $OC_DATA_ROOT/tenants/<id>)
 #     [user] : login WebDAV (défaut : <id>)
 #   Le mot de passe est demandé interactivement (saisie masquée, bcrypt).
@@ -25,10 +25,12 @@
 
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+SELF="./${SCRIPT_DIR#"$REPO_ROOT"/}/$(basename "${BASH_SOURCE[0]}")"
 IMAGE="opencapture-webdav"
 
-usage() { echo "Usage : sudo $(basename "$0") <id> [user]" >&2; exit 2; }
+usage() { echo "Usage : sudo $SELF <id> [user]" >&2; exit 2; }
 
 id="${1:-}"
 [ -n "$id" ] || usage
@@ -115,8 +117,8 @@ echo "      - Verifier : dav/entrant/verifier/{default,ocr_only,default_mail}"
 echo "      - Splitter : dav/entrant/splitter/default"
 echo
 echo "    Gérer les comptes (aucun reload) :"
-echo "      - ajouter un autre login  : sudo ./new-webdav-account.sh $id <autre_login>"
-echo "      - changer ce mot de passe : sudo ./new-webdav-account.sh $id $user   (relancer)"
+echo "      - ajouter un autre login  : sudo $SELF $id <autre_login>"
+echo "      - changer ce mot de passe : sudo $SELF $id $user   (relancer)"
 echo "      - supprimer ce compte     : sudo docker run --rm -v $conf_dir:/work $IMAGE htpasswd -D /work/htpasswd $user"
 echo
 echo "    Fichier des comptes (secret, hors dépôt) : $htpasswd"

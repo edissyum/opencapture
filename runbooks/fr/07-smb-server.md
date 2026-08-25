@@ -66,8 +66,8 @@ sudo systemctl status  smbd
 # ----------------------------------------------------------------------
 # 6) Déclarer l'accès SMB d'un tenant
 # ----------------------------------------------------------------------
-# sudo ./new-smb-account.sh <id>    # crée compte + section + reload (demande le mdp)
-# ex. : sudo ./new-smb-account.sh test2
+# sudo ./infra-host/smb/new-smb-account.sh <id>    # crée compte + section + reload (demande le mdp)
+# ex. : sudo ./infra-host/smb/new-smb-account.sh test2
 #   -> pas de restart : `smbcontrol all reload-config` recharge la conf à chaud.
 
 # ----------------------------------------------------------------------

@@ -71,14 +71,14 @@ Les comptes d'authentification par tenant (`<id>`) sont de simples identités
 | `infra-host/smb/smb.conf` | Config Samba (global + `include`). Déployée en `/etc/samba/smb.conf`. |
 | `/etc/samba/oc-shares.conf` | Sections `[<id>]` des tenants. **Hors dépôt**, géré par le script. |
 | passdb `tdbsam` | Mots de passe SMB (`smbpasswd`). **Secret**, hors dépôt. |
-| `../../new-smb-account.sh` | Crée l'accès SMB d'un tenant (compte + partage + reload). |
+| `./new-smb-account.sh` | Crée l'accès SMB d'un tenant (compte + partage + reload). |
 | `../../runbooks/fr/07-smb-server.md` | Install serveur pas-à-pas. |
 
 ## Mise en place
 
 1. `runbooks/fr/07-smb-server.md` — une fois (paquet, compte de service hôte,
    config, pare-feu 445, `smbd`).
-2. Par tenant : `sudo ./new-smb-account.sh <id>` (crée le compte + la section ;
+2. Par tenant : `sudo ./infra-host/smb/new-smb-account.sh <id>` (crée le compte + la section ;
    `smbcontrol all reload-config` — **pas de restart**).
 
 ## Domaines clients (DNS)

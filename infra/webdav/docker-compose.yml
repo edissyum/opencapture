@@ -23,7 +23,7 @@
 # independent of the backend) as soon as a tenant includes this overlay.
 #
 # After enabling: deploy (./deploy.sh <id>) then create an account
-#   sudo ./new-webdav-account.sh <id>
+#   sudo ./infra/webdav/new-webdav-account.sh <id>
 
 services:
     webdav:

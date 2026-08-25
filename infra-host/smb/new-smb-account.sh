@@ -9,17 +9,19 @@
 #     fichiers forcés sur le compte de service OpenCapture ($APP_UID/$APP_GID).
 #
 # Usage (en root sur le serveur, depuis le dépôt) :
-#   sudo ./new-smb-account.sh <id>
+#   sudo ./infra-host/smb/new-smb-account.sh <id>
 #
 # Prérequis : runbooks/fr/07-smb-server.md joué une fois (Samba installé,
 # compte de service hôte créé, /etc/samba/oc-shares.conf en place).
 
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+SELF="./${SCRIPT_DIR#"$REPO_ROOT"/}/$(basename "${BASH_SOURCE[0]}")"
 SHARES_CONF="/etc/samba/oc-shares.conf"
 
-usage() { echo "Usage : sudo $(basename "$0") <id>" >&2; exit 2; }
+usage() { echo "Usage : sudo $SELF <id>" >&2; exit 2; }
 
 id="${1:-}"
 [ -n "$id" ] || usage

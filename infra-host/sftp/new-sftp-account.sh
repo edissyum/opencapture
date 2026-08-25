@@ -9,17 +9,19 @@
 # de conf : ProFTPD relit ftpd.passwd à chaque connexion -> aucun reload requis.
 #
 # Usage (en root sur le serveur, depuis le dépôt) :
-#   sudo ./new-sftp-account.sh <id>
+#   sudo ./infra-host/sftp/new-sftp-account.sh <id>
 #
 # Prérequis : runbooks/fr/05-sftp-server.md joué une fois (ProFTPD installé,
 # /etc/proftpd/ftpd.passwd en place).
 
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+SELF="./${SCRIPT_DIR#"$REPO_ROOT"/}/$(basename "${BASH_SOURCE[0]}")"
 PROFTPD_PASSWD="/etc/proftpd/ftpd.passwd"
 
-usage() { echo "Usage : sudo $(basename "$0") <id>" >&2; exit 2; }
+usage() { echo "Usage : sudo $SELF <id>" >&2; exit 2; }
 
 id="${1:-}"
 [ -n "$id" ] || usage

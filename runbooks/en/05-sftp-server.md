@@ -68,8 +68,8 @@ sudo systemctl status proftpd
 # ----------------------------------------------------------------------
 # 6) Declare a tenant's SFTP access
 # ----------------------------------------------------------------------
-# sudo ./new-sftp-account.sh <id>     # creates the chrooted virtual account (prompts for the password)
-# e.g.: sudo ./new-sftp-account.sh test2
+# sudo ./infra-host/sftp/new-sftp-account.sh <id>     # creates the chrooted virtual account (prompts for the password)
+# e.g.: sudo ./infra-host/sftp/new-sftp-account.sh test2
 #   -> no reload needed: ftpd.passwd is re-read on every connection.
 
 # ----------------------------------------------------------------------

@@ -66,8 +66,8 @@ sudo systemctl status  smbd
 # ----------------------------------------------------------------------
 # 6) Declare a tenant's SMB access
 # ----------------------------------------------------------------------
-# sudo ./new-smb-account.sh <id>    # creates account + section + reload (prompts for password)
-# e.g.: sudo ./new-smb-account.sh test2
+# sudo ./infra-host/smb/new-smb-account.sh <id>    # creates account + section + reload (prompts for password)
+# e.g.: sudo ./infra-host/smb/new-smb-account.sh test2
 #   -> no restart: `smbcontrol all reload-config` reloads the conf hot.
 
 # ----------------------------------------------------------------------

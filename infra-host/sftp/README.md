@@ -44,13 +44,13 @@ de domaine. → **multi-tenant trivial sur une seule IP**, sans aucun certificat
 | `infra-host/sftp/proftpd.conf` | Config ProFTPD (SFTP only). Déployée en `/etc/proftpd/proftpd.conf`. |
 | `/etc/proftpd/ftpd.passwd` | Comptes virtuels (`ftpasswd`). **Secret**, hors dépôt. |
 | `/etc/proftpd/sftp/` | Clés d'hôte SSH partagées + `authorized_keys/<id>`. Hors dépôt. |
-| `../../new-sftp-account.sh` | Crée le compte SFTP d'un tenant (chroot + uid/gid). |
+| `./new-sftp-account.sh` | Crée le compte SFTP d'un tenant (chroot + uid/gid). |
 | `../../runbooks/fr/05-sftp-server.md` | Install serveur pas-à-pas. |
 
 ## Mise en place
 
 1. `runbooks/fr/05-sftp-server.md` — une fois (paquet, `mod_sftp`, clés d'hôte, config, pare-feu).
-2. Par tenant : `sudo ./new-sftp-account.sh <id>` (crée le compte ; **aucun reload** —
+2. Par tenant : `sudo ./infra-host/sftp/new-sftp-account.sh <id>` (crée le compte ; **aucun reload** —
    `ftpd.passwd` est relu à chaque connexion).
 
 ## Où déposer les fichiers

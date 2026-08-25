@@ -36,13 +36,13 @@
 #    htpasswd PAR tenant, hors dépôt : /opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd.
 #    AUCUN reload (Apache relit à chaque requête). 401 tant qu'aucun compte.
 # ----------------------------------------------------------------------
-# sudo ./new-webdav-account.sh <id>            # login = <id>
-# sudo ./new-webdav-account.sh <id> alice      # login dédié
+# sudo ./infra/webdav/new-webdav-account.sh <id>            # login = <id>
+# sudo ./infra/webdav/new-webdav-account.sh <id> alice      # login dédié
 #
 # # Plusieurs comptes par tenant : relancer avec un autre login.
-# sudo ./new-webdav-account.sh <id> bob
+# sudo ./infra/webdav/new-webdav-account.sh <id> bob
 # # Changer un mot de passe : relancer avec le MÊME login (écrase la ligne).
-# sudo ./new-webdav-account.sh <id> alice
+# sudo ./infra/webdav/new-webdav-account.sh <id> alice
 # # Supprimer un compte :
 # sudo docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav \
 #     htpasswd -D /work/htpasswd alice

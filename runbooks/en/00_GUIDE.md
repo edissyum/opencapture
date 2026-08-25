@@ -31,9 +31,9 @@ modes depending on TLS. Data kept outside the repo, under `$OC_DATA_ROOT` (e.g. 
 | [06-webdav-server.md](06-webdav-server.md) | multi-tenant WebDAV server (Apache `mod_dav`) — operations + adding a tenant |
 | [07-smb-server.md](07-smb-server.md) | multi-tenant SMB server (standalone Samba) — install + adding a tenant |
 | [../new-tenant.sh](../../new-tenant.sh) | creates a tenant's stub (copies the template + pre-fills the `.env`) |
-| [../new-sftp-account.sh](../../new-sftp-account.sh) | creates a tenant's SFTP access (chrooted virtual account) |
-| [../new-webdav-account.sh](../../new-webdav-account.sh) | creates a tenant's WebDAV access (htpasswd account) |
-| [../new-smb-account.sh](../../new-smb-account.sh) | creates a tenant's SMB access (local Samba account + share) |
+| [../infra-host/sftp/new-sftp-account.sh](../../infra-host/sftp/new-sftp-account.sh) | creates a tenant's SFTP access (chrooted virtual account) |
+| [../infra/webdav/new-webdav-account.sh](../../infra/webdav/new-webdav-account.sh) | creates a tenant's WebDAV access (htpasswd account) |
+| [../infra-host/smb/new-smb-account.sh](../../infra-host/smb/new-smb-account.sh) | creates a tenant's SMB access (local Samba account + share) |
 | [../deploy.sh](../../deploy.sh) | builds + (re)deploys an **existing** tenant |
 
 ---
@@ -354,7 +354,7 @@ mapped to `$APP_UID/$APP_GID`.
 sudo bash runbooks/05-sftp-server.md        # run step by step, not as one block
 
 # Per tenant (no reload needed):
-sudo ./new-sftp-account.sh <id>              # creates the chrooted virtual account
+sudo ./infra-host/sftp/new-sftp-account.sh <id>              # creates the chrooted virtual account
 # Client connection: sftp -P 2222 <id>@<server>
 ```
 
@@ -383,7 +383,7 @@ WebDAV overlay** (otherwise `/dav/` returns 501 "not enabled").
 # 2. Deploy (builds the opencapture-webdav image if the overlay is included):
 ./deploy.sh <id>
 # 3. Create an account (no reload):
-sudo ./new-webdav-account.sh <id>           # login = <id> ; prompts for the password
+sudo ./infra/webdav/new-webdav-account.sh <id>           # login = <id> ; prompts for the password
 # Client connection: mount https://<fqdn>/dav/ as a network drive.
 ```
 
@@ -408,7 +408,7 @@ certificate** to manage.
 sudo bash runbooks/07-smb-server.md         # run step by step, not as one block
 
 # Per tenant (no restart, hot reload):
-sudo ./new-smb-account.sh <id>              # creates the local account + the [<id>] share
+sudo ./infra-host/smb/new-smb-account.sh <id>              # creates the local account + the [<id>] share
 # Client connection: \\<server>\<id>  (or \\<client-domain>\<id>), credentials <id>
 ```
 

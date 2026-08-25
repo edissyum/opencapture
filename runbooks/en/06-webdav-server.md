@@ -36,13 +36,13 @@
 #    htpasswd PER tenant, outside the repo: /opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd.
 #    NO reload needed (Apache re-reads it on every request). 401 until an account exists.
 # ----------------------------------------------------------------------
-# sudo ./new-webdav-account.sh <id>            # login = <id>
-# sudo ./new-webdav-account.sh <id> alice      # dedicated login
+# sudo ./infra/webdav/new-webdav-account.sh <id>            # login = <id>
+# sudo ./infra/webdav/new-webdav-account.sh <id> alice      # dedicated login
 #
 # # Several accounts per tenant: rerun with a different login.
-# sudo ./new-webdav-account.sh <id> bob
+# sudo ./infra/webdav/new-webdav-account.sh <id> bob
 # # Change a password: rerun with the SAME login (overwrites the line).
-# sudo ./new-webdav-account.sh <id> alice
+# sudo ./infra/webdav/new-webdav-account.sh <id> alice
 # # Delete an account:
 # sudo docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav \
 #     htpasswd -D /work/htpasswd alice
