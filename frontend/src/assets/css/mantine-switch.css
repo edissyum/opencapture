@@ -28,7 +28,7 @@
     @apply text-base;
 }
 
-.mantine-Switch-input[data-checked="false"] {
+.mantine-Switch-input:not([data-checked="true"]) {
     & ~ .mantine-Switch-track {
         @apply bg-(--bg-secondary);
     }
