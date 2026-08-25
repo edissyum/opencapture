@@ -53,7 +53,7 @@ function ConfirmDialogView({
             className="fixed inset-0 z-9999 flex items-center justify-center bg-black/50"
             onMouseDown={ (e) => { if (e.target === e.currentTarget) reject(); } }
         >
-            <div className="bg-white rounded-lg shadow-xl max-w-3xl mx-4 p-6">
+            <div className="bg-(--bg-primary) rounded-lg shadow-xl max-w-3xl mx-4 p-6">
                 <h2 className="text-lg font-semibold mb-4">{ title }</h2>
                 <div className="flex flex-col gap-3 mb-6">
                     <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>
