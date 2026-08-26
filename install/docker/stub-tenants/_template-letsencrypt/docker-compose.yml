@@ -1,0 +1,26 @@
+# GABARIT de tenant — mode Let's Encrypt (HTTPS, cert ACME automatique).
+# NE PAS lancer tel quel : squelette à copier.
+#
+# Créer un tenant de PROD (gitignoré) :
+#   cp -r install/docker/stub-tenants/_template-letsencrypt install/docker/stub-tenants/<id>
+#   mv install/docker/stub-tenants/<id>/.env.example install/docker/stub-tenants/<id>/.env
+#   $EDITOR install/docker/stub-tenants/<id>/.env      # CUSTOM_ID, OC_FQDN, mots de passe, *_PATH
+#   cd install/docker/stub-tenants/<id> && docker compose up -d --build
+#   # (ou, depuis la racine : ./install/docker/deploy.sh <id>)
+#
+# Le project name est dérivé du .env : opencapture_${CUSTOM_ID} (interpolé).
+#
+# Prérequis Let's Encrypt :
+#   - DNS public <OC_FQDN> -> IP du serveur, ports 80 + 443 ouverts (challenge ACME)
+#   - réseau `frontend` + Traefik partagé up (email LE configuré côté daemon)
+# Au 1er handshake HTTPS, Traefik émet le cert (TLS-ALPN-01 sur 443) et le
+# renouvelle seul ; aucun redémarrage de Traefik.
+name: opencapture_${CUSTOM_ID}
+
+include:
+    - path: ../../shared/docker-compose.yml
+    - path: ../../shared/traefik/docker-compose.traefik.yml
+    # WebDAV (optionnel) — dépôt de fichiers par montage de lecteur réseau
+    # (https://<fqdn>/dav/). Décommenter pour activer, puis créer un compte :
+    #   sudo ./install/docker/shared/webdav/new-webdav-account.sh <id>
+    # - path: ../../shared/webdav/docker-compose.yml

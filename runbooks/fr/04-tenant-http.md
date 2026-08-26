@@ -8,24 +8,24 @@
 ID=monclient                                   # CUSTOM_ID (minuscule/alnum/_)
 
 # Créer le tenant depuis le gabarit HTTP
-cp -r stub-tenants/_template-http stub-tenants/$ID
-mv stub-tenants/$ID/.env.example stub-tenants/$ID/.env
+cp -r install/docker/stub-tenants/_template-http install/docker/stub-tenants/$ID
+mv install/docker/stub-tenants/$ID/.env.example install/docker/stub-tenants/$ID/.env
 
 # APP_UID/APP_GID : aligner sur le .env GLOBAL (impératif). L'image backend
 # partagée bake /app (HOME du compte de service) à cet uid ; un tenant avec un
 # autre uid -> /app non inscriptible (matplotlib/fontconfig en erreur).
 # (new-tenant.sh le fait automatiquement ; en manuel, le voici :)
-sed -i "s/^APP_UID=.*/APP_UID=$(grep -m1 '^APP_UID=' .env | cut -d= -f2)/" stub-tenants/$ID/.env
-sed -i "s/^APP_GID=.*/APP_GID=$(grep -m1 '^APP_GID=' .env | cut -d= -f2)/" stub-tenants/$ID/.env
+sed -i "s/^APP_UID=.*/APP_UID=$(grep -m1 '^APP_UID=' .env | cut -d= -f2)/" install/docker/stub-tenants/$ID/.env
+sed -i "s/^APP_GID=.*/APP_GID=$(grep -m1 '^APP_GID=' .env | cut -d= -f2)/" install/docker/stub-tenants/$ID/.env
 
 # Éditer le .env (CUSTOM_ID, OC_FQDN, mots de passe ; OC_DATA_ROOT déjà pré-rempli)
-"$EDITOR" stub-tenants/$ID/.env
+"$EDITOR" install/docker/stub-tenants/$ID/.env
 
 # Déployer (build frontend + up -d ; init amorce le tenant ; ni cert ni ACME)
-./deploy.sh --frontend-only $ID
+./install/docker/deploy.sh --frontend-only $ID
 
 # Raccourci docker compose du tenant
-DIR=stub-tenants/$ID
+DIR=install/docker/stub-tenants/$ID
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 
 # État / logs / redémarrage
@@ -36,12 +36,12 @@ $DC restart backend
 $DC up -d
 
 # Reconstruire après maj du code
-./deploy.sh --frontend-only $ID                # rebuild frontend du tenant
-./deploy.sh --backend-only $ID                 # rebuild image backend partagée + recrée
-./deploy.sh $ID                                # rebuild backend + frontend + recrée
+./install/docker/deploy.sh --frontend-only $ID                # rebuild frontend du tenant
+./install/docker/deploy.sh --backend-only $ID                 # rebuild image backend partagée + recrée
+./install/docker/deploy.sh $ID                                # rebuild backend + frontend + recrée
 # ... ou pour TOUS les tenants après un git pull :
-./deploy.sh --frontend-only --all              # maj template nginx / overlay Traefik
-./deploy.sh --all                              # backend + frontends (tous)
+./install/docker/deploy.sh --frontend-only --all              # maj template nginx / overlay Traefik
+./install/docker/deploy.sh --all                              # backend + frontends (tous)
 
 # Vérifier l'accès (HTTP pur, pas de TLS)
 curl -I "http://$(grep -m1 OC_FQDN $DIR/.env | cut -d= -f2)/"

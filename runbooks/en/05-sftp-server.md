@@ -6,7 +6,7 @@
 # cert (it would need SNI, unreliable on ProFTPD). SFTP has no domain cert
 # (single SSH host key, TOFU) -> trivially multi-tenant.
 # Chrooted virtual accounts on /opt/edissyum/opencapture/tenants/<id>/share, mapped to the
-# OpenCapture service account ($APP_UID/$APP_GID). Detail: infra-host/sftp/README.md.
+# OpenCapture service account ($APP_UID/$APP_GID). Detail: install/docker/host/sftp/README.md.
 #
 # Prerequisites: infra installed (01) ; tenants created (new-tenant.sh + deploy.sh).
 
@@ -36,8 +36,8 @@ sudo mkdir -p /etc/proftpd/sftp/authorized_keys
 sudo mkdir -p /var/log/proftpd
 
 # Config = the repo's one (copy ; or symlink if you prefer a live link)
-sudo cp "$REPO/infra-host/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
-# sudo ln -sf "$REPO/infra-host/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
+sudo cp "$REPO/install/docker/host/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
+# sudo ln -sf "$REPO/install/docker/host/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
 
 # Virtual accounts file (empty at first ; filled by new-sftp-account.sh)
 sudo touch /etc/proftpd/ftpd.passwd && sudo chmod 600 /etc/proftpd/ftpd.passwd
@@ -54,7 +54,7 @@ sudo chmod 600 /etc/proftpd/sftp/ssh_host_*_key
 # ----------------------------------------------------------------------
 # sudo ufw allow 2222/tcp
 # (To use the standard port 22 instead: change Port in
-#  infra-host/sftp/proftpd.conf AND restrict the admin sshd to another IP/port — sensitive.)
+#  install/docker/host/sftp/proftpd.conf AND restrict the admin sshd to another IP/port — sensitive.)
 
 # ----------------------------------------------------------------------
 # 5) Check the conf then start ProFTPD
@@ -68,8 +68,8 @@ sudo systemctl status proftpd
 # ----------------------------------------------------------------------
 # 6) Declare a tenant's SFTP access
 # ----------------------------------------------------------------------
-# sudo ./infra-host/sftp/new-sftp-account.sh <id>     # creates the chrooted virtual account (prompts for the password)
-# e.g.: sudo ./infra-host/sftp/new-sftp-account.sh test2
+# sudo ./install/docker/host/sftp/new-sftp-account.sh <id>     # creates the chrooted virtual account (prompts for the password)
+# e.g.: sudo ./install/docker/host/sftp/new-sftp-account.sh test2
 #   -> no reload needed: ftpd.passwd is re-read on every connection.
 
 # ----------------------------------------------------------------------

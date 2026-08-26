@@ -2,7 +2,7 @@
 
 > Draft documentation, not yet reviewed or committed. Describes the state observed
 > on 2026-07-08 on `/etc/apache2/sites-enabled/mem.conf` and the
-> `host-gateway` configuration proposed on the `infra/docker-compose.yml` side (commit `22768fe`).
+> `host-gateway` configuration proposed on the `install/docker/shared/docker-compose.yml` side (commit `22768fe`).
 
 ## 1. Server context
 
@@ -240,7 +240,7 @@ Linux) in `extra_hosts`. When the container starts, Docker replaces it with
 the actual IP of that gateway and writes the entry into the container's internal
 `/etc/hosts` — no DNS magic, just a plain static line.
 
-Declaration (`infra/docker-compose.yml`, anchor `x-backend-extra-hosts`,
+Declaration (`install/docker/shared/docker-compose.yml`, anchor `x-backend-extra-hosts`,
 applied to `backend` and `worker-verifier`):
 
 ```yaml

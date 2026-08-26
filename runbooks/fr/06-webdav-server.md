@@ -7,7 +7,7 @@
 # et pas sous-domaine -> réutilise le DNS + le cert + la route Traefik existants.
 # Racine = /opt/edissyum/opencapture/tenants/<id>/share (surveillé par le fs-watcher) ; fichiers
 # déposés en $APP_UID/$APP_GID. Auth Basic htpasswd par tenant.
-# Détail du design : ../infra/webdav/README.md.
+# Détail du design : ../install/docker/shared/webdav/README.md.
 #
 # Contrairement au SFTP (05), RIEN à installer sur l'hôte : tout est dans Docker
 # (image construite par deploy.sh, service webdav démarré avec la stack).
@@ -18,16 +18,16 @@
 # 1) Activation (OPT-IN) — le WebDAV n'est PAS dans la stack de base
 #    Ajouter l'overlay dans le docker-compose.yml du tenant (comme Traefik) :
 #        include:
-#            - path: ../../infra/docker-compose.yml
-#            - path: ../../infra/docker-compose.traefik-*.yml
-#            - path: ../../infra/webdav/docker-compose.yml   # <- active le WebDAV
+#            - path: ../../install/docker/shared/docker-compose.yml
+#            - path: ../../install/docker/shared/traefik/docker-compose.traefik-*.yml
+#            - path: ../../install/docker/shared/webdav/docker-compose.yml   # <- active le WebDAV
 #    Sans cet overlay, /dav/ renvoie 501 « non activé » (le reste du site marche).
 #    L'image opencapture-webdav est construite par deploy.sh (docker build,
 #    INDÉPENDAMMENT du backend) dès qu'un tenant inclut l'overlay.
 # ----------------------------------------------------------------------
-# ./deploy.sh <id>
+# ./install/docker/deploy.sh <id>
 # # Vérifier que le conteneur webdav tourne :
-# DIR=stub-tenants/<id>
+# DIR=install/docker/stub-tenants/<id>
 # docker compose --project-directory "$DIR" -f "$DIR/docker-compose.yml" ps webdav
 
 # ----------------------------------------------------------------------
@@ -36,13 +36,13 @@
 #    htpasswd PAR tenant, hors dépôt : /opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd.
 #    AUCUN reload (Apache relit à chaque requête). 401 tant qu'aucun compte.
 # ----------------------------------------------------------------------
-# sudo ./infra/webdav/new-webdav-account.sh <id>            # login = <id>
-# sudo ./infra/webdav/new-webdav-account.sh <id> alice      # login dédié
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id>            # login = <id>
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id> alice      # login dédié
 #
 # # Plusieurs comptes par tenant : relancer avec un autre login.
-# sudo ./infra/webdav/new-webdav-account.sh <id> bob
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id> bob
 # # Changer un mot de passe : relancer avec le MÊME login (écrase la ligne).
-# sudo ./infra/webdav/new-webdav-account.sh <id> alice
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id> alice
 # # Supprimer un compte :
 # sudo docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav \
 #     htpasswd -D /work/htpasswd alice
@@ -70,13 +70,13 @@
 # ----------------------------------------------------------------------
 # 4) Exploitation
 # ----------------------------------------------------------------------
-# DIR=stub-tenants/<id>
+# DIR=install/docker/stub-tenants/<id>
 # DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 # $DC ps webdav                 # état du conteneur
 # $DC logs -f webdav            # logs Apache (accès + erreurs -> stdout/stderr)
-# # Après modif de infra/webdav/httpd.conf ou du Dockerfile :
-# ./deploy.sh --backend-only <id>   # rebuild des images partagées (dont webdav)
-# ./deploy.sh --no-build <id>       # ou juste recréer les conteneurs
+# # Après modif de install/docker/shared/webdav/httpd.conf ou du Dockerfile :
+# ./install/docker/deploy.sh --backend-only <id>   # rebuild des images partagées (dont webdav)
+# ./install/docker/deploy.sh --no-build <id>       # ou juste recréer les conteneurs
 
 # ----------------------------------------------------------------------
 # 5) Dépannage

@@ -6,7 +6,7 @@
 # domain -> A SINGLE smbd daemon, one [<id>] share per tenant on
 # ${OC_DATA_ROOT}/tenants/<id>/share, files forced to the OpenCapture service account
 # ($APP_UID/$APP_GID) -> readable AND deletable by the fs-watcher. Details:
-# infra-host/smb/README.md. (Same spirit as SFTP: runbooks/en/05-sftp-server.md.)
+# install/docker/host/smb/README.md. (Same spirit as SFTP: runbooks/en/05-sftp-server.md.)
 #
 # Prerequisites: infra installed (01); tenants created (new-tenant.sh + deploy.sh).
 
@@ -41,8 +41,8 @@ getent passwd "$APP_UID"; getent group "$APP_GID"
 # ----------------------------------------------------------------------
 # 3) Config = the repo's one (copy; or symlink if you prefer a live link)
 # ----------------------------------------------------------------------
-sudo cp "$REPO/infra-host/smb/smb.conf" /etc/samba/smb.conf
-# sudo ln -sf "$REPO/infra-host/smb/smb.conf" /etc/samba/smb.conf
+sudo cp "$REPO/install/docker/host/smb/smb.conf" /etc/samba/smb.conf
+# sudo ln -sf "$REPO/install/docker/host/smb/smb.conf" /etc/samba/smb.conf
 
 # Tenant sections file (empty at first; filled in by new-smb-account.sh).
 # `include`-ing a missing file isn't fatal, but this avoids the warning.
@@ -66,8 +66,8 @@ sudo systemctl status  smbd
 # ----------------------------------------------------------------------
 # 6) Declare a tenant's SMB access
 # ----------------------------------------------------------------------
-# sudo ./infra-host/smb/new-smb-account.sh <id>    # creates account + section + reload (prompts for password)
-# e.g.: sudo ./infra-host/smb/new-smb-account.sh test2
+# sudo ./install/docker/host/smb/new-smb-account.sh <id>    # creates account + section + reload (prompts for password)
+# e.g.: sudo ./install/docker/host/smb/new-smb-account.sh test2
 #   -> no restart: `smbcontrol all reload-config` reloads the conf hot.
 
 # ----------------------------------------------------------------------

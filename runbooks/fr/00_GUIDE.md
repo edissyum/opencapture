@@ -1,7 +1,7 @@
 # Guide — Installation & création de tenants (OpenCapture Docker)
 
 Déploiement multi-tenant : une **infra partagée** (Traefik, réseau, image backend) installée
-**une fois par serveur**, puis **un tenant par instance** dans `stub-tenants/<id>/`. Trois modes
+**une fois par serveur**, puis **un tenant par instance** dans `install/docker/stub-tenants/<id>/`. Trois modes
 d'exposition selon le TLS. Données hors repo, sous `$OC_DATA_ROOT` (p. ex. `/opt/edissyum/opencapture`).
 
 > ### OC_DATA_ROOT — LA variable qui fait foi (une seule décision par serveur)
@@ -31,11 +31,11 @@ d'exposition selon le TLS. Données hors repo, sous `$OC_DATA_ROOT` (p. ex. `/op
 | [05-sftp-server.md](05-sftp-server.md) | serveur SFTP multi-tenant (ProFTPD `mod_sftp`) — install + ajout d'un tenant |
 | [06-webdav-server.md](06-webdav-server.md) | serveur WebDAV multi-tenant (Apache `mod_dav`) — exploitation + ajout d'un tenant |
 | [07-smb-server.md](07-smb-server.md) | serveur SMB multi-tenant (Samba standalone) — install + ajout d'un tenant |
-| [../new-tenant.sh](../../new-tenant.sh) | crée le stub d'un tenant (copie le gabarit + pré-remplit le `.env`) |
-| [../infra-host/sftp/new-sftp-account.sh](../../infra-host/sftp/new-sftp-account.sh) | crée l'accès SFTP d'un tenant (compte virtuel chrooté) |
-| [../infra/webdav/new-webdav-account.sh](../../infra/webdav/new-webdav-account.sh) | crée l'accès WebDAV d'un tenant (compte htpasswd) |
-| [../infra-host/smb/new-smb-account.sh](../../infra-host/smb/new-smb-account.sh) | crée l'accès SMB d'un tenant (compte Samba local + partage) |
-| [../deploy.sh](../../deploy.sh) | build + (re)déploie un tenant **existant** |
+| [../install/docker/tenant/new-tenant.sh](../../install/docker/tenant/new-tenant.sh) | crée le stub d'un tenant (copie le gabarit + pré-remplit le `.env`) |
+| [../install/docker/host/sftp/new-sftp-account.sh](../../install/docker/host/sftp/new-sftp-account.sh) | crée l'accès SFTP d'un tenant (compte virtuel chrooté) |
+| [../install/docker/shared/webdav/new-webdav-account.sh](../../install/docker/shared/webdav/new-webdav-account.sh) | crée l'accès WebDAV d'un tenant (compte htpasswd) |
+| [../install/docker/host/smb/new-smb-account.sh](../../install/docker/host/smb/new-smb-account.sh) | crée l'accès SMB d'un tenant (compte Samba local + partage) |
+| [../install/docker/deploy.sh](../../install/docker/deploy.sh) | build + (re)déploie un tenant **existant** |
 
 ---
 
@@ -64,9 +64,9 @@ copier-coller). Il couvre, dans l'ordre :
 
 ### Point important à savoir sur les ressources 
 
-Les ressources sont limitées par défaut comme ci-dessous dans infra/docker-compose.yml. Il faut penser à modifier en fonction des ressources du serveur.
+Les ressources sont limitées par défaut comme ci-dessous dans install/docker/shared/docker-compose.yml. Il faut penser à modifier en fonction des ressources du serveur.
 
-Le script [../checkos.sh](../../checkos.sh) fournit une vérification basique des ressources OS en fonction des ressources réelles de la machine (RAM, swap, cœurs) au regard des profils `x-res-*`, et préconise un nombre max de tenants.
+Le script [../install/docker/host/checkos.sh](../../install/docker/host/checkos.sh) fournit une vérification basique des ressources OS en fonction des ressources réelles de la machine (RAM, swap, cœurs) au regard des profils `x-res-*`, et préconise un nombre max de tenants.
 
 La CPU 0 n'est pas attribuée aux tenants pour ne pas bloquer le serveur en cas de surcharge. A voir si du nice est utile.
 
@@ -105,18 +105,18 @@ Dans la suite : `<id>` = identifiant du tenant (minuscules/chiffres/`_`), `<fqdn
 
 ```bash
 # 1. Créer le stub. mode = http | le | cert
-./new-tenant.sh <mode> <id>          # copie le gabarit + pré-remplit CUSTOM_ID, DB, user, OC_DATA_ROOT, APP_UID/GID
+./install/docker/tenant/new-tenant.sh <mode> <id>          # copie le gabarit + pré-remplit CUSTOM_ID, DB, user, OC_DATA_ROOT, APP_UID/GID
 
 # 2. Renseigner À LA MAIN ce que le script indique
-$EDITOR stub-tenants/<id>/.env       # OC_FQDN + POSTGRES_PASSWORD + RABBITMQ_PASS
+$EDITOR install/docker/stub-tenants/<id>/.env       # OC_FQDN + POSTGRES_PASSWORD + RABBITMQ_PASS
 
 # 3. (mode cert UNIQUEMENT) cert côté Traefik
 sudo cp <id>.crt <id>.key ${OC_DATA_ROOT}/shared-by-tenants/traefik/certs/
-sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
+sed "s/changeme/<id>/g" install/docker/stub-tenants/<id>/tls.yml.example \
   | sudo tee ${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/<id>.yml
 
 # 4. Déployer
-./deploy.sh <id>
+./install/docker/deploy.sh <id>
 ```
 
 > `new-tenant.sh` pré-remplit `CUSTOM_ID` / `POSTGRES_DB` / `POSTGRES_USER` /
@@ -147,7 +147,7 @@ sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
 
 ```bash
 # Pour un tenant en se plaçant dans son dossier
-DIR=stub-tenants/<id>
+DIR=install/docker/stub-tenants/<id>
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 
 $DC ps                  # état des conteneurs
@@ -157,14 +157,14 @@ $DC restart backend     # redémarrer un service
 $DC exec backend env | grep -E 'CUSTOM_ID|POSTGRES|RABBIT'   # vérifier la config injectée
 $DC down                # arrêter — JAMAIS `down -v` (-v supprime les données !)
 
-# Pour un tenant depuis la racine (répertoire dans lequel on fait le git pull et qui contient infra)
-dc() { docker compose --project-directory "stub-tenants/$1" -f "stub-tenants/$1/docker-compose.yml" "${@:2}"; }
+# Pour un tenant depuis la racine (répertoire dans lequel on fait le git pull et qui contient install/)
+dc() { docker compose --project-directory "install/docker/stub-tenants/$1" -f "install/docker/stub-tenants/$1/docker-compose.yml" "${@:2}"; }
 dc <id> down          
 dc <id> restart
 dc <id> up -d
 
 # Pour tous les tenants faire une commande du type : down | stop | restart | "up -d" | "down -v" (ci-dessous down)
-for d in stub-tenants/*/; do id=$(basename "$d"); case "$id" in _template-*) continue;; esac; [ -f "$d/docker-compose.yml" ] && docker compose --project-directory "$d" -f "$d/docker-compose.yml" down; done
+for d in install/docker/stub-tenants/*/; do id=$(basename "$d"); case "$id" in _template-*) continue;; esac; [ -f "$d/docker-compose.yml" ] && docker compose --project-directory "$d" -f "$d/docker-compose.yml" down; done
 
 ```
 
@@ -172,15 +172,15 @@ for d in stub-tenants/*/; do id=$(basename "$d"); case "$id" in _template-*) con
 
 ```bash
 # Un tenant :
-./deploy.sh --frontend-only <id>   # rebuild du frontend du tenant + recrée
-./deploy.sh --backend-only  <id>   # rebuild de l'image backend partagée + recrée
-./deploy.sh <id>                   # rebuild backend + frontend + recrée
+./install/docker/deploy.sh --frontend-only <id>   # rebuild du frontend du tenant + recrée
+./install/docker/deploy.sh --backend-only  <id>   # rebuild de l'image backend partagée + recrée
+./install/docker/deploy.sh <id>                   # rebuild backend + frontend + recrée
 
 # Tous les tenants, après un `git pull` :
-./deploy.sh --frontend-only --all  # changement du template nginx OU d'un overlay Traefik
-./deploy.sh --backend-only  --all  # changement du code backend (image partagée)
-./deploy.sh --all                  # dans le doute : backend + frontends
-./deploy.sh --pull --all           # git pull intégré, puis tout redéployer
+./install/docker/deploy.sh --frontend-only --all  # changement du template nginx OU d'un overlay Traefik
+./install/docker/deploy.sh --backend-only  --all  # changement du code backend (image partagée)
+./install/docker/deploy.sh --all                  # dans le doute : backend + frontends
+./install/docker/deploy.sh --pull --all           # git pull intégré, puis tout redéployer
 
 ```
 
@@ -189,13 +189,13 @@ for d in stub-tenants/*/; do id=$(basename "$d"); case "$id" in _template-*) con
 ```bash
 
 # Le plus simple : stop|start
-cd ~/opencapture_docker/stub-tenants/<id>
+cd ~/opencapture_docker/install/docker/stub-tenants/<id>
 docker compose stop
 # repartir plus tard :
 docker compose start
 
 #ou sans changer de dossier (forme explicite, comme deploy.sh) :
-docker compose --project-directory stub-tenants/<id> -f stub-tenants/<id>/docker-compose.yml stop
+docker compose --project-directory install/docker/stub-tenants/<id> -f install/docker/stub-tenants/<id>/docker-compose.yml stop
 
 # Variante par nom (sans se soucier du dossier) TRES PRATIQUE !
 docker ps -aq --filter "name=opencapture_<id>-" | xargs -r docker stop
@@ -241,7 +241,7 @@ tail -f ${OC_DATA_ROOT}/tenants/<tenant>/custom/<tenant>/bin/ldap/log/technique.
 ### 4.d.2 Via docker compose (depuis le dossier du tenant)
 
 ```bash
-cd stub-tenants/<tenant>   # ou infra/ pour "default"
+cd install/docker/stub-tenants/<tenant>   # ou install/docker/shared/ pour "default"
 docker compose logs -f worker-mail        # un service
 docker compose logs --tail 50             # toute la stack du tenant
 ```
@@ -264,7 +264,7 @@ docker stats                 # en continu
 
 ```bash
 cd ~/opencapture_docker
-DIR=stub-tenants/<tenant>
+DIR=install/docker/stub-tenants/<tenant>
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 
 
@@ -284,7 +284,7 @@ $DC exec -T postgres psql -U <user> -d <base> -c \
 ```bash
 cd ~/opencapture_docker
 ID=<tenant>                                  # <-- le tenant à détruire
-DIR=stub-tenants/$ID
+DIR=install/docker/stub-tenants/$ID
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 
 # 1) Conteneurs + réseau + volumes anonymes du tenant.
@@ -297,7 +297,7 @@ $DC down --remove-orphans --volumes --rmi local
 sudo rm -rf ${OC_DATA_ROOT}/tenants/$ID
 
 # 3) Le stub (compose + .env + config)
-rm -rf stub-tenants/$ID
+rm -rf install/docker/stub-tenants/$ID
 
 # 4) (mode cert uniquement) fragment Traefik dynamique du tenant
 sudo rm -f ${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/$ID.yml
@@ -314,12 +314,12 @@ sudo rm -f ${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/$ID.yml
 cd ~/opencapture_docker
 
 # Mettre le nouveau FQDN dans le .env
-sed -i 's#^OC_FQDN=.*#OC_FQDN=demo.open-capture.com#' stub-tenants/demo/.env
+sed -i 's#^OC_FQDN=.*#OC_FQDN=demo.open-capture.com#' install/docker/stub-tenants/demo/.env
 
 # Rebuild et recreate 
 #   build l'image opencapture-backend 
 #   puis up -d demo -> recreate = bootstrap réécrit custom.ini.url + Traefik nouveau Host + cert LE
-./deploy.sh demo
+./install/docker/deploy.sh demo
 
 # Vérifs
 grep '^url' /opt/edissyum/opencapture/tenants/demo/custom/custom.ini   # url = demo.open-capture.com
@@ -356,11 +356,11 @@ chrootés, mappés sur `$APP_UID/$APP_GID`.
 sudo bash runbooks/05-sftp-server.md        # à jouer pas-à-pas, pas d'un bloc
 
 # Par tenant (aucun reload nécessaire) :
-sudo ./infra-host/sftp/new-sftp-account.sh <id>              # crée le compte virtuel chrooté
+sudo ./install/docker/host/sftp/new-sftp-account.sh <id>              # crée le compte virtuel chrooté
 # Connexion client : sftp -P 2222 <id>@<serveur>
 ```
 
-Détail du design et exploitation : [../infra-host/sftp/README.md](../../infra-host/sftp/README.md).
+Détail du design et exploitation : [../install/docker/host/sftp/README.md](../../install/docker/host/sftp/README.md).
 
 ---
 
@@ -377,20 +377,20 @@ Auth Basic htpasswd par tenant, fichiers déposés en `$APP_UID/$APP_GID`.
 l'overlay** WebDAV (sinon `/dav/` renvoie 501 « non activé »).
 
 ```bash
-# 1. Activer l'overlay dans stub-tenants/<id>/docker-compose.yml :
+# 1. Activer l'overlay dans install/docker/stub-tenants/<id>/docker-compose.yml :
 #      include:
-#          - path: ../../infra/docker-compose.yml
-#          - path: ../../infra/docker-compose.traefik-*.yml
-#          - path: ../../infra/webdav/docker-compose.yml   # <- active le WebDAV
+#          - path: ../../install/docker/shared/docker-compose.yml
+#          - path: ../../install/docker/shared/traefik/docker-compose.traefik-*.yml
+#          - path: ../../install/docker/shared/webdav/docker-compose.yml   # <- active le WebDAV
 # 2. Déployer (build l'image opencapture-webdav si l'overlay est inclus) :
-./deploy.sh <id>
+./install/docker/deploy.sh <id>
 # 3. Créer un compte (aucun reload) :
-sudo ./infra/webdav/new-webdav-account.sh <id>           # login = <id> ; demande le mot de passe
+sudo ./install/docker/shared/webdav/new-webdav-account.sh <id>           # login = <id> ; demande le mot de passe
 # Connexion client : monter https://<fqdn>/dav/ comme lecteur réseau.
 ```
 
 Détail du design et exploitation : [06-webdav-server.md](06-webdav-server.md) +
-[../infra/webdav/README.md](../../infra/webdav/README.md).
+[../install/docker/shared/webdav/README.md](../../install/docker/shared/webdav/README.md).
 
 ---
 
@@ -410,21 +410,21 @@ certificat** à gérer.
 sudo bash runbooks/07-smb-server.md         # à jouer pas-à-pas, pas d'un bloc
 
 # Par tenant (pas de restart, reload à chaud) :
-sudo ./infra-host/smb/new-smb-account.sh <id>              # crée le compte local + le partage [<id>]
+sudo ./install/docker/host/smb/new-smb-account.sh <id>              # crée le compte local + le partage [<id>]
 # Connexion client : \\<serveur>\<id>  (ou \\<domaine-client>\<id>), identifiants <id>
 ```
 
 Détail du design et exploitation : [07-smb-server.md](07-smb-server.md) +
-[../infra-host/smb/README.md](../../infra-host/smb/README.md).
+[../install/docker/host/smb/README.md](../../install/docker/host/smb/README.md).
 
 ---
 
 ## Voir aussi
 - Runbooks par mode : [02-tenant-letsencrypt.md](02-tenant-letsencrypt.md), [03-tenant-cert.md](03-tenant-cert.md), [04-tenant-http.md](04-tenant-http.md)
-- Serveur SFTP : [05-sftp-server.md](05-sftp-server.md) + [../infra-host/sftp/README.md](../../infra-host/sftp/README.md)
-- Serveur WebDAV : [06-webdav-server.md](06-webdav-server.md) + [../infra/webdav/README.md](../../infra/webdav/README.md)
-- Serveur SMB : [07-smb-server.md](07-smb-server.md) + [../infra-host/smb/README.md](../../infra-host/smb/README.md)
-- Architecture multi-tenant : [../infra/MULTITENANT.md](../../infra/MULTITENANT.md)
+- Serveur SFTP : [05-sftp-server.md](05-sftp-server.md) + [../install/docker/host/sftp/README.md](../../install/docker/host/sftp/README.md)
+- Serveur WebDAV : [06-webdav-server.md](06-webdav-server.md) + [../install/docker/shared/webdav/README.md](../../install/docker/shared/webdav/README.md)
+- Serveur SMB : [07-smb-server.md](07-smb-server.md) + [../install/docker/host/smb/README.md](../../install/docker/host/smb/README.md)
+- Architecture multi-tenant : [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md)
 - **Annexes techniques** (rebuild, multi-stage, rôles de l'image, pipeline, commandes par conteneur, glossaire, reverse-proxy/IP réelle, résolution tenant & FQDN) : ci-dessous dans ce document.
 
 ---
@@ -443,13 +443,13 @@ Détail du design et exploitation : [07-smb-server.md](07-smb-server.md) +
 
 | Ce qui a changé | Rebuild ? | Commande |
 |---|---|---|
-| Code **backend** (`backend/src/…`) | ✅ backend (1×, partagé) | `./deploy.sh --backend-only --all` |
+| Code **backend** (`backend/src/…`) | ✅ backend (1×, partagé) | `./install/docker/deploy.sh --backend-only --all` |
 | Deps backend (`pip-requirements.txt`), `backend.Dockerfile`, `apt-requirements.txt` | ✅ backend | idem |
-| `infra/docker-entrypoint.sh` / `docker-bootstrap.sh` | ✅ backend | idem |
-| Code **frontend** (`frontend/src/…`) | ✅ frontend (1×, partagée) | `./deploy.sh --frontend-only --all` |
+| `install/docker/shared/docker-entrypoint.sh` / `docker-bootstrap.sh` | ✅ backend | idem |
+| Code **frontend** (`frontend/src/…`) | ✅ frontend (1×, partagée) | `./install/docker/deploy.sh --frontend-only --all` |
 | Deps frontend (`package.json`), `frontend.Dockerfile`, `nginx.conf.template` | ✅ frontend (1×, partagée) | idem |
 | **`VITE_BACKEND_URL`** (figé à `/` relatif, baké au build ; **non** piloté par `.env` en prod) | ✅ frontend | idem |
-| `docker-compose*.yml` (env, ports, volumes, command) | ❌ | `./deploy.sh --no-build <tenant>` |
+| `docker-compose*.yml` (env, ports, volumes, command) | ❌ | `./install/docker/deploy.sh --no-build <tenant>` |
 | `.env` runtime (mots de passe, chemins, `OC_FQDN`, `TZ`, `MAIL_POLL_INTERVAL`…) | ❌ | idem |
 | `.env` → **`APP_UID` / `APP_GID`** | ❌ (relu au runtime par l'entrypoint) | idem |
 | SQL (`postgres/sql/*.sql`) | ❌ (image officielle) | rejoué **seulement sur DB vide** → `down -v` (⚠️ destructif) |
@@ -464,7 +464,7 @@ Les `Dockerfile` ont deux `FROM` : un stage **`builder`** (qui fabrique) et un s
 **`runtime`** (l'image finale). **Seul le dernier stage devient l'image** ; le builder est
 **jeté** — seul ce qui est explicitement `COPY --from=builder` survit.
 
-**Frontend** ([../infra/frontend.Dockerfile](../../infra/frontend.Dockerfile)) :
+**Frontend** ([../install/docker/shared/frontend.Dockerfile](../../install/docker/shared/frontend.Dockerfile)) :
 - `builder` (`node`) : `npm ci` + `npm run build` → produit `/app/dist`.
 - `runtime` (`nginx`) : `COPY --from=builder /app/dist /usr/share/nginx/html`.
 - Jeté : Node, npm, `node_modules`, les sources. Image finale ≈ 99 Mo (nginx + bundle).
@@ -474,7 +474,7 @@ tenants** : l'image `opencapture-frontend` est **unique et partagée**, construi
 fois**. La spécialisation par tenant est faite **au runtime** (variable `CUSTOM_ID` →
 `envsubst` sur `nginx.conf.template`), pas au build (cf. Annexe C « Frontend » + Annexe G).
 
-**Backend** ([../infra/backend.Dockerfile](../../infra/backend.Dockerfile)) :
+**Backend** ([../install/docker/shared/backend.Dockerfile](../../install/docker/shared/backend.Dockerfile)) :
 - `builder` : compile les *wheels* Python (avec `build-essential`, headers dev…).
 - `runtime` : installe les wheels pré-compilés + libs runtime uniquement.
 - Jeté : le compilateur et les headers de dev.
@@ -489,7 +489,7 @@ le **cache de build** (séparé de l'image) pour accélérer les rebuilds.
 
 ### Une image backend, plusieurs rôles
 Tous les services backend partagent l'image `opencapture-backend`. L'`ENTRYPOINT` de
-l'image est **toujours** [../infra/docker-entrypoint.sh](../../infra/docker-entrypoint.sh) ; ce qui
+l'image est **toujours** [../install/docker/shared/docker-entrypoint.sh](../../install/docker/shared/docker-entrypoint.sh) ; ce qui
 change d'un service à l'autre, c'est le `command:` déclaré dans la compose — dont le
 **premier argument est le rôle**. L'entrypoint le lit (`ROLE="${1:-api}"`, défaut `api`),
 attend les dépendances utiles (Postgres/RabbitMQ selon le rôle), puis un `case "$ROLE"`
@@ -587,16 +587,16 @@ file, un *consommateur* (le worker) le traite. Exemple pour le splitter :
 
 ### Frontend (image partagée) + Traefik
 Le frontend est **une image unique partagée**, `opencapture-frontend`
-([../infra/docker-compose.yml:286](../../infra/docker-compose.yml#L286)), construite **une
+([../install/docker/shared/docker-compose.yml:286](../../install/docker/shared/docker-compose.yml#L286)), construite **une
 fois** (`build frontend`) : le bundle Vite est **identique pour tous les tenants**
-(`VITE_BACKEND_URL=/` relatif, [../infra/frontend.Dockerfile:23](../../infra/frontend.Dockerfile#L23)),
+(`VITE_BACKEND_URL=/` relatif, [../install/docker/shared/frontend.Dockerfile:23](../../install/docker/shared/frontend.Dockerfile#L23)),
 donc rien de spécifique au tenant n'est **baké**. La spécialisation est faite **au runtime**
 via la variable `CUSTOM_ID` du conteneur : l'entrypoint `nginx:alpine` passe
 `nginx.conf.template` dans `envsubst` au démarrage → les `location /${CUSTOM_ID}/ws/…`
 prennent la valeur du tenant. Un changement de code/deps frontend impose donc **un seul**
-rebuild partagé, puis un `up -d` de chaque tenant à rafraîchir (`./deploy.sh --frontend-only --all`).
+rebuild partagé, puis un `up -d` de chaque tenant à rafraîchir (`./install/docker/deploy.sh --frontend-only --all`).
 
-L'overlay [../infra/docker-compose.traefik.yml](../../infra/docker-compose.traefik.yml) branche le
+L'overlay [../install/docker/shared/traefik/docker-compose.traefik.yml](../../install/docker/shared/traefik/docker-compose.traefik.yml) branche le
 frontend sur le réseau externe `frontend` et pose une route `Host(${OC_FQDN})` TLS (resolver
 `myresolver`). Le seul point d'entrée public est Traefik (les autres services restent sur le
 réseau interne). Détail du routage par domaine/préfixe et du rôle d'`OC_FQDN` : **Annexe G**.
@@ -638,38 +638,38 @@ openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chaîn
 >   entrée dans `letsencrypt/acme.json` s'il était en Let's Encrypt).
 
 ### Mode développement (Docker)
-L'overlay [../infra/docker-compose.override.yml](../../infra/docker-compose.override.yml)
-(auto-chargé quand on lance `docker compose up` **depuis `infra/`**) : code **bind-monté**
+L'overlay [../install/docker/shared/docker-compose.override.yml](../../install/docker/shared/docker-compose.override.yml)
+(auto-chargé quand on lance `docker compose up` **depuis `install/docker/shared/`**) : code **bind-monté**
 (pas de rebuild pour modifier le code), gunicorn `--reload`, et **Vite HMR** sur `:5173` au
-lieu de nginx. Lancement : `cd infra && docker compose up -d --build`.
+lieu de nginx. Lancement : `cd install/docker/shared && docker compose up -d --build`.
 Pour développer **hors Docker** (bare-metal, systemd/venv), voir
-[../DEV_MODE.md](../../DEV_MODE.md).
+[../DEV_MODE.md](../../install/classic/DEV_MODE.md).
 
 ### Multi-tenant
 Chaque tenant a son projet Compose `opencapture_<CUSTOM_ID>` (conteneurs/volumes/réseau
 préfixés → aucune collision), sa propre DB et son propre RabbitMQ. Pour en ajouter un :
 répéter les étapes de la section 2 avec un nouvel `<id>`/FQDN. Détails et alternatives (dont le
-script bare-metal `create_custom.sh`) dans [../infra/MULTITENANT.md](../../infra/MULTITENANT.md)
-et [../infra/BOOTSTRAP_COMPARISON.md](../../infra/BOOTSTRAP_COMPARISON.md).
+script bare-metal `create_custom.sh`) dans [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md)
+et [../install/docker/shared/BOOTSTRAP_COMPARISON.md](../../install/docker/shared/BOOTSTRAP_COMPARISON.md).
 
 ### Conformité (optionnelle)
 Un journal scellé **NF Z42-020** (chaînage SHA-256 + horodatage RFC 3161) est disponible,
 **désactivé par défaut**, pour le module Splitter. Voir [../NF_Z42-020.md](../../NF_Z42-020.md).
 
 ### Documentation de référence
-- [../infra/MULTITENANT.md](../../infra/MULTITENANT.md) — organisation multi-tenant (méthodo `include:`).
-- [../infra/BOOTSTRAP_COMPARISON.md](../../infra/BOOTSTRAP_COMPARISON.md) — `create_custom.sh` (bare-metal) vs `docker-bootstrap.sh`.
-- [../infra/SCHEDULING.md](../../infra/SCHEDULING.md) — tâches récurrentes (Ofelia, **non intégré** à ce jour).
+- [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md) — organisation multi-tenant (méthodo `include:`).
+- [../install/docker/shared/BOOTSTRAP_COMPARISON.md](../../install/docker/shared/BOOTSTRAP_COMPARISON.md) — `create_custom.sh` (bare-metal) vs `docker-bootstrap.sh`.
+- [../install/docker/shared/SCHEDULING.md](../../install/docker/shared/SCHEDULING.md) — tâches récurrentes (Ofelia, **non intégré** à ce jour).
 - [../TERMINOLOGIE.md](../../TERMINOLOGIE.md) — pourquoi « tenant » plutôt que « custom »/« client ».
 - [../NF_Z42-020.md](../../NF_Z42-020.md) — journal scellé (option Splitter).
-- [../DEV_MODE.md](../../DEV_MODE.md) — développement bare-metal (hors Docker).
+- [../DEV_MODE.md](../../install/classic/DEV_MODE.md) — développement bare-metal (hors Docker).
 
 ## Annexe D — Commandes Docker utiles (par conteneur)
 
 > **Cibler un tenant.** Le plus simple : se placer dans son dossier, `docker compose`
 > résout le `.env` et le projet automatiquement :
 > ```bash
-> cd stub-tenants/site1       # ou infra/ pour "default"
+> cd install/docker/stub-tenants/site1       # ou install/docker/shared/ pour "default"
 > docker compose ps
 > docker compose exec backend bash
 > docker compose logs -f worker-splitter
@@ -874,7 +874,7 @@ Navigateur ──TLS──▶ Traefik ──────▶ nginx (frontend) ─
   ([../backend/src/rest/history.py:45](../../backend/src/rest/history.py#L45), et de nombreux
   contrôleurs) → sans correctif, **toutes** les lignes portent l'IP du proxy.
 
-**Ce que fait nginx** ([../infra/nginx.conf.template:48-54](../../infra/nginx.conf.template#L48)) :
+**Ce que fait nginx** ([../install/docker/shared/nginx.conf.template:48-54](../../install/docker/shared/nginx.conf.template#L48)) :
 il transmet les en-têtes standard au backend —
 
 ```nginx
@@ -927,17 +927,17 @@ et détermine le `custom_id` par **deux voies** :
    le tenant à la racine du domaine, sans le préfixe `/<id>/`.
 
 > nginx expose **les deux formes** vers le backend : un `location` préfixé
-> `^/${CUSTOM_ID}/(ws|backend_oc)/` ([nginx.conf.template:48](../../infra/nginx.conf.template#L48))
+> `^/${CUSTOM_ID}/(ws|backend_oc)/` ([nginx.conf.template:48](../../install/docker/shared/nginx.conf.template#L48))
 > **et** un `location` non préfixé `^/(ws|backend_oc)/`
-> ([:67](../../infra/nginx.conf.template#L67)) — miroir des deux voies ci-dessus.
+> ([:67](../../install/docker/shared/nginx.conf.template#L67)) — miroir des deux voies ci-dessus.
 
 **Ce que fait `OC_FQDN`** (variable **runtime**, jamais bakée) :
 
 - **Route Traefik** : les labels posent `Host(`${OC_FQDN}`)` sur le routeur du tenant
-  ([../infra/docker-compose.traefik.yml:63](../../infra/docker-compose.traefik.yml#L63) et
+  ([../install/docker/shared/traefik/docker-compose.traefik.yml:63](../../install/docker/shared/traefik/docker-compose.traefik.yml#L63) et
   overlays `-cert`/`-http`) → le domaine est routé vers **ce** tenant.
 - **`custom.ini`** : au démarrage, `docker-bootstrap.sh` écrit/patche `url = ${OC_FQDN}`
-  dans la section du tenant ([../infra/docker-bootstrap.sh:176-194](../../infra/docker-bootstrap.sh#L176))
+  dans la section du tenant ([../install/docker/shared/docker-bootstrap.sh:176-194](../../install/docker/shared/docker-bootstrap.sh#L176))
   → active la **voie 2** (URL propre).
 - **TLS** : en Let's Encrypt, le `certresolver` émet le cert pour ce `Host` ; en mode cert,
   le **SAN** du certificat doit couvrir exactement `OC_FQDN`.
@@ -945,21 +945,21 @@ et détermine le `custom_id` par **deux voies** :
 **Ce que `OC_FQDN` ne fait PAS** : il **n'est baké dans aucune image**.
 
 - L'image **backend** est **partagée** → `OC_FQDN` n'y entre pas (env runtime).
-- L'image **frontend** est **partagée** elle aussi ([../deploy.sh:139-141](../../deploy.sh#L139)),
+- L'image **frontend** est **partagée** elle aussi ([../deploy.sh:139-141](../../install/docker/deploy.sh#L139)),
   bâtie avec `VITE_BACKEND_URL=/` **relatif**
-  ([../infra/frontend.Dockerfile:23](../../infra/frontend.Dockerfile#L23)) → la SPA appelle le
+  ([../install/docker/shared/frontend.Dockerfile:23](../../install/docker/shared/frontend.Dockerfile#L23)) → la SPA appelle le
   backend en **same-origin**, donc le FQDN n'y est pas figé non plus. nginx écoute
-  `server_name _` ([nginx.conf.template:27-28](../../infra/nginx.conf.template#L27)), tout Host
+  `server_name _` ([nginx.conf.template:27-28](../../install/docker/shared/nginx.conf.template#L27)), tout Host
   confondu.
 
 **Conséquence — changer de FQDN ne demande AUCUN rebuild, juste un *recreate*** :
 
 ```bash
-sed -i 's#^OC_FQDN=.*#OC_FQDN=<nouveau-fqdn>#' stub-tenants/<id>/.env
-./deploy.sh --no-build <id>          # = up -d : recrée les conteneurs, sans rebuild
+sed -i 's#^OC_FQDN=.*#OC_FQDN=<nouveau-fqdn>#' install/docker/stub-tenants/<id>/.env
+./install/docker/deploy.sh --no-build <id>          # = up -d : recrée les conteneurs, sans rebuild
 ```
 
 Au *recreate*, le conteneur reprend le nouveau label Traefik `Host()` et `docker-bootstrap.sh`
-réécrit `custom.ini` `url`. (`./deploy.sh <id>` fonctionne aussi mais **rebuild inutilement**
+réécrit `custom.ini` `url`. (`./install/docker/deploy.sh <id>` fonctionne aussi mais **rebuild inutilement**
 les images partagées.) Cf. la procédure §4.d.7 et le tableau **Annexe A** (`OC_FQDN` = ligne
 « ❌ rebuild »).
