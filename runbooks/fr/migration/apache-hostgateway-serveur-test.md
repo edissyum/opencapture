@@ -11,7 +11,8 @@ Ce serveur héberge deux générations d'Open-Capture côte à côte :
   `edissyum`), sous `/var/www/html/opencapture/`, toujours joignable via
   `/opencapturev3/`.
 - le **tenant Docker v4** `opencapture`, exposé par Traefik sur `127.0.0.1:8080`
-  (pas de port public dédié).
+  (pas de port public dédié). Apache occupant 80/443, poser `TRAEFIK_HTTP_PORT=8080`
+  et `TRAEFIK_HTTPS_PORT=8443` dans `install/docker/.env`.
 - des applications tierces également installées directement sur le serveur,
   sur le même Apache : **Maarch Courrier / MEM**
   (`/var/www/html/mem_courrier/`), MaarchParapheur, OCForMEM, etc.

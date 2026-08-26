@@ -93,9 +93,8 @@ services:
             - "--accesslog=true"
             - "--log.level=INFO"
 
-        # Host-side ports only. The container always listens on 80/443; only the
-        # host mapping is configurable, for hosts where another service already
-        # owns 80/443 (e.g. an Apache gateway in front). Set in the .env.
+        # Host side only: the container always listens on 80/443. Shift these when
+        # another service already owns 80/443 on the host (e.g. an Apache gateway).
         ports:
             - "${TRAEFIK_HTTP_PORT:-80}:80"
             - "${TRAEFIK_HTTPS_PORT:-443}:443"

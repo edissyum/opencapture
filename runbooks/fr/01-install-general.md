@@ -97,6 +97,7 @@ docker compose --project-directory install/docker/shared -f install/docker/share
 # .env (via le symlink install/docker/shared/.env -> ../.env) : PAS de préfixe inline, sinon un
 # $OC_DATA_ROOT vide écraserait la valeur du .env -> échec du compose.
 # (Pour Let's Encrypt : renseigne LETSENCRYPT_EMAIL dans le .env.)
+# Si un autre service occupe deja 80/443 : TRAEFIK_HTTP_PORT / TRAEFIK_HTTPS_PORT dans le .env.
 docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml up -d
 
 # Vérifier Traefik (conteneur + dashboard local 127.0.0.1:8081)
