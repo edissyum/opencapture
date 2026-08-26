@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 export const getUsersHistory = async (history: any, params: any) => {
-    let data: any = [];
+    const data: any = [];
     const stats = { 'total': 0, 'data': [] };
     params.users.forEach((user: any) => {
         let historyCpt = 0;
@@ -60,7 +60,7 @@ export const statisticsFunctions = {
         const documents = res.documents;
 
         const stats = { 'total': 0, 'data': [] };
-        let data: any = [];
+        const data: any = [];
         forms.forEach((form: any) => {
             let historyCpt = 0;
             documents.forEach((document: any) => {
@@ -95,11 +95,11 @@ export const statisticsFunctions = {
         });
         const stats = { 'total': 0, 'data': [] };
         if (res.history) {
-            let data: any = [];
+            const data: any = [];
             workflows.forEach((workflow: any) => {
                 let historyCpt = 0;
                 res.history.forEach((entry: any) => {
-                    if (workflow.workflow_id === entry.workflow_id) {
+                    if (workflow.id === entry.workflow_id) {
                         historyCpt++;
                         stats['total'] += 1;
                     }
@@ -153,7 +153,7 @@ export const statisticsFunctions = {
 
         const stats = { 'total': 0, 'data': [] };
         if (res.history) {
-            let data: any = [];
+            const data: any = [];
             const historyCpt: any = {};
             const monthNames = Array.from({ length: 12 }, (_, i) => {
                 const month = new Date(0, i).toLocaleString(locale, { month: 'long' });
@@ -194,7 +194,7 @@ export const statisticsFunctions = {
 
         if (res.history) {
             const stats = { 'total': 0, 'data': [] };
-            let data: any = [];
+            const data: any = [];
             const historyCpt: any = {};
             res.history.forEach((entry: any) => {
                 const year = new Date(entry.history_date).getFullYear();
@@ -232,11 +232,11 @@ export const statisticsFunctions = {
 
         const stats = { 'total': 0, 'data': [] };
         if (res.history) {
-            let data: any = [];
+            const data: any = [];
             workflows.forEach((workflow: any) => {
                 let historyCpt = 0;
                 res.history.forEach((entry: any) => {
-                    if (workflow.workflow_id === entry.workflow_id) {
+                    if (workflow.id === entry.workflow_id) {
                         historyCpt++;
                         stats['total'] += 1;
                     }
@@ -290,7 +290,7 @@ export const statisticsFunctions = {
 
         const stats = { 'total': 0, 'data': [] };
         if (res.history) {
-            let data: any = [];
+            const data: any = [];
             const historyCpt: any = {};
             const monthNames = Array.from({ length: 12 }, (_, i) => {
                 const month = new Date(0, i).toLocaleString(locale, { month: 'long' });
@@ -331,7 +331,7 @@ export const statisticsFunctions = {
 
         if (res.history) {
             const stats = { 'total': 0, 'data': [] };
-            let data: any = [];
+            const data: any = [];
             const historyCpt: any = {};
             res.history.forEach((entry: any) => {
                 const year = new Date(entry.history_date).getFullYear();
@@ -376,7 +376,7 @@ export const statisticsFunctions = {
 
         const stats = { 'total': 0, 'data': [] };
         if (res.history) {
-            let data: any = [];
+            const data: any = [];
             const historyCpt: any = {};
             const monthNames = Array.from({ length: 12 }, (_, i) => {
                 const month = new Date(0, i).toLocaleString(locale, { month: 'long' });
@@ -417,7 +417,7 @@ export const statisticsFunctions = {
 
         if (res.history) {
             const stats = { 'total': 0, 'data': [] };
-            let data: any = [];
+            const data: any = [];
             const historyCpt: any = {};
             res.history.forEach((entry: any) => {
                 const year = new Date(entry.history_date).getFullYear();
