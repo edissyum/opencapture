@@ -7,7 +7,7 @@
 # not subdomain -> reuses the existing DNS + cert + Traefik route.
 # Root = /opt/edissyum/opencapture/tenants/<id>/share (watched by the fs-watcher); files
 # dropped as $APP_UID/$APP_GID. Per-tenant htpasswd Basic auth.
-# Design detail: ../install/docker/shared/webdav/README.md.
+# Design detail: ../../install/docker/shared/webdav/README.md.
 #
 # Unlike SFTP (05), NOTHING to install on the host: everything is in Docker
 # (image built by deploy.sh, webdav service started with the stack).
@@ -16,11 +16,12 @@
 
 # ----------------------------------------------------------------------
 # 1) Activation (OPT-IN) — WebDAV is NOT in the base stack
-#    Add the overlay to the tenant's docker-compose.yml (like Traefik):
+#    UNCOMMENT the webdav line already present in the tenant's
+#    docker-compose.yml (paths relative TO THE TENANT DIRECTORY, not the repo root):
 #        include:
-#            - path: ../../install/docker/shared/docker-compose.yml
-#            - path: ../../install/docker/shared/traefik/docker-compose.traefik-*.yml
-#            - path: ../../install/docker/shared/webdav/docker-compose.yml   # <- enables WebDAV
+#            - path: ../../shared/docker-compose.yml
+#            - path: ../../shared/traefik/docker-compose.traefik*.yml   # depending on the mode
+#            - path: ../../shared/webdav/docker-compose.yml             # <- enables WebDAV
 #    Without this overlay, /dav/ returns 501 "not enabled" (the rest of the site works).
 #    The opencapture-webdav image is built by deploy.sh (docker build,
 #    INDEPENDENTLY of the backend) as soon as a tenant includes the overlay.

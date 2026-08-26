@@ -86,12 +86,12 @@ docker network create frontend
 # /app is not writable for them (matplotlib/fontconfig errors).
 # -> new-tenant.sh reuses these values; for a manual creation, align
 #    install/docker/stub-tenants/<id>/.env (see runbooks 02/03/04). So set APP_UID BEFORE this build.
-cp .env.example .env
+cp install/docker/.env.example install/docker/.env
 # Carry over OC_DATA_ROOT + align APP_UID/APP_GID with the current user.
 # NUMERIC values via id -u / id -g (baked into the shared image) — definitely
 # NOT $USER (a name, not a uid). Edit the rest of the .env if needed (ports…).
-sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$OC_DATA_ROOT#" .env
-sed -i -e "s/^APP_UID=.*/APP_UID=$(id -u)/" -e "s/^APP_GID=.*/APP_GID=$(id -g)/" .env
+sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$OC_DATA_ROOT#" install/docker/.env
+sed -i -e "s/^APP_UID=.*/APP_UID=$(id -u)/" -e "s/^APP_GID=.*/APP_GID=$(id -g)/" install/docker/.env
 docker compose --project-directory install/docker/shared -f install/docker/shared/docker-compose.yml build backend
 
 # Shared Traefik (single daemon). Reads OC_DATA_ROOT + LETSENCRYPT_EMAIL from the

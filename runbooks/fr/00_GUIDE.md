@@ -47,7 +47,7 @@ copier-coller). Il couvre, dans l'ordre :
 
 1. **Prérequis système** : Docker Engine + Compose v2 (dépôt officiel Docker).
 2. **Sources** : `git clone` + `cd opencapture_docker`.
-3. **`.env` global** : `cp .env.example .env`, puis `OC_DATA_ROOT` + `APP_UID`/`APP_GID`
+3. **`.env` global** : `cp install/docker/.env.example install/docker/.env`, puis `OC_DATA_ROOT` + `APP_UID`/`APP_GID`
    (= `id -u`/`id -g`, valeurs **numériques** baké dans l'image partagée).
 4. **Arborescence des données** hors repo (`$OC_DATA_ROOT/{tenants,shared-by-tenants/...}`)
    + `chown` à l'utilisateur courant.
@@ -66,7 +66,7 @@ copier-coller). Il couvre, dans l'ordre :
 
 Les ressources sont limitées par défaut comme ci-dessous dans install/docker/shared/docker-compose.yml. Il faut penser à modifier en fonction des ressources du serveur.
 
-Le script [../install/docker/host/checkos.sh](../../install/docker/host/checkos.sh) fournit une vérification basique des ressources OS en fonction des ressources réelles de la machine (RAM, swap, cœurs) au regard des profils `x-res-*`, et préconise un nombre max de tenants.
+Le script [install/docker/host/checkos.sh](../../install/docker/host/checkos.sh) fournit une vérification basique des ressources OS en fonction des ressources réelles de la machine (RAM, swap, cœurs) au regard des profils `x-res-*`, et préconise un nombre max de tenants.
 
 La CPU 0 n'est pas attribuée aux tenants pour ne pas bloquer le serveur en cas de surcharge. A voir si du nice est utile.
 

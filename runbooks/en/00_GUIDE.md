@@ -46,7 +46,7 @@ covers, in order:
 
 1. **System prerequisites**: Docker Engine + Compose v2 (official Docker repository).
 2. **Source code**: `git clone` + `cd opencapture_docker`.
-3. **Global `.env`**: `cp .env.example .env`, then `OC_DATA_ROOT` + `APP_UID`/`APP_GID`
+3. **Global `.env`**: `cp install/docker/.env.example install/docker/.env`, then `OC_DATA_ROOT` + `APP_UID`/`APP_GID`
    (= `id -u`/`id -g`, **numeric** values baked into the shared image).
 4. **Data directory tree** outside the repo (`$OC_DATA_ROOT/{tenants,shared-by-tenants/...}`)
    + `chown` to the current user.
@@ -65,7 +65,7 @@ covers, in order:
 
 Resources are limited by default as shown below in install/docker/shared/docker-compose.yml. Remember to adjust them according to the server's resources.
 
-The [../install/docker/host/checkos.sh](../../install/docker/host/checkos.sh) script provides a basic check of the OS resources against the machine's actual resources (RAM, swap, cores) versus the `x-res-*` profiles, and recommends a maximum number of tenants.
+The [install/docker/host/checkos.sh](../../install/docker/host/checkos.sh) script provides a basic check of the OS resources against the machine's actual resources (RAM, swap, cores) versus the `x-res-*` profiles, and recommends a maximum number of tenants.
 
 CPU 0 is not assigned to tenants so as not to block the server in case of overload. To be seen whether nice is useful.
 
