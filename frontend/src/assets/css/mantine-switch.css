@@ -17,6 +17,7 @@
 
 .mantine-Switch-body {
     @apply flex;
+    @apply gap-2;
     @apply items-center;
 
     & input {
@@ -26,9 +27,13 @@
 
 .mantine-Switch-labelWrapper {
     @apply text-base;
+
+    & .mantine-Switch-label {
+        @apply ps-0;
+    }
 }
 
-.mantine-Switch-input[data-checked="false"] {
+.mantine-Switch-input:not([data-checked="true"]) {
     & ~ .mantine-Switch-track {
         @apply bg-(--bg-secondary);
     }

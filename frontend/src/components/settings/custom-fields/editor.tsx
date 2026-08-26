@@ -194,14 +194,14 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     const regexTestSchema: any = z.object({
         test: z.string().optional().describe(JSON.stringify({
             component: "input",
-            label: t("REGEX.test_value")
+            placeholder: t("REGEX.test_value")
         }))
     });
     const regexSchema: any = regexDetailsSchema.extend(regexContentSchema.shape).extend(regexCleanSchema.shape).extend(regexRemoveKeywordSchema.shape).extend(regexTestSchema.shape);
 
     const [selectOptions, setSelectOptions] = useState<{
-        idx: number;
         id: string;
+        idx: number;
         label: string;
         conditional_custom_field: any;
         conditional_custom_value: string;
@@ -483,28 +483,29 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                             name="remove_keyword"
                             control={ control }
                             render={ ({ field }) => (
-                                <div className="flex items-center gap-2 relative w-fit mb-2">
+                                <div className="relative w-fit mb-2">
                                     <InputSwitch
                                         id={ field.name }
                                         checked={ !!field.value }
-                                        onChange={ (value) => field.onChange(value) }
                                         label={ t("REGEX.remove_keyword") }
+                                        onChange={ (value) => field.onChange(value) }
                                     />
 
-                                    <span className={ `absolute cursor-pointer z-10 -right-5 top-1.5
-                                                   text-(--text-secondary)` }>
-                                    <CircleQuestionMark data-tooltip-id="tooltip-1" size={ 16 }/>
+                                    <span className='absolute cursor-pointer -right-5 top-0 text-(--text-secondary)'>
+                                        <CircleQuestionMark data-tooltip-id="tooltip-1" size={ 16 }/>
 
-                                    <Tooltip id="tooltip-1" place="right">
-                                        <div className="flex flex-col gap-2 max-w-xs">
-                                            <img src='/imgs/regex_hint.svg' className='rounded-md' alt='Hint'/>
-                                            <div className='px-2'>
-                                                <p className='font-semibold mb-1'>{ t('REGEX.remove_keyword_title') }</p>
-                                                <span>{ t('REGEX.remove_keyword_hint') }</span>
+                                        <Tooltip id="tooltip-1" place="right" className='z-10'>
+                                            <div className="flex flex-col gap-2 max-w-xs">
+                                                <img src='/imgs/regex_hint.svg' className='rounded-md' alt='Hint'/>
+                                                <div className='px-2'>
+                                                    <p className='font-semibold mb-1'>
+                                                        { t('REGEX.remove_keyword_title') }
+                                                    </p>
+                                                    <span>{ t('REGEX.remove_keyword_hint') }</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Tooltip>
-                                </span>
+                                        </Tooltip>
+                                    </span>
                                 </div>
                             ) }
                         />

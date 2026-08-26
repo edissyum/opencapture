@@ -553,6 +553,37 @@ ALTER TABLE splitter_batches ADD COLUMN "sha256" VARCHAR(64);
 ALTER TABLE splitter_documents ADD COLUMN "md5" VARCHAR(32);
 ALTER TABLE splitter_documents ADD COLUMN "sha256" VARCHAR(64);
 
+-- Modification des formats de date dans la table documents du module Verifier
+DO $$
+    DECLARE
+        v_format text;
+    BEGIN
+        SELECT CASE WHEN data->>'value' = 'eng' THEN 'MM/DD/YYYY' ELSE 'DD/MM/YYYY' END
+        INTO v_format
+        FROM configurations
+        WHERE label = 'locale';
+
+        IF v_format IS NULL THEN
+            v_format := 'DD/MM/YYYY';
+        END IF;
+
+        UPDATE documents
+        SET datas = jsonb_set(
+            datas,
+            '{document_date}',
+            to_jsonb(to_char(to_date(datas->>'document_date', v_format), 'YYYY-MM-DD'))
+        ) WHERE datas ? 'document_date' AND datas->>'document_date' !~ '^\d{4}-\d{2}-\d{2}$';
+
+        UPDATE documents
+        SET datas = jsonb_set(
+            datas,
+            '{document_due_date}',
+            to_jsonb(to_char(to_date(datas->>'document_due_date', v_format), 'YYYY-MM-DD'))
+        ) WHERE datas ? 'document_due_date' AND datas->>'document_due_date' !~ '^\d{4}-\d{2}-\d{2}$';
+    END
+$$;
+
+
 -- Modifier document_md5 en md5 dans les chaînes sortants XML Splitter
 UPDATE outputs
 SET data = jsonb_set(
