@@ -1,0 +1,127 @@
+# STANDALONE Traefik — ONE SINGLE daemon for ALL modes.
+#
+# This shared Traefik serves all 3 TLS modes simultaneously; it's not the
+# daemon that chooses, it's EACH tenant via its labels:
+#   - Plain HTTP           : tenant with `entrypoints=web` (traefik-http.yml overlay)
+#   - HTTPS Let's Encrypt  : tenant with `tls=true` + `certresolver=myresolver`
+#                       (traefik.yml overlay) -> auto cert via ACME
+#   - HTTPS client cert    : tenant with `tls=true` WITHOUT certresolver (traefik-cert.yml overlay)
+#                       -> provided PEM cert, served via SNI (file provider)
+# Each capability is INERT until a tenant uses it (ACME only triggers for a
+# router that sets certresolver; a client cert is only served if a PEM
+# matches the SNI).
+#
+# No forced HTTP->HTTPS redirect at the daemon level: it would break plain
+# HTTP tenants. The redirect happens PER TENANT via a middleware on its own
+# router -> included by default in the traefik.yml (LE) and traefik-cert.yml
+# overlays; plain HTTP tenants (traefik-http.yml) don't have one.
+#
+# Host prerequisites:
+#   docker network create frontend                  # once
+#   .env -> LETSENCRYPT_EMAIL=<valid email>         # if LE (ACME) tenants
+#   ports 80 + 443 open from the Internet           # for the LE challenge
+#                                                   #   (LE tenants only)
+#   Any client certs: drop the PEMs into the /certs folder
+#     (= ${OC_DATA_ROOT}/shared-by-tenants/traefik/certs; prod
+#     OC_DATA_ROOT=/opt/edissyum/opencapture) + one tls.yml fragment PER tenant
+#     in /dynamic (see runbooks/en/03-tenant-cert.md and
+#     install/docker/stub-tenants/_template-cert/tls.yml.example).
+#
+# Usage:
+#   OC_DATA_ROOT=/opt/edissyum/opencapture \
+#   docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml up -d
+#   # then for each tenant: cd install/docker/stub-tenants/<id> && docker compose up -d
+#
+# Dashboard: http://127.0.0.1:8081/ (bound to localhost; SSH tunnel if remote).
+
+name: traefik
+
+networks:
+    frontend:
+        name: frontend
+        external: true
+
+volumes:
+    letsencrypt:
+        # Storage for acme.json (private key + LE certs). PERSISTENT. If you
+        # change machines, copy this folder over to avoid regenerating the
+        # certs (LE rate limit: 50 certs/week/domain).
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${LETSENCRYPT_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/traefik/letsencrypt}
+
+services:
+    traefik:
+        # v3.7: the Docker provider gets along with recent Docker daemons
+        # (>= v25, API min 1.40). v3.5 spoke to the daemon over API 1.24,
+        # which got rejected ("client version 1.24 is too old"), blocking
+        # every route. Do not go back below v3.7. (DOCKER_API_VERSION is
+        # ignored by Traefik.)
+        image: traefik:v3.7
+        container_name: opencapture_traefik
+        command:
+            # API + dashboard (insecure => bound locally only).
+            - "--api.dashboard=true"
+            - "--api.insecure=true"
+
+            # Docker provider — reads the tenants' labels.
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.docker.network=frontend"
+
+            # File provider — certs PROVIDED by clients (served via
+            # SNI). Always active; inert as long as no tls.yml declares
+            # anything. watch=true => hot-reload (editing tls.yml /
+            # replacing a .crt/.key) without restarting Traefik.
+            - "--providers.file.directory=/dynamic"
+            - "--providers.file.watch=true"
+
+            # Entrypoints: HTTP (80) AND HTTPS (443) always available.
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+
+            # Let's Encrypt via tlsChallenge — used ONLY by tenants whose
+            # router carries certresolver=myresolver.
+            - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+            - "--certificatesresolvers.myresolver.acme.email=${LETSENCRYPT_EMAIL:-admin@example.com}"
+            - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+            # LE staging (untrusted certs) to test without hitting the rate limit:
+            # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+
+            - "--accesslog=true"
+            - "--log.level=INFO"
+
+        # Host side only: the container always listens on 80/443. Shift these when
+        # another service already owns 80/443 on the host (e.g. an Apache gateway).
+        ports:
+            - "${TRAEFIK_HTTP_PORT:-80}:80"
+            - "${TRAEFIK_HTTPS_PORT:-443}:443"
+            # Dashboard exposed ONLY on localhost (SSH tunnel if remote).
+            - "127.0.0.1:${TRAEFIK_DASHBOARD_PORT:-8081}:8080"
+
+        # Rotation of stdout logs (accesslog + Traefik application log):
+        # json-file driver defaults to unlimited size otherwise. Same cap
+        # as install/docker/shared/docker-compose.yml (x-logging).
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
+
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - letsencrypt:/letsencrypt
+            # Dynamic config (file provider): certs' tls.yml fragments.
+            # Derived from OC_DATA_ROOT (MANDATORY, no default;
+            # prod OC_DATA_ROOT=/opt/edissyum/opencapture). Override: OC_DYNAMIC_PATH.
+            - ${OC_DYNAMIC_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/traefik/dynamic}:/dynamic:ro
+            # Client certs (PEM + key). Host folder NOT versioned: a
+            # private key must NEVER be committed there. Override: OC_CERTS_PATH.
+            - ${OC_CERTS_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/traefik/certs}:/certs:ro
+
+        networks:
+            - frontend
+
+        restart: unless-stopped

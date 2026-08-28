@@ -1,0 +1,22 @@
+# Fragment du provider FICHIER de Traefik — déclare LE certificat de CE tenant.
+#
+# À éditer (remplacer `changeme` par le nom des fichiers PEM, idéalement <id>),
+# puis copier vers le dossier /dynamic du Traefik partagé, UN fichier par tenant :
+#   cp install/docker/stub-tenants/<id>/tls.yml /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml
+# Traefik (watch=true) agrège TOUS les fichiers de /dynamic et recharge à chaud,
+# sans redémarrage. Le cert est ensuite choisi au handshake par SNI (son SAN doit
+# couvrir exactement l'OC_FQDN du tenant).
+#
+# Les chemins sont vus DANS le conteneur Traefik (/certs = dossier hôte des PEM,
+# p.ex. /opt/edissyum/opencapture/shared-by-tenants/traefik/certs/). PAS d'interpolation ${VAR} ici :
+# le provider fichier ne lit pas le .env -> chemins en dur.
+#
+# Générer un cert AUTO-SIGNÉ (le « fourni » que tu produis toi-même) :
+#   openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
+#       -keyout changeme.key -out changeme.crt \
+#       -subj "/CN=changeme.example.com" \
+#       -addext "subjectAltName=DNS:changeme.example.com"
+tls:
+    certificates:
+        - certFile: /certs/changeme.crt
+          keyFile: /certs/changeme.key

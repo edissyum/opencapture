@@ -2,7 +2,7 @@
 
 > Brouillon de documentation, pas encore relu ni commité. Décrit l'état constaté
 > le 2026-07-08 sur `/etc/apache2/sites-enabled/mem.conf` et la configuration
-> `host-gateway` proposée côté `infra/docker-compose.yml` (commit `22768fe`).
+> `host-gateway` proposée côté `install/docker/shared/docker-compose.yml` (commit `22768fe`).
 
 ## 1. Contexte du serveur
 
@@ -11,7 +11,8 @@ Ce serveur héberge deux générations d'Open-Capture côte à côte :
   `edissyum`), sous `/var/www/html/opencapture/`, toujours joignable via
   `/opencapturev3/`.
 - le **tenant Docker v4** `opencapture`, exposé par Traefik sur `127.0.0.1:8080`
-  (pas de port public dédié).
+  (pas de port public dédié). Apache occupant 80/443, poser `TRAEFIK_HTTP_PORT=8080`
+  et `TRAEFIK_HTTPS_PORT=8443` dans `install/docker/.env`.
 - des applications tierces également installées directement sur le serveur,
   sur le même Apache : **Maarch Courrier / MEM**
   (`/var/www/html/mem_courrier/`), MaarchParapheur, OCForMEM, etc.
@@ -240,7 +241,7 @@ Linux) dans `extra_hosts`. Au démarrage du conteneur, Docker la remplace par
 l'IP réelle de cette passerelle et écrit l'entrée dans le `/etc/hosts` interne
 du conteneur — aucune magie DNS, une simple ligne statique.
 
-Déclaration (`infra/docker-compose.yml`, anchor `x-backend-extra-hosts`,
+Déclaration (`install/docker/shared/docker-compose.yml`, anchor `x-backend-extra-hosts`,
 appliqué à `backend` et `worker-verifier`) :
 
 ```yaml

@@ -85,20 +85,21 @@ docker network create frontend
 # of the service account). ALL tenants must run under this same uid, otherwise
 # /app is not writable for them (matplotlib/fontconfig errors).
 # -> new-tenant.sh reuses these values; for a manual creation, align
-#    stub-tenants/<id>/.env (see runbooks 02/03/04). So set APP_UID BEFORE this build.
-cp .env.example .env
+#    install/docker/stub-tenants/<id>/.env (see runbooks 02/03/04). So set APP_UID BEFORE this build.
+cp install/docker/.env.example install/docker/.env
 # Carry over OC_DATA_ROOT + align APP_UID/APP_GID with the current user.
 # NUMERIC values via id -u / id -g (baked into the shared image) — definitely
 # NOT $USER (a name, not a uid). Edit the rest of the .env if needed (ports…).
-sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$OC_DATA_ROOT#" .env
-sed -i -e "s/^APP_UID=.*/APP_UID=$(id -u)/" -e "s/^APP_GID=.*/APP_GID=$(id -g)/" .env
-docker compose --project-directory infra -f infra/docker-compose.yml build backend
+sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$OC_DATA_ROOT#" install/docker/.env
+sed -i -e "s/^APP_UID=.*/APP_UID=$(id -u)/" -e "s/^APP_GID=.*/APP_GID=$(id -g)/" install/docker/.env
+docker compose --project-directory install/docker/shared -f install/docker/shared/docker-compose.yml build backend
 
 # Shared Traefik (single daemon). Reads OC_DATA_ROOT + LETSENCRYPT_EMAIL from the
-# .env (via the infra/.env -> ../.env symlink): NO inline prefix, otherwise an
-# empty $OC_DATA_ROOT would override the .env value -> falling back to ../data.
+# .env (via the install/docker/shared/.env -> ../.env symlink): NO inline prefix, otherwise an
+# empty $OC_DATA_ROOT would override the .env value -> compose fails.
 # (For Let's Encrypt: set LETSENCRYPT_EMAIL in the .env.)
-docker compose -f infra/docker-compose.traefik-server.yml up -d
+# If another service already owns 80/443: TRAEFIK_HTTP_PORT / TRAEFIK_HTTPS_PORT in the .env.
+docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml up -d
 
 # Verify Traefik (container + local dashboard on 127.0.0.1:8081)
 docker ps --filter name=opencapture_traefik
@@ -106,12 +107,12 @@ docker ps --filter name=opencapture_traefik
 
 # Traefik logs / restart
 docker logs -f opencapture_traefik
-docker compose -f infra/docker-compose.traefik-server.yml restart
+docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml restart
 
 # Multi-tenant SFTP -> runbooks/en/05-sftp-server.md
 # (ProFTPD mod_sftp, chrooted virtual accounts mapped to $APP_UID/$APP_GID;
-#  see infra-host/sftp/README.md). To be done after creating the tenants.
+#  see install/docker/host/sftp/README.md). To be done after creating the tenants.
 #
 # Multi-tenant SMB/Samba -> runbooks/en/07-smb-server.md
 # (standalone Samba, local accounts + [<id>] share forced to $APP_UID/$APP_GID;
-#  see infra-host/smb/README.md). To be done after creating the tenants.
+#  see install/docker/host/smb/README.md). To be done after creating the tenants.

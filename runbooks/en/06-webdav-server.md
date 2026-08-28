@@ -7,7 +7,7 @@
 # not subdomain -> reuses the existing DNS + cert + Traefik route.
 # Root = /opt/edissyum/opencapture/tenants/<id>/share (watched by the fs-watcher); files
 # dropped as $APP_UID/$APP_GID. Per-tenant htpasswd Basic auth.
-# Design detail: ../infra/webdav/README.md.
+# Design detail: ../../install/docker/shared/webdav/README.md.
 #
 # Unlike SFTP (05), NOTHING to install on the host: everything is in Docker
 # (image built by deploy.sh, webdav service started with the stack).
@@ -16,18 +16,19 @@
 
 # ----------------------------------------------------------------------
 # 1) Activation (OPT-IN) — WebDAV is NOT in the base stack
-#    Add the overlay to the tenant's docker-compose.yml (like Traefik):
+#    UNCOMMENT the webdav line already present in the tenant's
+#    docker-compose.yml (paths relative TO THE TENANT DIRECTORY, not the repo root):
 #        include:
-#            - path: ../../infra/docker-compose.yml
-#            - path: ../../infra/docker-compose.traefik-*.yml
-#            - path: ../../infra/webdav/docker-compose.yml   # <- enables WebDAV
+#            - path: ../../shared/docker-compose.yml
+#            - path: ../../shared/traefik/docker-compose.traefik*.yml   # depending on the mode
+#            - path: ../../shared/webdav/docker-compose.yml             # <- enables WebDAV
 #    Without this overlay, /dav/ returns 501 "not enabled" (the rest of the site works).
 #    The opencapture-webdav image is built by deploy.sh (docker build,
 #    INDEPENDENTLY of the backend) as soon as a tenant includes the overlay.
 # ----------------------------------------------------------------------
-# ./deploy.sh <id>
+# ./install/docker/deploy.sh <id>
 # # Check that the webdav container is running:
-# DIR=stub-tenants/<id>
+# DIR=install/docker/stub-tenants/<id>
 # docker compose --project-directory "$DIR" -f "$DIR/docker-compose.yml" ps webdav
 
 # ----------------------------------------------------------------------
@@ -36,13 +37,13 @@
 #    htpasswd PER tenant, outside the repo: /opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd.
 #    NO reload needed (Apache re-reads it on every request). 401 until an account exists.
 # ----------------------------------------------------------------------
-# sudo ./new-webdav-account.sh <id>            # login = <id>
-# sudo ./new-webdav-account.sh <id> alice      # dedicated login
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id>            # login = <id>
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id> alice      # dedicated login
 #
 # # Several accounts per tenant: rerun with a different login.
-# sudo ./new-webdav-account.sh <id> bob
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id> bob
 # # Change a password: rerun with the SAME login (overwrites the line).
-# sudo ./new-webdav-account.sh <id> alice
+# sudo ./install/docker/shared/webdav/new-webdav-account.sh <id> alice
 # # Delete an account:
 # sudo docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav \
 #     htpasswd -D /work/htpasswd alice
@@ -70,13 +71,13 @@
 # ----------------------------------------------------------------------
 # 4) Operations
 # ----------------------------------------------------------------------
-# DIR=stub-tenants/<id>
+# DIR=install/docker/stub-tenants/<id>
 # DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 # $DC ps webdav                 # container status
 # $DC logs -f webdav            # Apache logs (access + errors -> stdout/stderr)
-# # After changing infra/webdav/httpd.conf or the Dockerfile:
-# ./deploy.sh --backend-only <id>   # rebuilds the shared images (including webdav)
-# ./deploy.sh --no-build <id>       # or just recreate the containers
+# # After changing install/docker/shared/webdav/httpd.conf or the Dockerfile:
+# ./install/docker/deploy.sh --backend-only <id>   # rebuilds the shared images (including webdav)
+# ./install/docker/deploy.sh --no-build <id>       # or just recreate the containers
 
 # ----------------------------------------------------------------------
 # 5) Troubleshooting

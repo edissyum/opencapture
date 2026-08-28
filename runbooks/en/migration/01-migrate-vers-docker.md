@@ -2,7 +2,7 @@
 
 Taking over an existing OpenCapture installation (outside a container, on a physical
 server or VM) into this repo's **Docker** stack, via the
-[`../../../migrate.sh`](../../../migrate.sh) tool.
+[`../../../install/migration/migrate.sh`](../../../install/migration/migrate.sh) tool.
 
 - **Part 1 — Generic procedure**: reusable, to run through by substituting the
   parameters at the top.
@@ -25,7 +25,7 @@ server or VM) into this repo's **Docker** stack, via the
   SOURCE (existing installation, local or SSH)     TARGET (Docker host)
   ┌──────────────────────────┐                     ┌────────────────────────┐
   │ /var/www/html/opencapture │      bundle         │ opencapture_docker/    │
-  │ local PostgreSQL           │   (portable         │ stub-tenants/<id>/     │
+  │ local PostgreSQL           │   (portable         │ install/docker/stub-tenants/<id>/     │
   │ /var/docservers /var/share │    folder)          │ ${OC_DATA_ROOT}/…/<id>/│
   └──────────────────────────┘  ───────────────▶    └────────────────────────┘
      1. export        2. diagnose         3. new-tenant + 4. import   5. post-migration
@@ -49,7 +49,7 @@ server or VM) into this repo's **Docker** stack, via the
    installation; cover the Verifier/Splitter workers, the watcher, and the mail worker.
 2. **The tenant stub must exist BEFORE the import** (step 3). Import does not create
    the tenant: it **fills in** an already-created tenant, and reads
-   `stub-tenants/<id>/.env` (`OC_DATA_ROOT`, `POSTGRES_*`, `OC_FQDN`).
+   `install/docker/stub-tenants/<id>/.env` (`OC_DATA_ROOT`, `POSTGRES_*`, `OC_FQDN`).
 3. **`OC_DATA_ROOT`** must point to the right volume: import drops the files there.
    Check that it targets a filesystem with enough space (docservers + database).
 4. **Bundle on a filesystem with room**: do not target `/tmp` if it sits on a
@@ -96,10 +96,10 @@ BUNDLE=/var/tmp/oc-bundle             # bundle folder (filesystem with room)
 
 ```bash
 # A single custom:
-./migrate.sh export --source "$SRC" --oc-root "$SRC_OCROOT" --out "$BUNDLE" --custom "$SRC_ID"
+./install/migration/migrate.sh export --source "$SRC" --oc-root "$SRC_OCROOT" --out "$BUNDLE" --custom "$SRC_ID"
 
 # Or ALL customs from the source custom.ini (omit --custom):
-./migrate.sh export --source "$SRC" --oc-root "$SRC_OCROOT" --out "$BUNDLE"
+./install/migration/migrate.sh export --source "$SRC" --oc-root "$SRC_OCROOT" --out "$BUNDLE"
 ```
 
 Produces `"$BUNDLE"/customs/<id>/` (SQL dump, custom/docservers/share tars,
@@ -141,7 +141,7 @@ The tenant stub (`new-tenant.sh`) must of course be created with the TARGET id
 ## 2. Diagnose (on the Docker host)
 
 ```bash
-./migrate.sh diagnose --bundle "$BUNDLE"          # or --custom "$DEST_ID" to target
+./install/migration/migrate.sh diagnose --bundle "$BUNDLE"          # or --custom "$DEST_ID" to target
 ```
 
 Compares the source schema to the target schema. A gap = a likely version
@@ -154,8 +154,8 @@ Appendices §5.
 ## 3. Create the target tenant (once per custom)
 
 ```bash
-./new-tenant.sh "$MODE" "$DEST_ID"     # copies the template + pre-fills CUSTOM_ID, DB, OC_DATA_ROOT, APP_UID/GID
-$EDITOR stub-tenants/$DEST_ID/.env     # fill in BY HAND:
+./install/docker/tenant/new-tenant.sh "$MODE" "$DEST_ID"     # copies the template + pre-fills CUSTOM_ID, DB, OC_DATA_ROOT, APP_UID/GID
+$EDITOR install/docker/stub-tenants/$DEST_ID/.env     # fill in BY HAND:
                                        #   OC_FQDN            (tenant domain)
                                        #   OC_DATA_ROOT       (check the right volume — see prerequisite 3)
                                        #   POSTGRES_PASSWORD  (ideally reused from the source)
@@ -169,10 +169,10 @@ $EDITOR stub-tenants/$DEST_ID/.env     # fill in BY HAND:
 > startup).
 
 > Check that `docker compose` resolves the expected volume correctly (should show
-> the intended path, not a stray `../data`):
+> the intended path; if `OC_DATA_ROOT` is missing the command fails instead of resolving a stray path):
 > ```bash
-> docker compose --project-directory stub-tenants/$DEST_ID \
->   -f stub-tenants/$DEST_ID/docker-compose.yml config | grep -E "source:.*$DEST_ID"
+> docker compose --project-directory install/docker/stub-tenants/$DEST_ID \
+>   -f install/docker/stub-tenants/$DEST_ID/docker-compose.yml config | grep -E "source:.*$DEST_ID"
 > ```
 
 `cert` mode only: also drop the PEM + the `tls.yml` fragment on the Traefik side
@@ -184,19 +184,19 @@ $EDITOR stub-tenants/$DEST_ID/.env     # fill in BY HAND:
 
 ```bash
 # Import + full deployment. --force if diagnose flagged a version gap.
-./migrate.sh import --bundle "$BUNDLE" --custom "$DEST_ID" --force
+./install/migration/migrate.sh import --bundle "$BUNDLE" --custom "$DEST_ID" --force
 ```
 
 Import: drops the files under `${OC_DATA_ROOT}/tenants/<id>/`, rewrites host →
 `/app` paths, restores the dump, **upgrades the database to the target version**,
-reconciles the missing v4 skeleton, then launches `./deploy.sh <id>`. Detail:
+reconciles the missing v4 skeleton, then launches `./install/docker/deploy.sh <id>`. Detail:
 Part 2 §B and Appendices §6.
 
 **Useful variants:**
 
 | Need | Option |
 |---|---|
-| Apply a manual SQL top-up **before** deployment | `--no-deploy` (then run `./deploy.sh <id>` afterwards) |
+| Apply a manual SQL top-up **before** deployment | `--no-deploy` (then run `./install/docker/deploy.sh <id>` afterwards) |
 | Automatically re-register the workflows | `--admin-user <u> --admin-password <p>` (or env `OC_ADMIN_*`) |
 | The whole batch in one pass | omit `--custom` |
 
@@ -210,7 +210,7 @@ otherwise the fs-watcher does not process drops.
 
 ```bash
 # If not done at import time (no admin creds supplied):
-./migrate.sh reregister --custom "$DEST_ID" --admin-user <u> --admin-password <p>
+./install/migration/migrate.sh reregister --custom "$DEST_ID" --admin-user <u> --admin-password <p>
 ```
 
 If there's no API: in the UI, open then **save** each Verifier/Splitter workflow
@@ -241,8 +241,8 @@ Import does **not** touch the source (it remains the reference as long as it has
 not been decommissioned). To start over on a tenant:
 
 ```bash
-docker compose --project-directory stub-tenants/$DEST_ID \
-  -f stub-tenants/$DEST_ID/docker-compose.yml down     # NEVER -v in shared prod
+docker compose --project-directory install/docker/stub-tenants/$DEST_ID \
+  -f install/docker/stub-tenants/$DEST_ID/docker-compose.yml down     # NEVER -v in shared prod
 rm -rf "${OC_DATA_ROOT}/tenants/$DEST_ID"
 ```
 
@@ -398,7 +398,7 @@ the import (prerequisite 3).
    SOURCE (existing installation, local or SSH)     TARGET (Docker host)
    ┌───────────────────────────┐              ┌────────────────────────┐
    │  /var/www/html/opencapture │              │  opencapture_docker/   │
-   │  local PostgreSQL          │   bundle     │  stub-tenants/<id>/    │
+   │  local PostgreSQL          │   bundle     │  install/docker/stub-tenants/<id>/    │
    │  /var/docservers /var/share│  ─────────▶  │  /var/edissyum/…/<id>/ │
    └───────────────────────────┘  (portable    └────────────────────────┘
         1. export  ───────────────  folder)        3. import
@@ -417,7 +417,7 @@ import it on another.
 | `import`   | Drops, restores, **upgrades to 4.0.0**, rewrites paths, deploys | on the Docker host |
 | `reregister` | Re-registers the workflows via the API (regenerates scripts + `watcher.ini`) | on the Docker host |
 
-Built-in help: `./migrate.sh --help`.
+Built-in help: `./install/migration/migrate.sh --help`.
 
 ## 3. The bundle (`<out>/customs/<cid>/`)
 
@@ -462,7 +462,7 @@ Order of operations (per custom):
 
 ```
  1. diagnose (blocking unless --force)
- 2. reads stub-tenants/<id>/.env  (OC_DATA_ROOT, POSTGRES_*)
+ 2. reads install/docker/stub-tenants/<id>/.env  (OC_DATA_ROOT, POSTGRES_*)
  3. FILE DROP  -> ${OC_DATA_ROOT}/tenants/<id>/{custom,docservers,share}
       + shared attachments (att-*.tar.gz) -> docservers/<mod>/attachments
  4. FILE REWRITE  (host paths -> /app in *.ini/*.py/*.sh/…)
@@ -590,7 +590,7 @@ these `.sh` files → it works even without re-registration.
 ## 11. Catalog of pitfalls encountered (real migrations, 2026-07-08 → 2026-07-21)
 
 Distinct bugs already encountered and then fixed in `migrate.sh`/
-`infra/docker-entrypoint.sh`/`postgres/sql/`. To check PROACTIVELY before
+`install/docker/shared/docker-entrypoint.sh`/`postgres/sql/`. To check PROACTIVELY before
 replaying a migration on a fresh environment rather than rediscovering them one
 by one.
 
@@ -626,7 +626,7 @@ by one.
    by the group/user built at the build UID — silent failure
    (`already exists`) → no passwd entry for the target UID →
    `getpass.getuser()` (called by torch at load time) raises `OSError` →
-   gunicorn never starts → blank page. **Fixed**: `infra/docker-entrypoint.sh`
+   gunicorn never starts → blank page. **Fixed**: `install/docker/shared/docker-entrypoint.sh`
    does `groupmod`/`usermod` if the name already exists, instead of attempting
    a second `groupadd`/`useradd`.
 6. **Leftover from custom renaming (`docservers.path`)**: renaming the bundle
@@ -679,7 +679,7 @@ by one.
 | `postgres/sql/4.0.0.sql` | OFFICIAL upgrade to 4.0.0 (run by the import), `form_models_field` reshape included |
 | `postgres/sql/4.0.0+.sql` | Docker leftover: paths → `/app` + `SPLITTER_SHARE` guarantee — nothing else (see pitfall 10) |
 | `deploy.sh` | builds the image + `up -d` the tenant (called by the import) |
-| `infra/docker-bootstrap.sh` | self-heal at container startup (config.ini, custom.ini) |
+| `install/docker/shared/docker-bootstrap.sh` | self-heal at container startup (config.ini, custom.ini) |
 | `new-tenant.sh` | creates a tenant's stub (import prerequisite) |
 
 ## 13. Not migrated (intentional)

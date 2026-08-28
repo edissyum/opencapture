@@ -6,7 +6,7 @@
 # domain -> A SINGLE smbd daemon, one [<id>] share per tenant on
 # ${OC_DATA_ROOT}/tenants/<id>/share, files forced to the OpenCapture service account
 # ($APP_UID/$APP_GID) -> readable AND deletable by the fs-watcher. Details:
-# infra-host/smb/README.md. (Same spirit as SFTP: runbooks/en/05-sftp-server.md.)
+# install/docker/host/smb/README.md. (Same spirit as SFTP: runbooks/en/05-sftp-server.md.)
 #
 # Prerequisites: infra installed (01); tenants created (new-tenant.sh + deploy.sh).
 
@@ -14,10 +14,10 @@
 # NB: under sudo, `~` = /root -> do NOT use ~/opencapture_docker. $PWD is safe.
 REPO="$PWD"
 
-# uid/gid/name of the OpenCapture service account (from the root .env; default 1000).
-APP_UID="$(grep -m1 '^APP_UID='  "$REPO/.env" | cut -d= -f2)";  APP_UID="${APP_UID:-1000}"
-APP_GID="$(grep -m1 '^APP_GID='  "$REPO/.env" | cut -d= -f2)";  APP_GID="${APP_GID:-1000}"
-APP_USER="$(grep -m1 '^APP_USER=' "$REPO/.env" | cut -d= -f2)"; APP_USER="${APP_USER:-opencapture}"
+# uid/gid/name of the OpenCapture service account (from the GLOBAL .env; default 1000).
+APP_UID="$(grep -m1 '^APP_UID='  "$REPO/install/docker/.env" | cut -d= -f2)";  APP_UID="${APP_UID:-1000}"
+APP_GID="$(grep -m1 '^APP_GID='  "$REPO/install/docker/.env" | cut -d= -f2)";  APP_GID="${APP_GID:-1000}"
+APP_USER="$(grep -m1 '^APP_USER=' "$REPO/install/docker/.env" | cut -d= -f2)"; APP_USER="${APP_USER:-opencapture}"
 
 # ----------------------------------------------------------------------
 # 1) Package — Samba
@@ -41,8 +41,8 @@ getent passwd "$APP_UID"; getent group "$APP_GID"
 # ----------------------------------------------------------------------
 # 3) Config = the repo's one (copy; or symlink if you prefer a live link)
 # ----------------------------------------------------------------------
-sudo cp "$REPO/infra-host/smb/smb.conf" /etc/samba/smb.conf
-# sudo ln -sf "$REPO/infra-host/smb/smb.conf" /etc/samba/smb.conf
+sudo cp "$REPO/install/docker/host/smb/smb.conf" /etc/samba/smb.conf
+# sudo ln -sf "$REPO/install/docker/host/smb/smb.conf" /etc/samba/smb.conf
 
 # Tenant sections file (empty at first; filled in by new-smb-account.sh).
 # `include`-ing a missing file isn't fatal, but this avoids the warning.
@@ -66,8 +66,8 @@ sudo systemctl status  smbd
 # ----------------------------------------------------------------------
 # 6) Declare a tenant's SMB access
 # ----------------------------------------------------------------------
-# sudo ./new-smb-account.sh <id>    # creates account + section + reload (prompts for password)
-# e.g.: sudo ./new-smb-account.sh test2
+# sudo ./install/docker/host/smb/new-smb-account.sh <id>    # creates account + section + reload (prompts for password)
+# e.g.: sudo ./install/docker/host/smb/new-smb-account.sh test2
 #   -> no restart: `smbcontrol all reload-config` reloads the conf hot.
 
 # ----------------------------------------------------------------------

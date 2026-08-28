@@ -42,12 +42,12 @@ const Input: React.FC<InputProps> = ({
     disabled,
     textColor,
     textWeight,
+    placeholder,
     type = "text",
     className = "",
     height = "h-12",
-    onFocus,
     onBlur,
-    placeholder,
+    onFocus,
     ...props
 }) => {
     const [passwordVisible, setPasswordVisible] = React.useState(false);

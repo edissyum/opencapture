@@ -2,7 +2,7 @@
 
 > Draft documentation, not yet reviewed or committed. Describes the state observed
 > on 2026-07-08 on `/etc/apache2/sites-enabled/mem.conf` and the
-> `host-gateway` configuration proposed on the `infra/docker-compose.yml` side (commit `22768fe`).
+> `host-gateway` configuration proposed on the `install/docker/shared/docker-compose.yml` side (commit `22768fe`).
 
 ## 1. Server context
 
@@ -11,7 +11,8 @@ This server hosts two generations of Open-Capture side by side:
   `edissyum`), under `/var/www/html/opencapture/`, still reachable via
   `/opencapturev3/`.
 - the **Docker v4 tenant** `opencapture`, exposed by Traefik on `127.0.0.1:8080`
-  (no dedicated public port).
+  (no dedicated public port). Apache owns 80/443, so set `TRAEFIK_HTTP_PORT=8080`
+  and `TRAEFIK_HTTPS_PORT=8443` in `install/docker/.env`.
 - third-party applications also installed directly on the server,
   on the same Apache instance: **Maarch Courrier / MEM**
   (`/var/www/html/mem_courrier/`), MaarchParapheur, OCForMEM, etc.
@@ -240,7 +241,7 @@ Linux) in `extra_hosts`. When the container starts, Docker replaces it with
 the actual IP of that gateway and writes the entry into the container's internal
 `/etc/hosts` — no DNS magic, just a plain static line.
 
-Declaration (`infra/docker-compose.yml`, anchor `x-backend-extra-hosts`,
+Declaration (`install/docker/shared/docker-compose.yml`, anchor `x-backend-extra-hosts`,
 applied to `backend` and `worker-verifier`):
 
 ```yaml

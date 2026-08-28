@@ -46,7 +46,7 @@ export default function BreadCrumbTopbar() {
 
     return (
         <header
-            className="w-full flex shrink-0 items-center justify-between px-6 py-2 border-b border-(--border-secondary) text-(--text-secondary)">
+            className="w-full flex shrink-0 items-center justify-between px-6 py-4 border-b border-(--border-secondary) text-(--text-secondary)">
             <div className="w-full flex items-center gap-4">
                 { breadcrumbs.map((match: any, idx) => {
                     const isLast = idx === breadcrumbs.length - 1;
@@ -68,7 +68,7 @@ export default function BreadCrumbTopbar() {
                 { !['/settings', '/settings/general', '/settings/verifier', '/settings/splitter'].includes(location.pathname)
                     && !location.pathname.includes('edit/') && location.pathname.includes('/settings') && (
                         <div data-tooltip-id="tooltip"
-                             className={ `ml-auto cursor-pointer py-2 ${ loadingFavorites ? 'pointer-events-none' : '' }` }
+                             className={ `ml-auto cursor-pointer ${ loadingFavorites ? 'pointer-events-none' : '' }` }
                              data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
                              onClick={ () => {
                                  toggleFavorite(location.pathname).then(() => setRefresh(true))
