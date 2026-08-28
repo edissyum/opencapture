@@ -118,7 +118,7 @@ export const DraggablePage = React.memo(function DraggablePage({
                     </div>
                 ) }
 
-                <div className="w-full rounded-lg rounded-t-none py-2 pr-2 pl-4 flex items-center gap-1 bg-(--bg-primary)
+                <div className="w-full rounded-lg rounded-t-none py-1 pl-4 pr-2 flex items-center gap-1 bg-(--bg-primary)
                                 font-semibold">
                     <span className="text-sm">Page { page.source_page }</span>
 

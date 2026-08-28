@@ -102,6 +102,10 @@
         -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
     }
 
+    &[type="password"] {
+        @apply rounded-r-none;
+    }
+
     @apply bg-(--bg-primary);
     @apply text-(--text-primary);
 

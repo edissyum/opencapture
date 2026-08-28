@@ -62,7 +62,7 @@ function ConfirmDialogWithInputView({
                 if (e.target === e.currentTarget) reject();
             } }
         >
-            <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 p-6">
+            <div className="bg-(--bg-primary) rounded-lg shadow-xl max-w-3xl w-full mx-4 p-6">
                 <h2 className="text-lg font-semibold mb-4">{ title }</h2>
                 <div className="flex flex-col gap-3 mb-6">
                     <div className='flex gap-4 text-(--text-secondary)'>
