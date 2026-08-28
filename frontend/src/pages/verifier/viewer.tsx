@@ -1350,15 +1350,17 @@ export function VerifierViewerPage() {
                                         <PenOff className="text-white" size={ 28 }/>
                                     </div>
                                     <div className='flex flex-col'>
-                                        <span
-                                            className='text-(--text-error) font-semibold'>{ t('VERIFIER.document_non_modifiable') }</span>
-                                        <span
-                                            className='text-(--text-secondary)'>{ t('VERIFIER.document_non_modifiable_details') }</span>
+                                        <span className='text-(--text-error) font-semibold'>
+                                            { t('VERIFIER.document_non_modifiable') }
+                                        </span>
+                                        <span className='text-(--text-secondary)'>
+                                            { t('VERIFIER.document_non_modifiable_details') }
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         ) }
-                        <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ ['supplier'] }>
+                        <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ ['supplier', 'facturation'] }>
                             { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
                                 <Accordion.Item key={ zone.id } value={ zone.id }>
                                     <div className='flex items-center'>
