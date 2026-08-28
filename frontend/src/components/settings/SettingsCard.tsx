@@ -68,7 +68,7 @@ export function SettingsCard({
                     </>
                 ) }
             </div>
-            <div className="w-full min-w-0 flex flex-col justify-center" title={ description }>
+            <div className="w-full min-w-0 flex flex-col justify-center gap-1" title={ description }>
                 <h3 className="text-lg font-semibold text-(--text-primary) min-w-0">
                     <span className="truncate min-w-0">
                         { title }
