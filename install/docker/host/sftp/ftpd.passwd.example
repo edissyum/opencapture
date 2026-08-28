@@ -1,0 +1,19 @@
+# Gabarit — comptes virtuels ProFTPD (format type /etc/passwd).
+#
+# NE PAS éditer à la main et NE PAS committer le vrai fichier : il contient les
+# hash de mots de passe. Le réel vit sur le serveur en /etc/proftpd/ftpd.passwd
+# (gitignoré) et est géré par `ftpasswd` via new-sftp-account.sh.
+#
+# Une ligne par tenant. uid/gid = compte de service OpenCapture ($APP_UID/$APP_GID,
+# défaut 1000) ; home = racine du chroot ; shell = /bin/false.
+#
+# Format :
+#   <user>:<hash>:<uid>:<gid>::<home>:<shell>
+#
+# Exemple (hash factice) :
+#   test2:$6$xxxxxxxx$............:1000:1000::/opt/edissyum/opencapture/tenants/test2/share:/bin/false
+#
+# Création / mise à jour d'un compte :
+#   sudo ftpasswd --passwd --file=/etc/proftpd/ftpd.passwd \
+#       --name=<id> --uid=1000 --gid=1000 \
+#       --home=/opt/edissyum/opencapture/tenants/<id>/share --shell=/bin/false

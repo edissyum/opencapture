@@ -3,5 +3,42 @@
 backend/custom
 frontend/src/assets/i18n/to_merge
 .env*
-!.env.default
+!.env.example
+# Symlinks vers install/docker/.env : ils PORTENT la configuration (Compose ne lit
+# .env qu'à côté du fichier compose). Doivent être versionnés, pas ignorés.
+!install/docker/shared/.env
+!install/docker/shared/traefik/.env
+
+# install/docker/stub-tenants/ : seuls les gabarits _template-*/ sont suivis (ils gardent le
+# dossier en vie -> pas besoin de .gitkeep). Tout tenant (<id>/,
+# y compris ceux créés via ./install/docker/tenant/new-tenant.sh) est créé à la main
+# et reste hors git (docker-compose.yml + .env). On ignore le CONTENU
+# (install/docker/stub-tenants/*), pas le dossier : git ne réinclut pas un fichier si un
+# dossier parent est exclu.
+install/docker/stub-tenants/*
+!install/docker/stub-tenants/_template-letsencrypt/
+!install/docker/stub-tenants/_template-cert/
+!install/docker/stub-tenants/_template-http/
+
+# Fragments TLS déposés en dev dans le /dynamic du repo : ne pas committer
+# (seul .gitkeep garde le dossier ; le tls.yml.example du gabarit reste suivi).
+install/docker/shared/traefik/dynamic/*
+!install/docker/shared/traefik/dynamic/.gitkeep
+
+# Ancien dossier de données du dev (l'override dev dérive désormais OC_DATA_ROOT
+# comme la prod et ne le crée plus) — règle gardée pour les dépôts déjà clonés.
+/data/
+# Données générées par le harnais de tests (install/docker/tests/run_tests.sh)
+/install/docker/tests/data/
 venv
+
+# Notes internes (perso) — gardées en local, hors git
+install/docker/shared/BOOTSTRAP_COMPARISON.md
+install/docker/shared/SCHEDULING.md
+
+# SFTP (ProFTPD) — secrets hors git : le vrai ftpd.passwd et les clés d'hôte
+# vivent sur le serveur dans /etc/proftpd, jamais dans le dépôt.
+install/docker/host/sftp/ftpd.passwd
+
+.claude/
+.vscode/__pycache__/

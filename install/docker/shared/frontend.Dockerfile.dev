@@ -2,11 +2,12 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package*.json .
-COPY postinstall_tinymce.js .
+# Build context: repo root (compose passes context: ..)
+COPY frontend/package*.json .
+COPY frontend/postinstall_tinymce.js .
 RUN npm install
 
-COPY . .
+COPY frontend/ .
 
 ENV NODE_ENV=development
 

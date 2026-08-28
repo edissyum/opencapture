@@ -1,0 +1,30 @@
+# GABARIT de tenant — mode CERT FOURNI (client) ou AUTO-SIGNÉ.
+# NE PAS lancer tel quel : squelette à copier.
+#
+# Créer un tenant de PROD (gitignoré) :
+#   cp -r install/docker/stub-tenants/_template-cert install/docker/stub-tenants/<id>
+#   mv install/docker/stub-tenants/<id>/.env.example install/docker/stub-tenants/<id>/.env
+#   $EDITOR install/docker/stub-tenants/<id>/.env      # CUSTOM_ID, OC_FQDN, mots de passe, *_PATH
+#   # 1) déposer le PEM côté Traefik partagé :
+#   #      <id>.crt (chaîne complète) + <id>.key (clé SANS passphrase)
+#   #      dans /opt/edissyum/opencapture/shared-by-tenants/traefik/certs/
+#   # 2) déclarer le cert : éditer install/docker/stub-tenants/<id>/tls.yml puis le copier en
+#   #      /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml  (hot-reload Traefik)
+#   cd install/docker/stub-tenants/<id> && docker compose up -d --build
+#   # (ou, depuis la racine : ./install/docker/deploy.sh <id>)
+#
+# Le project name est dérivé du .env : opencapture_${CUSTOM_ID} (interpolé).
+#
+# Cert servi par SNI : le SAN du certificat doit couvrir EXACTEMENT ${OC_FQDN}.
+# Pas d'ACME -> pas besoin de DNS public ni des ports 80/443 ouverts vers
+# Internet (fonctionne sur DNS interne). Auto-signé = même flux (tu génères le
+# PEM toi-même, cf. en-tête de tls.yml.example).
+name: opencapture_${CUSTOM_ID}
+
+include:
+    - path: ../../shared/docker-compose.yml
+    - path: ../../shared/traefik/docker-compose.traefik-cert.yml
+    # WebDAV (optionnel) — dépôt de fichiers par montage de lecteur réseau
+    # (https://<fqdn>/dav/). Décommenter pour activer, puis créer un compte :
+    #   sudo ./install/docker/shared/webdav/new-webdav-account.sh <id>
+    # - path: ../../shared/webdav/docker-compose.yml

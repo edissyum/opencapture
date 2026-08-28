@@ -100,6 +100,10 @@
         -webkit-text-fill-color: var(--text-primary) !important;
         box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
         -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
+
+        &[type="password"] {
+            @apply rounded-r-none;
+        }
     }
 
     &[type="password"] {
