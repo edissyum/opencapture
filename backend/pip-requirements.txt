@@ -42,14 +42,14 @@ imap-tools==1.15.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2026.7.3
-tokenizers==0.22.2
+tokenizers==0.23.1
 python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.128
+ultralytics==8.4.131
 python-magic==0.4.27
-transformers==5.15.1
+transformers==5.16.1
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0
 pypdf[crypto]==6.16.2
