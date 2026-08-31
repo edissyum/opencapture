@@ -92,6 +92,21 @@ def get_locale():
 
 app = Flask(__name__)
 app.wsgi_app = Middleware(app.wsgi_app)
+
+# --- Reverse-proxy : restore real client IP ---------------------------
+# Behind the Traefik -> nginx -> gunicorn chain, request.remote_addr holds the
+# proxy's IP (nginx)—the SAME for all users. Without a fix, rate-limiting
+# (flask-limiter, key = get_remote_address) and request history
+# (request.remote_addr) share a SINGLE "bucket"/IP per tenant: a few users
+# are enough to exhaust the shared 200/h quota (symptom: "Too Many Requests"
+# even when the workstation is idle).
+
+# ProxyFix reads X-Forwarded-For. x_for = the number of trusted proxies that
+# APPEND to X-Forwarded-For, counting from the right:
+#   Traefik (adds the client's real IP) then nginx (adds Traefik's IP)
+#   => x_for=2. Spoof-resistant: an X-Forwarded-For header provided by the
+#   client ends up FURTHER LEFT than the 2 entries added by Traefik + nginx,
+#   so it is ignored. (Adjust x_for if the proxy chain changes.)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_host=1, x_port=1)
 
 # Used only to sign Flask's own session cookie (e.g. the selected locale) - unrelated to the
