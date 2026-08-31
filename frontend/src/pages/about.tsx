@@ -145,7 +145,7 @@ export function AboutPage() {
                         }>
                             <>
                                 <div className={ classesWithBorder }>
-                                    <p className='w-1/3'>Type</p>
+                                    <p className='w-1/3 font-medium'>Type</p>
                                     <p className='text-(--color-primary)'>
                                         <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">
                                             GNU General Public License v3.0
@@ -153,7 +153,7 @@ export function AboutPage() {
                                     </p>
                                 </div>
                                 <div className={ `${ classes }` }>
-                                    <p className='w-1/3'>{ t('ABOUT.status') }</p>
+                                    <p className='w-1/3 font-medium'>{ t('ABOUT.status') }</p>
                                     <p className='text-(--text-primary)'>{ t('ABOUT.license_status') }</p>
                                 </div>
                             </>
@@ -166,35 +166,35 @@ export function AboutPage() {
                         }>
                             <>
                                 <div className={ classesWithBorder }>
-                                    <p className='w-1/3'>{ t('ABOUT.society') }</p>
+                                    <p className='w-1/3 font-medium'>{ t('ABOUT.society') }</p>
                                     <p className='text-(--text-primary)'>Edissyum Consulting</p>
                                 </div>
                                 <div className={ classesWithBorder }>
-                                    <p className='w-1/3'>{ t('ABOUT.address') }</p>
+                                    <p className='w-1/3 font-medium'>{ t('ABOUT.address') }</p>
                                     <p className='text-(--text-primary)'>98 Avenue Pierre Semard, 84200 Carpentras</p>
                                 </div>
                                 <div className={ classesWithBorder }>
-                                    <p className='w-1/3'>{ t('ABOUT.software') }</p>
+                                    <p className='w-1/3 font-medium'>{ t('ABOUT.software') }</p>
                                     <a className='text-(--color-primary)' href='https://edissyum.com' target='_blank'>
                                         https://edissyum.com
                                     </a>
                                 </div>
                                 <div className={ classesWithBorder }>
-                                    <p className='w-1/3'>{ t('ABOUT.software_website') }</p>
+                                    <p className='w-1/3 font-medium'>{ t('ABOUT.software_website') }</p>
                                     <a className='text-(--color-primary)' href='https://open-capture.com'
                                        target='_blank'>
                                         https://open-capture.com
                                     </a>
                                 </div>
                                 <div className={ classesWithBorder }>
-                                    <p className='w-1/3'>{ t('ABOUT.documentation') }</p>
+                                    <p className='w-1/3 font-medium'>{ t('ABOUT.documentation') }</p>
                                     <a className='text-(--color-primary)'
                                        href='https://edissyum.gitbook.io/open-capture-v4' target='_blank'>
                                         https://edissyum.gitbook.io/open-capture
                                     </a>
                                 </div>
                                 <div className={ classes }>
-                                    <p className='w-1/3'>{ t('ABOUT.support') }</p>
+                                    <p className='w-1/3 font-medium'>{ t('ABOUT.support') }</p>
                                     <a className='text-(--color-primary)'
                                        href='https://github.com/edissyum/opencapture/issues' target='_blank'>
                                         https://github.com/edissyum/opencapture/issues
@@ -304,19 +304,19 @@ export function AboutPage() {
                             </div>
                         }>
                             <div className={ classesWithBorder }>
-                                <p className='w-1/3'>Backend</p>
+                                <p className='w-1/3 font-medium'>Backend</p>
                                 <p className='text-(--text-primary)'>Python &gt;= 3.13 & Flask</p>
                             </div>
                             <div className={ classesWithBorder }>
-                                <p className='w-1/3'>Frontend</p>
+                                <p className='w-1/3 font-medium'>Frontend</p>
                                 <p className='text-(--text-primary)'>React + Vite</p>
                             </div>
                             <div className={ classesWithBorder }>
-                                <p className='w-1/3'>{ t('ABOUT.database') }</p>
+                                <p className='w-1/3 font-medium'>{ t('ABOUT.database') }</p>
                                 <p className='text-(--text-primary)'>PostgreSQL</p>
                             </div>
                             <div className={ `${ classes }` }>
-                                <p className='w-1/3'>{ t('ABOUT.ocr') }</p>
+                                <p className='w-1/3 font-medium'>{ t('ABOUT.ocr') }</p>
                                 <p className='text-(--text-primary)'>Tesseract &gt;= 5 + OpenCV</p>
                             </div>
                         </Panel>
