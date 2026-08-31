@@ -139,6 +139,9 @@ RUN python -m nltk.downloader -d "$NLTK_DATA" punkt punkt_tab stopwords
 # App code (everything under backend/ at the repo root).
 COPY backend/ /app/
 
+# Only for config.py 
+COPY install/pip-requirements.txt /install/pip-requirements.txt
+
 # Defaults for the SHARED AI models, kept OUTSIDE the
 # /app/instance/artificial_intelligence bind mount so docker-bootstrap.sh
 # can seed the shared host folder (initially empty) on first startup.
