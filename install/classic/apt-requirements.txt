@@ -6,6 +6,7 @@ libpq-dev
 libmagic1
 pkg-config
 zbar-tools
+postgresql
 libheif-dev
 ghostscript
 imagemagick
