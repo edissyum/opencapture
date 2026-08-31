@@ -1,6 +1,7 @@
 cron
 libgl1
 crudini
+apache2
 libpq-dev
 libmagic1
 pkg-config
