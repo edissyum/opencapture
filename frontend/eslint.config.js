@@ -36,6 +36,7 @@ export default tseslint.config([
             globals: globals.browser
         },
         rules: {
+            'react-hooks/exhaustive-deps': 'off',
             'react-hooks/set-state-in-effect': 'off',
             '@typescript-eslint/no-explicit-any': 'off'
         }

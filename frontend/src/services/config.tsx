@@ -15,8 +15,5 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-export let BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-if (!BACKEND_URL) {
-    throw new Error("No backend URL provided. Please set the VITE_BACKEND_URL environment variable.");
-}
+export let BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? "";
 BACKEND_URL = BACKEND_URL.endsWith("/") ? BACKEND_URL.slice(0, -1) : BACKEND_URL;

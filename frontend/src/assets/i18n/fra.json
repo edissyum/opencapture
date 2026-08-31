@@ -138,7 +138,8 @@
         "custom_not_provided": "Aucun custom n'est présent dans l'URL ou celui fourni n'existe pas. Veuillez vérifier l'URL ou contacter votre administrateur",
         "unknown_error": "Erreur inconnue",
         "too_many_requests": "Trop de requêtes. Veuillez réessayer dans quelques instants.",
-        "too_many_requests_details": "Il semble que vous ayez effectué trop de requêtes en peu de temps. Pour des raisons de sécurité, nous avons temporairement limité le nombre de requêtes que vous pouvez effectuer. Veuillez patienter quelques instants avant de réessayer."
+        "too_many_requests_details": "Il semble que vous ayez effectué trop de requêtes en peu de temps. Pour des raisons de sécurité, nous avons temporairement limité le nombre de requêtes que vous pouvez effectuer. Veuillez patienter quelques instants avant de réessayer.",
+        "backend_not_reachable": "Le backend n'est pas accessible, veuillez vérifier votre connexion internet ou contacter votre administrateur"
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",
