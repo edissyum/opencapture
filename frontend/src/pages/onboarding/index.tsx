@@ -39,7 +39,7 @@ export function Onboarding() {
         };
     }).filter((s) => s.component);
 
-    const [completedSteps, _] = useState<number[]>(() => {
+    const [completedSteps] = useState<number[]>(() => {
         try {
             const stored = localStorage.getItem("completedOnboardingSteps");
             return stored ? JSON.parse(stored) : [];
@@ -50,7 +50,9 @@ export function Onboarding() {
 
     const [currentStep, setCurrentStep] = useState(0);
 
-    document.title = t('AUTH.onboarding') + " - Open-Capture";
+    useEffect(() => {
+        document.title = t('AUTH.onboarding') + " - Open-Capture";
+    }, [t]);
 
     useEffect(() => {
         if (completedSteps.length !== 0) {
@@ -60,7 +62,7 @@ export function Onboarding() {
                 }
             }
         }
-    }, [completedSteps]);
+    }, [completedSteps, steps]);
 
     const StepComponent = steps[currentStep]?.component;
     const next = () => {
@@ -82,7 +84,7 @@ export function Onboarding() {
 
     return (
         <div className="h-screen flex xl:items-center pt-4 xl:pt-0 justify-center bg-(--bg-secondary) overflow-y-scroll">
-            <div className="max-w-8/12 flex flex-col gap-2">
+            <div className="w-7/12 flex flex-col gap-2">
                 <h4 className="text-(--text-secondary)">
                     { t('ONBOARD.step') } { currentStep + 1 } { t('ONBOARD.on') } { steps.length }
                 </h4>
