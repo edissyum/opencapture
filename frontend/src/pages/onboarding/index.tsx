@@ -23,7 +23,7 @@ import { Button } from '../../components/Button';
 
 const stepModules = import.meta.glob("./step*.tsx", { eager: true });
 
-export function Onboarding() {
+function Onboarding() {
     const { t } = useTranslation();
 
     const steps = Object.keys(stepModules).sort().map((path, index) => {
@@ -110,3 +110,5 @@ export function Onboarding() {
         </div>
     );
 }
+
+export default Onboarding
