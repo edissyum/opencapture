@@ -33,11 +33,11 @@ import { getCustomFromUrl } from "./services/custom/getCustom";
 
 import { Login } from "./pages/login";
 import { HomePage } from "./pages/home";
-import ProfilePage from "./pages/profile";
 import { AboutPage } from "./pages/about";
+import ProfilePage from "./pages/profile";
+import Onboarding from "./pages/onboarding";
 import { UploadPage } from "./pages/upload";
 import { HistoryList } from "./pages/history";
-import { Onboarding } from "./pages/onboarding";
 import { SettingsIndex } from "./pages/settings";
 import { SuppliersList } from "./pages/suppliers/list";
 import { CustomersList } from "./pages/customers/list";
