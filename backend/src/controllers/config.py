@@ -434,7 +434,10 @@ def get_customs_list():
 
 
 def get_packages():
-    with open('pip-requirements.txt', 'r') as f:
+    if not os.path.isfile('../install/pip-requirements.txt'):
+        return []
+
+    with open('../install/pip-requirements.txt', 'r') as f:
         packages = [line.strip() for line in f if line.strip() and not line.startswith('#') and not line.startswith('--')]
 
     return packages

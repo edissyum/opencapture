@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
-COPY backend/pip-requirements.txt ./
+COPY install/pip-requirements.txt ./
 
 # BuildKit cache mount: persists downloaded/built wheels across builds,
 # even when a pip-requirements.txt bump invalidates this layer. Survives
@@ -114,7 +114,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # module). We then force-install pyinotify-elephant-fork last so its
 # pyinotify.py overwrites the broken one.
 COPY --from=builder /wheels /wheels
-COPY backend/pip-requirements.txt /tmp/pip-requirements.txt
+COPY install/pip-requirements.txt /tmp/pip-requirements.txt
 RUN python -m pip install --upgrade pip \
     && python -m pip install --no-index --find-links=/wheels \
         -r /tmp/pip-requirements.txt \
