@@ -56,16 +56,12 @@ export const handleLogout = async (navigate: any, user: any = {}, custom: any = 
     });
 
     if (user && Object.keys(user).length > 0 && token) {
-        await axios.post(
-            `${ BACKEND_URL }/${ custom }/ws/auth/logout`,
-            { user_id: user.id },
-            {
-                headers: {
-                    "Authorization": `Bearer ${ token }`,
-                    "Content-Type": "application/json",
-                },
+        await axios.post(`${ BACKEND_URL }/${ custom }/ws/auth/logout`, { user_id: user.id }, {
+            headers: {
+                "Authorization": `Bearer ${ token }`,
+                "Content-Type": "application/json",
             }
-        );
+        });
     }
 
     navigate("/login", { replace: true });
