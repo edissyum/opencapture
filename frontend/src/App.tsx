@@ -52,12 +52,18 @@ export function App() {
             let currentLang = localStorage.getItem("selectedLang");
 
             let _custom = getCustomFromUrl();
+            let backendReachable = true;
             if (!_custom) {
-                const api = axios.create({ baseURL: `${ BACKEND_URL }/ws/` });
-                const customs = (await api.get("/config/customsList")).data?.customs;
-                if (Array.isArray(customs) && customs.length === 1) {
-                    window.location.href = `/${ customs[0] }/${ window.location.pathname.substring(1) }`;
-                    return;
+                try {
+                    const api = axios.create({ baseURL: `${ BACKEND_URL }/ws/` });
+                    const customs = (await api.get("/config/customsList")).data?.customs;
+                    if (Array.isArray(customs) && customs.length === 1) {
+                        window.location.href = `/${ customs[0] }/${ window.location.pathname.substring(1) }`;
+                        return;
+                    }
+                } catch (err) {
+                    console.error("Backend not reachable : ", err);
+                    backendReachable = false;
                 }
             }
 
@@ -95,8 +101,8 @@ export function App() {
             setCustom(_custom);
             setReady(true);
 
-            if (!_custom) {
-                showToast(t("ERROR.custom_not_provided"), "error");
+            if (!_custom || !backendReachable) {
+                showToast(backendReachable ? t("ERROR.custom_not_provided") : t('ERROR.backend_not_reachable'), "error");
                 if (!window.location.pathname.includes("/login")) {
                     window.location.href = "/login";
                 }
