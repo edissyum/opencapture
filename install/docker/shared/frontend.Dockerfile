@@ -10,7 +10,7 @@
 # /<custom_id>/backend_oc/ to the backend service on the internal
 # network (see install/docker/shared/nginx.conf.template).
 
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
 RUN npm run build
 
 
-FROM nginx:1.27-alpine AS runtime
+FROM nginx:1.29-alpine AS runtime
 
 # envsubst lives in gettext on alpine; the base image already ships it.
 COPY install/docker/shared/nginx.conf.template /etc/nginx/templates/default.conf.template

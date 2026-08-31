@@ -155,7 +155,7 @@ services:
         # startup (empty pgdata). The 01_/02_/03_ prefixes inside the
         # container enforce load order, independent of the host-side
         # file names.
-        image: postgres:17.6
+        image: postgres:17.10
         # Postgres's `timezone` is frozen in the data dir at initdb
         # (UTC); the TZ variable doesn't override it. We force it at
         # startup so now()/DB timestamps are in local time.

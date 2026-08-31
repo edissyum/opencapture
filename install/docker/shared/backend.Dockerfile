@@ -5,7 +5,7 @@
 # All COPY paths are therefore prefixed by `backend/` (the app code)
 # or `install/docker/shared/` (the entrypoint scripts).
 
-FROM python:3.13-slim-bookworm AS builder
+FROM python:3.13-slim-trixie AS builder
 
 # PIP_NO_CACHE_DIR is intentionally NOT set here: this stage's pip wheel
 # step relies on the BuildKit cache mount below, which PIP_NO_CACHE_DIR
@@ -49,7 +49,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
         pyinotify-elephant-fork
 
 
-FROM python:3.13-slim-bookworm AS runtime
+FROM python:3.13-slim-trixie AS runtime
 
 # Service account shared by all backend / tenant containers.
 # UID/GID are configurable at build time to align with an existing
@@ -93,9 +93,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libcairo2 \
         libheif1 \
         libpq5 \
-        # pdftotext (pip) links against libpoppler-cpp.so.0v5; the
-        # poppler-utils CLI on Bookworm does NOT pull this transitively.
-        libpoppler-cpp0v5 \
+        # pdftotext (pip) links against libpoppler-cpp.so.2; the
+        # poppler-utils CLI does NOT pull this transitively.
+        libpoppler-cpp2 \
         # Postgres client for bootstrap.sh (psql + pg_isready).
         postgresql-client \
         # Misc utils used by bootstrap.sh.
@@ -135,10 +135,6 @@ WORKDIR /app
 # search paths: data is baked into the image, so no runtime egress and
 # no permission issues on the bind mounts.
 RUN python -m nltk.downloader -d "$NLTK_DATA" punkt punkt_tab stopwords
-
-# Allow ImageMagick to read/write PDFs (the default Debian policy blocks PDF).
-RUN sed -i 's|<policy domain="coder" rights="none" pattern="PDF" />|<policy domain="coder" rights="read\|write" pattern="PDF" />|' \
-        /etc/ImageMagick-6/policy.xml || true
 
 # App code (everything under backend/ at the repo root).
 COPY backend/ /app/
