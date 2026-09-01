@@ -6,9 +6,7 @@
 # nginx template).
 #
 # Run with:
-#   docker compose -f install/docker/shared/docker-compose.yml up -d                 # prod
-#   docker compose -f install/docker/shared/docker-compose.yml \
-#                   -f install/docker/shared/docker-compose.override.yml up -d       # dev
+# docker compose -f install/docker/shared/docker-compose.yml up -d                 
 #
 # Network: a single internal bridge; only the frontend nginx exposes
 # a port to the host.

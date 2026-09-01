@@ -637,14 +637,6 @@ openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chaîn
 >   `shared-by-tenants/traefik/certs/<id>.{crt,key}` + `dynamic/<id>.yml` (et purger son
 >   entrée dans `letsencrypt/acme.json` s'il était en Let's Encrypt).
 
-### Mode développement (Docker)
-L'overlay [../install/docker/shared/docker-compose.override.yml](../../install/docker/shared/docker-compose.override.yml)
-(auto-chargé quand on lance `docker compose up` **depuis `install/docker/shared/`**) : code **bind-monté**
-(pas de rebuild pour modifier le code), gunicorn `--reload`, et **Vite HMR** sur `:5173` au
-lieu de nginx. Lancement : `cd install/docker/shared && docker compose up -d --build`.
-Pour développer **hors Docker** (bare-metal, systemd/venv), voir
-[../DEV_MODE.md](../../install/classic/DEV_MODE.md).
-
 ### Multi-tenant
 Chaque tenant a son projet Compose `opencapture_<CUSTOM_ID>` (conteneurs/volumes/réseau
 préfixés → aucune collision), sa propre DB et son propre RabbitMQ. Pour en ajouter un :
