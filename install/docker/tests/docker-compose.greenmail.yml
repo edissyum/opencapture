@@ -3,9 +3,8 @@
 # GreenMail (IMAP+SMTP en mémoire) sert de boîte mail factice pour tester
 # le mail worker sans identifiants réels. À utiliser EN PLUS des compose
 # principaux, p.ex. :
-#   docker compose -f install/docker/shared/docker-compose.yml \
-#                  -f install/docker/shared/docker-compose.override.yml \
-#                  -f install/docker/shared/docker-compose.greenmail.yml up -d
+#   docker compose -f install/docker/stub-tenants/<id>/docker-compose.yml \
+#                  -f install/docker/tests/docker-compose.greenmail.yml up -d
 #
 # Ports internes GreenMail (réseau docker, hostname `greenmail`) :
 #   IMAP 3143 (non-TLS) · SMTP 3025 · API REST 8080
