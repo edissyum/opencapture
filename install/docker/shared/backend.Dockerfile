@@ -13,6 +13,7 @@ FROM python:3.13-slim-trixie AS builder
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PYTHONDONTWRITEBYTECODE=1
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         pkg-config \
@@ -59,6 +60,7 @@ FROM python:3.13-slim-trixie AS runtime
 ARG APP_UID=1000
 ARG APP_GID=1000
 ARG APP_USER=opencapture
+ARG DEBIAN_FRONTEND=noninteractive
 
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
