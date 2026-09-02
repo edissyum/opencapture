@@ -17,16 +17,15 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-DEFAULT_PATH='.'
-CUSTOM_PATH="$DEFAULT_PATH/custom"
-
 group=www-data
 
-parameters="user custom_id database_name database_hostname database_port database_user database_password docservers_path share_path dns"
+parameters="path venv_path user custom_id database_name database_hostname database_port database_user database_password docservers_path share_path dns"
 opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        --path) DEFAULT_PATH="$2"; shift 2;;
+        --venv_path) VENV_PATH="$2"; shift 2;;
         --user) user="$2"; shift 2;;
         --custom_id) custom_id="$2"; shift 2;;
         --database_name) database_name="$2"; shift 2;;
@@ -43,32 +42,58 @@ done
 
 ####################
 # Check mandatory parameters
+if [ -z "$DEFAULT_PATH" ]; then
+    echo "###########################################################"
+    echo "          path is needed to run the installation           "
+    echo "###########################################################"
+    exit
+fi
+
+if [ -z "$VENV_PATH" ]; then
+    echo "###########################################################"
+    echo "          Python VENV path is needed to run the installation           "
+    echo "###########################################################"
+    exit
+fi
+
 if [ -z "$custom_id" ]; then
     echo "###########################################################"
     echo "        Custom id is needed to run the installation        "
     echo "###########################################################"
-    exit 1
+    exit
 fi
 
 if [ -z "$database_name" ] || [ -z "$database_hostname" ] || [ -z "$database_port" ] || [ -z "$database_user" ] || [ -z "$database_password" ]; then
     echo "#######################################################################"
     echo "        Database parameters are needed to run the installation         "
     echo "#######################################################################"
-    exit 2
+    exit
 fi
 
 if [ -z "$docservers_path" ]; then
     echo "#################################################################"
     echo "        Docserver path is needed to run the installation         "
     echo "#################################################################"
-    exit 3
+    exit
 fi
 
 if [ -z "$share_path" ]; then
     echo "##############################################################"
     echo "        Share path is needed to run the installation         "
     echo "##############################################################"
-    exit 4
+    exit
+fi
+
+CUSTOM_PATH="$DEFAULT_PATH/custom"
+BACKEND_CUSTOM_LINK="$DEFAULT_PATH/backend/custom"
+if [ ! -e "$BACKEND_CUSTOM_LINK" ]; then
+    ln -s "$CUSTOM_PATH" "$BACKEND_CUSTOM_LINK"
+elif [ ! -L "$BACKEND_CUSTOM_LINK" ] || [ "$(readlink -f "$BACKEND_CUSTOM_LINK")" != "$(readlink -f "$CUSTOM_PATH")" ]; then
+    echo "###########################################################"
+    echo "  $BACKEND_CUSTOM_LINK already exists and doesn't point"
+    echo "  to $CUSTOM_PATH - please check it manually"
+    echo "###########################################################"
+    exit
 fi
 
 ####################
@@ -83,14 +108,14 @@ if [ "$custom_id" == 'custom' ]; then
     echo "#############################################################"
     echo "        Please do not create a custom called 'custom'        "
     echo "#############################################################"
-    exit 5
+    exit
 fi
 
 if [ -e "$CUSTOM_PATH/$custom_id" ]; then
     echo "########################################################"
     echo "        Custom id \"$custom_id\" already exists        "
     echo "########################################################"
-    exit 6
+    exit
 fi
 
 custom_ini_file=$CUSTOM_PATH/custom.ini
@@ -175,6 +200,7 @@ find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§CUSTOM_ID§§#$custom_id#g" 
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§OC_PATH§§#$DEFAULT_PATH#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§SHARE_PATH§§/#$share_path#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§CUSTOM_PATH§§#$NEW_CUSTOM_PATH#g" {} \;
+find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§PYTHON_VENV§§#source $VENV_PATH/bin/activate#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§BATCH_PATH§§#$NEW_CUSTOM_PATH/data/MailCollect#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§LOG_PATH§§#$NEW_CUSTOM_PATH/data/log/OpenCapture.log#g" {} \;
 

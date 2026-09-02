@@ -14,21 +14,11 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 export LD_LIBRARY_PATH=/usr/local/lib/
 export MAGICK_TMPDIR=/tmp/opencapture/
-export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
-
-tesseract_version=$(tesseract --version | grep 'tesseract' | cut -d' ' -f2)
-if [[ "$tesseract_version" == "5."* ]]; then
-    export TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
-elif [[ "$tesseract_version" == "4."* ]]; then
-    export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
-else
-    echo "Tesseract version not supported"
-    exit 1
-fi
+export TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
 
 cd §§OC_PATH§§ || exit
 §§PYTHON_VENV§§
