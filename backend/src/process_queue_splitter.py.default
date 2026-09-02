@@ -223,7 +223,7 @@ def launch(args):
                                         split_res = split_method(split_args)
                                         if split_res :
                                             created_batches = split_res['batches_id']
-                                            log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
+                                            log.info(f"Batches created successfully : {','.join(str(batch) for batch in created_batches)}")
                                         else :
                                             error = True
                     else:

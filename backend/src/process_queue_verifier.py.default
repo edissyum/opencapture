@@ -112,6 +112,8 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
             return False
     else:
         return False
+
+    log.info(f'Document created successfully : <strong>{res}</strong>')
     return res
 
 
@@ -307,7 +309,7 @@ def launch(args):
             _timer = timer(start, end)
 
             if res:
-                log.info('Process end after ' + _timer)
+                log.info(f'Process end after {_timer}')
 
             set_data = {
                 'elapsed_time': _timer,
