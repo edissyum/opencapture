@@ -252,7 +252,6 @@ CREATE TABLE "documents" (
     FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE SET NULL,
     FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE SET NULL,
     FOREIGN KEY (supplier_id) REFERENCES accounts_supplier(id) ON DELETE SET NULL,
-    FOREIGN KEY (customer_id) REFERENCES accounts_customer(id) ON DELETE SET NULL,
     FOREIGN KEY (docserver_id) REFERENCES docservers(docserver_id) ON DELETE SET NULL
 );
 
