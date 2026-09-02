@@ -70,16 +70,13 @@ export function Thumbnail({ document_info, open, module }: TNLProps) {
     const cached = thumbCache[module].get(document_info.id);
 
     return (
-        <div className="tnl absolute z-20 top-4 left-4 max-w-[30%] bg-(--bg-primary) border border-(--border-secondary)
-                        rounded-lg overflow-hidden p-2">
+        <div className="absolute z-20 top-4 left-4 max-w-[30%] bg-(--bg-primary) border border-(--border-secondary) p-2
+                        rounded-lg overflow-hidden">
             { loading && <Loader/> }
 
             { cached?.error && <p className="text-sm text-(--text-error)">{ cached.error }</p> }
 
-            { cached && !cached.error && (
-                <img className="h-full" src={ cached }
-                     alt="thumbnail"/>
-            ) }
+            { cached && !cached.error && <img className="h-full" src={ cached } alt="thumbnail"/> }
         </div>
     );
 }
