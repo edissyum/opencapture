@@ -202,5 +202,5 @@ cd /opt/edissyum/opencapture/
 export POSTGRES_DB='opencapture_test' && python3 -m unittest discover -s backend/src/tests -t backend/
 
 # Launch specific test file:
-python3 -m unittest ./backend/src/tests/rest/test_workflows.py
+export POSTGRES_DB='opencapture_test' && python3 -m unittest ./backend/src/tests/rest/test_workflows.py
 ```
