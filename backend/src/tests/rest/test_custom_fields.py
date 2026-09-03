@@ -60,7 +60,7 @@ class CustomFieldsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['customFields']), 1)
+        self.assertEqual(len(response.json['customFields']), 5)
 
     def test_successful_update_custom_fields(self):
         custom = self.create_custom()
