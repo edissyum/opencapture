@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1366" height="868" viewBox="0 0 1366 868">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1366" height="868" fill="#1a1a1a"/>
+
+  <!-- Top bar -->
+  <rect width="1366" height="50" fill="#111111"/>
+  <text x="20" y="30" font-size="15" fill="#e0e0e0" font-weight="600">📖  Open-Capture Documentation</text>
+
+  <!-- Sidebar -->
+  <rect x="0" y="50" width="320" height="818" fill="#1e1e1e"/>
+
+  <!-- Sidebar nav items -->
+  <!-- Accueil -->
+  <text x="28" y="95" font-size="13" fill="#aaaaaa">🏠  Accueil</text>
+
+  <!-- TECHNIQUE section -->
+  <rect x="0" y="115" width="320" height="1" fill="#333"/>
+  <text x="28" y="145" font-size="11" fill="#888" font-weight="700" letter-spacing="1">💻  TECHNIQUE</text>
+
+  <!-- Installation (active) -->
+  <rect x="0" y="158" width="320" height="30" fill="#252525"/>
+  <text x="28" y="178" font-size="13" fill="#19864B" font-weight="500">Installation</text>
+  <text x="295" y="178" font-size="16" fill="#19864B">⌄</text>
+
+  <!-- Sub items -->
+  <text x="44" y="210" font-size="12" fill="#888">Création d'instances supplémentaires</text>
+  <text x="44" y="240" font-size="12" fill="#888">Paramétrage d'un partage Samba</text>
+  <text x="44" y="265" font-size="12" fill="#888">Récupération des fournisseurs</text>
+  <text x="44" y="290" font-size="12" fill="#888">Capture de mail</text>
+  <text x="44" y="315" font-size="12" fill="#888">Mise en place des scripts de purge</text>
+
+  <rect x="0" y="330" width="320" height="1" fill="#2a2a2a"/>
+  <text x="28" y="355" font-size="13" fill="#aaaaaa">Architecture fonctionnelle</text>
+  <text x="28" y="383" font-size="13" fill="#aaaaaa">Mise à jour</text>
+  <text x="28" y="411" font-size="13" fill="#aaaaaa">Ajout d'une nouvelle langue</text>
+  <text x="28" y="439" font-size="13" fill="#aaaaaa">Connexion sans login/mdp depuis une application externe</text>
+  <text x="28" y="467" font-size="13" fill="#aaaaaa">Développement custom</text>
+  <text x="28" y="495" font-size="13" fill="#aaaaaa">Gestion des erreurs</text>
+  <text x="28" y="523" font-size="13" fill="#aaaaaa">Web Services</text>
+  <text x="295" y="523" font-size="13" fill="#666">›</text>
+
+  <rect x="0" y="540" width="320" height="1" fill="#333"/>
+  <text x="28" y="565" font-size="11" fill="#888" font-weight="700" letter-spacing="1">🔧  PARAMÉTRAGES</text>
+  <text x="28" y="595" font-size="13" fill="#aaaaaa">Statistiques</text>
+  <text x="28" y="623" font-size="13" fill="#aaaaaa">Monitoring des processus</text>
+  <text x="28" y="651" font-size="13" fill="#aaaaaa">Liste des comptes clients</text>
+  <text x="28" y="679" font-size="13" fill="#aaaaaa">Liste des comptes tiers</text>
+
+  <!-- Main content area -->
+  <rect x="320" y="50" width="1046" height="818" fill="#1a1a1a"/>
+
+  <!-- Breadcrumb -->
+  <text x="360" y="95" font-size="11" fill="#19864B" font-weight="600" letter-spacing="1">💻  TECHNIQUE</text>
+
+  <!-- Title -->
+  <text x="360" y="148" font-size="36" fill="#ffffff" font-weight="700">Installation</text>
+
+  <!-- Prérequis heading -->
+  <text x="360" y="215" font-size="24" fill="#ffffff" font-weight="700">Prérequis</text>
+
+  <!-- Description text -->
+  <text x="360" y="255" font-size="14" fill="#cccccc">
+    Afin de procéder à l'installation d'
+    <tspan font-weight="700">Open-Capture</tspan>
+    , il est recommandé d'utiliser la distribution Debian.
+  </text>
+  <text x="360" y="276" font-size="14" fill="#cccccc">Cependant, il reste possible d'utiliser les distributions Ubuntu et Ubuntu Server mais le support au</text>
+  <text x="360" y="297" font-size="14" fill="#cccccc">niveau des bugs ne sera pas possible. De plus, les versions des paquets peuvent différer entre les</text>
+  <text x="360" y="318" font-size="14" fill="#cccccc">distributions.</text>
+
+  <text x="360" y="348" font-size="14" fill="#cccccc">Vous trouverez ci-dessous un tableau des versions <tspan font-weight="700">Python</tspan> &amp; <tspan font-weight="700">Tesseract</tspan> ainsi que des distributions</text>
+  <text x="360" y="369" font-size="14" fill="#cccccc">testées et recommandées pour l'installation d'<tspan font-weight="700">Open-Capture</tspan>.</text>
+
+  <!-- Table 1: Python/Tesseract -->
+  <rect x="360" y="388" width="740" height="40" fill="#2a2a2a" rx="4"/>
+  <text x="380" y="413" font-size="13" fill="#cccccc">Python</text>
+  <text x="630" y="413" font-size="13" fill="#cccccc">Tesseract</text>
+  <text x="870" y="413" font-size="13" fill="#cccccc">Système d'exploitation</text>
+
+  <rect x="360" y="428" width="740" height="40" fill="#222222" rx="0"/>
+  <line x1="560" y1="428" x2="1100" y2="428" stroke="#333" stroke-width="1"/>
+  <text x="380" y="453" font-size="13" fill="#cccccc">&gt;= 3.9</text>
+  <text x="630" y="453" font-size="13" fill="#cccccc">&gt;= 5.2.0</text>
+  <text x="870" y="453" font-size="13" fill="#cccccc">Debian &gt;= 12</text>
+
+  <!-- Vertical separators table 1 -->
+  <line x1="595" y1="388" x2="595" y2="468" stroke="#333" stroke-width="1"/>
+  <line x1="840" y1="388" x2="840" y2="468" stroke="#333" stroke-width="1"/>
+  <rect x="360" y="388" width="740" height="80" fill="none" stroke="#333" stroke-width="1" rx="4"/>
+
+  <!-- Browser recommendation text -->
+  <text x="360" y="502" font-size="14" fill="#cccccc">Pour la partie utilisation client, il est recommandé d'utiliser le navigateur Firefox. Chrome et Edge</text>
+  <text x="360" y="523" font-size="14" fill="#cccccc">fonctionnent malgré tout, mais toutes les fonctionnalités ne sont pas garanties.</text>
+
+  <!-- Table 2: Hardware -->
+  <rect x="360" y="545" width="740" height="40" fill="#2a2a2a" rx="4"/>
+  <text x="530" y="570" font-size="13" fill="#cccccc">Minimum</text>
+  <text x="730" y="570" font-size="13" fill="#cccccc">Recommandé</text>
+  <text x="920" y="570" font-size="13" fill="#cccccc">Recommande (IA)</text>
+
+  <!-- Row: Processeur -->
+  <rect x="360" y="585" width="740" height="40" fill="#222222"/>
+  <line x1="560" y1="585" x2="1100" y2="585" stroke="#333" stroke-width="1"/>
+  <text x="380" y="610" font-size="13" fill="#cccccc">Processeur</text>
+  <text x="530" y="610" font-size="13" fill="#cccccc">4 vCPU</text>
+  <text x="730" y="610" font-size="13" fill="#cccccc">4 vCPU</text>
+  <text x="920" y="610" font-size="13" fill="#cccccc">8 vCPU</text>
+
+  <!-- Row: Mémoire vive -->
+  <rect x="360" y="625" width="740" height="40" fill="#222222"/>
+  <line x1="560" y1="625" x2="1100" y2="625" stroke="#333" stroke-width="1"/>
+  <text x="380" y="650" font-size="13" fill="#cccccc">Mémoire vive</text>
+  <text x="530" y="650" font-size="13" fill="#cccccc">8Go (+4Go de SWAP)</text>
+  <text x="730" y="650" font-size="13" fill="#cccccc">12Go (+6Go de SWAP)</text>
+  <text x="920" y="650" font-size="13" fill="#cccccc">16Go (+8Go de SWAP)</text>
+
+  <!-- Row: Stockage -->
+  <rect x="360" y="665" width="740" height="40" fill="#222222"/>
+  <line x1="560" y1="665" x2="1100" y2="665" stroke="#333" stroke-width="1"/>
+  <text x="380" y="690" font-size="13" fill="#cccccc">Stockage</text>
+  <text x="530" y="690" font-size="13" fill="#cccccc">60 Go</text>
+  <text x="730" y="690" font-size="13" fill="#cccccc">60 Go</text>
+  <text x="920" y="690" font-size="13" fill="#cccccc">80 Go</text>
+
+  <!-- Vertical separators table 2 -->
+  <line x1="500" y1="545" x2="500" y2="705" stroke="#333" stroke-width="1"/>
+  <line x1="695" y1="545" x2="695" y2="705" stroke="#333" stroke-width="1"/>
+  <line x1="890" y1="545" x2="890" y2="705" stroke="#333" stroke-width="1"/>
+  <rect x="360" y="545" width="740" height="160" fill="none" stroke="#333" stroke-width="1" rx="4"/>
+</svg>
