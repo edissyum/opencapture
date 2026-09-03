@@ -52,7 +52,7 @@ class CustomFieldsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['customFields']), 5)
+        self.assertEqual(len(response.json['customFields']), 8)
 
     def test_successful_get_custom_fields_list_verifier(self):
         self.create_custom()
@@ -90,4 +90,4 @@ class CustomFieldsTest(unittest.TestCase):
         self.assertEqual('DEL', new_custom[0]['status'])
 
     def tearDown(self) -> None:
-        self.database.execute("DELETE FROM custom_fields WHERE module = 'verifier'")
+        self.database.execute("DELETE FROM custom_fields WHERE module = 'verifier' AND label_short = 'test_custom_verifier'")

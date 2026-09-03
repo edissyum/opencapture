@@ -96,6 +96,8 @@ elif [ ! -L "$BACKEND_CUSTOM_LINK" ] || [ "$(readlink -f "$BACKEND_CUSTOM_LINK")
     exit
 fi
 
+find . -name ".gitkeep" -delete
+
 ####################
 # Replace dot and - with _ in custom_id to avoid python error
 old_custom_id=$custom_id

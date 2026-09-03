@@ -422,6 +422,6 @@ class UserTest(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.copy(f'{PROJECT_PATH}/instance/referencial/default_referencial_supplier.csv.default',
                     f'{PROJECT_PATH}/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv')
-        self.database.execute("TRUNCATE TABLE addresses")
-        self.database.execute("TRUNCATE TABLE accounts_supplier")
+        self.database.execute("TRUNCATE TABLE addresses CASCADE")
+        self.database.execute("TRUNCATE TABLE accounts_supplier CASCADE")
         self.database.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")
