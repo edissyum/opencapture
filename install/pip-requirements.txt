@@ -1,4 +1,4 @@
-lxml==6.1.2
+lxml==6.1.3
 qrcode==8.2
 nltk==3.10.3
 fpdf2==2.8.8
@@ -47,7 +47,7 @@ python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.137
+ultralytics==8.4.138
 python-magic==0.4.27
 transformers==5.16.1
 Flask-Limiter==4.1.1
@@ -56,5 +56,5 @@ pypdf[crypto]==6.16.2
 qwen-vl-utils==0.0.14
 opencv-python==5.0.0.93
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.13.0
-torchvision==0.28.0
+torch==2.14.0
+torchvision==0.29.0

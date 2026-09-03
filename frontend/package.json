@@ -14,11 +14,10 @@
     "scripts": {
         "dev": "vite",
         "check-update": "ncu",
-        "preview": "vite preview",
-        "build-prod": "tsc -b && vite build",
-        "build-watch": "tsc -b && vite build --watch",
         "prebuild": "npm run copy:tinymce",
+        "build-prod": "tsc -b && vite build",
         "postinstall": "npm run copy:tinymce",
+        "build-watch": "tsc -b && vite build --watch",
         "copy:tinymce": "node ./postinstall_tinymce.js",
         "upgrade-all-packages-ncu": "ncu -u && npm run reload-packages",
         "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i",

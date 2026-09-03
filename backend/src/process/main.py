@@ -489,7 +489,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                               True, customer_id).run()
                         i += 1
                 elif 'contact' in system_fields_to_find:
-                    log.info('Find informal contact using AI model')
+                    log.info('Search informal contact using AI model')
                     if current_app.config['CONTACT_MODEL'] is not None:
                         supplier = find_contact.FindContact(log, files.jpg_name, database, customer_id).run()
                     else:
