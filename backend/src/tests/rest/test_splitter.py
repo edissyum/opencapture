@@ -85,10 +85,10 @@ class SplitterTest(unittest.TestCase):
             'batchId': batches[0]['id']
         }
         response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{batches[0]['id']}",
-                                headers={"Content-Type": "application/json",
-                                         'Authorization': 'Bearer ' + self.token}, json=payload)
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
+                                json=payload)
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
-        self.database.execute("TRUNCATE TABLE splitter_batches")
+        self.database.execute("TRUNCATE TABLE splitter_batches CASCADE")

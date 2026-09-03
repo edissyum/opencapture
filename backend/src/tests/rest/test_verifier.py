@@ -378,8 +378,9 @@ class VerifierTest(unittest.TestCase):
         with open(file, "w") as text_file:
             text_file.write(texts)
 
-        self.database.execute("TRUNCATE TABLE documents")
-        self.database.execute("TRUNCATE TABLE accounts_supplier")
+        self.database.execute("TRUNCATE TABLE documents CASCADE")
+        self.database.execute("TRUNCATE TABLE accounts_supplier CASCADE")
+
         shutil.rmtree(f'/var/share/{CUSTOM_ID}/export/verifier/')
         shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/full')
         shutil.rmtree(f'/var/docservers/opencapture/{CUSTOM_ID}/verifier/thumbs')
