@@ -1,4 +1,4 @@
--- 4.0.0+.sql — adaptation Docker, à jouer APRÈS postgres/sql/4.0.0.sql.
+-- 4.0.0_docker.sql — adaptation Docker, à jouer APRÈS postgres/sql/4.0.0.sql.
 -- Adapte les docservers, workflows et outputs au layout conteneur /app.
 -- Aucun paramètre : tout est lu en base. Le renommage d'un custom est traité
 -- par migrate.sh, qui seul connaît le nom cible.

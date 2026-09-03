@@ -56,7 +56,7 @@ server or VM) into this repo's **Docker** stack, via the
    saturated root; prefer `/var/tmp` or a dedicated disk.
 5. A **version gap** is expected if the source is older than the image (e.g.
    3.6.x → 4.0.0): `diagnose` will flag it, and the import will run with `--force`
-   (the gap is closed by the `4.0.0.sql` + `4.0.0+.sql` upgrade, see Part 2 and
+   (the gap is closed by the `4.0.0.sql` + `4.0.0_docker.sql` upgrade, see Part 2 and
    Appendices §6).
 6. **Tooling prerequisites on the Docker host**: `sshpass` (remote source with
    password auth) and `python3` (`reconcile_custom_files_v4` calls it directly on
@@ -305,7 +305,7 @@ form_models 20, outputs 18, history 2,018.
 
 `migrate.sh import` applies the **official upgrade** `postgres/sql/4.0.0.sql`
 (`form_models_field`, outputs, doctypes, cleanup, columns, `src.backend`→`src`
-scripting…), then the **Docker leftover** `postgres/sql/4.0.0+.sql` (rewriting
+scripting…), then the **Docker leftover** `postgres/migration/4.0.0_docker.sql` (rewriting
 `docservers`/`documents.path`/`attachments`/`workflows`/`outputs` paths → `/app`,
 including **REFERENTIALS_PATH** read by v4, + guaranteeing the `SPLITTER_SHARE`
 row if absent). Nothing to run by hand.
@@ -318,7 +318,7 @@ row if absent). Nothing to run by hand.
 > **reshaped**: v3 stores them flat, v4 expects rows. `4.0.0.sql` (§ "Modification
 > of the field structure in `form_models_field`") handles this **entirely**, for
 > both modules, generically (all `fields` sections, grouped by actual field width).
-> Nothing more to do in `4.0.0+.sql` or by hand.
+> Nothing more to do in `4.0.0_docker.sql` or by hand.
 
 ## C. Custom FILE gaps v3→v4 (otherwise HTTP 500 everywhere)
 
@@ -472,11 +472,11 @@ Order of operations (per custom):
  5. v4 CUSTOM RECONCILIATION  (reconcile_custom_files_v4, see §8)
  6. starts the tenant's postgres + waits for it to be ready
  7. DB UPGRADE (patch_db_paths function):
-      DROP settings_favorites            (v4-only table surviving the dump)
-      psql -f postgres/sql/4.0.0.sql     (OFFICIAL upgrade, form_models_field reshape included)
-      psql -f postgres/sql/4.0.0+.sql    (Docker leftover, parameterized, see §7)
- 8. deploy.sh <id>                       (builds the image + up -d the tenant)
- 9. (if admin creds) reregister          (regenerates scripts + watcher.ini, see §10)
+      DROP settings_favorites                     (v4-only table surviving the dump)
+      psql -f postgres/sql/4.0.0.sql              (OFFICIAL upgrade, form_models_field reshape included)
+      psql -f postgres/migration/4.0.0_docker.sql (Docker leftover, parameterized, see §7)
+ 8. deploy.sh <id>                                (builds the image + up -d the tenant)
+ 9. (if admin creds) reregister                   (regenerates scripts + watcher.ini, see §10)
 ```
 
 ### Why this DB sequence (step 7)
@@ -487,7 +487,7 @@ Order of operations (per custom):
 - `4.0.0.sql` is **not idempotent** → it is run **only once** on a fresh import.
   `settings_favorites` (a 4.0.0-only table) survives the dump's `--clean` →
   it is **removed beforehand**, otherwise its `CREATE TABLE` fails.
-- `4.0.0+.sql` completes what `4.0.0.sql` does **not** cover: only the
+- `4.0.0_docker.sql` completes what `4.0.0.sql` does **not** cover: only the
   **adaptation of paths to `/app`** (Docker) — `4.0.0.sql` merely makes them
   relative `./` — and guaranteeing the `SPLITTER_SHARE` row. The reshape of
   `form_models_field` (v3 flat → v4 in rows) is entirely handled by `4.0.0.sql`
@@ -495,7 +495,7 @@ Order of operations (per custom):
 
 ## 7. The path chain (`:'docs_src'` variables, …)
 
-`4.0.0+.sql` is **parameterized** by psql variables. They are not hard-coded:
+`4.0.0_docker.sql` is **parameterized** by psql variables. They are not hard-coded:
 they are **captured in the SOURCE database at export time**, carried through
 `meta.env`, then re-injected at import time.
 
@@ -510,7 +510,7 @@ they are **captured in the SOURCE database at export time**, carried through
                                                                       ▼        docs_root=… \
                                                                           share_src=… oc_root=… \
                                                                           app_custom=… cid=… \
-                                                                        < 4.0.0+.sql
+                                                                        < 4.0.0_docker.sql
 ```
 
 Values (`edissyum` example):
@@ -667,7 +667,7 @@ by one.
     drift, never caught up), while it did have `VERIFIER_SHARE`. Without a
     backfill, a Splitter workflow using custom scripting raises a `KeyError`.
     **Do not assume** that a seed row is necessarily present in the database
-    just because it is in the version's source code: `4.0.0+.sql` now
+    just because it is in the version's source code: `4.0.0_docker.sql` now
     guarantees it via an idempotent `INSERT ... WHERE NOT EXISTS` (see
     Part 2 §B).
 
@@ -677,7 +677,7 @@ by one.
 |---|---|
 | `postgres/sql/structure.sql` | target 4.0.0 schema (`diagnose`'s reference) |
 | `postgres/sql/4.0.0.sql` | OFFICIAL upgrade to 4.0.0 (run by the import), `form_models_field` reshape included |
-| `postgres/sql/4.0.0+.sql` | Docker leftover: paths → `/app` + `SPLITTER_SHARE` guarantee — nothing else (see pitfall 10) |
+| `postgres/migration/4.0.0_docker.sql` | Docker leftover: paths → `/app` + `SPLITTER_SHARE` guarantee — nothing else (see pitfall 10) |
 | `deploy.sh` | builds the image + `up -d` the tenant (called by the import) |
 | `install/docker/shared/docker-bootstrap.sh` | self-heal at container startup (config.ini, custom.ini) |
 | `new-tenant.sh` | creates a tenant's stub (import prerequisite) |
@@ -699,7 +699,7 @@ by one.
   (`PGPASSWORD='…'`) → a `'` breaks the command, change it before the export.
 - **Relative paths** (`./…` in the database/`config.ini`): the container runs
   with WORKDIR `/app` → they transpose as-is; only **absolute** paths are
-  rewritten (see §7 and `4.0.0+.sql`).
+  rewritten (see §7 and `4.0.0_docker.sql`).
 - **Source on a very OLD OC version**: at import time, certain known
   "skeleton" files (`process_queue_*.py`, worker templates — §6) are
   **replaced** by their v4 version from the repo, rather than patched in

@@ -783,7 +783,7 @@ rewrite_paths_in_dir() {
 }
 
 # Montée de la base restaurée (dump v3.x) : montée OFFICIELLE 3.6.x->4.0.0
-# (postgres/sql/4.0.0.sql) PUIS résiduel Docker (postgres/sql/4.0.0+.sql :
+# (postgres/sql/4.0.0.sql) PUIS résiduel Docker (postgres/migration/4.0.0_docker.sql :
 # colonnes post-4.0.0 + chemins -> /app). Ordre imposé.
 # 4.0.0.sql n'est PAS idempotent -> UNE passe sur un import frais ; on retire
 # d'abord settings_favorites (table v4-only survivante au dump, sinon son CREATE échoue).
@@ -822,8 +822,8 @@ move_batch_attachments() {
 
 patch_db_paths() {
     local cid="$1" pguser="$2" pgdb="$3" tdir="$4"
-    local V400="$REPO_ROOT/postgres/sql/4.0.0.sql" VRES="$REPO_ROOT/postgres/sql/4.0.0+.sql"
-    [ -f "$V400" ] && [ -f "$VRES" ] || die "[$cid] postgres/sql/4.0.0.sql ou 4.0.0+.sql introuvable"
+    local V400="$REPO_ROOT/postgres/sql/4.0.0.sql" VRES="$REPO_ROOT/postgres/migration/4.0.0_docker.sql"
+    [ -f "$V400" ] && [ -f "$VRES" ] || die "[$cid] postgres/sql/4.0.0.sql ou 4.0.0_docker.sql introuvable"
     [ -n "$docs_src" ] && [ -n "$share_src" ] || die "[$cid] docs_src/share_src vides"
 
     dc "$cid" exec -T postgres psql -q -U "$pguser" -d "$pgdb" \
@@ -832,14 +832,14 @@ patch_db_paths() {
     # Pièces jointes de lots : la v3 les écrivait sous VERIFIER_ATTACHMENTS alors que le
     # backend v4 les résout via SPLITTER_ATTACHMENTS. Déplacement AVANT 4.0.0.sql, qui
     # relativise ensuite les chemins (le script s'appuie sur le segment verifier/attachments/).
-    # Passé sur stdin : postgres/sql/ n'est pas embarqué dans l'image backend.
+    # Passé sur stdin : postgres/ n'est pas embarqué dans l'image backend.
     move_batch_attachments "$cid" "$pguser" "$pgdb" "$tdir"
 
     log "    montée 4.0.0 (script officiel)"
     dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$pguser" -d "$pgdb" < "$V400" >/dev/null
 
-    # 4.0.0+.sql dérive tout depuis docservers : aucun paramètre.
-    log "    résiduel Docker (4.0.0+.sql)"
+    # 4.0.0_docker.sql dérive tout depuis docservers : aucun paramètre.
+    log "    résiduel Docker (4.0.0_docker.sql)"
     dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$pguser" -d "$pgdb" \
         < "$VRES" >/dev/null
 }
