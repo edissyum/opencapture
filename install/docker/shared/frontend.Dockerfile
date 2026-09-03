@@ -1,35 +1,22 @@
 # syntax=docker/dockerfile:1.7
-# Multi-stage build for the Open-Capture frontend.
+# Runtime image for the Open-Capture frontend: nginx serving the bundle.
 #
-# Build context: the repo root (compose passes context: ..).
-# All COPY paths are therefore prefixed by `frontend/` (the app code)
-# or `install/docker/shared/` (the nginx config).
-#
-# VITE_BACKEND_URL is consumed by Vite at build time. We bake it as
-# "/" because nginx in the runtime stage proxies /<custom_id>/ws/ and
-# /<custom_id>/backend_oc/ to the backend service on the internal
-# network (see install/docker/shared/nginx.conf.template).
+# NO build happens here. The Vite bundle is produced outside.
 
-FROM node:24-alpine AS builder
-
-WORKDIR /app
-
-# Install dependencies first for better layer caching.
-COPY frontend/package.json frontend/package-lock.json* frontend/postinstall_tinymce.js ./
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
-
-# Build the bundle.
-COPY frontend/ .
-ARG VITE_BACKEND_URL=/
-ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
-RUN npm run build
+FROM nginx:1.30-alpine AS bundle
+COPY frontend/dist/ /dist/
+RUN test -n "$(ls -A /dist)" \
+    || (echo "ERROR: frontend/dist/ is empty" >&2; exit 1)
 
 
-FROM nginx:1.29-alpine AS runtime
+FROM nginx:1.30-alpine
 
 # envsubst lives in gettext on alpine; the base image already ships it.
 COPY install/docker/shared/nginx.conf.template /etc/nginx/templates/default.conf.template
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Taken from the guard stage, not from the context: the runtime image must
+# DEPEND on it, otherwise BuildKit prunes the unreferenced stage and the
+# check never runs.
+COPY --from=bundle /dist/ /usr/share/nginx/html/
 
 EXPOSE 80
 

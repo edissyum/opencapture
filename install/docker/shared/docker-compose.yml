@@ -309,18 +309,20 @@ services:
     frontend:
         <<: [*res-frontend, *cpuset]
         # Image SHARED by all tenants (like opencapture-backend). The
-        # Vite bundle is identical for every tenant: VITE_BACKEND_URL is
-        # frozen to "/" and the tenant's identity (custom_id) is resolved
-        # at RUNTIME — by the SPA from the browser URL, and by nginx via
-        # envsubst (${CUSTOM_ID}) when the container starts. Nothing
-        # tenant-specific is baked in → a single image is enough.
+        # Vite bundle is identical for every tenant: it targets the backend
+        # relative to its own origin, and the tenant's identity (custom_id)
+        # is resolved at RUNTIME — by the SPA from the browser URL, and by
+        # nginx via envsubst (${CUSTOM_ID}) when the container starts.
+        # Nothing tenant-specific is baked in → a single image is enough.
+        #
+        # The bundle itself is NOT built here: frontend/dist/ is committed
+        # to the repo and the image only copies it into nginx. See
+        # install/docker/shared/frontend.Dockerfile.
         image: opencapture-frontend
         logging: *default-logging
         build:
             context: ../../..
             dockerfile: install/docker/shared/frontend.Dockerfile
-            args:
-                VITE_BACKEND_URL: /
         environment:
             CUSTOM_ID:    ${CUSTOM_ID}
             BACKEND_HOST: backend
