@@ -42,7 +42,7 @@ imap-tools==1.15.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2026.7.3
-tokenizers==0.23.1
+tokenizers==0.23.2
 python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
