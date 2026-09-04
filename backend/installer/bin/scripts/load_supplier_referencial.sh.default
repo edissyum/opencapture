@@ -25,7 +25,7 @@ trap 'rm -f "$lck_file"' EXIT
 
 if [ ! -z "$1" ] && [ -f "$1" ]; then
     # Add --debug to enable debug mode and see more output in log file
-    python3 §§OC_PATH§§/load_supplier_referencial.py -c §§CUSTOM_ID§§ -f "$1"
+    python3 §§OC_PATH§§/backend/load_supplier_referencial.py -c §§CUSTOM_ID§§ -f "$1"
 else
     echo "Usage: $0 <file_path>"
     exit 1

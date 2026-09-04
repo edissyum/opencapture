@@ -1111,7 +1111,8 @@
         "customer_required": "A customer account is mandatory",
         "certified_copy": "Certified copy",
         "certified_copy_hint": "If enabled, page rotation/modification, blank page deletion, and document merging will be disabled to ensure the integrity of the original document. Only splitting is available to separate documents without modifying them.",
-        "system_fields_hint": "If third-party search is enabled, informal contact search is unavailable. And if informal contact search is enabled, third-party search is unavailable."
+        "system_fields_hint": "If third-party search is enabled, informal contact search is unavailable. And if informal contact search is enabled, third-party search is unavailable.",
+        "workflow_id_required": "Workflow is required"
     },
     "MONITORING": {
         "processes": "Processes",

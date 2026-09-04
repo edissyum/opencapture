@@ -1559,7 +1559,7 @@ export function SplitterViewerPage() {
                                             </div>
                                         </div>
                                     }>
-                                        <div className='p-4'>
+                                        <div className='p-4 pb-2'>
                                             { documentMetadata.length > 0 && document.pages.length > 0 && (
                                                 <div className='mb-4'>
                                                     <h3 className='font-semibold text-(--text-secondary) flex items-center cursor-pointer gap-1'
