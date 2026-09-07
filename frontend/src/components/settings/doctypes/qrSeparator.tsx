@@ -21,12 +21,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Select } from "../../Select";
 import { Loader } from "../../loader/Loader";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
 import { b64ToFile } from "../../../pages/settings/general/customization";
 
 export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
-    const { post } = axiosApiCall();
+    const { post } = AxiosApiCall();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [allowDownload, setAllowDownload] = useState<boolean>(false);

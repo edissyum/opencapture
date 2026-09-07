@@ -34,7 +34,7 @@ import { Button } from "../../Button";
 import { showToast } from "../../ToastProvider";
 import { InputSwitch } from "../../InputSwitch";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 
 export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChanged, doctypeUpdated }: {
@@ -44,7 +44,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
     doctypeUpdated?: () => void;
     doctypeChanged: (d: any) => void
 }) {
-    const { post } = axiosApiCall();
+    const { post } = AxiosApiCall();
 
     const ROOT_NODE = { type: "root", code: "0", label: t('DOCTYPES.root') };
 

@@ -27,12 +27,12 @@ import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { useUser } from "../../../../services/hooks/useUser";
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { usePasswordRules } from "../../../../services/hooks/usePasswordRules";
 
 export function SettingsGeneralUserEditor() {
     const navigate = useNavigate();
-    const { get, put, post } = axiosApiCall();
+    const { get, put, post } = AxiosApiCall();
     const { verifyPassword } = usePasswordRules();
     const { user: loggedUser, loadingUser } = useUser();
 

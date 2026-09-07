@@ -50,14 +50,14 @@ import { Annotator, type Region } from "../../components/Annotator";
 import { AttachmentsList } from "../../components/attachments/list";
 
 import { useUser } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
 import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
 
 export function VerifierViewerPage() {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const { documentId } = useParams<{ documentId: string }>();
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);

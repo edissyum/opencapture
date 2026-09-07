@@ -24,10 +24,10 @@ import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 import MultiSelectInput from "../../../../components/MultiSelect";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
 export function SettingsGeneralUserQuota() {
-    const { get, put } = axiosApiCall();
+    const { get, put } = AxiosApiCall();
 
     const [loading, setLoading] = useState(true);
     const [loadingSubmit, setLoadingSubmit] = useState(false);

@@ -23,11 +23,11 @@ import { Button } from "../../../../components/Button";
 import { Select } from "../../../../components/Select";
 import { showToast } from "../../../../components/ToastProvider";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { copyToClipboard } from "../../../../services/hooks/copyToClipboard";
 
 export const SettingsGeneralTokenAuth = () => {
-    const { get, post } = axiosApiCall();
+    const { get, post } = AxiosApiCall();
 
     const [users, setUsers] = useState<any[]>([]);
     const [loadingSubmit, setLoadingSubmit] = useState(false);

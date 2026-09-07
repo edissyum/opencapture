@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { USER_KEY, useUser } from "../services/hooks/useUser";
-import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 import { usePasswordRules } from "../services/hooks/usePasswordRules";
 
 import { Button } from "../components/Button";
@@ -29,7 +29,7 @@ import { showToast } from "../components/ToastProvider";
 import { DynamicForm } from "../components/form/DynamicForm";
 
 export default function ProfilePage() {
-    const { get, put } = axiosApiCall();
+    const { get, put } = AxiosApiCall();
     const { user, loadingUser } = useUser();
     const { verifyPassword } = usePasswordRules();
     const [loading, setLoading] = useState(true);

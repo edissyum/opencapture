@@ -26,7 +26,7 @@ import { LangSelection } from "../../../components/onboarding/LangSelection";
 import { ThemeSelection } from "../../../components/onboarding/ThemeSelection";
 
 import { useCustom } from "../../../services/custom/customContext";
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
 export function b64ToFile(b64Data: string) {
     const byteString = atob(b64Data.split(',')[1]);
@@ -42,7 +42,7 @@ export function b64ToFile(b64Data: string) {
 
 export function SettingsGeneralCustomization() {
     const { t } = useTranslation();
-    const { get, put } = axiosApiCall();
+    const { get, put } = AxiosApiCall();
     const custom = useCustom();
 
     const [files, setFiles] = useState<File[]>([]);

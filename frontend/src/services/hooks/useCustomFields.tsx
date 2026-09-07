@@ -17,7 +17,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { axiosApiCall } from "./axiosApiCall";
+import { AxiosApiCall } from "./AxiosApiCall";
 
 export interface CustomField {
     id: string;
@@ -35,7 +35,7 @@ interface UseCustomFieldsResult {
 }
 
 export function useCustomFields(module: string): UseCustomFieldsResult {
-    const { get, loading, error } = axiosApiCall();
+    const { get, loading, error } = AxiosApiCall();
     const [customFields, setCustomFields] = useState<CustomField[]>([]);
     const lastModuleRef = useRef<string | null>(null);
 

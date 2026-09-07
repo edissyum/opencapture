@@ -26,12 +26,12 @@ import { InputSwitch } from "../../../../components/InputSwitch";
 
 import { MailCollectProcess } from "./mailcollect-process";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 import { showConfirmDialogWithInput } from "../../../../services/hooks/ConfirmDialogWithInput";
 
 export function SettingsGeneralMailcollect() {
-    const { get, post, put, del } = axiosApiCall();
+    const { get, post, put, del } = AxiosApiCall();
 
     const [loading, setLoading] = useState(false);
     const [processList, setProcessList] = useState<any[]>([]);

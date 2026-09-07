@@ -19,7 +19,7 @@ import { Pencil, RotateCcw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useUser } from "../services/hooks/useUser";
-import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 
 import { Button } from "../components/Button";
 import { Loader } from "../components/loader/Loader";
@@ -27,7 +27,7 @@ import { showToast } from "../components/ToastProvider";
 import UploadDropzone from "../components/upload/Dropzone";
 
 export function UploadPage() {
-    const { get, post } = axiosApiCall();
+    const { get, post } = AxiosApiCall();
     const { user, loadingUser } = useUser();
 
     const [module, setModule] = useState("");

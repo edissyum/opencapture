@@ -24,12 +24,12 @@ import { Button } from "../../Button";
 import { Table } from "../../list/Table";
 import { showToast } from "../../ToastProvider";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../services/hooks/usePersistentState";
 
 export function FormsList({ module }: { module: string }) {
-    const { get, put, del, post } = axiosApiCall();
+    const { get, put, del, post } = AxiosApiCall();
 
     const [forms, setForms] = useState([]);
     const [totalForms, setTotalForms] = useState(0);

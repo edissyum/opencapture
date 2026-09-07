@@ -31,12 +31,12 @@ import { InputSwitch } from "../../../../components/InputSwitch";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { useUser } from "../../../../services/hooks/useUser";
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
 export function SettingsGeneralSecurity() {
     const navigate = useNavigate();
     const { user, loadingUser } = useUser();
-    const { get, put, post } = axiosApiCall();
+    const { get, put, post } = AxiosApiCall();
 
     const hasFetched = useRef(false);
 

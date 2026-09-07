@@ -36,7 +36,7 @@ import DOMPurify from "dompurify";
 import { Radio } from "@mantine/core";
 
 import { useUser } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../services/hooks/usePersistentState";
 
@@ -51,7 +51,7 @@ import MultiSelectInput from "../../components/MultiSelect";
 
 export function SplitterListPage() {
     const { user, loadingUser } = useUser();
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
 
     const [showMerge, setShowMerge] = useState(false);
     const [selectedPrincipalBatchId, setSelectedPrincipalBatchId] = useState('');

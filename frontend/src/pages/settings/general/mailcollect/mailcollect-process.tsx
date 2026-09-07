@@ -31,11 +31,11 @@ import { RadioBox } from "../../../../components/RadioBox";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { useCustomFields } from "../../../../services/hooks/useCustomFields";
 
 export function MailCollectProcess({ process, workflows }: { process: any, workflows: any }) {
-    const { post } = axiosApiCall();
+    const { post } = AxiosApiCall();
     const authMethods = [
         {
             label: t('MAILCOLLECT.imap'),

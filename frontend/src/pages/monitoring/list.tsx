@@ -23,14 +23,14 @@ import { Button } from "../../components/Button";
 import { Table } from "../../components/list/Table";
 import { showToast } from "../../components/ToastProvider";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../services/hooks/usePersistentState";
 import DOMPurify from "dompurify";
 import { Radio } from "@mantine/core";
 
 export function MonitoringList() {
-    const { get, put } = axiosApiCall();
+    const { get, put } = AxiosApiCall();
 
     const [processes, setProcesses] = useState<any[]>([]);
     const [totalProcesses, setTotalProcesses] = useState(0);

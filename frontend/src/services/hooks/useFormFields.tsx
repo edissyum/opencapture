@@ -17,7 +17,7 @@
 
 import { useEffect, useState } from "react";
 
-import { axiosApiCall } from "./axiosApiCall";
+import { AxiosApiCall } from "./AxiosApiCall";
 
 interface useFormFieldsResult {
     formFields: any;
@@ -26,7 +26,7 @@ interface useFormFieldsResult {
 }
 
 export function useFormFields(formId: number): useFormFieldsResult {
-    const { get, loading, error } = axiosApiCall();
+    const { get, loading, error } = AxiosApiCall();
     const [formFields, setFormFields] = useState<any>([]);
 
     useEffect(() => {

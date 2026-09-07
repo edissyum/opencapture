@@ -31,7 +31,7 @@ import { DroppableZone } from "./DroppableZone";
 import { DroppableLine } from "./DroppableLine";
 import { showToast } from "../../../ToastProvider";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { useFormFields } from "../../../../services/hooks/useFormFields";
 import { useCustomFields } from "../../../../services/hooks/useCustomFields";
 import { showConfirmDialogWithInput } from "../../../../services/hooks/ConfirmDialogWithInput";
@@ -45,7 +45,7 @@ import { DoctypesTree } from "../../doctypes/doctypesTree";
 import { DoctypeDetails } from "../../doctypes/doctypesDetails";
 
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const { formId } = useParams<{ formId: any }>();
 
     const menuItems: any = [

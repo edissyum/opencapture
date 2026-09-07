@@ -18,7 +18,7 @@
 import { useEffect, useRef } from "react";
 
 import { useUser } from "./useUser";
-import { axiosApiCall } from "./axiosApiCall";
+import { AxiosApiCall } from "./AxiosApiCall";
 
 interface HistoryPayload {
     desc: string;
@@ -29,7 +29,7 @@ interface HistoryPayload {
 }
 
 export function useHistoryLogger() {
-    const { post } = axiosApiCall();
+    const { post } = AxiosApiCall();
     const { user, loadingUser } = useUser();
 
     const userRef = useRef(user);

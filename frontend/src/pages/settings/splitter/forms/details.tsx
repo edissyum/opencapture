@@ -23,7 +23,7 @@ import { Select } from "../../../../components/Select";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import MultiSelectInput from "../../../../components/MultiSelect";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
 export function SettingsSplitterFormsDetails({
     submit,
@@ -40,7 +40,7 @@ export function SettingsSplitterFormsDetails({
     submit: (form: any) => void;
     setFormSettings: (formSettings: any) => void;
 }) {
-    const { get } = axiosApiCall();
+    const { get } = AxiosApiCall();
 
     const [outputs, setOutputs] = useState<any[]>([]);
     const [metadataMethods, setMetadataMethods] = useState<any[]>([]);

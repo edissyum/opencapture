@@ -20,7 +20,7 @@ import { Loader2 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { copyToClipboard } from "../../services/hooks/copyToClipboard";
 
 import { Table } from "../../components/list/Table";
@@ -28,7 +28,7 @@ import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 
 export function MonitoringDetails() {
-    const { get } = axiosApiCall();
+    const { get } = AxiosApiCall();
     const { processId } = useParams<{ processId: any }>();
 
     const [steps, setSteps] = useState<any>([]);

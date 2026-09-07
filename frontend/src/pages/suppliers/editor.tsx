@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { emptyToUndefined } from "../../services/zod";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 
 import { Button } from "../../components/Button";
 import { Loader } from "../../components/loader/Loader";
@@ -46,7 +46,7 @@ export function SupplierEditor({
     onUpdated,
     onClose
 }: SupplierEditorProps) {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const navigate = useNavigate();
 
     const { supplierId: supplierIdFromRoute } = useParams<{ supplierId: string }>();

@@ -39,7 +39,8 @@ export default tseslint.config([
             'react-hooks/immutability': 'off',
             'react-hooks/exhaustive-deps': 'off',
             'react-hooks/set-state-in-effect': 'off',
-            '@typescript-eslint/no-explicit-any': 'off'
+            '@typescript-eslint/no-explicit-any': 'off',
+            'react-refresh/only-export-components': 'off'
         }
     }
 ])

@@ -18,7 +18,7 @@ import { t } from "i18next";
 import { Pen } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput";
 
 import Input from "../../../components/Input";
@@ -27,7 +27,7 @@ import { showToast } from "../../../components/ToastProvider";
 
 
 export function SettingsGeneralDocservers() {
-    const { get, put } = axiosApiCall();
+    const { get, put } = AxiosApiCall();
 
     const [loading, setLoading] = useState(false);
     const [docservers, setDocservers] = useState<any>(null);

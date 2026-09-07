@@ -27,11 +27,11 @@ import { showToast } from "../../../components/ToastProvider";
 import { InputSwitch } from "../../../components/InputSwitch";
 
 import { emptyToUndefined } from "../../../services/zod";
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
 
 export function SettingsGeneralSMTP() {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
 
     const smtpProtocoleSecureEnum = z.enum(['ssl', 'tls', 'none']);
 

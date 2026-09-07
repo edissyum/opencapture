@@ -42,7 +42,7 @@ import { showToast } from "../ToastProvider";
 
 import { AttachmentsViewer } from "./viewer";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
 type AttachmentsListProps = {
@@ -64,7 +64,7 @@ export function AttachmentsList({
     onClose,
     unBinding
 }: AttachmentsListProps) {
-    const { get, post, del } = axiosApiCall();
+    const { get, post, del } = AxiosApiCall();
 
     const [loading, setLoading] = useState(false);
 

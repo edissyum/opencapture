@@ -43,7 +43,7 @@ import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
 
 import { useUser } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../services/hooks/usePersistentState";
 
@@ -55,7 +55,7 @@ const LANG_MAP: Record<string, string> = {
 
 export function VerifierListPage() {
     const { user, loadingUser } = useUser();
-    const { get, post, del, put } = axiosApiCall();
+    const { get, post, del, put } = AxiosApiCall();
 
     const [view, setView] = usePersistentState<'list' | 'grid'>('selectedView', 'list', false);
     const [storedLang] = usePersistentState<string>('selectedLang', 'fra', false);

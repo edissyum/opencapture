@@ -61,7 +61,7 @@ import {
 } from "@dnd-kit/core";
 
 import { useUser } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
@@ -86,7 +86,7 @@ import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 import { b64ToFile } from "../settings/general/customization";
 
 export function SplitterViewerPage() {
-    const { get, post, del } = axiosApiCall();
+    const { get, post, del } = AxiosApiCall();
     const navigate = useNavigate();
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);

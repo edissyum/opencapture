@@ -24,7 +24,7 @@ import { ArrowLeft, Download, EllipsisVertical, Trash2 } from "lucide-react";
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 
 type AttachmentsListProps = {
     show: boolean;
@@ -38,7 +38,7 @@ type AttachmentsListProps = {
 const attachmentCache = new Map<string, { mime: string; url: string }>();
 
 export function AttachmentsViewer({ show, module, attachment, onClose, onDelete, onDownload }: AttachmentsListProps) {
-    const { post } = axiosApiCall();
+    const { post } = AxiosApiCall();
 
     const [numPages, setNumPages] = useState<number>();
     const [loading, setLoading] = useState(false);

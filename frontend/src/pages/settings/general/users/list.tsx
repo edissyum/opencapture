@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, CirclePause, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 
 import Input from "../../../../components/Input";
@@ -28,7 +28,7 @@ import { Table } from "../../../../components/list/Table";
 import { showToast } from "../../../../components/ToastProvider";
 
 export function SettingsGeneralUsers() {
-    const { get, put, del } = axiosApiCall();
+    const { get, put, del } = AxiosApiCall();
 
     const navigate = useNavigate();
 
