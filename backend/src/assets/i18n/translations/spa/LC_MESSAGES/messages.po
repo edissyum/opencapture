@@ -1975,3 +1975,4 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "El uso de la interfaz no está configurado en el flujo de trabajo o la "
 "configuración de la url única está malformada en el formulario"
+

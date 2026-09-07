@@ -29,7 +29,7 @@ if ! test -e $PID;
 then
     touch $PID
     echo $$ > $PID
-    python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§"
+    python3 "$OCPath"/backend/launch_worker_mail.py -c "§§CUSTOM_ID§§"
     rm -f $PID
 else
     echo "[$name] $(date +"%d-%m-%Y %T") WARNING MAIL capture is already active : PID exists : $PID" >> "$logFile"

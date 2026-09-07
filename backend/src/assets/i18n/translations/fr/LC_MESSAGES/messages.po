@@ -105,7 +105,7 @@ msgstr "créé sur le lot"
 
 #: backend/src/process_queue_verifier.py.default:215
 msgid "FILE_UPLOADED_WORKFLOW"
-msgstr "Fichier uploadé par le workflow"
+msgstr "Fichier uploadé via le workflow"
 
 #: backend/src/scripting_functions.py:85
 msgid "WORFKLOW_NOT_FOUND"

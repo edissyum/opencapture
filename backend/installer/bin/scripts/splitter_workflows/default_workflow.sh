@@ -40,7 +40,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker_splitter.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" -workflow_id $workflow_id
+    python3 "$OCPath"/backend/launch_worker_splitter.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" -workflow_id $workflow_id
 
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';

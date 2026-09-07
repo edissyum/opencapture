@@ -87,6 +87,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     const {
         control: modulesControl,
         setValue: setValueModules,
+        getValues: getValuesModules,
+        setError: setModulesError,
         handleSubmit: handleSubmitModules,
         formState: { errors: moduleErrors }
     } = useForm({
@@ -117,6 +119,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         resolver: zodResolver(authSchema),
         defaultValues: { authMethod }
     });
+
+    const workflow_id = getValuesModules('workflow_id');
 
     // Set form values from process on load
     useEffect(() => {
@@ -158,7 +162,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         try {
             data['method'] = authMethod;
             data['secured_connection'] = data['securedConnection'];
-            let response = await post('mailcollect/retrieveFolders', data);
+            const response = await post('mailcollect/retrieveFolders', data);
 
             if (response.length === 0) {
                 showToast(t("MAILCOLLECT.no_folders_found"), "error");
@@ -197,6 +201,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 }
             }
         });
+
+        if (workflow_id === undefined) {
+            setModulesError('workflow_id',  { message: t("WORKFLOWS.workflow_id_required") });
+            return;
+        }
 
         Object.keys(data).forEach((key) => {
             if (data[key] !== undefined) {
@@ -563,9 +572,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                             field.onChange(module.value == 'splitter');
                                             setSelectedModule(module.value);
                                             setValueModules('workflow_id', '');
-                                            setValueModules('copy_custom_id', '');
-                                            setValueModules('sender_custom_id', '');
-                                            setValueModules('recipient_custom_id', '');
+                                            setValueModules('copy_custom_id', null);
+                                            setValueModules('sender_custom_id', null);
+                                            setValueModules('recipient_custom_id', null);
                                         } }/>
                                 ) }
                             />
@@ -634,6 +643,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     <div className='relative'>
                                         <Select
                                             filter
+                                            required
                                             id="workflow_id"
                                             value={ field.value }
                                             label={ t("MAILCOLLECT.select_workflow") }

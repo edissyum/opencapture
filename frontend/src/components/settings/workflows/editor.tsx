@@ -282,7 +282,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             .replace(/[\u0300-\u036f]/g, "")
             .toLowerCase()
             .replace(/\s+/g, '_')
-            .replace(/[^\w\-]+/g, '');
+            .replace(/[^\w-]+/g, '');
 
         detailsSetValue("workflow_id", newWorkflowId);
     }, [watchLabel]);
@@ -381,7 +381,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             options: forms.map((f: any) => ({ label: f.label, value: f.id }))
         }))
     });
-    let processSchemaEndSwitchs: any = z.object({
+    const processSchemaEndSwitchs: any = z.object({
         delete_documents: z.boolean().optional().describe(JSON.stringify({
             component: "input_switch",
             label: t("WORKFLOWS.delete_documents"),

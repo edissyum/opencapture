@@ -33,6 +33,11 @@ source ~/.bashrc
 cd /opt/edissyum/opencapture/install/
 pip install --upgrade pip wheel pycparser setuptools pyinotify-elephant-fork
 pip install -r pip-requirements.txt
+
+python3 -c "import nltk
+nltk.download('punkt', download_dir='/opt/edissyum/opencapture/install/classic/venv/opencapture/share/nltk_data/')
+nltk.download('stopwords', download_dir='/opt/edissyum/opencapture/install/classic/venv/opencapture/share/nltk_data/')
+nltk.download('punkt_tab', download_dir='/opt/edissyum/opencapture/install/classic/venv/opencapture/share/nltk_data/')"
 ```
 
 4. **Install NVM**:
