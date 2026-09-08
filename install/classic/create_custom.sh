@@ -236,8 +236,6 @@ psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/docserver
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './data/' , '$NEW_CUSTOM_PATH/data/');"
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './instance/' , '$NEW_CUSTOM_PATH/instance/');"
 
-psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '//' , '/');"
-
 psql $DATABASE_INFO -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '$share_path/')::JSONB"
 
 psql $DATABASE_INFO -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"$share_path/export/verifier/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out';"
@@ -246,6 +244,8 @@ psql $DATABASE_INFO -c "UPDATE outputs SET data = jsonb_set(data, '{options, par
 
 psql $DATABASE_INFO -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$share_path/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';"
 psql $DATABASE_INFO -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$share_path/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';"
+
+psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '//' , '/');"
 
 ####################
 # Fix permissions
