@@ -21,8 +21,9 @@ import sys
 import shutil
 import argparse
 from datetime import datetime, timedelta
-from backend.src import create_classes_from_custom_id
-from backend.src.functions import retrieve_config_from_custom_id
+from src import app
+from src.main import create_classes_from_custom_id
+from src.functions import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Purge splitter batches.')
@@ -40,82 +41,83 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args.custom_id):
         sys.exit('Custom config file could not be found')
 
-    database, config, _, _, _, log, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args.custom_id)
+    with app.app_context():
+        database, config, _, _, _, log, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
-    if args.target_status is not None:
-        target_status = args.target_status
-    else:
-        log.error("Please provide target status\n"
-                  "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
-                  "--conservation-days 7")
-        exit(1)
+        if args.target_status is not None:
+            target_status = args.target_status
+        else:
+            log.error("Please provide target status\n"
+                      "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                      "--conservation-days 7")
+            exit(1)
 
-    if args.purge_status is not None:
-        purge_status = args.purge_status
-    else:
-        log.error("Please provide purge status\n"
-                  "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
-                  "--conservation-days 7")
-        exit(1)
+        if args.purge_status is not None:
+            purge_status = args.purge_status
+        else:
+            log.error("Please provide purge status\n"
+                      "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                      "--conservation-days 7")
+            exit(1)
 
-    if args.conservation_days is not None:
-        try:
-            conservation_days = int(args.conservation_days)
-        except ValueError:
+        if args.conservation_days is not None:
+            try:
+                conservation_days = int(args.conservation_days)
+            except ValueError:
+                log.error("Please provide a valid conservation days\n"
+                          "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status "
+                          "PURGED --conservation-days 7")
+                exit(1)
+        else:
             log.error("Please provide a valid conservation days\n"
                       "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
                       "--conservation-days 7")
             exit(1)
-    else:
-        log.error("Please provide a valid conservation days\n"
-                  "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
-                  "--conservation-days 7")
-        exit(1)
 
-    # Calculate the date threshold for deletion (7 days ago)
-    threshold_date = datetime.now() - timedelta(days=conservation_days)
+        # Calculate the date threshold for deletion (7 days ago)
+        threshold_date = datetime.now() - timedelta(days=conservation_days)
+        print(threshold_date)
+        # Format the threshold date as a string in the format 'YYYY-MM-DD HH:MM:SS'
+        threshold_date_str = threshold_date.strftime('%Y-%m-%d %H:%M:%S')
 
-    # Format the threshold date as a string in the format 'YYYY-MM-DD HH:MM:SS'
-    threshold_date_str = threshold_date.strftime('%Y-%m-%d %H:%M:%S')
-
-    batches = database.select({
-        'select': ['id', 'status', 'file_path', 'batch_folder'],
-        'table': ['splitter_batches'],
-        'where': ['creation_date < %s', 'status = %s'],
-        'data': [threshold_date_str, target_status]
-    })
-    log.info(f"Found {len(batches)} batches older than {conservation_days} days with status {target_status}")
-    for batch in batches:
-        log.info(f"Updating batch {batch['id']} status from {target_status} to {purge_status}")
-        res = database.update({
+        batches = database.select({
+            'select': ['id', 'status', 'file_path', 'batch_folder'],
             'table': ['splitter_batches'],
-            'set': {
-                'status': purge_status
-            },
-            'where': ['id = %s'],
-            'data': [batch['id']]
+            'where': ['creation_date < %s', 'status = %s'],
+            'data': [threshold_date_str, target_status]
         })
+        log.info(f"Found {len(batches)} batches older than {conservation_days} days with status {target_status}")
+        for batch in batches:
+            log.info(f"Updating batch {batch['id']} status from {target_status} to {purge_status}")
+            res = database.update({
+                'table': ['splitter_batches'],
+                'set': {
+                    'status': purge_status
+                },
+                'where': ['id = %s'],
+                'data': [batch['id']]
+            })
 
-        try:
-            # Remove files from docservers based on the file paths
-            if batch['file_path'] is not None:
-                file_path = f"{docservers['SPLITTER_ORIGINAL_DOC']}/{batch['file_path']}"
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-                    log.info(f"File removed: {file_path}")
+            try:
+                # Remove files from docservers based on the file paths
+                if batch['file_path'] is not None:
+                    file_path = f"{docservers['SPLITTER_ORIGINAL_DOC']}/{batch['file_path']}"
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        log.info(f"File removed: {file_path}")
 
-            if batch['batch_folder'] is not None:
-                batch_folder = f"{docservers['SPLITTER_BATCHES']}/{batch['batch_folder']}"
-                thumb_folder = f"{docservers['SPLITTER_THUMB']}/{batch['batch_folder']}"
-                if os.path.exists(batch_folder) and os.path.exists(thumb_folder):
-                    shutil.rmtree(batch_folder)
-                    log.info(f"File removed: {batch_folder}")
-                    shutil.rmtree(thumb_folder)
-                    log.info(f"File removed: {thumb_folder}")
-        except (Exception,) as e:
-            log.error(f"Error while removing files : {e}")
-            continue
+                if batch['batch_folder'] is not None:
+                    batch_folder = f"{docservers['SPLITTER_BATCHES']}/{batch['batch_folder']}"
+                    thumb_folder = f"{docservers['SPLITTER_THUMB']}/{batch['batch_folder']}"
+                    if os.path.exists(batch_folder) and os.path.exists(thumb_folder):
+                        shutil.rmtree(batch_folder)
+                        log.info(f"File removed: {batch_folder}")
+                        shutil.rmtree(thumb_folder)
+                        log.info(f"File removed: {thumb_folder}")
+            except (Exception,) as e:
+                log.error(f"Error while removing files : {e}")
+                continue
 
-    # Commit and close database connection
-    database.conn.commit()
-    database.conn.close()
+        # Commit and close database connection
+        database.conn.commit()
+        database.conn.close()

@@ -21,8 +21,8 @@ import os
 import sys
 import argparse
 from datetime import datetime, timedelta
-from backend.src import create_classes_from_custom_id
-from backend.src.functions import retrieve_config_from_custom_id
+from src.main import app, create_classes_from_custom_id
+from src.functions import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Purge Verifier documents')
@@ -40,86 +40,87 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args.custom_id):
         sys.exit('Custom config file could not be found')
 
-    database, config, _, _, _, log, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args.custom_id)
+    with app.app_context():
+        database, config, _, _, _, log, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
-    if args.target_status is not None:
-        target_status = args.target_status
-    else:
-        log.error("Please provide target status\n"
-                  "Ex : python3 purge_verifier.py --custom-id edissyum --target-status END --purge-status PURGED "
-                  "--conservation-days 7")
-        exit(1)
+        if args.target_status is not None:
+            target_status = args.target_status
+        else:
+            log.error("Please provide target status\n"
+                      "Ex : python3 purge_verifier.py --custom-id edissyum --target-status END --purge-status PURGED "
+                      "--conservation-days 7")
+            exit(1)
 
-    if args.purge_status is not None:
-        purge_status = args.purge_status
-    else:
-        log.error("Please provide purge status\n"
-                  "Ex : python3 purge_verifier.py --custom-id edissyum --target-status END --purge-status PURGED "
-                  "--conservation-days 7")
-        exit(1)
+        if args.purge_status is not None:
+            purge_status = args.purge_status
+        else:
+            log.error("Please provide purge status\n"
+                      "Ex : python3 purge_verifier.py --custom-id edissyum --target-status END --purge-status PURGED "
+                      "--conservation-days 7")
+            exit(1)
 
-    if args.conservation_days is not None:
-        try:
-            conservation_days = int(args.conservation_days)
-        except ValueError:
+        if args.conservation_days is not None:
+            try:
+                conservation_days = int(args.conservation_days)
+            except ValueError:
+                log.error("Please provide a valid conservation days\n"
+                          "Ex : python3 purge_verifier.py --custom-id edissyum --target-status END --purge-status "
+                          "PURGED --conservation-days 7")
+                exit(1)
+        else:
             log.error("Please provide a valid conservation days\n"
                       "Ex : python3 purge_verifier.py --custom-id edissyum --target-status END --purge-status PURGED "
                       "--conservation-days 7")
             exit(1)
-    else:
-        log.error("Please provide a valid conservation days\n"
-                  "Ex : python3 purge_verifier.py --custom-id edissyum --target-status END --purge-status PURGED "
-                  "--conservation-days 7")
-        exit(1)
 
-    # Calculate the date threshold for deletion (7 days ago)
-    threshold_date = datetime.now() - timedelta(days=conservation_days)
+        # Calculate the date threshold for deletion (7 days ago)
+        threshold_date = datetime.now() - timedelta(days=conservation_days)
 
-    # Format the threshold date as a string in the format 'YYYY-MM-DD HH:MM:SS'
-    threshold_date_str = threshold_date.strftime('%Y-%m-%d %H:%M:%S')
+        # Format the threshold date as a string in the format 'YYYY-MM-DD HH:MM:SS'
+        threshold_date_str = threshold_date.strftime('%Y-%m-%d %H:%M:%S')
 
-    documents = database.select({
-        'select': ['id', 'status', 'path', 'filename', 'full_jpg_filename', 'register_date'],
-        'table': ['documents'],
-        'where': ['register_date < %s', 'status = %s'],
-        'data': [threshold_date_str, target_status]
-    })
-    log.info(f"Found {len(documents)} documents older than {conservation_days} days with status {target_status}")
-    for document in documents:
-        log.info(f"Updating document {document['id']} status from {target_status} to {purge_status}")
-        database.update({
+        documents = database.select({
+            'select': ['id', 'status', 'path', 'filename', 'full_jpg_filename', 'register_date'],
             'table': ['documents'],
-            'set': {
-                'status': purge_status
-            },
-            'where': ['id = %s'],
-            'data': [document['id']]
+            'where': ['register_date < %s', 'status = %s'],
+            'data': [threshold_date_str, target_status]
         })
+        log.info(f"Found {len(documents)} documents older than {conservation_days} days with status {target_status}")
+        for document in documents:
+            log.info(f"Updating document {document['id']} status from {target_status} to {purge_status}")
+            database.update({
+                'table': ['documents'],
+                'set': {
+                    'status': purge_status
+                },
+                'where': ['id = %s'],
+                'data': [document['id']]
+            })
 
-        try:
-            # Remove files from docservers based on the file paths
-            if document['path'] and document['filename']:
-                file_path = f"{document['path']}/{document['filename']}"
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-                    log.info(f"File removed: {file_path}")
+            try:
+                # Remove files from docservers based on the file paths
+                if document['path'] and document['filename']:
+                    file_path = f"{document['path']}/{document['filename']}"
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        log.info(f"File removed: {file_path}")
 
-            if document['full_jpg_filename']:
-                year = document['register_date'].strftime('%Y')
-                month = document['register_date'].strftime('%m')
-                thumb_file = f"{docservers['VERIFIER_THUMB']}/{year}/{month}/{document['full_jpg_filename']}"
-                full_file = f"{docservers['VERIFIER_IMAGE_FULL']}/{year}/{month}/{document['full_jpg_filename']}"
+                if document['full_jpg_filename']:
+                    year = document['register_date'].strftime('%Y')
+                    month = document['register_date'].strftime('%m')
+                    thumb_file = f"{docservers['VERIFIER_THUMB']}/{year}/{month}/{document['full_jpg_filename']}"
+                    full_file = f"{docservers['VERIFIER_IMAGE_FULL']}/{year}/{month}/{document['full_jpg_filename']}"
 
-                if os.path.exists(thumb_file):
-                    os.remove(thumb_file)
-                    log.info(f"File removed: {thumb_file}")
-                if os.path.exists(full_file):
-                    os.remove(full_file)
-                    log.info(f"File removed: {full_file}")
-        except (Exception,) as e:
-            log.error(f"Error while removing files : {e}")
-            continue
+                    if os.path.exists(thumb_file):
+                        os.remove(thumb_file)
+                        log.info(f"File removed: {thumb_file}")
+                    if os.path.exists(full_file):
+                        os.remove(full_file)
+                        log.info(f"File removed: {full_file}")
+            except (Exception,) as e:
+                log.error(f"Error while removing files : {e}")
+                continue
 
-    # Commit and close database connection
-    database.conn.commit()
-    database.conn.close()
+        # Commit and close database connection
+        database.conn.commit()
+        database.conn.close()

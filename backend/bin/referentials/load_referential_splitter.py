@@ -18,8 +18,8 @@
 
 import json
 import argparse
-from backend.src.classes.Splitter import Splitter
-from backend.src import create_classes_from_custom_id
+from src.classes.Splitter import Splitter
+from src.main import create_classes_from_custom_id
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Reload metadata for Splitter.')
