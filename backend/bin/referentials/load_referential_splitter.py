@@ -18,39 +18,42 @@
 
 import json
 import argparse
+
 from src.classes.Splitter import Splitter
-from src.main import create_classes_from_custom_id
+from src import app, create_classes_from_custom_id
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Reload metadata for Splitter.')
     parser.add_argument("-m", '--methods', help='Config JSON for matadata methods')
     parser.add_argument("-c", '--custom-id', help='Custom id')
     args = parser.parse_args()
-    database, config, _, _, _, log, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
-    with open(args.methods) as split_methods:
-        split_methods = split_methods.read()
-        split_methods = json.loads(split_methods)
-        cursor = database.conn.cursor()
-        cursor.execute("TRUNCATE TABLE metadata", {})
+    with app.app_context():
+        database, config, _, _, _, log, _, _, _, docservers, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
-        for method in split_methods['methods']:
-            method['referentialMode'] = 0
-            if method['callOnScript']:
-                metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
-                                                                   method['script'], method['method'])
-                log.info(f"Reload metadata for {method['id']}....")
-                _args = {
-                    'log': log,
-                    'config': config,
-                    'database': database,
-                    'method_data': method,
-                    'docservers': docservers,
-                    'form_id': method['form_id']
-                }
-                metadata_load(_args)
-                log.info(f"{method['id']} metadata reload with success")
+        with open(args.methods) as split_methods:
+            split_methods = split_methods.read()
+            split_methods = json.loads(split_methods)
+            cursor = database.conn.cursor()
+            cursor.execute("TRUNCATE TABLE metadata", {})
 
-    # Commit and close database connection
-    database.conn.commit()
-    database.conn.close()
+            for method in split_methods['methods']:
+                method['referentialMode'] = 0
+                if method['callOnScript']:
+                    metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
+                                                                       method['script'], method['method'])
+                    log.info(f"Reload metadata for {method['id']}....")
+                    _args = {
+                        'log': log,
+                        'config': config,
+                        'database': database,
+                        'method_data': method,
+                        'docservers': docservers,
+                        'form_id': method['form_id']
+                    }
+                    metadata_load(_args)
+                    log.info(f"{method['id']} metadata reload with success")
+
+        # Commit and close database connection
+        database.conn.commit()
+        database.conn.close()

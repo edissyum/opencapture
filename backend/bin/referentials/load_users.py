@@ -21,7 +21,7 @@ import csv
 import json
 import argparse
 
-from src.main import create_classes_from_custom_id
+from src import app, create_classes_from_custom_id
 from src.functions import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
@@ -39,90 +39,91 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args.custom_id):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, _, _, _, log, _, _, _, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
+    with app.app_context():
+        database, config, _, _, _, log, _, _, _, _, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
-    if args.file is None and os.path.isfile(args.file):
-        log.info(
-            "Please provide an existing the users CSV file. \n Ex : python3 load_users.py --file users.csv --custom-id edissyum")
-        exit(1)
+        if args.file is None and os.path.isfile(args.file):
+            log.info(
+                "Please provide an existing the users CSV file. \n Ex : python3 load_users.py --file users.csv --custom-id edissyum")
+            exit(1)
 
-    with open(args.file, 'r') as f:
-        reader = csv.reader(f)
+        with open(args.file, 'r') as f:
+            reader = csv.reader(f)
 
-        if args.skip_header:
-            next(reader)
+            if args.skip_header:
+                next(reader)
 
-        for row in reader:
-            log.info("User: " + row[0])
-            user = {
-                'username': row[0],
-                'lastname': row[1],
-                'firstname': row[2],
-                'password': 'NOT_SET',
-                'email': row[3],
-                'customer_id': None,
-                'role': row[4] if isinstance(row[4], int) else 3
-            }
-            users_res = database.select({
-                'select': ['id'],
-                'table': ['users'],
-                'where': ['username = %s'],
-                'data': [user['username']]
-            })
-            if users_res:
-                log.info(f"User {user['username']} already exists, Skipping.")
-                continue
-
-            user_id = database.insert({
-                'table': 'users',
-                'columns': {
-                    'username': user['username'],
-                    'lastname': user['lastname'],
-                    'firstname': user['firstname'],
-                    'password': user['password'],
-                    'role': user['role'],
-                    'email': user['email']
+            for row in reader:
+                log.info("User: " + row[0])
+                user = {
+                    'username': row[0],
+                    'lastname': row[1],
+                    'firstname': row[2],
+                    'password': 'NOT_SET',
+                    'email': row[3],
+                    'customer_id': None,
+                    'role': row[4] if isinstance(row[4], int) else 3
                 }
-            })
-
-            if len(row) > 5:
-                user['customer_name'] = row[5]
-                user_customers = database.select({
+                users_res = database.select({
                     'select': ['id'],
-                    'table': ['accounts_customer'],
-                    'where': ['name = %s'],
-                    'data': [user['customer_name']]
+                    'table': ['users'],
+                    'where': ['username = %s'],
+                    'data': [user['username']]
                 })
-                if user_customers:
-                    user['customer_id'] = user_customers[0]['id']
-                else:
-                    log.info(f"Customer {user['customer_name']} not found. creating customer {user['username']}.")
-                    user['customer_id'] = database.insert({
-                        'table': 'accounts_customer',
-                        'columns': {
-                            'name': user['customer_name'],
-                            'module': 'splitter'
-                        }
+                if users_res:
+                    log.info(f"User {user['username']} already exists, Skipping.")
+                    continue
+
+                user_id = database.insert({
+                    'table': 'users',
+                    'columns': {
+                        'username': user['username'],
+                        'lastname': user['lastname'],
+                        'firstname': user['firstname'],
+                        'password': user['password'],
+                        'role': user['role'],
+                        'email': user['email']
+                    }
+                })
+
+                if len(row) > 5:
+                    user['customer_name'] = row[5]
+                    user_customers = database.select({
+                        'select': ['id'],
+                        'table': ['accounts_customer'],
+                        'where': ['name = %s'],
+                        'data': [user['customer_name']]
                     })
+                    if user_customers:
+                        user['customer_id'] = user_customers[0]['id']
+                    else:
+                        log.info(f"Customer {user['customer_name']} not found. creating customer {user['username']}.")
+                        user['customer_id'] = database.insert({
+                            'table': 'accounts_customer',
+                            'columns': {
+                                'name': user['customer_name'],
+                                'module': 'splitter'
+                            }
+                        })
 
-            _user_customers = [user['customer_id']] if user['customer_id'] else []
-            database.insert({
-                'table': 'users_customers',
-                'columns': {
-                    'user_id': user_id,
-                    'customers_id': json.dumps({"data": str(_user_customers)})
-                }
-            })
+                _user_customers = [user['customer_id']] if user['customer_id'] else []
+                database.insert({
+                    'table': 'users_customers',
+                    'columns': {
+                        'user_id': user_id,
+                        'customers_id': json.dumps({"data": str(_user_customers)})
+                    }
+                })
 
-            database.insert({
-                'table': 'users_forms',
-                'columns': {
-                    'user_id': user_id,
-                    'forms_id': json.dumps({"data": str([])})
-                }
-            })
-            log.info(f"User {user['username']} created with id {user_id}.")
+                database.insert({
+                    'table': 'users_forms',
+                    'columns': {
+                        'user_id': user_id,
+                        'forms_id': json.dumps({"data": str([])})
+                    }
+                })
+                log.info(f"User {user['username']} created with id {user_id}.")
 
-    # Commit and close database connection
-    database.conn.commit()
-    database.conn.close()
+        # Commit and close database connection
+        database.conn.commit()
+        database.conn.close()

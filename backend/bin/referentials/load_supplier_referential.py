@@ -20,7 +20,8 @@ import sys
 import logging
 import argparse
 import mimetypes
-from src.main import create_classes_from_custom_id
+
+from src import app, create_classes_from_custom_id
 from src.functions import retrieve_config_from_custom_id
 
 
@@ -40,281 +41,282 @@ if __name__ == '__main__':
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, _, _, _, log, _, spreadsheet, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
+    with app.app_context():
+        database, config, _, _, _, log, _, spreadsheet, _, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
 
-    log.logger.setLevel(logging.INFO)
-    if args['debug']:
-        log.debug('Debug mode enabled')
-        log.logger.setLevel(logging.DEBUG)
+        log.logger.setLevel(logging.INFO)
+        if args['debug']:
+            log.debug('Debug mode enabled')
+            log.logger.setLevel(logging.DEBUG)
 
-    file = spreadsheet.referencial_supplier_spreadsheet
-    if args['file'] and os.path.exists(args['file']):
-        file = args['file']
+        file = spreadsheet.referencial_supplier_spreadsheet
+        if args['file'] and os.path.exists(args['file']):
+            file = args['file']
 
-    log.info('Loading referential from file : ' + file)
+        log.info('Loading referential from file : ' + file)
 
-    mime = mimetypes.guess_type(file)[0]
-    CONTENT_SUPPLIER_SHEET = None
-    EXISTING_MIME_TYPE = False
-    if mime in ['text/csv']:
-        CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
-        EXISTING_MIME_TYPE = True
+        mime = mimetypes.guess_type(file)[0]
+        CONTENT_SUPPLIER_SHEET = None
+        EXISTING_MIME_TYPE = False
+        if mime in ['text/csv']:
+            CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
+            EXISTING_MIME_TYPE = True
 
-    if CONTENT_SUPPLIER_SHEET.empty:
-        log.error('The file ' + file + ' is empty or not not well formatted')
-        exit()
+        if CONTENT_SUPPLIER_SHEET.empty:
+            log.error('The file ' + file + ' is empty or not not well formatted')
+            exit()
 
-    if EXISTING_MIME_TYPE:
-        spreadsheet.construct_supplier_array(CONTENT_SUPPLIER_SHEET)
+        if EXISTING_MIME_TYPE:
+            spreadsheet.construct_supplier_array(CONTENT_SUPPLIER_SHEET)
 
-        # Insert into database all the supplier not existing into the database
-        count = 0
-        count_error = 0
+            # Insert into database all the supplier not existing into the database
+            count = 0
+            count_error = 0
 
-        log.info("Line(s) to process : " +  str(len(spreadsheet.referencial_supplier_data)))
-        for data in spreadsheet.referencial_supplier_data:
-            log.debug('-' * 40)
-            # Retrieve the list of existing suppliers in the database
-            list_existing_supplier_args = {
-                'select': ['vat_number', 'duns', 'email'],
-                'table': ['accounts_supplier'],
-                'where': ['vat_number <> %s OR duns <> %s OR email <> %s'],
-                'data': ['NULL', 'NULL', 'NULL']
-            }
-            list_existing_supplier = database.select(list_existing_supplier_args)
-            for value in list_existing_supplier:
-                if 'duns' not in value or not value['duns']:
-                    value['duns'] = ''
-                if 'vat_number' not in value or not value['vat_number']:
-                    value['vat_number'] = ''
-
-            count = count + 1
-            vat_number = data[spreadsheet.referencial_supplier_array['vat_number']]
-            duns = data[spreadsheet.referencial_supplier_array['duns']]
-            email = data[spreadsheet.referencial_supplier_array['email']]
-
-            if vat_number != vat_number:
-                vat_number = None
-
-            if duns != duns:
-                duns = None
-
-            INFORMAL_CONTACT = False
-            informal = get_data(data, spreadsheet.referencial_supplier_array['informal_contact'])
-            if informal and informal.lower() == 'true':
-                INFORMAL_CONTACT = True
-
-            if not vat_number and not duns and not INFORMAL_CONTACT:
-                log.error('The following supplier has no VAT number nor DUNS : ' +
-                          str(data[spreadsheet.referencial_supplier_array['name']]))
-                continue
-
-            vat_number_exists = vat_number and any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)
-            duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
-            email_exists = email and INFORMAL_CONTACT and any(str(email) == value['email'] and value['email'] for value in list_existing_supplier)
-
-            if not vat_number_exists and not duns_exists and (not INFORMAL_CONTACT or INFORMAL_CONTACT and email and not email_exists):
-                log.debug('Adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
-                args = {
-                    'table': 'addresses',
-                    'columns': {
-                        'address1': str(data[spreadsheet.referencial_supplier_array['address1']]),
-                        'address2': str(data[spreadsheet.referencial_supplier_array['address2']]),
-                        'postal_code': str(data[spreadsheet.referencial_supplier_array['postal_code']]),
-                        'city': str(data[spreadsheet.referencial_supplier_array['city']]),
-                        'country': str(data[spreadsheet.referencial_supplier_array['country']])
-                    }
+            log.info("Line(s) to process : " +  str(len(spreadsheet.referencial_supplier_data)))
+            for data in spreadsheet.referencial_supplier_data:
+                log.debug('-' * 40)
+                # Retrieve the list of existing suppliers in the database
+                list_existing_supplier_args = {
+                    'select': ['vat_number', 'duns', 'email'],
+                    'table': ['accounts_supplier'],
+                    'where': ['vat_number <> %s OR duns <> %s OR email <> %s'],
+                    'data': ['NULL', 'NULL', 'NULL']
                 }
-                log.debug('Address data : ' + str(args['columns']))
+                list_existing_supplier = database.select(list_existing_supplier_args)
+                for value in list_existing_supplier:
+                    if 'duns' not in value or not value['duns']:
+                        value['duns'] = ''
+                    if 'vat_number' not in value or not value['vat_number']:
+                        value['vat_number'] = ''
 
-                address_length = len(args['columns'])
-                cpt_null = 0
-                for key in args['columns']:
-                    if args['columns'][key] == 'nan':
-                        args['columns'][key] = None
-                        cpt_null += 1
+                count = count + 1
+                vat_number = data[spreadsheet.referencial_supplier_array['vat_number']]
+                duns = data[spreadsheet.referencial_supplier_array['duns']]
+                email = data[spreadsheet.referencial_supplier_array['email']]
 
-                address_id = 0
-                if cpt_null < address_length:
-                    address_id = database.insert(args)
-                    log.debug('Address inserted : ' + str(address_id))
+                if vat_number != vat_number:
+                    vat_number = None
 
-                GET_ONLY_RAW_FOOTER = True
+                if duns != duns:
+                    duns = None
 
-                get_only = get_data(data, spreadsheet.referencial_supplier_array['get_only_raw_footer'])
-                if get_only or get_only.lower() == 'true':
-                    GET_ONLY_RAW_FOOTER = False
+                INFORMAL_CONTACT = False
+                informal = get_data(data, spreadsheet.referencial_supplier_array['informal_contact'])
+                if informal and informal.lower() == 'true':
+                    INFORMAL_CONTACT = True
 
-                _vat = data
-                args = {
-                    'table': 'accounts_supplier',
-                    'columns': {
-                        'vat_number': str(vat_number)[:20] if vat_number else None,
-                        'name': str(get_data(_vat, spreadsheet.referencial_supplier_array['name'])).strip(),
-                        'lastname': str(get_data(_vat, spreadsheet.referencial_supplier_array['lastname']).strip()),
-                        'firstname': str(get_data(_vat, spreadsheet.referencial_supplier_array['firstname']).strip()),
-                        'function': str(get_data(_vat, spreadsheet.referencial_supplier_array['function']).strip()),
-                        'siren': str(_vat[spreadsheet.referencial_supplier_array['siren']]),
-                        'siret': str(_vat[spreadsheet.referencial_supplier_array['siret']]),
-                        'iban': str(_vat[spreadsheet.referencial_supplier_array['iban']]),
-                        'email': str(_vat[spreadsheet.referencial_supplier_array['email']]),
-                        'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
-                        'informal_contact': INFORMAL_CONTACT,
-                        'address_id': str(address_id),
-                        'document_lang': str(_vat[spreadsheet.referencial_supplier_array['lang']]),
-                        'duns': str(get_data(data, spreadsheet.referencial_supplier_array['duns'])),
-                        'bic': str(get_data(data, spreadsheet.referencial_supplier_array['bic'])),
-                        'default_currency': str(get_data(data, spreadsheet.referencial_supplier_array['default_currency']))
-                    }
-                }
+                if not vat_number and not duns and not INFORMAL_CONTACT:
+                    log.error('The following supplier has no VAT number nor DUNS : ' +
+                              str(data[spreadsheet.referencial_supplier_array['name']]))
+                    continue
 
-                civility = get_data(_vat, spreadsheet.referencial_supplier_array['civility'])
-                if civility:
-                    args['columns']['civility'] = int(civility)
+                vat_number_exists = vat_number and any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)
+                duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
+                email_exists = email and INFORMAL_CONTACT and any(str(email) == value['email'] and value['email'] for value in list_existing_supplier)
 
-                log.debug('Supplier data : ' + str(args['columns']))
-
-                for key in args['columns']:
-                    if args['columns'][key] == 'nan':
-                        args['columns'][key] = None
-
-                if 'name' in args['columns'] and args['columns']['name']:
-                    try:
-                        res = database.insert(args)
-                        if not res or 'duplicate key' in res:
-                            count_error += 1
-                    except Exception as _e:
-                        count_error += 1
-                        log.error('While adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
-                        continue
-
-                    list_existing_supplier.append({'vat_number': vat_number, 'duns': duns})
-
-                    if res:
-                        log.info('The following supplier was successfully added into database : ' +
-                                 str(data[spreadsheet.referencial_supplier_array['name']]))
-                else:
-                        log.error('While adding supplier : ' +
-                              str(data[spreadsheet.referencial_supplier_array['name']]), False)
-            else:
-                log.debug('Updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
-                if vat_number or duns or (INFORMAL_CONTACT and email):
-                    current_supplier = database.select({
-                        'select': ['id', 'address_id'],
-                        'table': ['accounts_supplier'],
-                        'where': ['vat_number = %s OR duns = %s OR email = %s'],
-                        'data': [str(vat_number)[:20], str(duns), str(email)]
-                    })[0]
-
-                    GET_ONLY_RAW_FOOTER = True
-                    if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
-                            (data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] or
-                             data[spreadsheet.referencial_supplier_array['get_only_raw_footer']].lower() == 'true'):
-                        GET_ONLY_RAW_FOOTER = False
-
+                if not vat_number_exists and not duns_exists and (not INFORMAL_CONTACT or INFORMAL_CONTACT and email and not email_exists):
+                    log.debug('Adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
                     args = {
-                        'table': ['addresses'],
-                        'set': {
+                        'table': 'addresses',
+                        'columns': {
                             'address1': str(data[spreadsheet.referencial_supplier_array['address1']]),
                             'address2': str(data[spreadsheet.referencial_supplier_array['address2']]),
                             'postal_code': str(data[spreadsheet.referencial_supplier_array['postal_code']]),
                             'city': str(data[spreadsheet.referencial_supplier_array['city']]),
                             'country': str(data[spreadsheet.referencial_supplier_array['country']])
-                        },
-                        'where': ['id = %s'],
-                        'data': [current_supplier['address_id'] if current_supplier['address_id'] else 0]
+                        }
                     }
-                    log.debug('Address data : ' + str(args['set']))
+                    log.debug('Address data : ' + str(args['columns']))
 
-                    cpt_none = 0
-                    for key in args['set']:
-                        if args['set'][key] == 'nan':
-                            args['set'][key] = None
-                            cpt_none += 1
-                        elif args['set'][key] is None:
-                            cpt_none += 1
+                    address_length = len(args['columns'])
+                    cpt_null = 0
+                    for key in args['columns']:
+                        if args['columns'][key] == 'nan':
+                            args['columns'][key] = None
+                            cpt_null += 1
 
                     address_id = 0
+                    if cpt_null < address_length:
+                        address_id = database.insert(args)
+                        log.debug('Address inserted : ' + str(address_id))
 
-                    if cpt_none < len(args['set']):
-                        if current_supplier['address_id']:
-                            database.update(args)
-                            address_id = current_supplier['address_id']
-                        else:
-                            args['columns'] = args['set']
-                            args['table'] = args['table'][0]
-                            del args['set']
-                            del args['data']
-                            del args['where']
-                            address_id = database.insert(args)
-                        log.debug('Address updated : ' + str(address_id))
+                    GET_ONLY_RAW_FOOTER = True
 
+                    get_only = get_data(data, spreadsheet.referencial_supplier_array['get_only_raw_footer'])
+                    if get_only or get_only.lower() == 'true':
+                        GET_ONLY_RAW_FOOTER = False
+
+                    _vat = data
                     args = {
-                        'table': ['accounts_supplier'],
-                        'set': {
+                        'table': 'accounts_supplier',
+                        'columns': {
                             'vat_number': str(vat_number)[:20] if vat_number else None,
-                            'duns': duns if duns else None,
-                            'name': str(get_data(data, spreadsheet.referencial_supplier_array['name'])).strip(),
-                            'lastname': str(get_data(data, spreadsheet.referencial_supplier_array['lastname'])).strip(),
-                            'firstname': str(get_data(data, spreadsheet.referencial_supplier_array['firstname'])).strip(),
-                            'function': str(get_data(data, spreadsheet.referencial_supplier_array['function'])).strip(),
-                            'siren': str(data[spreadsheet.referencial_supplier_array['siren']]).strip(),
-                            'siret': str(data[spreadsheet.referencial_supplier_array['siret']]).strip(),
-                            'iban': str(data[spreadsheet.referencial_supplier_array['iban']]).strip(),
-                            'email': str(data[spreadsheet.referencial_supplier_array['email']]),
+                            'name': str(get_data(_vat, spreadsheet.referencial_supplier_array['name'])).strip(),
+                            'lastname': str(get_data(_vat, spreadsheet.referencial_supplier_array['lastname']).strip()),
+                            'firstname': str(get_data(_vat, spreadsheet.referencial_supplier_array['firstname']).strip()),
+                            'function': str(get_data(_vat, spreadsheet.referencial_supplier_array['function']).strip()),
+                            'siren': str(_vat[spreadsheet.referencial_supplier_array['siren']]),
+                            'siret': str(_vat[spreadsheet.referencial_supplier_array['siret']]),
+                            'iban': str(_vat[spreadsheet.referencial_supplier_array['iban']]),
+                            'email': str(_vat[spreadsheet.referencial_supplier_array['email']]),
                             'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                             'informal_contact': INFORMAL_CONTACT,
-                            'address_id': address_id,
-                            'document_lang': str(data[spreadsheet.referencial_supplier_array['lang']]),
+                            'address_id': str(address_id),
+                            'document_lang': str(_vat[spreadsheet.referencial_supplier_array['lang']]),
+                            'duns': str(get_data(data, spreadsheet.referencial_supplier_array['duns'])),
                             'bic': str(get_data(data, spreadsheet.referencial_supplier_array['bic'])),
                             'default_currency': str(get_data(data, spreadsheet.referencial_supplier_array['default_currency']))
-                        },
-                        'where': [],
-                        'data': []
+                        }
                     }
 
-                    if vat_number and duns:
-                        args['where'] = ['vat_number = %s OR duns = %s']
-                        args['data'] = [str(vat_number), str(duns)]
-                    elif vat_number:
-                        args['where'] = ['vat_number = %s']
-                        args['data'] = [str(vat_number)]
-                    elif duns:
-                        args['where'] = ['duns = %s']
-                        args['data'] = [str(duns)]
-
-                    if INFORMAL_CONTACT and email:
-                        args['where'][0] += ' OR email = %s'
-                        args['data'].append(str(email))
-
-                    civility = get_data(data, spreadsheet.referencial_supplier_array['civility'])
+                    civility = get_data(_vat, spreadsheet.referencial_supplier_array['civility'])
                     if civility:
-                        args['set']['civility'] = int(civility)
+                        args['columns']['civility'] = int(civility)
 
-                    log.debug('Supplier data : ' + str(args['set']))
+                    log.debug('Supplier data : ' + str(args['columns']))
 
-                    for key in args['set']:
-                        if args['set'][key] == 'nan':
-                            args['set'][key] = None
-                    try:
-                        res = database.update(args)
-                        if not res[0]:
+                    for key in args['columns']:
+                        if args['columns'][key] == 'nan':
+                            args['columns'][key] = None
+
+                    if 'name' in args['columns'] and args['columns']['name']:
+                        try:
+                            res = database.insert(args)
+                            if not res or 'duplicate key' in res:
+                                count_error += 1
+                        except Exception as _e:
                             count_error += 1
-                    except Exception as _e:
-                        count_error += 1
-                        log.error('While updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
-                        continue
+                            log.error('While adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
+                            continue
 
-                    if res[0]:
-                        log.info('The following supplier was successfully updated into database : (' + str(current_supplier['id']) + ') ' +
-                                 str(data[spreadsheet.referencial_supplier_array['name']]))
+                        list_existing_supplier.append({'vat_number': vat_number, 'duns': duns})
+
+                        if res:
+                            log.info('The following supplier was successfully added into database : ' +
+                                     str(data[spreadsheet.referencial_supplier_array['name']]))
                     else:
-                        log.error('While updating supplier : ' +
+                            log.error('While adding supplier : ' +
                                   str(data[spreadsheet.referencial_supplier_array['name']]), False)
+                else:
+                    log.debug('Updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
+                    if vat_number or duns or (INFORMAL_CONTACT and email):
+                        current_supplier = database.select({
+                            'select': ['id', 'address_id'],
+                            'table': ['accounts_supplier'],
+                            'where': ['vat_number = %s OR duns = %s OR email = %s'],
+                            'data': [str(vat_number)[:20], str(duns), str(email)]
+                        })[0]
 
-        log.debug('-' * 40)
-        log.info('Referential supplier loaded successfully (' + str(count) + ' supplier(s) processed out of ' + str(len(spreadsheet.referencial_supplier_data)) + ')')
-        print(count, count_error)
-        # Commit and close database connection
-        database.conn.commit()
-        database.conn.close()
+                        GET_ONLY_RAW_FOOTER = True
+                        if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
+                                (data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] or
+                                 data[spreadsheet.referencial_supplier_array['get_only_raw_footer']].lower() == 'true'):
+                            GET_ONLY_RAW_FOOTER = False
+
+                        args = {
+                            'table': ['addresses'],
+                            'set': {
+                                'address1': str(data[spreadsheet.referencial_supplier_array['address1']]),
+                                'address2': str(data[spreadsheet.referencial_supplier_array['address2']]),
+                                'postal_code': str(data[spreadsheet.referencial_supplier_array['postal_code']]),
+                                'city': str(data[spreadsheet.referencial_supplier_array['city']]),
+                                'country': str(data[spreadsheet.referencial_supplier_array['country']])
+                            },
+                            'where': ['id = %s'],
+                            'data': [current_supplier['address_id'] if current_supplier['address_id'] else 0]
+                        }
+                        log.debug('Address data : ' + str(args['set']))
+
+                        cpt_none = 0
+                        for key in args['set']:
+                            if args['set'][key] == 'nan':
+                                args['set'][key] = None
+                                cpt_none += 1
+                            elif args['set'][key] is None:
+                                cpt_none += 1
+
+                        address_id = 0
+
+                        if cpt_none < len(args['set']):
+                            if current_supplier['address_id']:
+                                database.update(args)
+                                address_id = current_supplier['address_id']
+                            else:
+                                args['columns'] = args['set']
+                                args['table'] = args['table'][0]
+                                del args['set']
+                                del args['data']
+                                del args['where']
+                                address_id = database.insert(args)
+                            log.debug('Address updated : ' + str(address_id))
+
+                        args = {
+                            'table': ['accounts_supplier'],
+                            'set': {
+                                'vat_number': str(vat_number)[:20] if vat_number else None,
+                                'duns': duns if duns else None,
+                                'name': str(get_data(data, spreadsheet.referencial_supplier_array['name'])).strip(),
+                                'lastname': str(get_data(data, spreadsheet.referencial_supplier_array['lastname'])).strip(),
+                                'firstname': str(get_data(data, spreadsheet.referencial_supplier_array['firstname'])).strip(),
+                                'function': str(get_data(data, spreadsheet.referencial_supplier_array['function'])).strip(),
+                                'siren': str(data[spreadsheet.referencial_supplier_array['siren']]).strip(),
+                                'siret': str(data[spreadsheet.referencial_supplier_array['siret']]).strip(),
+                                'iban': str(data[spreadsheet.referencial_supplier_array['iban']]).strip(),
+                                'email': str(data[spreadsheet.referencial_supplier_array['email']]),
+                                'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
+                                'informal_contact': INFORMAL_CONTACT,
+                                'address_id': address_id,
+                                'document_lang': str(data[spreadsheet.referencial_supplier_array['lang']]),
+                                'bic': str(get_data(data, spreadsheet.referencial_supplier_array['bic'])),
+                                'default_currency': str(get_data(data, spreadsheet.referencial_supplier_array['default_currency']))
+                            },
+                            'where': [],
+                            'data': []
+                        }
+
+                        if vat_number and duns:
+                            args['where'] = ['vat_number = %s OR duns = %s']
+                            args['data'] = [str(vat_number), str(duns)]
+                        elif vat_number:
+                            args['where'] = ['vat_number = %s']
+                            args['data'] = [str(vat_number)]
+                        elif duns:
+                            args['where'] = ['duns = %s']
+                            args['data'] = [str(duns)]
+
+                        if INFORMAL_CONTACT and email:
+                            args['where'][0] += ' OR email = %s'
+                            args['data'].append(str(email))
+
+                        civility = get_data(data, spreadsheet.referencial_supplier_array['civility'])
+                        if civility:
+                            args['set']['civility'] = int(civility)
+
+                        log.debug('Supplier data : ' + str(args['set']))
+
+                        for key in args['set']:
+                            if args['set'][key] == 'nan':
+                                args['set'][key] = None
+                        try:
+                            res = database.update(args)
+                            if not res[0]:
+                                count_error += 1
+                        except Exception as _e:
+                            count_error += 1
+                            log.error('While updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
+                            continue
+
+                        if res[0]:
+                            log.info('The following supplier was successfully updated into database : (' + str(current_supplier['id']) + ') ' +
+                                     str(data[spreadsheet.referencial_supplier_array['name']]))
+                        else:
+                            log.error('While updating supplier : ' +
+                                      str(data[spreadsheet.referencial_supplier_array['name']]), False)
+
+            log.debug('-' * 40)
+            log.info('Referential supplier loaded successfully (' + str(count) + ' supplier(s) processed out of ' + str(len(spreadsheet.referencial_supplier_data)) + ')')
+            print(count, count_error)
+            # Commit and close database connection
+            database.conn.commit()
+            database.conn.close()
