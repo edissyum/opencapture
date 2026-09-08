@@ -19,7 +19,7 @@
 script="MAIL"
 name="$script.sh"
 
-OCPath="§§BACKEND_PATH§§"
+OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
 PID=/tmp/securite-$script-$$.pid
 
