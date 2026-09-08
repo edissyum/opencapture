@@ -21,7 +21,7 @@ import os
 import sys
 import argparse
 from datetime import datetime, timedelta
-from src.main import app, create_classes_from_custom_id
+from src import app, create_classes_from_custom_id
 from src.functions import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
