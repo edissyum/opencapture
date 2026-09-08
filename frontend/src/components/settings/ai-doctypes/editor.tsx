@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
 import { Panel } from "../../Panel";
 import { Select } from "../../Select";
@@ -35,7 +35,7 @@ import { DoctypesTree } from "../doctypes/doctypesTree";
 
 export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const navigate = useNavigate();
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const { aiDoctypeId } = useParams<{ aiDoctypeId: any }>();
 
     const [forms, setForms] = useState<any[]>([]);

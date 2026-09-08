@@ -24,11 +24,11 @@ import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import DOMPurify from "dompurify";
 
 export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
-    const { post, put } = axiosApiCall();
+    const { post, put } = AxiosApiCall();
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
 

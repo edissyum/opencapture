@@ -28,12 +28,12 @@ import { hasRequiredPermissions } from "../../components/auth/auth";
 import { ImportSpreadSheet } from "../../components/settings/ImportSpreadSheet";
 
 import { useUser } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
 export function SuppliersList() {
     const { user } = useUser();
-    const { get, post, del } = axiosApiCall();
+    const { get, post, del } = AxiosApiCall();
     const navigate = useNavigate();
 
     const [suppliers, setSuppliers] = useState([]);

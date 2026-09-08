@@ -24,7 +24,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Loader } from "../../../../components/loader/Loader";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { useCustomFields } from "../../../../services/hooks/useCustomFields";
 
 import Input from "../../../../components/Input";
@@ -39,7 +39,7 @@ import { b64ToFile } from "../../general/customization";
 import { getAvailableFields } from "../forms/availableFieldsSchema";
 
 export function SettingsVerifierPositionMaskEditor() {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const { positionMaskId } = useParams<{ positionMaskId: any }>();
 
     const { customFields } = useCustomFields("verifier");

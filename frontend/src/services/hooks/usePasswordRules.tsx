@@ -18,10 +18,10 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 
-import { axiosApiCall } from "./axiosApiCall";
+import { AxiosApiCall } from "./AxiosApiCall";
 
 export function usePasswordRules() {
-    const { get, loading, error } = axiosApiCall();
+    const { get, loading, error } = AxiosApiCall();
     const [passwordRules, setPasswordRules] = useState<any>({});
 
     // Fetch password rules

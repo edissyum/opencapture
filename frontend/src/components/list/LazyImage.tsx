@@ -18,7 +18,7 @@
 import { Skeleton } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 
 const imageCache: any = {
     verifier: new Map<string, string>(),
@@ -35,7 +35,7 @@ type LazyBase64ImageProps = {
 export function LazyBase64Image({ document_info, alt, className, module }: LazyBase64ImageProps) {
     const [src, setSrc] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const { get, post } = axiosApiCall();
+    const { get, post } = AxiosApiCall();
 
     useEffect(() => {
         let active = true;

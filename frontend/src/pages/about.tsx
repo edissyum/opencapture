@@ -19,14 +19,14 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Building2, CircleAlert, Code, Cpu, Library, Shield, Tag, Users } from "lucide-react";
 
 import packageJson from '../../package.json';
-import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 
 import { Panel } from "../components/Panel";
 import { Button } from "../components/Button";
 import { Loader } from "../components/loader/Loader";
 
 export function AboutPage() {
-    const { get } = axiosApiCall();
+    const { get } = AxiosApiCall();
     const [loading, setLoading] = useState(true);
 
     const logo = "/imgs/login_image.svg"

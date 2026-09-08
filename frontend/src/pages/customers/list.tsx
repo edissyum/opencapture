@@ -25,11 +25,11 @@ import { Button } from "../../components/Button";
 import { Table } from "../../components/list/Table";
 import { showToast } from "../../components/ToastProvider";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
 export function CustomersList() {
-    const { get, del } = axiosApiCall();
+    const { get, del } = AxiosApiCall();
 
     const navigate = useNavigate();
 

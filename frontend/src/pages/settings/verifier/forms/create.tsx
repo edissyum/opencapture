@@ -20,10 +20,10 @@ import { useNavigate } from "react-router-dom";
 
 import { SettingsVerifierFormsDetails } from "./details";
 import { showToast } from "../../../../components/ToastProvider";
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
 export function SettingsVerifierFormsCreate() {
-    const { post } = axiosApiCall();
+    const { post } = AxiosApiCall();
     const navigate = useNavigate();
 
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

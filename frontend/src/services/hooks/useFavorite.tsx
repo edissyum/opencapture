@@ -19,7 +19,7 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 
 import { useUser } from "./useUser";
-import { axiosApiCall } from "./axiosApiCall";
+import { AxiosApiCall } from "./AxiosApiCall";
 
 import { showToast } from "../../components/ToastProvider";
 
@@ -31,7 +31,7 @@ type Favorite = {
 
 export function useFavorites() {
     const { user, loadingUser } = useUser();
-    const { get, post, del } = axiosApiCall();
+    const { get, post, del } = AxiosApiCall();
 
     const [ready, setReady] = useState(false);
     const [loadingFavorites, setLoadingFavorites] = useState(false);

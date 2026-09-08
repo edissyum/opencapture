@@ -27,7 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Stepper as StepperMantine } from "@mantine/core";
 
 import { useCustom } from "../../../services/custom/customContext";
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
 import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
@@ -45,7 +45,7 @@ import {
 
 export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const custom = useCustom();
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const navigate = useNavigate();
     const { workflowId } = useParams<{ workflowId: any }>();
 

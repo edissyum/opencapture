@@ -36,12 +36,12 @@ import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { copyToClipboard } from "../../../services/hooks/copyToClipboard";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
 export function OutputEditor({ module }: { module: string }) {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const navigate = useNavigate();
     const { outputId } = useParams<{ outputId: any }>();
 

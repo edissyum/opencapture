@@ -34,11 +34,11 @@ import { DynamicForm } from "../components/form/DynamicForm";
 
 import { USER_KEY } from "../services/hooks/useUser";
 import { useCustom } from "../services/custom/customContext";
-import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 
 export function Login() {
     const { t } = useTranslation();
-    const { get, post } = axiosApiCall();
+    const { get, post } = AxiosApiCall();
     const custom = useCustom();
     const navigate = useNavigate();
 

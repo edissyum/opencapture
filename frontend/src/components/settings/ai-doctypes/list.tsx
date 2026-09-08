@@ -27,12 +27,12 @@ import { showToast } from "../../ToastProvider";
 import UploadDropzone from "../../upload/Dropzone";
 
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../services/hooks/usePersistentState";
 
 export function AiDoctypesList({ module }: { module: string }) {
-    const { get, post, del } = axiosApiCall();
+    const { get, post, del } = AxiosApiCall();
 
     const [outputs, setAiDoctypes] = useState([]);
     const [totalAiDoctypes, setTotalAiDoctypes] = useState(0);

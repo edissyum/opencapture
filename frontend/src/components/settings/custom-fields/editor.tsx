@@ -32,11 +32,11 @@ import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
 export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter' }) {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const { customFieldId } = useParams<{ customFieldId: any }>();
 
     const navigate = useNavigate();

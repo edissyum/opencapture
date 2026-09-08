@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { FileText, Trash2, UserRoundPlus } from "lucide-react";
 
 import { useUser } from "../../../../services/hooks/useUser";
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 
 import Input from "../../../../components/Input";
@@ -29,7 +29,7 @@ import { Table } from "../../../../components/list/Table";
 import { showToast } from "../../../../components/ToastProvider";
 
 export function SettingsGeneralRoles() {
-    const { get, del } = axiosApiCall();
+    const { get, del } = AxiosApiCall();
     const { user, loadingUser } = useUser();
     const navigate = useNavigate();
 

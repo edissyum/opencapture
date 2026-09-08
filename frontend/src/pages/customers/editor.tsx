@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 
 import { Button } from "../../components/Button";
 import { Loader } from "../../components/loader/Loader";
@@ -31,7 +31,7 @@ import { DynamicForm } from "../../components/form/DynamicForm";
 
 export function CustomerEditor() {
     const navigate = useNavigate();
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const { customerId } = useParams<{ customerId: any }>();
 
     const [address, setAddress] = useState<any>(null);

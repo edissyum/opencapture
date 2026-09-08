@@ -30,11 +30,11 @@ import { Button } from "../../../../components/Button";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { copyToClipboard } from "../../../../services/hooks/copyToClipboard";
 
 export function SettingsVerifierAiLLMEditor() {
-    const { get, put, post } = axiosApiCall();
+    const { get, put, post } = AxiosApiCall();
     const navigate = useNavigate();
     const { aiLLMId } = useParams<{ aiLLMId: any }>();
 

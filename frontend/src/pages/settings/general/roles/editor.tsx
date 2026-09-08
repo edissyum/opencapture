@@ -31,11 +31,11 @@ import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { useUser } from "../../../../services/hooks/useUser";
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
 export function SettingsGeneralRoleEditor() {
     const { user, loadingUser } = useUser();
-    const { get, put, post } = axiosApiCall();
+    const { get, put, post } = AxiosApiCall();
     const navigate = useNavigate();
 
     const { roleId } = useParams<{ roleId: any }>();

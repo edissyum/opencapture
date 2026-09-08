@@ -132,7 +132,7 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
 /*  Hook — lightweight wrapper, only manages per-component state      */
 /* ------------------------------------------------------------------ */
 
-export function axiosApiCall() {
+export function AxiosApiCall() {
     const custom = useCustom();
     // Keep the module-level navigate ref in sync so the interceptor
     // always has access to the latest router navigate function.
@@ -184,7 +184,7 @@ export function axiosApiCall() {
                 if (err.response && err.response.data && err.response.data.message || err.response?.status === 429) {
                     const title = err.response?.status === 429 ? t('ERROR.too_many_requests') : err.response.data.errors;
                     const details = err.response?.status === 429 ? t('ERROR.too_many_requests_details') : err.response.data.message;
-                    const toastId = title + details;
+                    const toastId = err.response?.status + title;
 
                     showToast(
                         <div>

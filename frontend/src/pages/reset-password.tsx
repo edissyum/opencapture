@@ -31,12 +31,12 @@ import { LoginImage } from "../components/LoginImage";
 import { showToast } from "../components/ToastProvider";
 import { DynamicForm } from "../components/form/DynamicForm";
 
-import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 import { usePasswordRules } from "../services/hooks/usePasswordRules";
 
 export function ResetPassword() {
     const [searchParams] = useSearchParams();
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const navigate = useNavigate();
     const { verifyPassword } = usePasswordRules();
 

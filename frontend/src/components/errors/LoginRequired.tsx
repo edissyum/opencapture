@@ -21,11 +21,11 @@ import { useNavigate, useRouteError, isRouteErrorResponse } from "react-router-d
 import { showToast } from "../ToastProvider";
 
 import { USER_KEY } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 
 export default function LoginRequiredError() {
     const { t } = useTranslation();
-    const { post } = axiosApiCall();
+    const { post } = AxiosApiCall();
     const error = useRouteError();
     const navigate = useNavigate();
 

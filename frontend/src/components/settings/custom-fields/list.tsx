@@ -24,12 +24,12 @@ import { Button } from "../../Button";
 import { Table } from "../../list/Table";
 import { showToast } from "../../ToastProvider";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../services/hooks/usePersistentState";
 
 export function CustomFieldsList({ module }: { module: string }) {
-    const { get, del } = axiosApiCall();
+    const { get, del } = AxiosApiCall();
 
     const [customFields, setCustomFields] = useState([]);
     const [totalCustomFields, setTotalCustomFields] = useState(0);

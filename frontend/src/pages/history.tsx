@@ -24,11 +24,11 @@ import { Button } from "../components/Button";
 import { Select } from "../components/Select";
 import { Table } from "../components/list/Table";
 
-import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 import { usePersistentState } from "../services/hooks/usePersistentState";
 
 export function HistoryList() {
-    const { get } = axiosApiCall();
+    const { get } = AxiosApiCall();
 
     const [history, setHistory] = useState<any[]>([]);
     const [totalHistory, setTotalHistory] = useState(0);

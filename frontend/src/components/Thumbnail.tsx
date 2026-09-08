@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 
 import { Loader } from "./loader/Loader";
 
-import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 
 type TNLProps = {
     open: boolean;
@@ -33,7 +33,7 @@ const thumbCache: any = {
 };
 
 export function Thumbnail({ document_info, open, module }: TNLProps) {
-    const { get, post } = axiosApiCall();
+    const { get, post } = AxiosApiCall();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {

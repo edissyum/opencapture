@@ -24,12 +24,12 @@ import { Button } from "../../../../components/Button";
 import { Table } from "../../../../components/list/Table";
 import { showToast } from "../../../../components/ToastProvider";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../../services/hooks/usePersistentState";
 
 export function SettingsVerifierPositionsMasksList() {
-    const { get, del } = axiosApiCall();
+    const { get, del } = AxiosApiCall();
 
     const [positionsMasks, setPositionsMasks] = useState([]);
     const [totalPositionsMasks, setTotalPositionsMasks] = useState(0);

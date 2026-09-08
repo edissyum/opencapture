@@ -25,10 +25,10 @@ import { Select } from "../../components/Select";
 
 import { statisticsFunctions } from "./functions";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 
 export function StatisticsPage() {
-    const { get, post } = axiosApiCall();
+    const { get, post } = AxiosApiCall();
 
     const [users, setUsers] = useState<any[]>([]);
     const [displayFilters, setDisplayFilters] = useState(false);

@@ -34,7 +34,7 @@ import {
     X
 } from "lucide-react";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
 import { buildDoctypesTree, collectExpanded, type DoctypeTreeNode, type ExpandedKeysType, makeNodeTemplate } from "./helpers";
 
@@ -177,7 +177,7 @@ export function DoctypesTree({
     onTmpSelect?: (node: any) => void;
     onDoctypesLoaded?: (doctypes: any[]) => void;
 }) {
-    const { get, post } = axiosApiCall();
+    const { get, post } = AxiosApiCall();
 
     const [forms, setForms] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);

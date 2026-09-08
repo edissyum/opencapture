@@ -27,10 +27,10 @@ import { showToast } from "../../../../components/ToastProvider";
 import UploadDropzone from "../../../../components/upload/Dropzone";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
 export function SettingsSplitterCertifiedCopy() {
-    const { get, put } = axiosApiCall();
+    const { get, put } = AxiosApiCall();
     const [loading, setLoading] = useState(false);
     const [loadingUpdate, setLoadingUpdate] = useState(false);
 

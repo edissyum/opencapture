@@ -50,14 +50,14 @@ import { Annotator, type Region } from "../../components/Annotator";
 import { AttachmentsList } from "../../components/attachments/list";
 
 import { useUser } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
 import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
 
 export function VerifierViewerPage() {
-    const { get, post, put } = axiosApiCall();
+    const { get, post, put } = AxiosApiCall();
     const { documentId } = useParams<{ documentId: string }>();
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);
@@ -105,8 +105,8 @@ export function VerifierViewerPage() {
 
     const patterns: any = {
         alphanum: '^[\\-?0-9a-zA-Z\\s\'‘]*$',
-        alphanum_extended: '^[\\-?0-9a-zA-Z\\\/#,\\.\'‘\\s\\(\\)_\\+:]*$',
-        alphanum_extended_with_accent: '^[\\-?0-9a-zA-Z\\u00C0-\\u017F\\\/#,\'‘\\.\\s\\(\\)\\[\\]_&°"%\\+:;€$£]*$',
+        alphanum_extended: '^[\\-?0-9a-zA-Z\\/#,\\.\'‘\\s\\(\\)_\\+:]*$',
+        alphanum_extended_with_accent: '^[\\-?0-9a-zA-Z\\u00C0-\\u017F\\/#,\'‘\\.\\s\\(\\)\\[\\]_&°"%\\+:;€$£]*$',
         number_int: '^[\\-?0-9]*$',
         number_float: '^[\\-?0-9]*([.][0-9]*)*$',
         char: '^[A-Za-z\\s]*$',
@@ -741,16 +741,12 @@ export function VerifierViewerPage() {
         // Detect supplier change
         let supplierExists = true;
         let supplierChange = false;
-        if (checkIfFieldIsSupplierField(field.id)) {
-            if (value === null || value === undefined || value === '') {
-                value = null;
-            }
-
+        if (checkIfFieldIsSupplierField(field.id) && value) {
             if (originalCurrentSupplier && value !== originalCurrentSupplier[field.id]) {
                 supplierChange = true;
             }
 
-            if (checkSupplier && !originalCurrentSupplier && value) {
+            if (checkSupplier && !originalCurrentSupplier) {
                 supplierExists = false;
             }
             setSupplierExists(supplierExists);
@@ -834,7 +830,6 @@ export function VerifierViewerPage() {
             await put(`verifier/documents/${ documentId }/updateData`, data);
         } catch (error) {
             console.error("Error saving document data:", error);
-        } finally {
         }
     }
 
@@ -921,6 +916,8 @@ export function VerifierViewerPage() {
             fieldId === 'name' ? supplier.name?.toLowerCase().includes(query) : supplier.lastname?.toLowerCase().includes(query)
         );
         setSuggestionsSuppliers(filtered.slice(0, 100));
+
+        updateDocumentData({ id: fieldId }, value);
     }
 
     const handleSupplierChange = async (field: any, value: any) => {
@@ -945,7 +942,7 @@ export function VerifierViewerPage() {
                 lang = currentSupplier.document_lang;
             }
 
-            let field: any = retrieveFieldById(fieldId);
+            const field: any = retrieveFieldById(fieldId);
             if (!field) return;
 
             let removeSpaces = false;
@@ -1164,7 +1161,7 @@ export function VerifierViewerPage() {
             const pageData: any = {};
             const positionData: any = {};
 
-            for (let field in documentData.datas) {
+            for (const field in documentData.datas) {
                 const region = regionsList.find(r => r.id === field);
                 if (region) {
                     positionData[field] = {
@@ -1463,33 +1460,32 @@ export function VerifierViewerPage() {
                                                             { field.type === 'text' && (
                                                                 <>
                                                                     { (zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
-                                                                            <AutocompleteInput
-                                                                                id={ field.id }
-                                                                                label={ t(field.label) }
-                                                                                disabled={ disableFields }
-                                                                                error={ errors[field.id] }
-                                                                                required={ field.required }
-                                                                                suggestions={ suggestionsSuppliers }
-                                                                                value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                                optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
-                                                                                onChange={ (value) => handleSupplierChange(field, value) }
-                                                                                search={ (value: string) => handleSupplierSearch(value, field.id) }
-                                                                            />
-                                                                        ) : (
-                                                                            <Input
-                                                                                id={ field.id }
-                                                                                key={ field.id }
-                                                                                type={ field.type }
-                                                                                label={ t(field.label) }
-                                                                                disabled={ disableFields }
-                                                                                error={ errors[field.id] }
-                                                                                required={ field.required }
-                                                                                value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                                onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                                                onChange={ (e) => updateDocumentData(field, e.target.value) }
-                                                                            />
-                                                                        )
-                                                                    ) }
+                                                                        <AutocompleteInput
+                                                                            id={ field.id }
+                                                                            label={ t(field.label) }
+                                                                            optionLabel={ field.id }
+                                                                            disabled={ disableFields }
+                                                                            error={ errors[field.id] }
+                                                                            required={ field.required }
+                                                                            suggestions={ suggestionsSuppliers }
+                                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                            onChange={ (value) => handleSupplierChange(field, value) }
+                                                                            search={ (value: string) => handleSupplierSearch(value, field.id) }
+                                                                        />
+                                                                    ) : (
+                                                                        <Input
+                                                                            id={ field.id }
+                                                                            key={ field.id }
+                                                                            type={ field.type }
+                                                                            label={ t(field.label) }
+                                                                            disabled={ disableFields }
+                                                                            error={ errors[field.id] }
+                                                                            required={ field.required }
+                                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                            onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                                            onChange={ (e) => updateDocumentData(field, e.target.value) }
+                                                                        />
+                                                                    )) }
                                                                 </>
                                                             ) }
                                                         </div>
