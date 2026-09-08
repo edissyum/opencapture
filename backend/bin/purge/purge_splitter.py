@@ -21,8 +21,8 @@ import sys
 import shutil
 import argparse
 from datetime import datetime, timedelta
-from src import app
-from src.main import create_classes_from_custom_id
+
+from src.main import app, create_classes_from_custom_id
 from src.functions import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         sys.exit('Custom config file could not be found')
 
     with app.app_context():
-        database, config, _, _, _, log, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args.custom_id)
+        database, config, _, _, _, log, _, _, _, docservers, _, _, _, _ = create_classes_from_custom_id(args.custom_id)
 
         if args.target_status is not None:
             target_status = args.target_status
