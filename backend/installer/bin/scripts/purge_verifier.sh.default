@@ -21,4 +21,5 @@ TARGET_STATUS="$1"
 PURGE_STATUS="$2"
 CONSERVATION_DAYS="$3"
 
-python3 §§OC_PATH§§/bin/referentials/purge_verifier.py --custom-id §§CUSTOM_ID§§ --target-status "$TARGET_STATUS" --purge-status "$PURGE_STATUS" --conservation-days "$CONSERVATION_DAYS"
+cd §§OC_PATH§§ || exit
+python3 bin/purge/purge_verifier.py --custom-id §§CUSTOM_ID§§ --target-status "$TARGET_STATUS" --purge-status "$PURGE_STATUS" --conservation-days "$CONSERVATION_DAYS"

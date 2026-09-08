@@ -21,8 +21,8 @@ import os
 import sys
 import argparse
 from datetime import datetime, timedelta
-from src.main import create_classes_from_custom_id
-from src.functions import retrieve_config_from_custom_id
+from backend.src import create_classes_from_custom_id
+from backend.src.functions import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Purge Verifier documents')
