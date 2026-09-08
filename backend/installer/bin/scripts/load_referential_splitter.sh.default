@@ -16,7 +16,5 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-PYTHONPATH=§§OC_PATH§§
-
 cd §§OC_PATH§§ || exit
-python3 bin/referentials/load_referential_splitter.py -c §§CUSTOM_ID§§ -m "$1"
+PYTHONPATH=§§OC_PATH§§ python3 bin/referentials/load_referential_splitter.py -c §§CUSTOM_ID§§ -m "$1"

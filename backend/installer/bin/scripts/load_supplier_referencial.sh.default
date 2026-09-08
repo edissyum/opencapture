@@ -22,13 +22,12 @@ lck_file=/tmp/securite-load-supplier-referencial-$basename.pid
 exec 200>"$lck_file"
 flock -n 200 || { echo "Another instance is running"; exit 1; }
 trap 'rm -f "$lck_file"' EXIT
-PYTHONPATH=§§OC_PATH§§
 
 cd §§OC_PATH§§ || exit
 
 if [ ! -z "$1" ] && [ -f "$1" ]; then
     # Add --debug to enable debug mode and see more output in log file
-    python3 bin/referentials/load_supplier_referential.py -c §§CUSTOM_ID§§ -f "$1"
+    PYTHONPATH=§§OC_PATH§§ python3 bin/referentials/load_supplier_referential.py -c §§CUSTOM_ID§§ -f "$1"
 else
     echo "Usage: $0 <file_path>"
     exit 1
