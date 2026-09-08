@@ -21,8 +21,8 @@ import csv
 import json
 import argparse
 
-from src.backend.main import create_classes_from_custom_id
-from src.backend.functions import retrieve_config_from_custom_id
+from src.main import create_classes_from_custom_id
+from src.functions import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Load users from CSV file into database.')
