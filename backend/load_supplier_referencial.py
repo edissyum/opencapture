@@ -20,8 +20,8 @@ import sys
 import logging
 import argparse
 import mimetypes
-from src.backend.main import create_classes_from_custom_id
-from src.backend.functions import retrieve_config_from_custom_id
+from src.main import create_classes_from_custom_id
+from src.functions import retrieve_config_from_custom_id
 
 
 def get_data(datas, _key):
