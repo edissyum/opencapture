@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd §§CUSTOM_PATH§§ || exit 1
+cd §§OC_PATH§§/bin/ldap/ || exit 1
 python3 synchronization_ldap_script.py "§§CUSTOM_PATH§§/config/config.ini"

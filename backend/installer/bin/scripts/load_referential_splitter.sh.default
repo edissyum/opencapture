@@ -16,4 +16,4 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-python3 §§OC_PATH§§/load_referential_splitter.py -c §§CUSTOM_ID§§ -m "$1"
+python3 §§OC_PATH§§/bin/referentials/load_referential_splitter.py -c §§CUSTOM_ID§§ -m "$1"
