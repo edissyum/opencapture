@@ -78,12 +78,12 @@ export function MonitoringList() {
             id: 'id',
             field: 'id',
             sortable: true,
-            className: `w-1/20 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
+            className: `w-18 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
         },
         {
             id: 'module',
             field: 'module',
-            className: 'w-1/12',
+            className: 'w-1/12 pl-0!',
             header: t('MAILCOLLECT.module'),
             body: (row: any) => (
                 <span>{ row.module[0].toUpperCase() + row.module.slice(1) }</span>
