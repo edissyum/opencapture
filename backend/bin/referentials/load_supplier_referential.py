@@ -316,7 +316,7 @@ if __name__ == '__main__':
 
             log.debug('-' * 40)
             log.info('Referential supplier loaded successfully (' + str(count) + ' supplier(s) processed out of ' + str(len(spreadsheet.referencial_supplier_data)) + ')')
-            print(count, count_error)
+
             # Commit and close database connection
             database.conn.commit()
             database.conn.close()
