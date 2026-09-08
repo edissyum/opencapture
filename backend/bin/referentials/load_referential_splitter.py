@@ -20,7 +20,8 @@ import json
 import argparse
 
 from src.classes.Splitter import Splitter
-from src import app, create_classes_from_custom_id
+
+from src import app, shared, create_classes_from_custom_id
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Reload metadata for Splitter.')
@@ -40,8 +41,9 @@ if __name__ == "__main__":
             for method in split_methods['methods']:
                 method['referentialMode'] = 0
                 if method['callOnScript']:
-                    metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
-                                                                       method['script'], method['method'])
+                    splitter_metadata_path = shared.custom_path + "/bin/scripts/splitter_metadata/"
+                    metadata_load = Splitter.import_method_from_script(splitter_metadata_path, method['script'],
+                                                                       method['method'])
                     log.info(f"Reload metadata for {method['id']}....")
                     _args = {
                         'log': log,
