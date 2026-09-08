@@ -303,7 +303,7 @@ form_models 20, outputs 18, history 2,018.
 
 ## B. Schema upgrade (automatic in the import)
 
-`migrate.sh import` applies the **official upgrade** `postgres/sql/4.0.0.sql`
+`migrate.sh import` applies the **official upgrade** `postgres/migration/4.0.0.sql`
 (`form_models_field`, outputs, doctypes, cleanup, columns, `src.backend`→`src`
 scripting…), then the **Docker leftover** `postgres/migration/4.0.0_docker.sql` (rewriting
 `docservers`/`documents.path`/`attachments`/`workflows`/`outputs` paths → `/app`,
@@ -473,7 +473,7 @@ Order of operations (per custom):
  6. starts the tenant's postgres + waits for it to be ready
  7. DB UPGRADE (patch_db_paths function):
       DROP settings_favorites                     (v4-only table surviving the dump)
-      psql -f postgres/sql/4.0.0.sql              (OFFICIAL upgrade, form_models_field reshape included)
+      psql -f postgres/migration/4.0.0.sql        (OFFICIAL upgrade, form_models_field reshape included)
       psql -f postgres/migration/4.0.0_docker.sql (Docker leftover, parameterized, see §7)
  8. deploy.sh <id>                                (builds the image + up -d the tenant)
  9. (if admin creds) reregister                   (regenerates scripts + watcher.ini, see §10)
@@ -676,7 +676,7 @@ by one.
 | File | Role |
 |---|---|
 | `postgres/sql/structure.sql` | target 4.0.0 schema (`diagnose`'s reference) |
-| `postgres/sql/4.0.0.sql` | OFFICIAL upgrade to 4.0.0 (run by the import), `form_models_field` reshape included |
+| `postgres/migration/4.0.0.sql` | OFFICIAL upgrade to 4.0.0 (run by the import), `form_models_field` reshape included |
 | `postgres/migration/4.0.0_docker.sql` | Docker leftover: paths → `/app` + `SPLITTER_SHARE` guarantee — nothing else (see pitfall 10) |
 | `deploy.sh` | builds the image + `up -d` the tenant (called by the import) |
 | `install/docker/shared/docker-bootstrap.sh` | self-heal at container startup (config.ini, custom.ini) |

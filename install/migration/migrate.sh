@@ -782,13 +782,12 @@ rewrite_paths_in_dir() {
         | xargs -0 -r sed -i "${sed_args[@]}" 2>/dev/null || true
 }
 
-# Montée de la base restaurée (dump v3.x) : montée OFFICIELLE 3.6.x->4.0.0
-# (postgres/sql/4.0.0.sql) PUIS résiduel Docker (postgres/migration/4.0.0_docker.sql :
-# colonnes post-4.0.0 + chemins -> /app). Ordre imposé.
-# 4.0.0.sql n'est PAS idempotent -> UNE passe sur un import frais ; on retire
-# d'abord settings_favorites (table v4-only survivante au dump, sinon son CREATE échoue).
-# La v3 écrivait TOUTES les pièces jointes sous VERIFIER_ATTACHMENTS, y compris celles
-# des lots, que le backend v4 résout via SPLITTER_ATTACHMENTS. À jouer AVANT 4.0.0.sql,
+# - Montée de la base restaurée (dump v3.x) : montée OFFICIELLE 3.6.x->4.0.0
+# - (postgres/migration/4.0.0.sql) PUIS résiduel Docker (postgres/migration/4.0.0_docker.sql :
+# - 4.0.0.sql pas idempotent (donc à jouer sur import "frais") mais 4.0.0_docker.sql oui
+# - 4.0.0.sql fait désormais CONCAT(path, '/backend') sur PROJECT_PATH, et 4.0.0_docker.sql le réécrit ensuite à /app : donc ca marche grâce à l'ordre !
+# - on retire # d'abord settings_favorites (table v4-only survivante au dump, sinon son CREATE échoue).
+# - La v3 écrivait TOUTES les pièces jointes sous VERIFIER_ATTACHMENTS, y compris celles des lots, que le backend v4 résout via SPLITTER_ATTACHMENTS. À jouer AVANT 4.0.0.sql,
 # qui relativise les chemins et fait disparaître le segment recherché.
 move_batch_attachments() {
     local cid="$1" pguser="$2" pgdb="$3" tdir="$4"
@@ -822,8 +821,8 @@ move_batch_attachments() {
 
 patch_db_paths() {
     local cid="$1" pguser="$2" pgdb="$3" tdir="$4"
-    local V400="$REPO_ROOT/postgres/sql/4.0.0.sql" VRES="$REPO_ROOT/postgres/migration/4.0.0_docker.sql"
-    [ -f "$V400" ] && [ -f "$VRES" ] || die "[$cid] postgres/sql/4.0.0.sql ou 4.0.0_docker.sql introuvable"
+    local V400="$REPO_ROOT/postgres/migration/4.0.0.sql" VRES="$REPO_ROOT/postgres/migration/4.0.0_docker.sql"
+    [ -f "$V400" ] && [ -f "$VRES" ] || die "[$cid] postgres/migration/4.0.0.sql ou 4.0.0_docker.sql introuvable"
     [ -n "$docs_src" ] && [ -n "$share_src" ] || die "[$cid] docs_src/share_src vides"
 
     dc "$cid" exec -T postgres psql -q -U "$pguser" -d "$pgdb" \
