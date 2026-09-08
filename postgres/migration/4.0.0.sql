@@ -1,6 +1,9 @@
 -- Récupération de l'ancien chemin du projet pour le stocker dans une variable
 SELECT path as old_path FROM docservers WHERE docserver_id = 'PROJECT_PATH'; \gset
 
+-- Modification du PROJECT_PATH en ajoutant /backend
+UPDATE docservers SET path = CONCAT(path, '/backend') WHERE docserver_id = 'PROJECT_PATH';
+
 -- Récupération du share
 SELECT split_part(path, 'export', 1) as share_path FROM docservers WHERE docserver_id = 'VERIFIER_SHARE'; \gset
 

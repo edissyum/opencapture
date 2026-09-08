@@ -228,6 +228,8 @@ psql $DATABASE_INFO -c "\i $DEFAULT_PATH/postgres/sql/data_fr.sql" "$database_na
 # Update database using custom data
 DATABASE_INFO="-U "$database_user" -h "$database_hostname" -p "$database_port" -d "$database_name""
 
+psql $DATABASE_INFO -c "UPDATE docservers SET path=CONCAT('$DEFAULT_PATH', '/backend/') WHERE docserver_id = 'PROJECT_PATH'"
+
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '$share_path');"
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '$docservers_path');"
 

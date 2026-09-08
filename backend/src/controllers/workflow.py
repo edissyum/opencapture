@@ -370,7 +370,7 @@ def create_script_and_watcher(args):
             with open(new_script_filename, 'w+', encoding='utf-8') as new_script_file:
                 for line in script_sample_content.split('\n'):
                     corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
-                    corrected_line = corrected_line.replace('§§OC_PATH§§', docservers['PROJECT_PATH'] + '/backend/')
+                    corrected_line = corrected_line.replace('§§OC_PATH§§', docservers['PROJECT_PATH'] + '/')
                     corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
                     corrected_line = corrected_line.replace('§§CUSTOM_ID§§', custom_id)
                     corrected_line = corrected_line.replace('§§LOG_PATH§§', config['GLOBAL']['logfile'])
