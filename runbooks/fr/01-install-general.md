@@ -1,117 +1,164 @@
-#!/usr/bin/env bash
-# Installation GÉNÉRALE — infra partagée (Traefik, réseau, image backend).
-# Référence à copier-coller (ne PAS exécuter d'un bloc). À compléter avec tes
-# commandes système. Données hôte hors repo sous /opt.
+# Installation générale — infra partagée (Traefik, réseau, image backend)
 
-# ----------------------------------------------------------------------
-# Prérequis système — Docker Engine + Compose v2 (Debian)
-# ----------------------------------------------------------------------
+Commandes à copier-coller, à ne **pas** exécuter d'un bloc.
 
-# Si on est en root créer un compte edissyum
+## Prérequis système — Docker Engine + Compose v2 (Debian)
+
+Depuis un compte root, créer le compte `edissyum` :
+
+```bash
 useradd -m -s /bin/bash -G sudo edissyum
 passwd edissyum
+```
 
-# Se connecter à partir de maintenant en edissyum
+Se connecter avec ce compte pour toute la suite.
 
-# ===================== OC_DATA_ROOT : LA variable qui fait foi =====================
-# Racine UNIQUE des données hors repo. C'est la SEULE valeur à décider par serveur ;
-# tout en découle (.env global ci-dessous, arborescence, Traefik, .env de chaque
-# tenant via new-tenant.sh, volumes des conteneurs). À ADAPTER au serveur avant de
-# continuer (prod : /opt/edissyum/opencapture ; ex. VM : /var/edissyum/opencapture).
-# NB : docker compose privilégie cette variable EXPORTÉE sur le .env -> la garder
-# exportée dans la session (d'où le source ci-dessous).
+### OC_DATA_ROOT — la variable qui fait foi
+
+Racine **unique** des données hors dépôt. C'est la seule valeur à décider par serveur ;
+tout en découle : le `.env` global ci-dessous, l'arborescence, Traefik, le `.env` de
+chaque tenant via `new-tenant.sh`, les volumes des conteneurs. À adapter au serveur
+avant de continuer (par exemple, `/opt/edissyum/opencapture` ou `/var/edissyum/opencapture`).
+
+À noter : `docker compose` privilégie cette variable **exportée** sur celle du `.env`,
+d'où le `source` qui suit pour la garder exportée dans la session.
+
+```bash
 echo 'export OC_DATA_ROOT=/opt/edissyum/opencapture' >> ~/.bashrc
 source ~/.bashrc
+```
 
-# Définir son éditeur préféré : nano, vi, ...
+Définir aussi l'éditeur par défaut (`nano`, `vi`…) :
+
+```bash
 echo 'export EDITOR=nano' >> ~/.bashrc
-source ~/.bashrc 
+source ~/.bashrc
+```
 
-# Purger d'éventuels anciens paquets Docker
+### Installation de Docker
+
+Purger d'éventuels anciens paquets, puis installer les dépendances (`git` inclus pour
+le clone plus bas) :
+
+```bash
 sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
-# Dépendances (git inclus pour le clone plus bas)
 sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git curl gpg sshpass python3
-# Pour avoir les heures selon le timezone on isntalle ces 2 paquets explications dans guide section logs
-# Utile car Docker normalise tous les timestamps en UTC => docker logs -t est figé en UTC 
-sudo apt install moreutils jq 
+```
 
-# Clé GPG officielle Docker
+`moreutils` et `jq` servent à obtenir les heures dans le fuseau local : Docker normalise
+tous les timestamps en UTC, donc `docker logs -t` reste figé en UTC (voir la section
+logs du guide).
+
+```bash
+sudo apt install moreutils jq
+```
+
+Clé GPG officielle Docker :
+
+```bash
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
+```
 
-# Dépôt officiel Docker
+Dépôt officiel Docker :
+
+```bash
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
   | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
 
-# Docker Engine + CLI + Compose v2
+Docker Engine + CLI + Compose v2, activation au démarrage, puis vérification :
+
+```bash
 sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-# Activer + démarrer au boot
 sudo systemctl enable --now docker
 
-# Vérifier
 systemctl status docker
 sudo docker run hello-world
+```
 
-# Docker sans sudo (puis SE DÉCONNECTER/RECONNECTER, et tester : docker ps)
+Pour utiliser Docker sans `sudo` — se déconnecter puis se reconnecter avant de tester
+avec `docker ps` :
+
+```bash
 sudo usermod -aG docker $USER
+```
 
-# ----------------------------------------------------------------------
-# OpenCapture — infra partagée
-# ----------------------------------------------------------------------
+## OpenCapture — infra partagée
 
-# Sources (penser à créer un jeton côté github pour le mot de passe)
-git clone -b docker_claude1 https://github.com/edissyum/opencapture_docker/
+Récupérer les sources (prévoir un jeton GitHub en guise de mot de passe) :
+
+```bash
+git clone https://github.com/edissyum/opencapture_docker/
 cd opencapture_docker
+```
 
+Créer l'arborescence des données hors dépôt (par tenant et partagée). Ces données
+appartiennent à l'utilisateur courant — celui d'`APP_UID` ci-dessous — afin que
+l'écriture soit possible lors des dépôts et imports manuels :
 
-# Arborescence des données hors repo (par tenant + partagé)
+```bash
 sudo mkdir -p "$OC_DATA_ROOT/tenants"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/ai-models"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/dynamic"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/certs"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/letsencrypt"
-# Données possédées par l'utilisateur courant (= APP_UID ci-dessous) -> écriture
-# OK (évite "tenants/ est root, écriture refusée" lors des dépôts/imports manuels).
 sudo chown -R "$(id -u):$(id -g)" "$OC_DATA_ROOT"
+```
 
-# Réseau Docker partagé (Traefik <-> frontends des tenants)
+Réseau Docker partagé, qui relie Traefik aux frontends des tenants :
+
+```bash
 docker network create frontend
+```
 
-# Image backend partagée (construite une seule fois pour tous les tenants)
-# IMPORTANT : APP_UID/APP_GID du .env GLOBAL = uid baké dans l'image (/app = HOME
-# du compte de service). TOUS les tenants doivent tourner avec ce même uid, sinon
-# /app n'est pas inscriptible pour eux (matplotlib/fontconfig en erreur).
-# -> new-tenant.sh reprend ces valeurs ; en création manuelle, aligner le
-#    install/docker/stub-tenants/<id>/.env (cf. runbooks 02/03/04). Définis donc APP_UID AVANT ce build.
+### Image backend partagée
+
+Construite une seule fois pour tous les tenants.
+
+**Important** : `APP_UID`/`APP_GID` du `.env` **global** correspondent à l'uid baké dans
+l'image (`/app` est le HOME du compte de service). Tous les tenants doivent tourner avec
+ce même uid, faute de quoi `/app` ne leur est pas inscriptible — matplotlib et
+fontconfig tombent alors en erreur. `new-tenant.sh` reprend ces valeurs ; en création
+manuelle, aligner le `install/docker/stub-tenants/<id>/.env` (voir les runbooks
+[02](02-tenant-letsencrypt.md), [03](03-tenant-cert.md) et [04](04-tenant-http.md)).
+`APP_UID` doit donc être défini **avant** ce build.
+
+Reporter `OC_DATA_ROOT` et aligner `APP_UID`/`APP_GID` sur l'utilisateur courant, en
+valeurs **numériques** via `id -u` / `id -g` — surtout pas `$USER`, qui est un nom et
+non un uid. Le reste du `.env` (ports…) s'édite au besoin.
+
+```bash
 cp install/docker/.env.example install/docker/.env
-# Reporter OC_DATA_ROOT + aligner APP_UID/APP_GID sur l'utilisateur courant.
-# Valeurs NUMÉRIQUES via id -u / id -g (baké dans l'image partagée) — surtout
-# PAS $USER (un nom, pas un uid). Édite le reste du .env si besoin (ports…).
 sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$OC_DATA_ROOT#" install/docker/.env
 sed -i -e "s/^APP_UID=.*/APP_UID=$(id -u)/" -e "s/^APP_GID=.*/APP_GID=$(id -g)/" install/docker/.env
 docker compose --project-directory install/docker/shared -f install/docker/shared/docker-compose.yml build backend
+```
 
-# Traefik partagé (daemon unique). Lit OC_DATA_ROOT + LETSENCRYPT_EMAIL depuis le
-# .env (via le symlink install/docker/shared/.env -> ../.env) : PAS de préfixe inline, sinon un
-# $OC_DATA_ROOT vide écraserait la valeur du .env -> échec du compose.
-# (Pour Let's Encrypt : renseigne LETSENCRYPT_EMAIL dans le .env.)
-# Si un autre service occupe deja 80/443 : TRAEFIK_HTTP_PORT / TRAEFIK_HTTPS_PORT dans le .env.
+### Traefik partagé
+
+Daemon unique, qui lit `OC_DATA_ROOT` et `LETSENCRYPT_EMAIL` depuis le `.env` (via le
+lien symbolique `install/docker/shared/.env` → `../.env`). Ne pas préfixer la commande
+en inline : un `$OC_DATA_ROOT` vide écraserait la valeur du `.env` et ferait échouer le
+compose. Pour Let's Encrypt, renseigner `LETSENCRYPT_EMAIL` dans le `.env` ; si un autre
+service occupe déjà 80/443, ajuster `TRAEFIK_HTTP_PORT` / `TRAEFIK_HTTPS_PORT`.
+
+```bash
 docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml up -d
+```
 
-# Vérifier Traefik (conteneur + dashboard local 127.0.0.1:8081)
+Vérifier le conteneur et le dashboard local sur `127.0.0.1:8081` :
+
+```bash
 docker ps --filter name=opencapture_traefik
 # curl -s http://127.0.0.1:8081/api/rawdata | head
+```
 
-# Logs / redémarrage Traefik
+Logs et redémarrage :
+
+```bash
 docker logs -f opencapture_traefik
 docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml restart
+```
 
-# SFTP multi-tenant -> runbooks/fr/05-sftp-server.md
-# (ProFTPD mod_sftp, comptes virtuels chrootés mappés sur $APP_UID/$APP_GID ;
-#  voir install/docker/host/sftp/README.md). À faire après avoir créé les tenants.
-#
-# SMB/Samba multi-tenant -> runbooks/fr/07-smb-server.md
-# (Samba standalone, comptes locaux + partage [<id>] forcé sur $APP_UID/$APP_GID ;
-#  voir install/docker/host/smb/README.md). À faire après avoir créé les tenants.

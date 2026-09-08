@@ -321,7 +321,7 @@ sed -i 's#^OC_FQDN=.*#OC_FQDN=demo.open-capture.com#' install/docker/stub-tenant
 ./install/docker/deploy.sh demo
 
 # Checks
-grep '^url' /opt/edissyum/opencapture/tenants/demo/custom/custom.ini   # url = demo.open-capture.com
+grep '^url' ${OC_DATA_ROOT}/tenants/demo/custom/custom.ini   # url = demo.open-capture.com
 curl -sI https://demo.open-capture.com/ | head -5                       # HTTP 200/302 + valid cert
 ```
 
@@ -423,7 +423,6 @@ Design and operations details: [07-smb-server.md](07-smb-server.md) +
 - SFTP server: [05-sftp-server.md](05-sftp-server.md) + [../install/docker/host/sftp/README.md](../../install/docker/host/sftp/README.md)
 - WebDAV server: [06-webdav-server.md](06-webdav-server.md) + [../install/docker/shared/webdav/README.md](../../install/docker/shared/webdav/README.md)
 - SMB server: [07-smb-server.md](07-smb-server.md) + [../install/docker/host/smb/README.md](../../install/docker/host/smb/README.md)
-- Multi-tenant architecture: [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md)
 - **Technical appendices** (rebuild, multi-stage, image roles, pipeline, per-container commands, glossary, reverse-proxy/real IP, tenant resolution & FQDN): below in this document.
 
 ---
@@ -634,18 +633,13 @@ openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chain 
 ### Multi-tenant
 Each tenant has its own Compose project `opencapture_<CUSTOM_ID>` (prefixed
 containers/volumes/network → no collision), its own DB and its own RabbitMQ. To add one:
-repeat the section 2 steps with a new `<id>`/FQDN. Details and alternatives (including the bare-metal
-`create_custom.sh` script) in [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md)
-and [../install/docker/shared/BOOTSTRAP_COMPARISON.md](../../install/docker/shared/BOOTSTRAP_COMPARISON.md).
+repeat the section 2 steps with a new `<id>`/FQDN.
 
 ### Compliance (optional)
 A sealed **NF Z42-020** journal (SHA-256 chaining + RFC 3161 timestamping) is available,
 **disabled by default**, for the Splitter module. See [../NF_Z42-020.md](../../NF_Z42-020.md).
 
 ### Reference documentation
-- [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md) — multi-tenant organization (`include:` methodology).
-- [../install/docker/shared/BOOTSTRAP_COMPARISON.md](../../install/docker/shared/BOOTSTRAP_COMPARISON.md) — `create_custom.sh` (bare-metal) vs `docker-bootstrap.sh`.
-- [../install/docker/shared/SCHEDULING.md](../../install/docker/shared/SCHEDULING.md) — recurring tasks (Ofelia, **not integrated** as of today).
 - [../TERMINOLOGIE.md](../../TERMINOLOGIE.md) — why "tenant" rather than "custom"/"client".
 - [../NF_Z42-020.md](../../NF_Z42-020.md) — sealed journal (Splitter option).
 - [../DEV_MODE.md](../../install/classic/DEV_MODE.md) — bare-metal development (outside Docker).

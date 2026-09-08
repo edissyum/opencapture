@@ -1,85 +1,143 @@
-#!/usr/bin/env bash
-# Serveur SMB MULTI-TENANT (Samba, standalone) — install + exploitation.
-# Référence à copier-coller (ne PAS exécuter d'un bloc). Données hôte hors repo.
-#
-# Mode standalone, 1 IP : SMB (445, TCP brut, SANS SNI) ne se route pas par
-# domaine -> UN SEUL démon smbd, un partage [<id>] par tenant sur
-# ${OC_DATA_ROOT}/tenants/<id>/share, fichiers forcés sur le compte de service OpenCapture
-# ($APP_UID/$APP_GID) -> lisibles ET supprimables par le fs-watcher. Détail :
-# install/docker/host/smb/README.md. (Même esprit que le SFTP : runbooks/fr/05-sftp-server.md.)
-#
-# Prérequis : infra installée (01) ; tenants créés (new-tenant.sh + deploy.sh).
+# Serveur SMB multi-tenant (Samba, standalone) — installation et exploitation
 
-# Lance ces commandes DEPUIS LA RACINE DU DÉPÔT (là où tu as fait git pull).
-# NB : en sudo, `~` = /root -> n'utilise PAS ~/opencapture_docker. $PWD est sûr.
+Commandes à copier-coller, à ne **pas** exécuter d'un bloc. Les données de l'hôte
+vivent hors du dépôt.
+
+Prérequis : infra installée (voir [01](01-install-general.md)) et tenants créés
+(`new-tenant.sh` puis `deploy.sh`).
+
+## Principe
+
+En mode standalone sur une seule IP : SMB, qui écoute sur le port 445 en TCP brut et
+**sans SNI**, ne se route pas par domaine. D'où un démon `smbd` unique, avec un partage
+`[<id>]` par tenant sur `${OC_DATA_ROOT}/tenants/<id>/share`.
+
+Les fichiers sont forcés sur le compte de service OpenCapture (`$APP_UID`/`$APP_GID`),
+ce qui les rend lisibles **et** supprimables par le fs-watcher. Détail du design dans
+`install/docker/host/smb/README.md` ; même esprit que le [SFTP](05-sftp-server.md).
+
+## Point de départ
+
+Lancer ces commandes **depuis la racine du dépôt**, là où le `git pull` a été fait. À
+noter : sous `sudo`, `~` vaut `/root` — ne pas utiliser `~/opencapture_docker`, `$PWD`
+est sûr.
+
+```bash
 REPO="$PWD"
+```
 
-# uid/gid/nom du compte de service OpenCapture (depuis le .env GLOBAL ; défaut 1000).
+Reprendre l'uid, le gid et le nom du compte de service depuis le `.env` **global** ; la
+valeur par défaut est 1000 :
+
+```bash
 APP_UID="$(grep -m1 '^APP_UID='  "$REPO/install/docker/.env" | cut -d= -f2)";  APP_UID="${APP_UID:-1000}"
 APP_GID="$(grep -m1 '^APP_GID='  "$REPO/install/docker/.env" | cut -d= -f2)";  APP_GID="${APP_GID:-1000}"
 APP_USER="$(grep -m1 '^APP_USER=' "$REPO/install/docker/.env" | cut -d= -f2)"; APP_USER="${APP_USER:-opencapture}"
+```
 
-# ----------------------------------------------------------------------
-# 1) Paquet — Samba
-# ----------------------------------------------------------------------
+## 1. Paquet — Samba
+
+```bash
 sudo apt update && sudo apt install -y samba
+```
 
-# ----------------------------------------------------------------------
-# 2) Compte de service côté HÔTE (ce que `force user` visera)
-#    Ce qui compte, c'est le NUMÉRO : `force user` désignera le NOM qui PORTE
-#    APP_UID/APP_GID (new-smb-account.sh le dérive de l'UID). Le nom peut donc
-#    différer de $APP_USER. -> On garde sur le NUMÉRO : si l'UID/GID est déjà
-#    porté par un autre nom, on RÉUTILISE ; sinon on crée au nom du .env.
-#    (Identité d'auth des tenants à part, étape 6.)
-# ----------------------------------------------------------------------
+## 2. Compte de service côté hôte
+
+C'est ce que `force user` visera. Ce qui compte, c'est le **numéro** : `force user`
+désignera le nom qui **porte** `APP_UID`/`APP_GID`, que `new-smb-account.sh` dérive de
+l'uid. Ce nom peut donc différer de `$APP_USER`.
+
+La logique suit le numéro : si l'uid ou le gid est déjà porté par un autre nom, celui-ci
+est réutilisé ; sinon le compte est créé au nom du `.env`. L'identité d'authentification
+des tenants est un sujet distinct, traité à l'étape 6.
+
+```bash
 getent group  "$APP_GID" >/dev/null || sudo groupadd -g "$APP_GID" "$APP_USER"
 getent passwd "$APP_UID" >/dev/null || \
     sudo useradd -r -M -u "$APP_UID" -g "$APP_GID" -s /usr/sbin/nologin "$APP_USER"
-# Nom réel derrière l'UID/GID (= ce que `force user` utilisera) :
-getent passwd "$APP_UID"; getent group "$APP_GID"
+```
 
-# ----------------------------------------------------------------------
-# 3) Config = celle du dépôt (copie ; ou symlink si tu préfères un lien vif)
-# ----------------------------------------------------------------------
+Vérifier le nom réel derrière l'uid et le gid, celui que `force user` utilisera :
+
+```bash
+getent passwd "$APP_UID"; getent group "$APP_GID"
+```
+
+## 3. Configuration
+
+Celle du dépôt — copie, ou lien symbolique pour un lien vif :
+
+```bash
 sudo cp "$REPO/install/docker/host/smb/smb.conf" /etc/samba/smb.conf
 # sudo ln -sf "$REPO/install/docker/host/smb/smb.conf" /etc/samba/smb.conf
+```
 
-# Fichier des sections tenants (vide au départ ; rempli par new-smb-account.sh).
-# `include` d'un fichier absent n'est pas fatal, mais on évite l'avertissement.
+Créer le fichier des sections tenants, vide au départ et rempli par
+`new-smb-account.sh`. Un `include` pointant un fichier absent n'est pas fatal, mais
+autant éviter l'avertissement.
+
+```bash
 sudo touch /etc/samba/oc-shares.conf
 sudo mkdir -p /var/log/samba
+```
 
-# ----------------------------------------------------------------------
-# 4) Pare-feu — un seul port (SMB sur 445 ; NetBIOS désactivé)
-# ----------------------------------------------------------------------
-# sudo ufw allow 445/tcp
+## 4. Pare-feu
 
-# ----------------------------------------------------------------------
-# 5) Vérifier la conf puis démarrer Samba (smbd seul ; nmbd inutile sans NetBIOS)
-# ----------------------------------------------------------------------
-sudo testparm -s                                 # DOIT passer sans erreur
+Un seul port, NetBIOS restant désactivé :
+
+```bash
+sudo ufw allow 445/tcp
+```
+
+## 5. Vérifier la configuration puis démarrer
+
+`testparm -s` doit passer sans erreur. Seul `smbd` est nécessaire : `nmbd` est inutile
+sans NetBIOS.
+
+```bash
+sudo testparm -s
 sudo systemctl disable --now nmbd 2>/dev/null || true
 sudo systemctl enable  --now smbd
 sudo systemctl restart smbd
 sudo systemctl status  smbd
+```
 
-# ----------------------------------------------------------------------
-# 6) Déclarer l'accès SMB d'un tenant
-# ----------------------------------------------------------------------
-# sudo ./install/docker/host/smb/new-smb-account.sh <id>    # crée compte + section + reload (demande le mdp)
+## 6. Déclarer l'accès SMB d'un tenant
+
+Le script crée le compte, ajoute la section et recharge la configuration ; le mot de
+passe est demandé. Aucun redémarrage : `smbcontrol all reload-config` recharge à chaud.
+
+```bash
+sudo ./install/docker/host/smb/new-smb-account.sh <id>
 # ex. : sudo ./install/docker/host/smb/new-smb-account.sh test2
-#   -> pas de restart : `smbcontrol all reload-config` recharge la conf à chaud.
+```
 
-# ----------------------------------------------------------------------
-# 7) Exploitation
-# ----------------------------------------------------------------------
-# Logs : /var/log/samba/log.<machine-client>
-# Test client :   smbclient //<serveur>/<id> -U <id> -m SMB3
-# Lister les comptes SMB :   sudo pdbedit -L
-# Supprimer un tenant :
-#   sudo smbpasswd -x <id> ; sudo userdel <id>
-#   (retirer la section [<id>] de /etc/samba/oc-shares.conf, puis reload)
-#   sudo smbcontrol all reload-config
-#
-# Domaines clients : 1 alias DNS (A/CNAME) par domaine -> l'IP du serveur.
-# Le client monte \\<domaine>\<id> ; le serveur distingue par le NOM DE PARTAGE.
+## 7. Exploitation
+
+Logs dans `/var/log/samba/log.<machine-client>`, un fichier par poste client.
+
+Test client :
+
+```bash
+smbclient //<serveur>/<id> -U <id> -m SMB3
+```
+
+Lister les comptes SMB :
+
+```bash
+sudo pdbedit -L
+```
+
+Supprimer un tenant — penser à retirer aussi la section `[<id>]` de
+`/etc/samba/oc-shares.conf` avant le rechargement :
+
+```bash
+sudo smbpasswd -x <id> ; sudo userdel <id>
+sudo smbcontrol all reload-config
+```
+
+### Domaines clients
+
+Prévoir un alias DNS (A ou CNAME) par domaine, pointant vers l'IP du serveur. Le client
+monte `\\<domaine>\<id>` ; c'est le **nom de partage** qui permet au serveur de
+distinguer les tenants.

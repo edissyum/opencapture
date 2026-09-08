@@ -322,7 +322,7 @@ sed -i 's#^OC_FQDN=.*#OC_FQDN=demo.open-capture.com#' install/docker/stub-tenant
 ./install/docker/deploy.sh demo
 
 # Vérifs
-grep '^url' /opt/edissyum/opencapture/tenants/demo/custom/custom.ini   # url = demo.open-capture.com
+grep '^url' ${OC_DATA_ROOT}/tenants/demo/custom/custom.ini   # url = demo.open-capture.com
 curl -sI https://demo.open-capture.com/ | head -5                       # HTTP 200/302 + cert valide
 ```
 
@@ -424,7 +424,6 @@ Détail du design et exploitation : [07-smb-server.md](07-smb-server.md) +
 - Serveur SFTP : [05-sftp-server.md](05-sftp-server.md) + [../install/docker/host/sftp/README.md](../../install/docker/host/sftp/README.md)
 - Serveur WebDAV : [06-webdav-server.md](06-webdav-server.md) + [../install/docker/shared/webdav/README.md](../../install/docker/shared/webdav/README.md)
 - Serveur SMB : [07-smb-server.md](07-smb-server.md) + [../install/docker/host/smb/README.md](../../install/docker/host/smb/README.md)
-- Architecture multi-tenant : [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md)
 - **Annexes techniques** (rebuild, multi-stage, rôles de l'image, pipeline, commandes par conteneur, glossaire, reverse-proxy/IP réelle, résolution tenant & FQDN) : ci-dessous dans ce document.
 
 ---
@@ -640,18 +639,13 @@ openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chaîn
 ### Multi-tenant
 Chaque tenant a son projet Compose `opencapture_<CUSTOM_ID>` (conteneurs/volumes/réseau
 préfixés → aucune collision), sa propre DB et son propre RabbitMQ. Pour en ajouter un :
-répéter les étapes de la section 2 avec un nouvel `<id>`/FQDN. Détails et alternatives (dont le
-script bare-metal `create_custom.sh`) dans [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md)
-et [../install/docker/shared/BOOTSTRAP_COMPARISON.md](../../install/docker/shared/BOOTSTRAP_COMPARISON.md).
+répéter les étapes de la section 2 avec un nouvel `<id>`/FQDN.
 
 ### Conformité (optionnelle)
 Un journal scellé **NF Z42-020** (chaînage SHA-256 + horodatage RFC 3161) est disponible,
 **désactivé par défaut**, pour le module Splitter. Voir [../NF_Z42-020.md](../../NF_Z42-020.md).
 
 ### Documentation de référence
-- [../install/docker/shared/MULTITENANT.md](../../install/docker/shared/MULTITENANT.md) — organisation multi-tenant (méthodo `include:`).
-- [../install/docker/shared/BOOTSTRAP_COMPARISON.md](../../install/docker/shared/BOOTSTRAP_COMPARISON.md) — `create_custom.sh` (bare-metal) vs `docker-bootstrap.sh`.
-- [../install/docker/shared/SCHEDULING.md](../../install/docker/shared/SCHEDULING.md) — tâches récurrentes (Ofelia, **non intégré** à ce jour).
 - [../TERMINOLOGIE.md](../../TERMINOLOGIE.md) — pourquoi « tenant » plutôt que « custom »/« client ».
 - [../NF_Z42-020.md](../../NF_Z42-020.md) — journal scellé (option Splitter).
 - [../DEV_MODE.md](../../install/classic/DEV_MODE.md) — développement bare-metal (hors Docker).
