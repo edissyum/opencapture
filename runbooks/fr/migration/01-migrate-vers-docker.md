@@ -302,7 +302,7 @@ form_models 20, outputs 18, history 2 018.
 
 ## B. Montée de schéma (automatique dans l'import)
 
-`migrate.sh import` applique la **montée officielle** `postgres/sql/4.0.0.sql`
+`migrate.sh import` applique la **montée officielle** `postgres/migration/4.0.0.sql`
 (`form_models_field`, outputs, doctypes, nettoyage, colonnes, scripting `src.backend`→`src`…),
 puis le **résiduel Docker** `postgres/migration/4.0.0_docker.sql` (réécriture des chemins
 `docservers`/`documents.path`/`attachments`/`workflows`/`outputs` → `/app`, dont
@@ -469,7 +469,7 @@ Ordre des opérations (par custom) :
  6. démarre postgres du tenant + attend qu'il soit prêt
  7. MONTÉE DB (fonction patch_db_paths) :
       DROP settings_favorites                     (table v4-only survivante au dump)
-      psql -f postgres/sql/4.0.0.sql              (montée OFFICIELLE, reshape form_models_field inclus)
+      psql -f postgres/migration/4.0.0.sql        (montée OFFICIELLE, reshape form_models_field inclus)
       psql -f postgres/migration/4.0.0_docker.sql (résiduel Docker, paramétré, voir §7)
  8. deploy.sh <id>                                (build image + up -d le tenant)
  9. (si creds admin) reregister                   (régénère scripts + watcher.ini, voir §10)
@@ -654,7 +654,7 @@ environnement neuf plutôt que de les redécouvrir un par un.
 | Fichier | Rôle |
 |---|---|
 | `postgres/sql/structure.sql` | schéma cible 4.0.0 (référence de `diagnose`) |
-| `postgres/sql/4.0.0.sql` | montée OFFICIELLE vers 4.0.0 (jouée par l'import), reshape `form_models_field` inclus |
+| `postgres/migration/4.0.0.sql` | montée OFFICIELLE vers 4.0.0 (jouée par l'import), reshape `form_models_field` inclus |
 | `postgres/migration/4.0.0_docker.sql` | résiduel Docker : chemins → `/app` + garantie `SPLITTER_SHARE` — rien d'autre (cf. piège 10) |
 | `deploy.sh` | build image + `up -d` du tenant (appelé par l'import) |
 | `install/docker/shared/docker-bootstrap.sh` | self-heal au démarrage du conteneur (config.ini, custom.ini) |

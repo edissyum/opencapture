@@ -1,4 +1,4 @@
--- 4.0.0_docker.sql — adaptation Docker, à jouer APRÈS postgres/sql/4.0.0.sql.
+-- 4.0.0_docker.sql — adaptation Docker, à jouer APRÈS postgres/migration/4.0.0.sql.
 -- Adapte les docservers, workflows et outputs au layout conteneur /app.
 -- Aucun paramètre : tout est lu en base. Le renommage d'un custom est traité
 -- par migrate.sh, qui seul connaît le nom cible.
@@ -30,6 +30,13 @@ UPDATE docservers SET path = REPLACE(path, './data/',     '/app/custom/' || :'ci
 UPDATE docservers SET path = REPLACE(path, './instance/', '/app/custom/' || :'cid_src' || '/instance/');
 UPDATE docservers SET path = REGEXP_REPLACE(path, '^\./', '/app/');
 UPDATE docservers SET path = REGEXP_REPLACE(path, '/{2,}', '/', 'g');
+-- PROJECT_PATH must be the BACKEND directory, not the project root: the
+-- backend rebuilds §§OC_PATH§§ as PROJECT_PATH + '/' to generate the
+-- fs-watcher workflow scripts (src/controllers/workflow.py), and in the
+-- container /app IS that directory (backend/ is COPYied flat into /app).
+-- Order matters: 4.0.0.sql appends '/backend' to PROJECT_PATH for the
+-- bare-metal layout; this line runs AFTER and overrides it. Never swap
+-- the two scripts, or the generated scripts point at /app/backend/.
 UPDATE docservers SET path = '/app' WHERE docserver_id = 'PROJECT_PATH';
 \endif
 
