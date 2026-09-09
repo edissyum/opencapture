@@ -275,21 +275,21 @@ with app.app_context():
                             Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
                             cpt = 1
                             for attachment in ret['attachments']:
-                                task_id_monitor = database.insert({
-                                    'table': 'monitoring',
-                                    'columns': {
-                                        'status': 'wait',
-                                        'module': 'verifier' if not isSplitter else 'splitter',
-                                        'filename': os.path.basename(attachment['file']),
-                                        'workflow_id': workflowId,
-                                        'source': 'cli'
-                                    }
-                                })
-
-                                Log.debug('Task id inserted in monitoring table for attachment n°' + str(cpt) + ' with id : ' + str(task_id_monitor))
                                 Log.debug('Process attachment n°'+ str(cpt) + '/' + str(len(ret['attachments'])))
                                 Log.debug('Attachment n°'+ str(cpt) + ' filename is : ' + attachment['filename'] + ' and format is : ' + attachment['format'])
                                 if attachment['format'].lower() == '.pdf' or attachment['format'].lower() == 'pdf':
+                                    task_id_monitor = database.insert({
+                                        'table': 'monitoring',
+                                        'columns': {
+                                            'status': 'wait',
+                                            'module': 'verifier' if not isSplitter else 'splitter',
+                                            'filename': os.path.basename(attachment['file']),
+                                            'workflow_id': workflowId,
+                                            'source': 'cli'
+                                        }
+                                    })
+                                    Log.debug('Task id inserted in monitoring table for attachment n°' + str(cpt) + ' with id : ' + str(task_id_monitor))
+
                                     if not isSplitter:
                                         Log.debug('Launch verifier for attachment n°'+ str(cpt) + ' with file : ' + attachment['file'])
                                         launch_verifier({
