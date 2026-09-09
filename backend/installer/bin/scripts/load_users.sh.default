@@ -22,7 +22,7 @@ SKIP_HEADER="$2"
 cd §§OC_PATH§§ || exit
 
 if [ -z "$SKIP_HEADER" ]; then
-    PYTHONPATH=§§OC_PATH§§ python3 bin/referentials/load_users.py -c §§CUSTOM_ID§§ -f "$CSV_FILE"
+    python3 bin/referentials/load_users.py -c §§CUSTOM_ID§§ -f "$CSV_FILE"
 else
-    PYTHONPATH=§§OC_PATH§§ python3 bin/referentials/load_users.py -c §§CUSTOM_ID§§ -f "$CSV_FILE" "$SKIP_HEADER"
+    python3 bin/referentials/load_users.py -c §§CUSTOM_ID§§ -f "$CSV_FILE" "$SKIP_HEADER"
 fi
