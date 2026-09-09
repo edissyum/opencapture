@@ -17,8 +17,8 @@
 # @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-TARGET_STATUS="$1"
 PURGE_STATUS="$2"
+TARGET_STATUS="$1"
 CONSERVATION_DAYS="$3"
 
 cd §§OC_PATH§§ || exit
