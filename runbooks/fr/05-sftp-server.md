@@ -112,6 +112,10 @@ Sans systemd : `sudo proftpd` pour démarrer, `sudo pkill -HUP proftpd` pour rec
 
 ## 6. Déclarer l'accès SFTP d'un tenant
 
+Dans tout ce qui suit, `<id>` est l'identifiant du tenant — celui passé à
+`new-tenant.sh`. Il sert à la fois de nom de login SFTP et de nom du dossier chrooté
+(`$OC_DATA_ROOT/tenants/<id>/share`) : le tenant doit donc déjà exister.
+
 Le script crée le compte virtuel chrooté et demande le mot de passe. Aucun rechargement
 n'est nécessaire : `ftpd.passwd` est relu à chaque connexion.
 
@@ -130,7 +134,8 @@ Test client depuis un poste :
 sftp -P 2222 <id>@<serveur>
 ```
 
-Supprimer un tenant — sans rechargement nécessaire :
+Supprimer l'accès SFTP d'un tenant — le tenant lui-même n'est pas touché, et aucun
+rechargement n'est nécessaire :
 
 ```bash
 sudo ftpasswd --passwd --file=/etc/proftpd/ftpd.passwd --delete-user --name=<id>
