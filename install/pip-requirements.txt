@@ -37,7 +37,7 @@ gitpython==3.1.62
 flask_cors==6.0.5
 flasgger==0.9.7.1
 pillow-heif==1.7.0
-accelerate==1.14.0
+accelerate==1.15.0
 imap-tools==1.15.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
@@ -47,9 +47,9 @@ python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.143
+ultralytics==8.4.146
 python-magic==0.4.27
-transformers==5.16.1
+transformers==5.17.0
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0
 pypdf[crypto]==6.18.0
