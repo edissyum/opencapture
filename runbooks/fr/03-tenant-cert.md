@@ -16,31 +16,19 @@ FQDN=monclient.example.com
 OC_DATA_ROOT=/opt/edissyum/opencapture
 ```
 
-Créer le tenant depuis le gabarit cert :
+Créer le stub depuis le gabarit cert :
 
 ```bash
-cp -r install/docker/stub-tenants/_template-cert install/docker/stub-tenants/$ID
-mv install/docker/stub-tenants/$ID/.env.example install/docker/stub-tenants/$ID/.env
+./install/docker/tenant/new-tenant.sh cert $ID
 ```
 
-### Aligner APP_UID et APP_GID
-
-Impératif : ces valeurs doivent correspondre à celles du `.env` **global**. L'image
-backend partagée bake `/app` — le HOME du compte de service — à cet uid ; un tenant
-tournant avec un autre uid n'a pas `/app` inscriptible, et matplotlib comme fontconfig
-tombent en erreur.
-
-`new-tenant.sh` s'en charge automatiquement. En création manuelle :
-
-```bash
-sed -i "s/^APP_UID=.*/APP_UID=$(grep -m1 '^APP_UID=' .env | cut -d= -f2)/" install/docker/stub-tenants/$ID/.env
-sed -i "s/^APP_GID=.*/APP_GID=$(grep -m1 '^APP_GID=' .env | cut -d= -f2)/" install/docker/stub-tenants/$ID/.env
-```
+Le script copie le gabarit, pré-remplit `CUSTOM_ID`, `POSTGRES_DB`, `POSTGRES_USER`,
+`RABBITMQ_USER`, `OC_DATA_ROOT`, `APP_UID`/`APP_GID` et `OC_CPUSET`, puis liste ce qui
+reste à saisir. Il ne déploie pas.
 
 ### Renseigner le .env
 
-Y définir `CUSTOM_ID`, `OC_FQDN` et les mots de passe ; `OC_DATA_ROOT` est déjà
-pré-rempli.
+Y définir `OC_FQDN`, `POSTGRES_PASSWORD` et `RABBITMQ_PASS` — le reste est pré-rempli.
 
 ```bash
 "$EDITOR" install/docker/stub-tenants/$ID/.env
@@ -89,10 +77,13 @@ sed "s/changeme/$ID/g" install/docker/stub-tenants/$ID/tls.yml.example \
 
 ## Déployer
 
-Build du frontend puis `up -d` ; le service `init` amorce le tenant.
+`deploy.sh` construit les images puis lance `up -d`, qui démarre la **stack complète**
+du tenant — `postgres`, `rabbitmq`, `init`, `backend`, `worker-verifier`,
+`worker-splitter`, `worker-mail`, `fs-watcher`, `frontend`. Le service
+`init` amorce le tenant au premier démarrage : rien d'autre à lancer à la main.
 
 ```bash
-./install/docker/deploy.sh --frontend-only $ID
+./install/docker/deploy.sh $ID
 ```
 
 Vérifier quel certificat est réellement servi, en forçant le SNI pour obtenir l'émetteur

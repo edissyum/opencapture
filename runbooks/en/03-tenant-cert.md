@@ -16,30 +16,19 @@ FQDN=monclient.example.com
 OC_DATA_ROOT=/opt/edissyum/opencapture
 ```
 
-Create the tenant from the cert template:
+Create the stub from the cert template:
 
 ```bash
-cp -r install/docker/stub-tenants/_template-cert install/docker/stub-tenants/$ID
-mv install/docker/stub-tenants/$ID/.env.example install/docker/stub-tenants/$ID/.env
+./install/docker/tenant/new-tenant.sh cert $ID
 ```
 
-### Align APP_UID and APP_GID
-
-Mandatory: these values must match those of the **global** `.env`. The shared backend
-image bakes `/app` — the service account's HOME — at that uid; a tenant running with a
-different uid cannot write to `/app`, and both matplotlib and fontconfig fail.
-
-`new-tenant.sh` does this automatically. For a manual creation:
-
-```bash
-sed -i "s/^APP_UID=.*/APP_UID=$(grep -m1 '^APP_UID=' .env | cut -d= -f2)/" install/docker/stub-tenants/$ID/.env
-sed -i "s/^APP_GID=.*/APP_GID=$(grep -m1 '^APP_GID=' .env | cut -d= -f2)/" install/docker/stub-tenants/$ID/.env
-```
+The script copies the template, pre-fills `CUSTOM_ID`, `POSTGRES_DB`, `POSTGRES_USER`,
+`RABBITMQ_USER`, `OC_DATA_ROOT`, `APP_UID`/`APP_GID` and `OC_CPUSET`, then lists what is
+left to fill in. It does not deploy.
 
 ### Fill in the .env
 
-Set `CUSTOM_ID`, `OC_FQDN` and the passwords there; `OC_DATA_ROOT` is already
-pre-filled.
+Set `OC_FQDN`, `POSTGRES_PASSWORD` and `RABBITMQ_PASS` — the rest is pre-filled.
 
 ```bash
 "$EDITOR" install/docker/stub-tenants/$ID/.env
@@ -88,10 +77,13 @@ sed "s/changeme/$ID/g" install/docker/stub-tenants/$ID/tls.yml.example \
 
 ## Deploy
 
-Frontend build then `up -d`; the `init` service bootstraps the tenant.
+`deploy.sh` builds the images then runs `up -d`, which starts the tenant's **whole
+stack** — `postgres`, `rabbitmq`, `init`, `backend`, `worker-verifier`,
+`worker-splitter`, `worker-mail`, `fs-watcher`, `frontend`. The `init`
+service bootstraps the tenant on first start: nothing else to launch by hand.
 
 ```bash
-./install/docker/deploy.sh --frontend-only $ID
+./install/docker/deploy.sh $ID
 ```
 
 Check which certificate is actually served, forcing SNI to get the issuer and the SANs:
