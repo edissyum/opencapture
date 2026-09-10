@@ -24,13 +24,11 @@ under `sudo`, `~` is `/root` — do not use `~/opencapture_docker`, `$PWD` is sa
 REPO="$PWD"
 ```
 
-Take the uid, gid and name of the service account from the **global** `.env`; the
-default is 1000:
+Take the uid and gid of the service account from the **global** `.env`:
 
 ```bash
-APP_UID="$(grep -m1 '^APP_UID='  "$REPO/install/docker/.env" | cut -d= -f2)";  APP_UID="${APP_UID:-1000}"
-APP_GID="$(grep -m1 '^APP_GID='  "$REPO/install/docker/.env" | cut -d= -f2)";  APP_GID="${APP_GID:-1000}"
-APP_USER="$(grep -m1 '^APP_USER=' "$REPO/install/docker/.env" | cut -d= -f2)"; APP_USER="${APP_USER:-opencapture}"
+APP_UID="$(grep -m1 '^APP_UID=' "$REPO/install/docker/.env" | cut -d= -f2)"
+APP_GID="$(grep -m1 '^APP_GID=' "$REPO/install/docker/.env" | cut -d= -f2)"
 ```
 
 ## 1. Package — Samba
@@ -43,17 +41,12 @@ sudo apt update && sudo apt install -y samba
 
 This is what `force user` will target. What matters is the **number**: `force user` will
 name whichever account **carries** `APP_UID`/`APP_GID`, which `new-smb-account.sh`
-derives from the uid. That name may therefore differ from `$APP_USER`.
+derives from the uid. That name may therefore differ from the `.env`'s `APP_USER`.
 
-The logic follows the number: if the uid or gid is already carried by another name, that
-one is reused; otherwise the account is created under the `.env` name. Tenant
-authentication identity is a separate matter, covered in step 7.
-
-```bash
-getent group  "$APP_GID" >/dev/null || sudo groupadd -g "$APP_GID" "$APP_USER"
-getent passwd "$APP_UID" >/dev/null || \
-    sudo useradd -r -M -u "$APP_UID" -g "$APP_GID" -s /usr/sbin/nologin "$APP_USER"
-```
+Nothing to create: `APP_UID`/`APP_GID` are aligned on the current account at install
+time (`id -u`/`id -g`, see [01](01-install-general.md)), so a host account already
+carries those numbers. Tenant authentication identity is a separate matter, covered in
+step 7.
 
 Check the real name behind the uid and gid, the one `force user` will use:
 
