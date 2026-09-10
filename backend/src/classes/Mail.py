@@ -141,6 +141,25 @@ class Mail:
         }
         return self.graphql_request(get_token_url, 'POST', data, [])
 
+    def retrieve_recursive_folders(self, folders_url, path='', folders=None):
+        if folders is None:
+            folders = []
+
+        folders_list = self.graphql_request(folders_url + '?$top=200', 'GET', None, self.graphql_headers)
+        if folders_list.status_code != 200:
+            print(f"Error while trying to get folders list from GraphQL API : {folders_list.text}")
+            sys.exit()
+
+        for folder in folders_list.json()['value']:
+            full_path = path + folder['displayName']
+            folders.append({'displayName': full_path, 'id': folder['id']})
+
+            if folder['childFolderCount'] and folder['childFolderCount'] > 0:
+                subfolders_url = folders_url + '/' + folder['id'] + '/childFolders'
+                self.retrieve_recursive_folders(subfolders_url, full_path + '/', folders)
+
+        return folders
+
     def check_if_folder_exist(self, folder):
         """
         Check if a folder exist into the IMAP mailbox
@@ -150,24 +169,13 @@ class Mail:
         """
         if self.method == 'graphql':
             url = self.users_url + '/' + self.graphql_user['id'] + '/mailFolders'
-            folders = self.graphql_request(url + '?$top=200', 'GET', None, self.graphql_headers)
-            for fol in folders.json()['value']:
-                if fol['childFolderCount'] and fol['childFolderCount'] > 0:
-                    subfolders_url = url + '/' + fol['id'] + '/childFolders?$top=200'
-                    subfolders_list = self.graphql_request(subfolders_url, 'GET', None, self.graphql_headers)
-                    if subfolders_list.status_code != 200:
-                        error = 'Error while trying to get subfolders list from GraphQL API : ' + str(
-                            subfolders_list.text)
-                        print(error)
-                        sys.exit()
+            folders = self.retrieve_recursive_folders(url)
 
-                    for subfolder in subfolders_list.json()['value']:
-                        if folder == fol['displayName'] + '/' + subfolder['displayName']:
-                            self.folder_id = subfolder['id']
-                            return True
+            for fol in folders:
                 if folder == fol['displayName']:
                     self.folder_id = fol['id']
                     return True
+            return False
         else:
             folders = self.conn.folder.list()
             for fold in folders:
@@ -423,22 +431,6 @@ class Mail:
                 log.error('Error while moving mail to ' + destination + ' folder : ' + str(mail_error), False)
                 return None
 
-    def delete_mail(self, msg, trash_folder, log):
-        """
-        Move e-mail to trash IMAP folder (if action is set to delete) if specified. Else, delete it (can't be retrieved)
-
-        :param log: Log class instance
-        :param msg: Mail Data
-        :param trash_folder: IMAP trash folder
-        """
-        try:
-            if not self.check_if_folder_exist(trash_folder):
-                log.info('Trash folder (' + trash_folder + ') doesnt exist, delete mail (couldn\'t be retrieve)')
-                self.conn.delete(msg.uid)
-            else:
-                self.move_to_destination_folder(msg, trash_folder, log)
-        except UnexpectedCommandStatusError as mail_error:
-            log.error('Error while deleting mail : ' + str(mail_error), False)
 
     @staticmethod
     def graphql_request(url, method, data, headers):

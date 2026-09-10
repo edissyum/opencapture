@@ -76,7 +76,6 @@ if __name__ == '__main__':
 
         # Calculate the date threshold for deletion (7 days ago)
         threshold_date = datetime.now() - timedelta(days=conservation_days)
-        print(threshold_date)
         # Format the threshold date as a string in the format 'YYYY-MM-DD HH:MM:SS'
         threshold_date_str = threshold_date.strftime('%Y-%m-%d %H:%M:%S')
 
