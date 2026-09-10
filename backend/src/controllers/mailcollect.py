@@ -186,6 +186,25 @@ def graphql_request(url, method, data, headers):
     return None
 
 
+def retrieve_recursive_folders(folders_url, graphql_headers, path='', folders=None):
+    if folders is None:
+        folders = []
+
+    folders_list = graphql_request(folders_url + '?$top=200', 'GET', None, graphql_headers)
+    if folders_list.status_code != 200:
+        return False, folders_list.text
+
+    for folder in folders_list.json()['value']:
+        full_path = path + folder['displayName']
+        folders.append({'name': full_path})
+
+        if folder['childFolderCount'] and folder['childFolderCount'] > 0:
+            subfolders_url = folders_url + '/' + folder['id'] + '/childFolders'
+            retrieve_recursive_folders(subfolders_url, graphql_headers, full_path + '/', folders)
+
+    return True, folders
+
+
 def retrieve_folders(args):
     folders = []
     if args['method'] == 'oauth':
@@ -259,33 +278,17 @@ def retrieve_folders(args):
         graphql_user = user.json()
 
         folders_url = args['users_url'] + '/' + graphql_user['id'] + '/mailFolders'
-        folders_list = graphql_request(folders_url + '?$top=200', 'GET', None, graphql_headers)
+        res, folders_list = retrieve_recursive_folders(folders_url, graphql_headers)
 
-        if folders_list.status_code != 200:
+        if not res:
             response = {
                 "errors": gettext("MAILCOLLECT_ERROR"),
-                "message": folders_list.text
+                "message": folders_list
             }
             return response, 400
 
-        for folder in folders_list.json()['value']:
-            if folder['childFolderCount'] and folder['childFolderCount'] > 0:
-                subfolders_url = folders_url + '/' + folder['id'] + '/childFolders?$top=200'
-                subfolders_list = graphql_request(subfolders_url, 'GET', None, graphql_headers)
-                if subfolders_list.status_code != 200:
-                    response = {
-                        "errors": gettext("MAILCOLLECT_ERROR"),
-                        "message": subfolders_list.text
-                    }
-                    return response, 400
-                for subfolder in subfolders_list.json()['value']:
-                    folders.append({
-                        'name': folder['displayName'] + '/' + subfolder['displayName']
-                    })
-            else:
-                folders.append({
-                    'name': folder['displayName']
-                })
+        for _f in folders_list:
+            folders.append(_f)
 
     folder_list = []
     for _f in folders:
