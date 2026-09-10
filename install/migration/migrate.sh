@@ -674,9 +674,9 @@ reconcile_custom_files_v4() {
     fi
 
     # 0a-bis) metadata_methods.json : ajouter la clé callOnScript aux méthodes héritées
-    #     v3. La v4 l'a introduite ; backend/load_referential_splitter.py fait
-    #     `if method['callOnScript']:` en accès DIRECT -> KeyError sur une méthode v3 qui
-    #     ne l'a pas (le fichier v3 est conservé tel quel par la copie cp -n ci-dessus).
+    #     v3. La v4 l'a introduite ; backend/bin/referentials/load_referential_splitter.py
+    #     fait `if method['callOnScript']:` en accès DIRECT -> KeyError sur une méthode v3
+    #     qui ne l'a pas (le fichier v3 est conservé tel quel par la copie cp -n ci-dessus).
     #     Défaut `false` = sûr : le rechargement de référentiel saute la méthode (pas
     #     d'exécution du script, qui viserait de toute façon des URLs de service à
     #     (re)configurer par déploiement). Idempotent.
