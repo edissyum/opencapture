@@ -304,7 +304,7 @@ def check_database_users(ldap_users_data, default_role):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print_log('Arguments are missing to run the script')
+        print('Arguments are missing to run the script')
         sys.exit(0)
 
     CUSTOM_ID = sys.argv[2]
