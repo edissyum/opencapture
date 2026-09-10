@@ -47,7 +47,7 @@ derives from the uid. That name may therefore differ from `$APP_USER`.
 
 The logic follows the number: if the uid or gid is already carried by another name, that
 one is reused; otherwise the account is created under the `.env` name. Tenant
-authentication identity is a separate matter, covered in step 6.
+authentication identity is a separate matter, covered in step 7.
 
 ```bash
 getent group  "$APP_GID" >/dev/null || sudo groupadd -g "$APP_GID" "$APP_USER"
@@ -78,7 +78,37 @@ sudo touch /etc/samba/oc-shares.conf
 sudo mkdir -p /var/log/samba
 ```
 
-## 4. Firewall
+## 4. Primary group mapping ("Domain Users")
+
+Do this **once per server**, after step 3: the command reads the local SID from
+`/etc/samba/smb.conf`, and the resulting table (`group_mapping.tdb`) is global and
+persistent — tenant accounts created later inherit it with nothing to replay.
+
+`smbpasswd -a` gives every SMB account the primary group "Domain Users" (RID 513).
+Without a mapping to a Unix group, `smbd` cannot build the access token:
+**authentication succeeds**, but connecting to the share fails with
+`NT_STATUS_NO_SUCH_USER`. The `idmap config *` block in `smb.conf` does not cover this
+case — it only applies to *foreign* domains, whereas this SID belongs to the standalone
+server's own local domain.
+
+```bash
+getent group smbusers >/dev/null || sudo groupadd -r smbusers
+sudo net groupmap add rid=513 ntgroup="Domain Users" unixgroup=smbusers type=domain
+```
+
+Check — the output must no longer be empty:
+
+```bash
+sudo net groupmap list
+# Domain Users (S-1-5-21-...-513) -> smbusers
+```
+
+Note that `smbusers` plays no part in the ownership of dropped files, which
+`force user`/`force group` write as `APP_UID:APP_GID`. The group exists only to give the
+token's primary group a gid. No restart is needed, and `winbind` is not involved:
+`smbd` reads the table directly.
+
+## 5. Firewall
 
 A single port, NetBIOS staying disabled:
 
@@ -86,7 +116,7 @@ A single port, NetBIOS staying disabled:
 sudo ufw allow 445/tcp
 ```
 
-## 5. Check the configuration, then start
+## 6. Check the configuration, then start
 
 `testparm -s` must pass without error. Only `smbd` is needed: `nmbd` is useless without
 NetBIOS.
@@ -99,7 +129,12 @@ sudo systemctl restart smbd
 sudo systemctl status  smbd
 ```
 
-## 6. Declare a tenant's SMB access
+## 7. Declare a tenant's SMB access
+
+Throughout this section and the next, `<id>` is the tenant id — the one passed to
+`new-tenant.sh`. It is at once the **share name** (`\\<server>\<id>`), the SMB login
+name and the name of the shared directory (`$OC_DATA_ROOT/tenants/<id>/share`), so the
+tenant must already exist.
 
 The script creates the account, adds the section and reloads the configuration; the
 password is prompted for. No restart: `smbcontrol all reload-config` reloads on the fly.
@@ -109,14 +144,14 @@ sudo ./install/docker/host/smb/new-smb-account.sh <id>
 # e.g. sudo ./install/docker/host/smb/new-smb-account.sh test2
 ```
 
-## 7. Operations
+## 8. Operations
 
 Logs in `/var/log/samba/log.<machine-client>`, one file per client machine.
 
 Client test:
 
 ```bash
-smbclient //<serveur>/<id> -U <id> -m SMB3
+smbclient //<server>/<id> -U <id> -m SMB3
 ```
 
 List the SMB accounts:
@@ -133,8 +168,37 @@ sudo smbpasswd -x <id> ; sudo userdel <id>
 sudo smbcontrol all reload-config
 ```
 
+### Access from a Windows workstation
+
+The share is not browsable (`browseable = no`) and NetBIOS is disabled: it shows up
+neither under "Network" nor by typing `\\<server>` alone. Enter the full path.
+
+From File Explorer (or Win+R): `\\<server>\<id>`, then the `<id>` credentials and its
+SMB password. If Windows prefixes a domain, force the server's local account with
+`.\<id>`.
+
+Persistent network drive, from a command prompt on the workstation:
+
+```
+net use U: \\<server>\<id> /user:<id> * /persistent:yes
+```
+
+The `*` prompts for the password instead of writing it into the history. Check with
+`net use`, unmount with `net use U: /delete`.
+
+No anonymous access (`map to guest = never`) and SMB3 encryption is required — native on
+Windows 10/11 and Server 2016+, nothing to enable client-side.
+
+Files are only processed when dropped into the watched subdirectories:
+`entrant\verifier\default` (or `ocr_only`, `default_mail`) and
+`entrant\splitter\default`.
+
+If it fails with "Multiple connections … using more than one user name", that is the
+Windows limit of a single identity per SMB server: see the troubleshooting section in
+`install/docker/host/smb/README.md`.
+
 ### Client domains
 
 Set up one DNS alias (A or CNAME) per domain, pointing at the server's IP. The client
-mounts `\\<domaine>\<id>`; it is the **share name** that lets the server tell tenants
+mounts `\\<server-domain>\<id>`; it is the **share name** that lets the server tell tenants
 apart.

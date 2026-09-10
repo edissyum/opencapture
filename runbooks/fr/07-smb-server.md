@@ -49,7 +49,7 @@ l'uid. Ce nom peut donc différer de `$APP_USER`.
 
 La logique suit le numéro : si l'uid ou le gid est déjà porté par un autre nom, celui-ci
 est réutilisé ; sinon le compte est créé au nom du `.env`. L'identité d'authentification
-des tenants est un sujet distinct, traité à l'étape 6.
+des tenants est un sujet distinct, traité à l'étape 7.
 
 ```bash
 getent group  "$APP_GID" >/dev/null || sudo groupadd -g "$APP_GID" "$APP_USER"
@@ -81,7 +81,37 @@ sudo touch /etc/samba/oc-shares.conf
 sudo mkdir -p /var/log/samba
 ```
 
-## 4. Pare-feu
+## 4. Mappage du groupe primaire (« Domain Users »)
+
+À faire **une fois par serveur**, après l'étape 3 : la commande lit le SID local dans
+`/etc/samba/smb.conf`, et la table produite (`group_mapping.tdb`) est globale et
+persistante — les comptes tenants créés ensuite en héritent sans rien à rejouer.
+
+`smbpasswd -a` attribue à chaque compte SMB le groupe primaire « Domain Users »
+(RID 513). Sans correspondance vers un groupe Unix, `smbd` ne peut pas construire le
+jeton d'accès : **l'authentification réussit**, mais la connexion au partage échoue en
+`NT_STATUS_NO_SUCH_USER`. Le bloc `idmap config *` de `smb.conf` ne couvre pas ce cas —
+il ne s'applique qu'aux domaines *étrangers*, alors que ce SID appartient au domaine
+local du serveur standalone.
+
+```bash
+getent group smbusers >/dev/null || sudo groupadd -r smbusers
+sudo net groupmap add rid=513 ntgroup="Domain Users" unixgroup=smbusers type=domain
+```
+
+Vérifier — la sortie ne doit plus être vide :
+
+```bash
+sudo net groupmap list
+# Domain Users (S-1-5-21-...-513) -> smbusers
+```
+
+À noter : `smbusers` n'a aucun rôle sur les fichiers déposés, que `force user`/`force
+group` écrivent en `APP_UID:APP_GID`. Ce groupe existe seulement pour donner un gid au
+groupe primaire du jeton. Aucun redémarrage n'est nécessaire, et `winbind` n'entre pas
+en jeu : `smbd` lit la table directement.
+
+## 5. Pare-feu
 
 Un seul port, NetBIOS restant désactivé :
 
@@ -89,7 +119,7 @@ Un seul port, NetBIOS restant désactivé :
 sudo ufw allow 445/tcp
 ```
 
-## 5. Vérifier la configuration puis démarrer
+## 6. Vérifier la configuration puis démarrer
 
 `testparm -s` doit passer sans erreur. Seul `smbd` est nécessaire : `nmbd` est inutile
 sans NetBIOS.
@@ -102,7 +132,12 @@ sudo systemctl restart smbd
 sudo systemctl status  smbd
 ```
 
-## 6. Déclarer l'accès SMB d'un tenant
+## 7. Déclarer l'accès SMB d'un tenant
+
+Dans tout ce qui suit, `<id>` est l'identifiant du tenant — celui passé à
+`new-tenant.sh`. Il sert à la fois de **nom de partage** (`\\<serveur>\<id>`), de login
+SMB et de nom du dossier partagé (`$OC_DATA_ROOT/tenants/<id>/share`) : le tenant doit
+donc déjà exister.
 
 Le script crée le compte, ajoute la section et recharge la configuration ; le mot de
 passe est demandé. Aucun redémarrage : `smbcontrol all reload-config` recharge à chaud.
@@ -112,7 +147,7 @@ sudo ./install/docker/host/smb/new-smb-account.sh <id>
 # ex. : sudo ./install/docker/host/smb/new-smb-account.sh test2
 ```
 
-## 7. Exploitation
+## 8. Exploitation
 
 Logs dans `/var/log/samba/log.<machine-client>`, un fichier par poste client.
 
@@ -135,6 +170,36 @@ Supprimer un tenant — penser à retirer aussi la section `[<id>]` de
 sudo smbpasswd -x <id> ; sudo userdel <id>
 sudo smbcontrol all reload-config
 ```
+
+### Accès depuis un poste Windows
+
+Le partage n'est pas browsable (`browseable = no`) et NetBIOS est désactivé : il
+n'apparaît ni dans « Réseau », ni en tapant `\\<serveur>` seul. Saisir le chemin
+complet.
+
+Depuis l'Explorateur (ou Win+R) : `\\<serveur>\<id>`, puis les identifiants `<id>` et
+son mot de passe SMB. Si Windows préfixe un domaine, forcer le compte local du serveur
+avec `.\<id>`.
+
+Lecteur réseau persistant, en invite de commandes sur le poste :
+
+```
+net use U: \\<serveur>\<id> /user:<id> * /persistent:yes
+```
+
+Le `*` fait demander le mot de passe au lieu de l'inscrire dans l'historique. Vérifier
+avec `net use`, démonter avec `net use U: /delete`.
+
+Pas d'accès anonyme (`map to guest = never`) et chiffrement SMB3 obligatoire — natif
+sur Windows 10/11 et Server 2016+, rien à activer côté poste.
+
+Les fichiers ne sont traités que déposés dans les sous-dossiers surveillés :
+`entrant\verifier\default` (ou `ocr_only`, `default_mail`) et
+`entrant\splitter\default`.
+
+En cas d'échec avec « Multiple connections … using more than one user name », il s'agit
+de la limite Windows d'une seule identité par serveur SMB : voir le dépannage dans
+`install/docker/host/smb/README.md`.
 
 ### Domaines clients
 
