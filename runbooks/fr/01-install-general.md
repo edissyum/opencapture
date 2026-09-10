@@ -120,10 +120,8 @@ Construite une seule fois pour tous les tenants.
 **Important** : `APP_UID`/`APP_GID` du `.env` **global** correspondent à l'uid baké dans
 l'image (`/app` est le HOME du compte de service). Tous les tenants doivent tourner avec
 ce même uid, faute de quoi `/app` ne leur est pas inscriptible — matplotlib et
-fontconfig tombent alors en erreur. `new-tenant.sh` reprend ces valeurs ; en création
-manuelle, aligner le `install/docker/stub-tenants/<id>/.env` (voir les runbooks
-[02](02-tenant-letsencrypt.md), [03](03-tenant-cert.md) et [04](04-tenant-http.md)).
-`APP_UID` doit donc être défini **avant** ce build.
+fontconfig tombent alors en erreur. `new-tenant.sh` reporte ces valeurs dans le `.env`
+de chaque tenant. `APP_UID` doit donc être défini **avant** ce build.
 
 Reporter `OC_DATA_ROOT` et aligner `APP_UID`/`APP_GID` sur l'utilisateur courant, en
 valeurs **numériques** via `id -u` / `id -g` — surtout pas `$USER`, qui est un nom et
