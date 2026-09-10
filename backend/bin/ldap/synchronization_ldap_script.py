@@ -27,7 +27,8 @@ from datetime import datetime
 from ldap3 import Server, ALL
 from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
-from backend.src import create_classes_from_custom_id
+
+from src import create_classes_from_custom_id, app
 
 
 def print_log(message):
@@ -302,19 +303,18 @@ def check_database_users(ldap_users_data, default_role):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print_log('Arguments are missing to run the script')
         sys.exit(0)
 
-    thisfolder = os.path.dirname(os.path.abspath(__file__))
-    config_file = os.path.join(thisfolder, sys.argv[1])
+    CUSTOM_ID = sys.argv[2]
+
     config = configparser.RawConfigParser()
-    res = config.read(config_file)
+    config.read(sys.argv[1])
 
     # Recuperer les deux chemins vers le fichier de config_default.ini et le fichier de log
     CONFIG_FILEPATH = config.get("file_path", 'config_file')
     LOG_FILEPATH = config.get("file_path", 'log_file')
-    CUSTOM_ID = config.get('file_path', 'custom_id')
 
     if not CONFIG_FILEPATH or not LOG_FILEPATH:
         print_log('Path to config file and/or log file does not exist in the config file')
@@ -327,9 +327,10 @@ if __name__ == "__main__":
             print_log('The path to the config file does not exist in the config file')
             sys.exit(0)
 
-    retrieve_ldap_synchronization_data()
-    ldap_connection = check_connection_ldap_server()
-    list_ldap_users = get_ldap_users(ldap_connection['connection_object'], class_user, object_class, users_dn)
-    ldap_users_data = get_ldap_users_data(list_ldap_users)
-    result = check_database_users(ldap_users_data, default_role)
-    print_log('Result of synchronization operation: ' + str(result))
+    with app.app_context():
+        retrieve_ldap_synchronization_data()
+        ldap_connection = check_connection_ldap_server()
+        list_ldap_users = get_ldap_users(ldap_connection['connection_object'], class_user, object_class, users_dn)
+        ldap_users_data = get_ldap_users_data(list_ldap_users)
+        result = check_database_users(ldap_users_data, default_role)
+        print_log('Result of synchronization operation: ' + str(result))
