@@ -630,11 +630,10 @@ ALTER TABLE mailcollect ADD column workflow_id INTEGER DEFAULT NULL;
 UPDATE mailcollect m SET workflow_id = w.id FROM workflows w WHERE is_splitter = True AND m.splitter_workflow_id = w.workflow_id AND w.module = 'splitter';
 UPDATE mailcollect m SET workflow_id = w.id FROM workflows w WHERE is_splitter = False AND m.verifier_workflow_id = w.workflow_id AND w.module = 'verifier';
 
-ALTER TABLE mailcollect DROP COLUMN splitter_workflow_id;
-ALTER TABLE mailcollect DROP COLUMN verifier_workflow_id;
+ALTER TABLE mailcollect DROP COLUMN IF EXISTS splitter_workflow_id;
+ALTER TABLE mailcollect DROP COLUMN IF EXISTS verifier_workflow_id;
 
 -- Migration des chaînes sortants de type MEM
-
 UPDATE outputs
 SET data = jsonb_set(
     jsonb_set(

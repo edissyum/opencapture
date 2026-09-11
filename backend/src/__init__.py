@@ -185,6 +185,7 @@ if os.path.isdir(contact_model_path) and len([f for f in os.listdir(contact_mode
 app.config.from_mapping(
     ROTATE_MODEL=rotate_model,
     CONTACT_MODEL=contact_model,
+    INSTANCE_PATH=instance_path,
     instance_relative_config=True,
     BABEL_TRANSLATION_DIRECTORIES=os.path.join(str(app.root_path), 'assets/i18n/translations/')
 )
