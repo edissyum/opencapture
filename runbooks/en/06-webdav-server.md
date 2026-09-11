@@ -5,6 +5,12 @@ Copy-paste commands: do **not** run them as a block. Host data lives outside the
 Prerequisites: infra installed (see [01](01-install-general.md)) and tenant created
 (`new-tenant.sh` then `deploy.sh`).
 
+Throughout this runbook, `<id>` is the tenant id — the one passed to `new-tenant.sh`. It
+names the stack directory (`install/docker/stub-tenants/<id>`) and the data directory
+(`$OC_DATA_ROOT/tenants/<id>`), and is the default WebDAV login, so the tenant must
+already exist. Unlike SFTP, that login is only a default: any other login can be created
+(see §2).
+
 ## How it works
 
 WebDAV is served under `https://<fqdn>/dav/`: the nginx frontend proxies `/dav/` to an

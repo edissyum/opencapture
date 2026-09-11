@@ -108,6 +108,10 @@ Without systemd: `sudo proftpd` to start, `sudo pkill -HUP proftpd` to reload.
 
 ## 6. Declare a tenant's SFTP access
 
+Throughout this section and the next, `<id>` is the tenant id — the one passed to
+`new-tenant.sh`. It is both the SFTP login name and the name of the chrooted directory
+(`$OC_DATA_ROOT/tenants/<id>/share`), so the tenant must already exist.
+
 The script creates the chrooted virtual account and asks for the password. No reload is
 needed: `ftpd.passwd` is re-read on every connection.
 
@@ -123,10 +127,11 @@ Logs in `/var/log/proftpd/proftpd.log` and `/var/log/proftpd/sftp.log`.
 Client test from a workstation:
 
 ```bash
-sftp -P 2222 <id>@<serveur>
+sftp -P 2222 <id>@<server>
 ```
 
-Delete a tenant — no reload needed:
+Delete a tenant's SFTP access — the tenant itself is untouched, and no reload is
+needed:
 
 ```bash
 sudo ftpasswd --passwd --file=/etc/proftpd/ftpd.passwd --delete-user --name=<id>

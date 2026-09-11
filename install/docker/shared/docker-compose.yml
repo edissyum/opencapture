@@ -124,7 +124,13 @@ x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, cpu_sh
 x-res-verifier:  &res-verifier  { mem_limit: 9g,    memswap_limit: 11g,   cpu_shares: 2048 }
 x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, cpu_shares: 1536 }
 x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 256  }
-x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  cpu_shares: 256  }
+# fs-watcher: the workflow scripts it fires run the FULL splitter/verifier
+# pipeline INLINE (launch_worker_*.py calls launch() directly, nothing is
+# queued to the worker containers), so this budget must cover a whole
+# processing run -- not just the watcher. `from src import app` alone is
+# ~570 MB (torch/ultralytics + the YOLO rotate model, src/__init__.py).
+# The former 256m OOM-killed every drop before it even reached the DB.
+x-res-fswatcher: &res-fswatcher { mem_limit: 1536m, memswap_limit: 2560m, cpu_shares: 256  }
 x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  cpu_shares: 256  }
 
 # Reserves core 0 for the system; tenants confined to cores 1-7 (8-core host).

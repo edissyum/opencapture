@@ -6,6 +6,12 @@ vivent hors du dépôt.
 Prérequis : infra installée (voir [01](01-install-general.md)) et tenant créé
 (`new-tenant.sh` puis `deploy.sh`).
 
+Dans tout ce qui suit, `<id>` est l'identifiant du tenant — celui passé à
+`new-tenant.sh`. Il nomme le dossier de la stack (`install/docker/stub-tenants/<id>`) et
+celui des données (`$OC_DATA_ROOT/tenants/<id>`), et sert de login WebDAV par défaut : le
+tenant doit donc déjà exister. Contrairement au SFTP, ce login n'est qu'une valeur par
+défaut, tout autre login pouvant être créé (voir §2).
+
 ## Principe
 
 Le WebDAV est servi sous `https://<fqdn>/dav/` : le frontend nginx proxifie `/dav/` vers
