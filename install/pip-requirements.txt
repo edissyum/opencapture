@@ -46,8 +46,8 @@ tokenizers==0.23.2
 python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
-scikit-learn==1.9.0
-ultralytics==8.4.146
+scikit-learn==1.9.1
+ultralytics==8.4.147
 python-magic==0.4.27
 transformers==5.17.0
 Flask-Limiter==4.1.1

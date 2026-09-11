@@ -254,12 +254,12 @@ export function AttachmentsList({
                 { !showAttachment && (
                     <div className='flex gap-2 sticky p-6 top-0 z-10'>
                         <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 18 }/> }
-                                onClick={ () => onClose() }>
+                                onClick={ () => onClose() } size='sm'>
                             { module === 'verifier' ? t('ATTACHMENTS.back_to_file') : t('ATTACHMENTS.back_to_batch') }
                         </Button>
                         { module === 'splitter' && (
                             <Button variant='bg_white_rounded' icon={ <Unlink size={ 18 }/> }
-                                    onClick={ () => unBinding && unBinding() }
+                                    onClick={ () => unBinding && unBinding() } size='sm'
                                     disabled={ attachments.length === 0 || containsNotPdf || disabled || disableUnbinding }>
                                 { t('ATTACHMENTS.unbinding') }
                             </Button>
@@ -270,7 +270,7 @@ export function AttachmentsList({
                                    onChange={ handleFileSelected }/>
                             <Button variant='bg_white_rounded' icon={ <CloudUpload size={ 18 }/> }
                                     onClick={ () => fileInputRef.current?.click() }
-                                    disabled={ disabled }>
+                                    disabled={ disabled } size='sm'>
                                 { t('ATTACHMENTS.upload_new_file') }
                             </Button>
                         </div>

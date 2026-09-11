@@ -20,7 +20,8 @@
         "build-watch": "tsc -b && vite build --watch",
         "copy:tinymce": "node ./postinstall_tinymce.js",
         "upgrade-all-packages-ncu": "ncu -u && npm run reload-packages",
-        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i",
+        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i && npm run copy-pdfjs-worker",
+        "copy-pdfjs-worker": "cp -R node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/",
         "extract-translations": "i18next-scanner --config i18next-scanner.config.cjs",
         "i18n:extract:merge": "npm run extract-translations && node src/assets/i18n/merge-i18n.mjs"
     },
@@ -47,14 +48,14 @@
         "react-dropzone": "^20.1.1",
         "react-hook-form": "^7.87.0",
         "react-i18next": "^17.0.13",
-        "react-pdf": "^10.5.0",
+        "react-pdf": "^11.0.0",
         "react-router-dom": "^7.18.3",
         "react-toastify": "^11.1.0",
         "react-tooltip": "^6.0.8",
         "recharts": "^3.10.1",
         "tailwindcss": "^4.3.3",
         "tinymce": "^8.9.1",
-        "zod": "^4.6.1"
+        "zod": "^4.6.2"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
