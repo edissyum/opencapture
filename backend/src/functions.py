@@ -25,6 +25,8 @@ import shutil
 import urllib.parse
 from PIL import Image
 from pathlib import Path
+
+from flask import current_app
 from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
@@ -124,17 +126,9 @@ def rest_validator(data, required_fields, only_data=False):
 
 
 def check_extensions_mime(files, custom_id, document_type='document'):
-    config_path = str(get_custom_path(custom_id)) + '/config'
-    if not config_path or not os.path.isdir(config_path):
-        response = {
-            "errors": gettext("UPLOAD_ERRROR"),
-            "message": gettext("CUSTOM_CONFIG_FOLDER_NOT_FOUND")
-        }
-        return response, 400
-
-    formats_file = config_path + '/extensions.json'
+    formats_file = current_app.config['INSTANCE_PATH'] + '/config/extensions.json'
     if document_type == 'attachments':
-        formats_file = config_path + '/attachment_extensions.json'
+        formats_file = current_app.config['INSTANCE_PATH'] + '/config/attachment_extensions.json'
 
     if os.path.isfile(formats_file):
         with open(formats_file) as json_file:
