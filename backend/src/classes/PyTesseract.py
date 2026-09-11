@@ -20,6 +20,8 @@ import pytesseract
 import pyocr.builders
 import xml.etree.ElementTree as Et
 
+from flask import current_app
+
 from .. import shared
 
 
@@ -63,7 +65,7 @@ class PyTesseract:
             self.log.error('Tesseract ERROR : ' + str(_t))
 
     def get_ocr_errors_table(self):
-        config_path = shared.custom_path + '/config/OCR_ERRORS.xml'
+        config_path = current_app.config['INSTANCE_PATH'] + '/config/OCR_ERRORS.xml'
         root = Et.parse(config_path).getroot()
 
         for element in root:
