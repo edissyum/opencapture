@@ -67,12 +67,67 @@ trim() { local s="$*"; s="${s#"${s%%[![:space:]]*}"}"; s="${s%"${s##*[![:space:]
 # Source : vide = locale, sinon cible SSH (user@host).
 SRC=""
 
-# Commande SSH pour la source distante. Défaut : clé, sans interaction
-# (BatchMode). Surchargeable pour l'auth par mot de passe, ex. :
-#   MIGRATE_SSH="sshpass -p '****' ssh -o StrictHostKeyChecking=accept-new" \
+# SSH command used for a remote source. Default: plain ssh, replaced by a
+# multiplexed one once src_connect() has opened the master connection.
+# Overridable for fully unattended runs, e.g.:
+#   MIGRATE_SSH="sshpass -p secret ssh -o StrictHostKeyChecking=accept-new" \
 #       ./install/migration/migrate.sh export --source user@host ...
-# Non quoté à l'usage : word-splitting voulu ("sshpass -p x ssh ...").
-SSH_CMD="${MIGRATE_SSH:-ssh -o BatchMode=yes}"
+# Used unquoted on purpose: word splitting is wanted ("sshpass -p x ssh ...").
+SSH_CMD="${MIGRATE_SSH:-ssh}"
+
+# Path of the SSH control socket, set by src_connect(), empty when unused.
+SSH_CTL=""
+
+# Closes the multiplexed connection (EXIT trap).
+ssh_master_close() {
+    [ -n "$SSH_CTL" ] || return 0
+    ssh -o ControlPath="$SSH_CTL" -O exit "$SRC" 2>/dev/null || true
+    SSH_CTL=""
+}
+
+# True when a terminal is reachable, i.e. ssh can prompt for a passphrase or
+# password. Password prompts are read from /dev/tty, not from stdin.
+has_tty() { { : < /dev/tty; } 2>/dev/null; }
+
+# Opens ONE connection to the source and reuses it for every later command
+# (export issues ~10 ssh calls per custom). Credentials, if any are needed,
+# are therefore asked exactly once instead of at every call.
+#
+# Also the single place where an unreachable source is reported as such: the
+# 2>/dev/null in src_exists_dir/src_exists_file otherwise turns any SSH
+# failure (unknown host key, wrong password) into a misleading
+# "file not found" further down.
+src_connect() {
+    [ -n "$SRC" ] || return 0                 # local source: nothing to do
+
+    # Caller-supplied command (sshpass & co): honour it as is, just check that
+    # it does connect. No multiplexing, the caller owns the options.
+    if [ -n "${MIGRATE_SSH:-}" ]; then
+        $SSH_CMD "$SRC" true \
+            || die "connexion SSH à '$SRC' impossible avec MIGRATE_SSH=\"$MIGRATE_SSH\""
+        return 0
+    fi
+
+    SSH_CTL="${TMPDIR:-/tmp}/oc-migrate-ssh-$$"
+    trap ssh_master_close EXIT
+
+    # Without a terminal (CI, cron, pipe), keep the old non-interactive
+    # behaviour so the run fails fast instead of hanging on a prompt.
+    local -a mopts=(-o ControlMaster=yes -o ControlPath="$SSH_CTL" -N -f)
+    has_tty || mopts+=(-o BatchMode=yes)
+
+    log "connexion à $SRC…"
+    if ! ssh "${mopts[@]}" "$SRC"; then
+        SSH_CTL=""
+        die "connexion SSH à '$SRC' impossible (hôte injoignable, clé d'hôte refusée
+     ou authentification rejetée — voir le message ssh ci-dessus).
+     Sans terminal, fournir l'authentification via MIGRATE_SSH, ex. :
+       MIGRATE_SSH=\"sshpass -p motdepasse ssh -o StrictHostKeyChecking=accept-new\" \\
+           $0 export --source $SRC ..."
+    fi
+    SSH_CMD="ssh -o ControlMaster=auto -o ControlPath=$SSH_CTL"
+    log "connexion SSH établie ✓"
+}
 
 # Exécute une commande shell SUR la source (locale ou distante).
 src_run() {
@@ -140,6 +195,8 @@ cmd_export() {
     [ -n "$out" ]     || die "export : --out requis"
     oc_root="${oc_root%/}"
 
+    src_connect
+
     local custom_ini="$oc_root/custom/custom.ini"
     src_exists_file "$custom_ini" || die "custom.ini introuvable sur la source : $custom_ini"
 
@@ -159,6 +216,14 @@ cmd_export() {
     [ ${#customs[@]} -gt 0 ] || die "aucun custom dans $custom_ini"
 
     log "customs détectés : ${customs[*]}"
+
+    if [ ${#only[@]} -gt 0 ]; then
+        local want unknown=""
+        for want in "${only[@]}"; do
+            printf '%s\n' "${customs[@]}" | grep -qxF "$want" || unknown="$unknown $want"
+        done
+        [ -z "$unknown" ] || die "export : custom inconnu :$unknown — présents dans $custom_ini : ${customs[*]}"
+    fi
 
     for cid in "${customs[@]}"; do
         if [ ${#only[@]} -gt 0 ] && ! printf '%s\n' "${only[@]}" | grep -qx "$cid"; then
@@ -443,6 +508,10 @@ cmd_import() {
                 tar -xzf "$cb/att-${mod}.tar.gz" -C "$tdir/docservers/$mod/attachments"
             fi
         done
+        # Idem : le mkdir -p et les dossiers absents de l'archive naissent au
+        # compte de l'appelant. L'entrypoint ne réaligne qu'au PREMIER init.
+        align_app_owner "$cid" "$tdir/docservers/verifier/attachments" \
+                               "$tdir/docservers/splitter/attachments"
         if [ -f "$cb/share-export.tar.gz" ]; then
             mkdir -p "$tdir/share/export"
             tar -xzf "$cb/share-export.tar.gz" -C "$tdir/share/export"
@@ -782,6 +851,38 @@ rewrite_paths_in_dir() {
         | xargs -0 -r sed -i "${sed_args[@]}" 2>/dev/null || true
 }
 
+# Owner of the files as seen from the containers: the workers run under
+# APP_UID/APP_GID (service account, 1000 by default) while anything this script
+# creates on the host belongs to whoever runs it -- root under sudo. `mv` and
+# `tar` keep the ownership of the entries they carry, but a directory born from
+# `mkdir -p` does not: a root-owned 0755 directory inside docservers silently
+# blocks every later mkdir by the app (seen on mem2505, splitter/attachments/<year>
+# owned by root -> PermissionError as soon as a new month had to be created).
+# The entrypoint safety net (recursive chown under the init role) never catches
+# those: it is guarded by a sentinel already dropped at the tenant's first init,
+# and move_batch_attachments runs long after, on a deployed stack.
+app_owner_for() {
+    local env_file="$DOCKER_ROOT/stub-tenants/$1/.env" uid="" gid=""
+    if [ -f "$env_file" ]; then
+        uid="$(trim "$(grep -m1 '^APP_UID=' "$env_file" | cut -d= -f2-)")"
+        gid="$(trim "$(grep -m1 '^APP_GID=' "$env_file" | cut -d= -f2-)")"
+    fi
+    printf '%s:%s' "${uid:-1000}" "${gid:-1000}"
+}
+
+# Best-effort: a chown that fails (no sudo, ownership already correct) must
+# never abort an import that otherwise went through.
+align_app_owner() {
+    local cid="$1"; shift
+    local owner path
+    owner="$(app_owner_for "$cid")"
+    for path in "$@"; do
+        [ -e "$path" ] || continue
+        chown -R "$owner" "$path" 2>/dev/null \
+            || warn "[$cid] chown $path -> $owner échoué (relancer avec sudo si les droits sont incorrects)"
+    done
+}
+
 # - Montée de la base restaurée (dump v3.x) : montée OFFICIELLE 3.6.x->4.0.0
 # - (postgres/migration/4.0.0.sql) PUIS résiduel Docker (postgres/migration/4.0.0_docker.sql :
 # - 4.0.0.sql pas idempotent (donc à jouer sur import "frais") mais 4.0.0_docker.sql oui
@@ -817,6 +918,9 @@ move_batch_attachments() {
         "UPDATE attachments SET path = REPLACE(path, 'verifier/attachments/', 'splitter/attachments/')
           WHERE batch_id IS NOT NULL AND path LIKE '%verifier/attachments/%'" >/dev/null
     log "    pièces jointes de lots : $moved déplacée(s), $missing fichier(s) source absent(s)"
+
+    # Les dossiers <année>/<mois> viennent du mkdir -p ci-dessus : à réaligner.
+    align_app_owner "$cid" "$dst"
 }
 
 patch_db_paths() {
