@@ -474,7 +474,7 @@ export function OutputEditor({ module }: { module: string }) {
                                         <div key={ option.id } className="w-full gap-2">
                                             <Input id={ option.id } type={ option.type } name={ option.id }
                                                    label={ option.label }
-                                                   placeholder={option?.placeholder}
+                                                   placeholder={ option?.placeholder }
                                                    value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
                                                    onChange={ (e) => {
                                                        handleAuthChange(e, option)
@@ -571,7 +571,7 @@ export function OutputEditor({ module }: { module: string }) {
                             </div>
                         </Stepper.Step>
 
-                        {  outputType.output_type_id === 'export_mem' && (
+                        { outputType.output_type_id === 'export_mem' && (
                             <Stepper.Step label={ t("OUTPUTS.links") }>
                                 <Hint>
                                     { t('OUTPUTS.links_hint') }
@@ -636,9 +636,9 @@ export function OutputEditor({ module }: { module: string }) {
                                     </div>
                                 </div>
                             </Stepper.Step>
-                        )}
+                        ) }
                     </Stepper>
-                )}
+                ) }
             </div>
 
             { stepperIndex !== 0 && (
