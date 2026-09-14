@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
 # migrate.sh — migration d'une install OpenCapture NON dockerisée
-# (bare-metal Edissyum) vers la stack Docker de ce dépôt, en reprenant les
+# (classique) vers la stack Docker de ce dépôt, en reprenant les
 # données (base PostgreSQL + docservers + custom + share).
 #
-# Modèle : 1 custom bare-metal = 1 tenant Docker (1 stack + 1 DB).
+# Modèle : 1 custom classique = 1 tenant Docker (1 stack + 1 DB).
 # La migration est conçue en 3 étapes via un "bundle" portable :
 #
 #   1) export    : depuis la source (locale OU distante par SSH), produit un
@@ -36,7 +36,7 @@
 #   # (créer les stubs tenants au préalable : ./install/docker/tenant/new-tenant.sh le <id> + éditer .env)
 #   ./install/migration/migrate.sh import   --bundle /tmp/oc-bundle
 #
-#   # Source locale (bare-metal sur la même machine que Docker) :
+#   # Source locale (classique sur la même machine que Docker) :
 #   ./install/migration/migrate.sh export --source local --oc-root /var/www/html/opencapture --out /tmp/oc-bundle
 #
 # Prérequis IMPORTANTS (voir runbooks/fr/migration/01-migrate-vers-docker.md) :
@@ -92,11 +92,6 @@ has_tty() { { : < /dev/tty; } 2>/dev/null; }
 # Opens ONE connection to the source and reuses it for every later command
 # (export issues ~10 ssh calls per custom). Credentials, if any are needed,
 # are therefore asked exactly once instead of at every call.
-#
-# Also the single place where an unreachable source is reported as such: the
-# 2>/dev/null in src_exists_dir/src_exists_file otherwise turns any SSH
-# failure (unknown host key, wrong password) into a misleading
-# "file not found" further down.
 src_connect() {
     [ -n "$SRC" ] || return 0                 # local source: nothing to do
 
@@ -537,7 +532,7 @@ cmd_import() {
             "${OC_ROOT%/}" "/app"
 
         # 2b) Réconcilie le [GLOBAL] de config.ini sur la convention Docker.
-        #     Le bare-metal y met des chemins qui ne valent pas en conteneur :
+        #     Le classique y met des chemins qui ne valent pas en conteneur :
         #     notamment watcherConfig pointe souvent vers ./instance/config/ (global)
         #     alors que le watcher.ini est PAR custom -> sinon l'enregistrement d'un
         #     workflow échoue ("FS_WATCHER_CONFIG_DOESNT_EXIST"). On force les chemins
