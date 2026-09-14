@@ -182,7 +182,6 @@ export function OutputEditor({ module }: { module: string }) {
                     }
                 }));
             }
-
             if (outputType.data.options.parameters.length > 0 &&
                 (!output.data.options.parameters || output.data.options.parameters.length === 0)) {
                 const newParameters = outputType.data.options.parameters.map((option: any) => {
@@ -215,7 +214,7 @@ export function OutputEditor({ module }: { module: string }) {
                         try {
                             JSON.parse(value);
                             setCodeType('json');
-                        } catch (e) {
+                        } catch {
                             const parser = new DOMParser();
                             const xmlDoc = parser.parseFromString(value, "application/xml");
                             if (xmlDoc.getElementsByTagName("parsererror").length === 0) {
@@ -286,7 +285,7 @@ export function OutputEditor({ module }: { module: string }) {
         setLoadingStep(true);
 
         const authFunctionName: any = getTestConnectionMapping().find((m: any) => m.id === outputType.output_type_id)?.function;
-        let authOptions: any = {};
+        const authOptions: any = {};
         output?.data?.options?.auth.forEach((option: any) => {
             authOptions[option.id] = output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '';
         });
@@ -356,7 +355,7 @@ export function OutputEditor({ module }: { module: string }) {
                 prev.data.options.auth.push(option);
             }
 
-            let newAuthOptions = prev.data.options.auth.map((o: any) => {
+            const newAuthOptions = prev.data.options.auth.map((o: any) => {
                 if (o.id === option.id) {
                     return { ...o, value };
                 }
@@ -475,6 +474,7 @@ export function OutputEditor({ module }: { module: string }) {
                                         <div key={ option.id } className="w-full gap-2">
                                             <Input id={ option.id } type={ option.type } name={ option.id }
                                                    label={ option.label }
+                                                   placeholder={option?.placeholder}
                                                    value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
                                                    onChange={ (e) => {
                                                        handleAuthChange(e, option)
@@ -646,17 +646,17 @@ export function OutputEditor({ module }: { module: string }) {
                     <Tabs defaultValue='available_fields'>
                         <Tabs.List>
                             <Scroller>
-                                <Tabs.Tab key={ 'available_fields' } value={ 'available_fields' }>
+                                <Tabs.Tab key='available_fields' value='available_fields'>
                                     { t("VERIFIER.system_fields") }
                                 </Tabs.Tab>
                                 { customFields.length > 0 && (
-                                    <Tabs.Tab key={ 'custom_fields' } value={ 'custom_fields' }>
+                                    <Tabs.Tab key='custom_fields' value='custom_fields'>
                                         { t("VERIFIER.custom_fields") }
                                     </Tabs.Tab>
                                 ) }
                             </Scroller>
                         </Tabs.List>
-                        <Tabs.Panel key={ 'available_fields' } value={ 'available_fields' }>
+                        <Tabs.Panel key='available_fields' value='available_fields'>
                             <div className="p-4 flex flex-col gap-2">
                                 { availableSystemFields.map((option: any) => (
                                     <div key={ option.id } data-tooltip-id='tooltip'
@@ -677,21 +677,23 @@ export function OutputEditor({ module }: { module: string }) {
                             </div>
                         </Tabs.Panel>
                         { customFields.length > 0 && (
-                            <Tabs.Panel key={ 'custom_fields' } value={ 'custom_fields' }>
+                            <Tabs.Panel key='custom_fields' value='custom_fields'>
                                 <div className="p-4 flex flex-col gap-2">
                                     { customFields.map((field: any) => (
                                         <div key={ field.id } data-tooltip-id='tooltip'
                                              data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
                                              onClick={ async () => {
-                                                 await copyToClipboard(field.label_short);
+                                                 await copyToClipboard(`custom_${ field.id }`);
                                              } }
                                              className='flex flex-col border border-(--border-secondary) rounded-lg
-                                                        transition-colors bg-(--bg-primary) px-4 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
+                                                        transition-colors bg-(--bg-primary) px-4 py-2 w-full
+                                                        cursor-pointer hover:bg-(--bg-secondary)'
+                                        >
                                             <div className='text-(--text-primary) font-semibold'>
                                                 { field.label }
                                             </div>
                                             <div className='text-(--text-secondary)'>
-                                                { field.label_short }
+                                                custom_{ field.id }
                                             </div>
                                         </div>
                                     )) }
