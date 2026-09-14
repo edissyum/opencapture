@@ -152,6 +152,7 @@ if __name__ == '__main__':
                         'table': 'accounts_supplier',
                         'columns': {
                             'vat_number': str(vat_number)[:20] if vat_number else None,
+                            'duns': duns if duns else None,
                             'name': str(get_data(_vat, spreadsheet.referencial_supplier_array['name'])).strip(),
                             'lastname': str(get_data(_vat, spreadsheet.referencial_supplier_array['lastname']).strip()),
                             'firstname': str(get_data(_vat, spreadsheet.referencial_supplier_array['firstname']).strip()),
@@ -164,7 +165,6 @@ if __name__ == '__main__':
                             'informal_contact': INFORMAL_CONTACT,
                             'address_id': str(address_id),
                             'document_lang': str(_vat[spreadsheet.referencial_supplier_array['lang']]),
-                            'duns': str(get_data(data, spreadsheet.referencial_supplier_array['duns'])),
                             'bic': str(get_data(data, spreadsheet.referencial_supplier_array['bic'])),
                             'default_currency': str(get_data(data, spreadsheet.referencial_supplier_array['default_currency']))
                         }
@@ -183,8 +183,10 @@ if __name__ == '__main__':
                     if 'name' in args['columns'] and args['columns']['name']:
                         try:
                             res = database.insert(args)
-                            if not res or 'duplicate key' in res:
+                            if not res or (not isinstance(res, int) and 'duplicate key' in res):
                                 count_error += 1
+                                log.error('While adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
+                                continue
                         except Exception as _e:
                             count_error += 1
                             log.error('While adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
