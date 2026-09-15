@@ -32,6 +32,7 @@ import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
+import { toIdentifier } from "../../../services/strings";
 import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
@@ -269,7 +270,10 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         }
 
         if (customField.settings.options && Array.isArray(customField.settings.options)) {
-            setSelectOptions(customField.settings.options.map((option: any, idx: number) => ({ ...option, idx: idx + 1 })));
+            setSelectOptions(customField.settings.options.map((option: any, idx: number) => ({
+                ...option,
+                idx: idx + 1
+            })));
         }
     }, [customField]);
 
@@ -277,13 +281,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     useEffect(() => {
         if (!watchLabel || customFieldId) return;
 
-        const newLabelShort = watchLabel
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .replace(/\s+/g, '_')
-            .replace(/[^\w\-]+/g, '');
-        setValue("label_short", newLabelShort);
+        setValue("label_short", toIdentifier(watchLabel));
     }, [watchLabel]);
 
     // Remove space in label_short
@@ -611,25 +609,30 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                 <Accordion.Panel>
                                     <div className='flex flex-col gap-4 mb-4 p-6 pb-0'>
                                         <div className='w-1/3 flex flex-col gap-4'>
-                                            <Input type="text"
-                                                   label={ t('GLOBAL.label') } value={ option.label }
-                                                   autoFocus={ autoFocusOptionIndex === index }
-                                                   onChange={ (e) => {
-                                                       const newOptions = [...selectOptions];
-                                                       newOptions[index].label = e.target.value;
-                                                       setSelectOptions(newOptions);
-                                                   } }
+                                            <Input
+                                                type="text"
+                                                value={ option.label }
+                                                label={ t('GLOBAL.label') }
+                                                autoFocus={ autoFocusOptionIndex === index }
+                                                onChange={ (e) => {
+                                                    const newOptions = [...selectOptions];
+                                                    newOptions[index].label = e.target.value;
+                                                    newOptions[index].id = toIdentifier(e.target.value);
+                                                    setSelectOptions(newOptions);
+                                                } }
                                             />
-                                            <Input type="text"
-                                                   label={ t('ROLES.label_short') } value={ option.id }
-                                                   error={ duplicateOptionLabelShortIndexes.has(index)
-                                                       ? t('CUSTOM-FIELDS.choice_label_short_duplicate')
-                                                       : undefined }
-                                                   onChange={ (e) => {
-                                                       const newOptions = [...selectOptions];
-                                                       newOptions[index].id = e.target.value;
-                                                       setSelectOptions(newOptions);
-                                                   } }
+                                            <Input
+                                                type="text"
+                                                value={ option.id }
+                                                label={ t('ROLES.label_short') }
+                                                error={ duplicateOptionLabelShortIndexes.has(index)
+                                                    ? t('CUSTOM-FIELDS.choice_label_short_duplicate')
+                                                    : undefined }
+                                                onChange={ (e) => {
+                                                    const newOptions = [...selectOptions];
+                                                    newOptions[index].id = e.target.value;
+                                                    setSelectOptions(newOptions);
+                                                } }
                                             />
                                         </div>
 
@@ -665,7 +668,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                     </div>
                                 </Accordion.Panel>
                             </Accordion.Item>
-                        ) )}
+                        )) }
                     </Accordion>
 
                     <div className='mt-4 flex justify-end'>

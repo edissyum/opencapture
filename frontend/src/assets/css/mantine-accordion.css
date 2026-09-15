@@ -36,7 +36,11 @@
 }
 
 .mantine-Accordion-label {
+    @apply py-0;
+    @apply flex;
+    @apply min-h-12;
     @apply text-base;
+    @apply items-center;
     @apply font-semibold;
     @apply text-(--text-primary);
 }
