@@ -42,11 +42,11 @@ nltk.download('punkt_tab', download_dir='/opt/edissyum/opencapture/install/class
 
 4. **Install NVM**:
 ```bash
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
-
-source ~/.bashrc
-nvm install --lts
-nvm use --lts
+  wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.7/install.sh | bash
+  
+  source ~/.bashrc
+  nvm install --lts
+  nvm use --lts
 ```
 
 5. **Install Node.js dependencies**:
