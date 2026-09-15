@@ -169,7 +169,7 @@ export function SplitterListPage() {
         {
             id: 'filename',
             header: t('VERIFIER.filename'),
-            className: 'w-6/12',
+            className: 'w-5/12',
             body: (item: any) => (
                 <span className="font-semibold" title={ item['subject'] ? item['subject'] : item['file_name'] }>
                     { item['subject'] ? item['subject'] : item['file_name'] }
