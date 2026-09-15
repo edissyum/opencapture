@@ -1,24 +1,5 @@
 # Open-Capture production-ready compose.
-#
-# Layout: this file lives in install/docker/shared/. Build contexts point to the repo
-# root (../../..) so the Dockerfiles can COPY both backend/, frontend/,
-# postgres/ (the application code) and install/docker/shared/ (the entrypoint scripts,
-# nginx template).
-#
-# Run with:
-# docker compose -f install/docker/shared/docker-compose.yml up -d                 
-#
-# Network: a single internal bridge; only the frontend nginx exposes
-# a port to the host.
 
-# Pin the compose project name to opencapture_<tenant>. Allows running
-# several OC stacks in parallel on the same machine (one per tenant)
-# without collision: each stack has its own prefixed
-# containers/volumes/network.
-#
-# Example:
-#   .env -> CUSTOM_ID=edissyum -> project name opencapture_edissyum
-#   .env -> CUSTOM_ID=ccbe     -> project name opencapture_ccbe
 name: opencapture_${CUSTOM_ID:-default}
 
 x-backend-build: &backend-build
@@ -26,26 +7,16 @@ x-backend-build: &backend-build
         context: ../../..
         dockerfile: install/docker/shared/backend.Dockerfile
         args:
-            # Service account baked into the image (default 1000). Image
-            # shared by all tenants -> a single global APP_UID.
             APP_UID:  ${APP_UID:-1000}
             APP_GID:  ${APP_GID:-1000}
             APP_USER: ${APP_USER:-opencapture}
 
 x-backend-env: &backend-env
     CUSTOM_ID:           ${CUSTOM_ID}
-    # Container timezone (OpenCapture logs, DB timestamps on the app
-    # side). tzdata/zoneinfo is already in the image -> TZ alone is enough.
     TZ:                  ${TZ:-Europe/Paris}
-    # Target UID/GID re-read by docker-entrypoint.sh at runtime (gosu
-    # drop + chown of the mounts). Overridable without a rebuild.
     APP_UID:             ${APP_UID:-1000}
     APP_GID:             ${APP_GID:-1000}
     APP_USER:            ${APP_USER:-opencapture}
-    # Tenant FQDN. Used by docker-bootstrap.sh to write
-    # `url = ${OC_FQDN}` into custom.ini -> enables clean-URL access at
-    # http://${OC_FQDN}/ without the /${CUSTOM_ID}/ prefix (see backend
-    # commit 75a66fe).
     OC_FQDN:             ${OC_FQDN}
     POSTGRES_DB:         ${POSTGRES_DB}
     POSTGRES_USER:       ${POSTGRES_USER}
@@ -61,25 +32,12 @@ x-backend-env: &backend-env
     SHARE_PATH_CONTAINER: /app/share
     DOCSERVERS_PATH_CONTAINER: /app/docservers
     OC_PATH:             /app
-    # --- Numeric-lib thread cap (universal, all roles) --------------------
-    # Without this, EVERY lib (torch/numpy/scipy/sklearn/OpenBLAS/MKL) opens a
-    # thread pool = number of visible cores (7) IN EACH process (api, verifier,
-    # splitter). 3 processes × 7 = 21 threads for 7 cores → CPU oversubscription
-    # (contention, slowness) + a memory arena per thread. Pure BLAS → 1:
-    # OpenCapture doesn't do heavy matrix math outside the VLM ⇒ ~zero perf cost.
     OPENBLAS_NUM_THREADS: "1"
+    # torch's intra-op follows MKL (BLAS_INFO=mkl), NOT OMP; worker-verifier overrides it.
     MKL_NUM_THREADS:      "1"
     NUMEXPR_NUM_THREADS:  "1"
-    # OMP ALSO drives Tesseract (OCR) and torch's intra-op → DO NOT set to 1
-    # (would slow down the verifier's OCR). 4 = contention/OCR compromise;
-    # adjust based on how many tenants run on the host.
+    # OMP drives Tesseract (OCR) -> do NOT set to 1.
     OMP_NUM_THREADS:      "4"
-    # --- gunicorn settings (api role) — overridable PER TENANT via .env ----
-    # --max-requests: recycles each worker after N requests -> reclaims
-    #   accumulated RAM (anti-leak/OOM; e.g. repeatedly opening a doc in the viewer).
-    # --max-requests-jitter: staggers worker recycling (not all at once).
-    # threads: concurrency within SHARED memory (prefer over +workers when RAM
-    #   is the limiting factor; each worker duplicates the baseline + the leak).
     GUNICORN_WORKERS:             ${GUNICORN_WORKERS:-2}
     GUNICORN_THREADS:             ${GUNICORN_THREADS:-2}
     GUNICORN_MAX_REQUESTS:        ${GUNICORN_MAX_REQUESTS:-1000}
@@ -88,61 +46,34 @@ x-backend-env: &backend-env
     GUNICORN_EXTRA_ARGS:          ${GUNICORN_EXTRA_ARGS:-}
 
 x-backend-extra-hosts: &backend-extra-hosts
-    # Lets output connectors (MEM Courrier, etc.) configured in v3 with a
-    # "localhost" host (the connector and OC used to run on the same
-    # bare-metal machine) keep reaching this service once OC is
-    # dockerized: inside a container, "localhost" refers to itself, not
-    # the host. host-gateway resolves host.docker.internal to the
-    # Docker gateway on the host side (Linux, Docker Engine >= 20.10).
-    # Still to do on the app side: change the connector's "host" field
-    # from http://localhost/... to http://host.docker.internal/...
-    # (only works if the target service listens on 0.0.0.0, not just 127.0.0.1).
+    # In a container "localhost" is the container itself: repoint v3 connectors.
     extra_hosts:
         - "host.docker.internal:host-gateway"
 
 x-backend-volumes: &backend-volumes
-    # Direct bind mounts: Docker creates the host folder if it doesn't exist.
-    # Paths DERIVED from ONE root: ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/...
-    #   OC_DATA_ROOT is MANDATORY (no default): compose fails if unset or empty.
-    # To move EVERYTHING: change OC_DATA_ROOT in .env (+ mv the folders).
-    # An explicit *_PATH in .env still takes priority (one-off override).
+    # All paths derive from OC_DATA_ROOT, MANDATORY; an explicit *_PATH wins.
     - ${CUSTOM_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/custom}:/app/custom
     - ${DOCSERVERS_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/docservers}:/app/docservers
     - ${SHARE_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/tenants/${CUSTOM_ID:-default}/share}:/app/share
-    # SHARED AI models (rotate_document.pt + contact/), dropped in from the host.
-    # rotate is seeded at bootstrap if absent; empty contact => contact AI disabled.
     - ${SHARED_AI_MODELS_PATH:-${OC_DATA_ROOT:?set it in the .env, e.g. /opt/edissyum/opencapture}/shared-by-tenants/ai-models}:/app/instance/artificial_intelligence
 
 
-# --- QoS: resource profiles -----------------------------------------------
-# mem_limit      = HARD RAM ceiling (OOM within the cgroup, not global)
-# memswap_limit  = RAM+swap; == mem_limit => swap FORBIDDEN; > => swap allowed
-# cpu_shares     = RELATIVE weight under contention (not a hard cap)
+# QoS. memswap_limit == mem_limit forbids swap; cpu_shares is a weight, not a cap.
 x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 1024 }
 x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 512  }
 x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, cpu_shares: 1024 }
 x-res-verifier:  &res-verifier  { mem_limit: 9g,    memswap_limit: 11g,   cpu_shares: 2048 }
 x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, cpu_shares: 1536 }
 x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 256  }
-# fs-watcher: the workflow scripts it fires run the FULL splitter/verifier
-# pipeline INLINE (launch_worker_*.py calls launch() directly, nothing is
-# queued to the worker containers), so this budget must cover a whole
-# processing run -- not just the watcher. `from src import app` alone is
-# ~570 MB (torch/ultralytics + the YOLO rotate model, src/__init__.py).
-# The former 256m OOM-killed every drop before it even reached the DB.
+# scheduler: its jobs import the app (torch/YOLO, ~570 MB) -> sized for one run.
+x-res-scheduler: &res-scheduler { mem_limit: 1g,    memswap_limit: 1g,    cpu_shares: 128  }
+# fs-watcher runs the FULL pipeline INLINE: its budget must cover a whole run.
 x-res-fswatcher: &res-fswatcher { mem_limit: 1536m, memswap_limit: 2560m, cpu_shares: 256  }
 x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  cpu_shares: 256  }
 
-# Reserves core 0 for the system; tenants confined to cores 1-7 (8-core host).
-# Driven by env for smaller hosts: set OC_CPUSET in the tenant's .env (e.g.
-# 2-core VM -> OC_CPUSET=0-1), otherwise `up -d` fails
-# ("Requested CPUs are not available"). Default unchanged = "1-7".
+# Core 0 reserved for the system. OC_CPUSET must fit the host, else `up -d` fails.
 x-cpuset-tenants: &cpuset { cpuset: "${OC_CPUSET:-1-7}" }
 
-# Rotation of container stdout/stderr logs (json-file driver defaults to
-# unlimited size otherwise). Application logs (OpenCapture.log, etc.)
-# already rotate on the code side (RotatingFileHandlerUmask); this only
-# covers Docker logs (gunicorn access/error, workers, postgres, rabbitmq...).
 x-logging: &default-logging
     driver: json-file
     options:
@@ -154,15 +85,9 @@ services:
     postgres:
         <<: [*res-postgres, *cpuset]    # QoS: RAM/swap ceilings + CPU weight + core 0 reserved for the system
         logging: *default-logging
-        # Official image. The SQL files are bind-mounted into
-        # /docker-entrypoint-initdb.d/ and run only once on first
-        # startup (empty pgdata). The 01_/02_/03_ prefixes inside the
-        # container enforce load order, independent of the host-side
-        # file names.
+        # The SQL files below run ONCE, on first startup only (empty pgdata).
         image: postgres:17.10
-        # Postgres's `timezone` is frozen in the data dir at initdb
-        # (UTC); the TZ variable doesn't override it. We force it at
-        # startup so now()/DB timestamps are in local time.
+        # Postgres freezes `timezone` at initdb and ignores TZ, so it is forced here.
         command: ["postgres", "-c", "timezone=${TZ:-Europe/Paris}", "-c", "log_timezone=${TZ:-Europe/Paris}"]
         environment:
             POSTGRES_DB:       ${POSTGRES_DB}
@@ -229,9 +154,6 @@ services:
             init:
                 condition: service_completed_successfully
         healthcheck:
-            # TCP-only: any HTTP response means gunicorn is alive.
-            # A URL-based probe is fragile (depends on CUSTOM_ID + on
-            # the route map).
             test: ["CMD-SHELL", "python -c 'import socket; s=socket.create_connection((\"localhost\",8000), timeout=3); s.close()'"]
             interval: 30s
             timeout: 5s
@@ -245,6 +167,9 @@ services:
         logging: *default-logging
         environment:
             <<: *backend-env
+            # Only role running the contact VLM. Per-job ceiling: size it on
+            # concurrent inferences, not tenant count.
+            MKL_NUM_THREADS: "${OC_MKL_THREADS:-4}"
         volumes: *backend-volumes
         command: ["worker-verifier"]
         depends_on:
@@ -291,6 +216,27 @@ services:
                 condition: service_completed_successfully
         restart: unless-stopped
 
+    # Per-tenant cron, opt-in: COMPOSE_PROFILES=scheduler in the tenant .env.
+    # Same image and same volumes as the other roles, so a job reaches custom/,
+    # docservers/ and share/ exactly like the workers do.
+    scheduler:
+        <<: [*backend-build, *res-scheduler, *cpuset]
+        image: opencapture-backend
+        logging: *default-logging
+        profiles: ["scheduler"]
+        environment:
+            <<: *backend-env
+            SCHEDULER_JOBS: ${SCHEDULER_JOBS:-}
+            SCHEDULER_RUN_AT_START: ${SCHEDULER_RUN_AT_START:-0}
+        volumes: *backend-volumes
+        command: ["scheduler"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+            init:
+                condition: service_completed_successfully
+        restart: unless-stopped
+
     fs-watcher:
         <<: [*backend-build, *res-fswatcher, *cpuset]
         image: opencapture-backend
@@ -308,22 +254,10 @@ services:
                 condition: service_completed_successfully
         restart: unless-stopped
 
-    # NB: the `webdav` service (Apache mod_dav) is NOT part of this base
-    # stack — it's an OPT-IN add-on. A tenant enables it by including the
-    # install/docker/shared/webdav/docker-compose.yml overlay in its docker-compose.yml.
 
     frontend:
         <<: [*res-frontend, *cpuset]
-        # Image SHARED by all tenants (like opencapture-backend). The
-        # Vite bundle is identical for every tenant: it targets the backend
-        # relative to its own origin, and the tenant's identity (custom_id)
-        # is resolved at RUNTIME — by the SPA from the browser URL, and by
-        # nginx via envsubst (${CUSTOM_ID}) when the container starts.
-        # Nothing tenant-specific is baked in → a single image is enough.
-        #
-        # The bundle itself is NOT built here: frontend/dist/ is committed
-        # to the repo and the image only copies it into nginx. See
-        # install/docker/shared/frontend.Dockerfile.
+        # Image SHARED by all tenants: CUSTOM_ID is resolved at RUNTIME.
         image: opencapture-frontend
         logging: *default-logging
         build:
@@ -334,22 +268,8 @@ services:
             BACKEND_HOST: backend
             BACKEND_PORT: "8000"
             TZ:           ${TZ:-Europe/Paris}
-        # No host port: Traefik is the single entry point and reaches
-        # the frontend via the `frontend` Docker network. Exposing a
-        # port here causes a collision when running several tenants on
-        # the same machine (each tenant would want to bind the same 8080).
-        # For a standalone mode without Traefik, add this block in an
-        # override compose file instead of putting it back here:
-        #   ports:
-        #       - "${FRONTEND_PORT:-8080}:80"
+        # No host port: Traefik is the entry point, and one here would collide.
         depends_on:
             backend:
                 condition: service_started
         restart: unless-stopped
-# No more volumes: section:
-# The direct bind mounts declared at the service level are enough.
-# Docker auto-creates the host folders if they don't exist.
-# Paths derived from ONE .env variable: OC_DATA_ROOT (MANDATORY, no default).
-#   -> ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/{pgdata,rabbitmq,custom,docservers,share}
-#   -> ${OC_DATA_ROOT}/shared-by-tenants/ai-models
-# One-off override possible via an explicit *_PATH (PGDATA_PATH, etc.).
