@@ -567,7 +567,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             input_folder: input_folder
                         })
                     } catch (error) {
-                        console.debug('Error validating input folder :', error);
+                        console.error('Error validating input folder :', error);
                         return;
                     } finally {
                         setLoadingUpdate(false);

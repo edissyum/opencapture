@@ -15,8 +15,8 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Pencil, RotateCcw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { ArrowDown, ArrowUp, Pencil } from "lucide-react";
 
 import { useUser } from "../services/hooks/useUser";
 import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
@@ -166,12 +166,13 @@ export function UploadPage() {
                         </div>
                         <div className='flex flex-col'>
                             <span>{ t('UPLOAD.select_workflow') }</span>
-                            <span className='text-(--text-secondary) text-sm'>{ t('UPLOAD.select_workflow_hint') }</span>
+                            <span
+                                className='text-(--text-secondary) text-sm'>{ t('UPLOAD.select_workflow_hint') }</span>
                         </div>
                         <div className='ml-auto'>
                             { selectedWorkflow && (
                                 <div onClick={ () => setSelectedWorkflow(null) }
-                                    className='flex items-center gap-2 bg-(--bg-selected) px-2 py-1 rounded-md text-sm
+                                     className='flex items-center gap-2 bg-(--bg-selected) px-2 py-1 rounded-md text-sm
                                                border-(--border-primary) border text-(--color-primary) font-semibold
                                                cursor-pointer '>
                                     <Pencil size={ 16 }/>
@@ -208,10 +209,13 @@ export function UploadPage() {
                                 className='text-sm text-(--text-secondary) cursor-pointer w-fit'
                             >
                                 { showAllWorkflows ? (
-                                    t('UPLOAD.show_less')
+                                    <div className='flex items-center'>
+                                        <ArrowUp size={ 16 } className='inline-block mr-1'/>
+                                        { t('UPLOAD.show_less') }
+                                    </div>
                                 ) : (
                                     <div className='flex items-center'>
-                                        <RotateCcw size={ 16 } className='inline-block mr-1'/>
+                                        <ArrowDown size={ 16 } className='inline-block mr-1'/>
                                         { t('UPLOAD.show_more') }
                                     </div>
                                 ) }

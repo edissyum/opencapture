@@ -114,7 +114,7 @@ export function ResetPassword() {
                 setLoading(false);
             } catch (err) {
                 setLoading(false);
-                console.debug(err);
+                console.error(err);
             }
         };
 
@@ -150,7 +150,7 @@ export function ResetPassword() {
             handleLogout(navigate).then();
         } catch (err) {
             setSending(false);
-            console.debug('Error while resetting password', err);
+            console.error('Error while resetting password', err);
         }
     }
 
@@ -173,7 +173,7 @@ export function ResetPassword() {
             }
         } catch (err) {
             setSending(false);
-            console.debug('Error while sending reset password email', err);
+            console.error('Error while sending reset password email', err);
         }
     };
 
