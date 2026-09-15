@@ -193,6 +193,74 @@ case "$ROLE" in
         done
         ;;
 
+    scheduler)
+        # Per-tenant cron. SCHEDULER_JOBS holds ";"-separated "HH:MM|command"
+        # entries, run from the tenant custom dir with every tenant volume
+        # mounted (custom, docservers, share). Anchored on the wall clock: a
+        # restart neither shifts a run nor fires one at deploy time.
+        wait_for_postgres
+        ensure_tenant
+        cd "/app/custom/${CUSTOM_ID}"
+
+        declare -a JOB_AT JOB_CMD
+        IFS=';' read -ra scheduler_entries <<< "${SCHEDULER_JOBS:-}"
+        for entry in ${scheduler_entries[@]+"${scheduler_entries[@]}"}; do
+            entry="$(printf '%s' "$entry" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+            [ -n "$entry" ] || continue
+            case "$entry" in
+                [01][0-9]:[0-5][0-9]\|*|2[0-3]:[0-5][0-9]\|*)
+                    JOB_AT+=("${entry%%|*}")
+                    JOB_CMD+=("${entry#*|}")
+                    ;;
+                *) echo "[scheduler] ignored (expected HH:MM|command): $entry" >&2 ;;
+            esac
+        done
+
+        if [ "${#JOB_AT[@]}" -eq 0 ]; then
+            # Idle rather than exit: `restart: unless-stopped` would loop.
+            echo "[scheduler] no job in SCHEDULER_JOBS, idling"
+            exec sleep infinity
+        fi
+
+        run_job() {
+            local at="${JOB_AT[$1]}" cmd="${JOB_CMD[$1]}" rc=0
+            echo "[scheduler] $(date '+%F %T') start ($at): $cmd"
+            eval "$cmd" || rc=$?
+            if [ "$rc" -eq 0 ]; then
+                echo "[scheduler] $(date '+%F %T') done ($at): $cmd"
+            else
+                echo "[scheduler] $(date '+%F %T') FAILED rc=$rc ($at): $cmd" >&2
+            fi
+        }
+
+        echo "[scheduler] ${#JOB_AT[@]} job(s) scheduled, TZ=${TZ:-system}"
+        if [ "${SCHEDULER_RUN_AT_START:-0}" = "1" ]; then
+            for i in "${!JOB_AT[@]}"; do run_job "$i"; done
+        fi
+
+        while true; do
+            now="$(date +%s)"
+            next=""
+            for i in "${!JOB_AT[@]}"; do
+                due="$(date -d "today ${JOB_AT[$i]}" +%s)"
+                [ "$due" -le "$now" ] && due="$(date -d "tomorrow ${JOB_AT[$i]}" +%s)"
+                { [ -z "$next" ] || [ "$due" -lt "$next" ]; } && next="$due"
+            done
+            echo "[scheduler] next run at $(date -d "@$next" '+%F %T')"
+            sleep "$(( next - now > 0 ? next - now : 1 ))"
+
+            # Collect before running: a long job must not make the next one
+            # miss its own window.
+            now="$(date +%s)"
+            declare -a batch=()
+            for i in "${!JOB_AT[@]}"; do
+                due="$(date -d "today ${JOB_AT[$i]}" +%s)"
+                { [ "$due" -le "$now" ] && [ "$(( now - due ))" -lt 60 ]; } && batch+=("$i")
+            done
+            for i in ${batch[@]+"${batch[@]}"}; do run_job "$i"; done
+        done
+        ;;
+
     fs-watcher)
         wait_for_postgres
         wait_for_rabbit
