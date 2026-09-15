@@ -18,10 +18,11 @@
 import React from "react";
 import { Switch } from "@mantine/core";
 
-export function InputSwitch({ id, label, checked, disabled, onChange }: {
+export function InputSwitch({ id, label, checked, disabled, onChange, truncate }: {
     id: string;
     label?: string;
     checked: boolean;
+    truncate?: boolean;
     disabled?: boolean;
     onChange: (value: boolean) => void;
 }) {
@@ -35,10 +36,16 @@ export function InputSwitch({ id, label, checked, disabled, onChange }: {
             id={ id }
             key={ id }
             label={ label }
+            title={ truncate ? label : undefined }
             checked={ checked }
             disabled={ disabled }
             onChange={ handleOnChange }
             withThumbIndicator={ false }
+            classNames={ {
+                root: 'min-w-0 flex-1',
+                labelWrapper: 'min-w-0 flex-1 overflow-hidden',
+                label: 'truncate block'
+            } }
         />
     )
 }

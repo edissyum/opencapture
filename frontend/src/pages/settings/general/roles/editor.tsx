@@ -40,7 +40,7 @@ export function SettingsGeneralRoleEditor() {
 
     const { roleId } = useParams<{ roleId: any }>();
 
-    const privilegeClasses = 'flex items-center gap-2 border border-(--border-primary) rounded-md p-2 bg-(--bg-selected) truncate';
+    const privilegeClasses = 'flex items-center gap-2 border border-(--border-primary) rounded-md p-2 bg-(--bg-selected) overflow-hidden';
 
     const [role, setRole] = useState<any>({});
     const [roles, setRoles] = useState<any>([]);
@@ -99,7 +99,7 @@ export function SettingsGeneralRoleEditor() {
             .replace(/[\u0300-\u036f]/g, "")
             .toLowerCase()
             .replace(/\s+/g, '_')
-            .replace(/[^\w\-]+/g, '');
+            .replace(/[^\w-]+/g, '');
 
         setValue("label_short", newLabelShort);
     }, [watchLabel]);
@@ -345,7 +345,7 @@ export function SettingsGeneralRoleEditor() {
 
                 { privileges && Object.keys(privileges).length > 0 && (
                     <Accordion variant="separated" multiple
-                                      defaultValue={['general', 'administration', 'verifier', 'splitter', 'accounts']}
+                               defaultValue={ ['general', 'administration', 'verifier', 'splitter', 'accounts'] }
                     >
                         { getPrivilegesParent().map((parent: any) => (
                             <Accordion.Item key={ parent.name } value={ parent.id }>
@@ -363,6 +363,7 @@ export function SettingsGeneralRoleEditor() {
                                         { Object.values(privileges).filter((privilege: any) => privilege.parent === parent.id).map((privilege: any) => (
                                             <div key={ privilege.id } className={ privilegeClasses }>
                                                 <InputSwitch
+                                                    truncate={ true }
                                                     id={ privilege.label }
                                                     label={ t(`PRIVILEGES.${ privilege.label }`) }
                                                     checked={ rolePrivileges?.includes(privilege.label) }
