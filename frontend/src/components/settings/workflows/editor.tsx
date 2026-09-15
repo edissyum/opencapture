@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Stepper as StepperMantine } from "@mantine/core";
 
+import { toIdentifier } from "../../../services/strings";
 import { useCustom } from "../../../services/custom/customContext";
 import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
@@ -277,14 +278,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     useEffect(() => {
         if (!watchLabel || workflowId) return;
 
-        const newWorkflowId = watchLabel
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .replace(/\s+/g, '_')
-            .replace(/[^\w-]+/g, '');
-
-        detailsSetValue("workflow_id", newWorkflowId);
+        detailsSetValue("workflow_id", toIdentifier(watchLabel));
     }, [watchLabel]);
 
     // Remove space in workflowId

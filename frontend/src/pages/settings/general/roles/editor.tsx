@@ -30,6 +30,7 @@ import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
+import { toIdentifier } from "../../../../services/strings";
 import { useUser } from "../../../../services/hooks/useUser";
 import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
@@ -94,14 +95,7 @@ export function SettingsGeneralRoleEditor() {
     useEffect(() => {
         if (!watchLabel) return;
 
-        const newLabelShort = watchLabel
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .replace(/\s+/g, '_')
-            .replace(/[^\w-]+/g, '');
-
-        setValue("label_short", newLabelShort);
+        setValue("label_short", toIdentifier(watchLabel));
     }, [watchLabel]);
 
     // Remove spaces in label_short
