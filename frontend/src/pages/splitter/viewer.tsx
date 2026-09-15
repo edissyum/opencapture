@@ -50,7 +50,6 @@ import {
 } from "lucide-react";
 import {
     DndContext,
-    type DragEndEvent,
     type DragOverEvent,
     DragOverlay,
     type DragStartEvent,
@@ -236,14 +235,14 @@ export function SplitterViewerPage() {
         try {
             const response = await get(`/splitter/documents/${ batchId }`);
             if (response?.documents) {
-                let lines: any[] = [];
+                const lines: any[] = [];
                 const documentMetadata = formFields?.document_metadata;
                 if (documentMetadata) {
                     response.documents.forEach((doc: any) => {
                         doc.document_metadata = doc.data?.custom_fields;
                         if (doc.document_metadata) {
                             Object.values(documentMetadata).forEach((line: any) => {
-                                let linesFields: any[] = [];
+                                const linesFields: any[] = [];
                                 Object.values(line).forEach((field: any) => {
                                     if (field) {
                                         const fieldId = parseInt(field.id.replace('custom_', ''));
@@ -413,11 +412,11 @@ export function SplitterViewerPage() {
         if (loadingFormFields) return;
 
         if (formFields?.batch_metadata) {
-            let lines: any[] = [];
+            const lines: any[] = [];
             const batchMetadata = formFields.batch_metadata;
 
             Object.values(batchMetadata).forEach((line: any) => {
-                let linesFields: any[] = [];
+                const linesFields: any[] = [];
                 Object.values(line).forEach((field: any) => {
                     if (field) {
                         const fieldId = parseInt(field.id.replace('custom_', ''));
@@ -599,7 +598,7 @@ export function SplitterViewerPage() {
 
     };
 
-    const handleDragEnd = (_event: DragEndEvent) => {
+    const handleDragEnd = () => {
         setActiveDragItem(null);
         normalizeDisplayOrder(documents);
     };
@@ -917,7 +916,7 @@ export function SplitterViewerPage() {
 
     const getMetadaValuesForField = (field: any) => {
         const result: any = [];
-        let resultMask = field.result_mask;
+        const resultMask = field.result_mask;
         if (resultMask) {
             resultMask.split('#').map((part: string) => {
                 if (field.metadata_key !== part) {
@@ -1430,7 +1429,18 @@ export function SplitterViewerPage() {
                                                         { line.map((field: any) => (
                                                             <div key={ field.id }
                                                                  className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                                { field.type === 'date' ? (
+                                                                {console.log(field.type)}
+                                                                { field.metadata_key && metadata.length > 0 &&
+                                                                    <Select
+                                                                        id={ field.id }
+                                                                        label={ field.label }
+                                                                        disabled={ disabledBatch }
+                                                                        options={ getMetadaValuesForField(field) }
+                                                                        value={ batchMetadataValues[field.label_short] }
+                                                                        onChange={ (value) => handleUpdateBatchMetadataValues(field, value) }
+                                                                    />
+                                                                }
+                                                                { field.type === 'date' &&
                                                                     <ISOCalendar
                                                                         id={ field.id }
                                                                         key={ field.id }
@@ -1442,35 +1452,33 @@ export function SplitterViewerPage() {
                                                                             handleUpdateBatchMetadataValues(field, e)
                                                                         } }
                                                                     />
-                                                                ) : (
-                                                                    <div>
-                                                                        { field.metadata_key && metadata.length > 0 ? (
-                                                                            <Select
-                                                                                id={ field.id }
-                                                                                
-                                                                                label={ field.label }
-                                                                                className="w-full"
-                                                                                disabled={ disabledBatch }
-                                                                                options={ getMetadaValuesForField(field) }
-                                                                                value={ batchMetadataValues[field.label_short] }
-                                                                                onChange={ (value) => handleUpdateBatchMetadataValues(field, value) }
-                                                                            />
-                                                                        ) : (
-                                                                            <Input
-                                                                                id={ field.id }
-                                                                                key={ field.id }
-                                                                                type={ field.type }
-                                                                                label={ t(field.label) }
-                                                                                disabled={ disabledBatch }
-                                                                                required={ field.required }
-                                                                                value={ batchMetadataValues[field.label_short] }
-                                                                                onChange={ (e) => {
-                                                                                    handleUpdateBatchMetadataValues(field, e.target.value)
-                                                                                } }
-                                                                            />
-                                                                        ) }
-                                                                    </div>
-                                                                )
+                                                                }
+                                                                { field.type === 'text' &&
+                                                                    <Input
+                                                                        id={ field.id }
+                                                                        key={ field.id }
+                                                                        type={ field.type }
+                                                                        label={ t(field.label) }
+                                                                        disabled={ disabledBatch }
+                                                                        required={ field.required }
+                                                                        value={ batchMetadataValues[field.label_short] }
+                                                                        onChange={ (e) => {
+                                                                            handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                        } }
+                                                                    />
+                                                                }
+                                                                { field.type === 'select' &&
+                                                                    <Select
+                                                                        id={ field.id }
+                                                                        label={ t(field.label) }
+                                                                        disabled={ disabledBatch }
+                                                                        required={ field.required }
+                                                                        options={ field.settings?.options.map((option: any) => ({ label: t(option.label), value: option.id })) }
+                                                                        value={ batchMetadataValues[field.label_short] }
+                                                                        onChange={ (value) => {
+                                                                            handleUpdateBatchMetadataValues(field, value)
+                                                                        } }
+                                                                    />
                                                                 }
                                                             </div>
                                                         )) }
