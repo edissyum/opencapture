@@ -1427,9 +1427,7 @@ export function SplitterViewerPage() {
                                                 { batchMetadata.map((line: any, index: number) => (
                                                     <div key={ index } className='flex gap-4'>
                                                         { line.map((field: any) => (
-                                                            <div key={ field.id }
-                                                                 className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                                {console.log(field.type)}
+                                                            <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                                 { field.metadata_key && metadata.length > 0 &&
                                                                     <Select
                                                                         id={ field.id }
