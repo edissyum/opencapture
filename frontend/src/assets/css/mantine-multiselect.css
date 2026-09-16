@@ -20,6 +20,10 @@
     @apply text-base;
 }
 
+.mantine-MultiSelect-inputField:disabled {
+    @apply bg-transparent!;
+}
+
 .mantine-MultiSelect-input:focus-within,
 .mantine-MultiSelect-input:hover:not([data-disabled]) {
     @apply border-(--color-primary);

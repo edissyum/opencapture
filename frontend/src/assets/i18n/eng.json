@@ -791,11 +791,11 @@
         "create_success": "User created successfully",
         "export": "Export users",
         "import": "Import users",
-        "export_failed": "",
-        "export_success": "",
-        "export_users": "",
-        "import_success": "",
-        "import_users": ""
+        "export_failed": "Error exporting users",
+        "export_success": "Users exported successfully",
+        "export_users": "Export users",
+        "import_success": "Users imported successfully",
+        "import_users": "Import users"
     },
     "VERIFIER": {
         "creation_date": "Creation date",
