@@ -183,7 +183,16 @@ export function SplitterListPage() {
             header: t('VERIFIER.creation_date'),
             field: 'batch_date'
         },
-        { id: 'form_label', header: t('VERIFIER.form'), field: 'form_label' },
+        {
+            id: 'form_label',
+            className: 'w-3/12',
+            header: t('VERIFIER.form'),
+            body: (item: any) => (
+                <span title={ item.form_label }>
+                    { item.form_label }
+                </span>
+            )
+        },
         {
             id: 'nb_pages',
             header: '',
