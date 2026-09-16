@@ -63,7 +63,7 @@ export function SettingsGeneralMailcollect() {
     const handleRename = () => {
         if (!selectedProcess) return;
 
-        let newName = selectedProcess.name + '_bis';
+        const newName = selectedProcess.name + '_bis';
         showConfirmDialogWithInput({
             value: newName,
             title: t('MAILCOLLECT.rename_process'),
@@ -111,7 +111,7 @@ export function SettingsGeneralMailcollect() {
     const handleDuplicate = () => {
         if (!selectedProcess) return;
 
-        let newName = selectedProcess.name + '_bis';
+        const newName = selectedProcess.name + '_bis';
         showConfirmDialogWithInput({
             value: newName,
             title: t('MAILCOLLECT.duplicate_process'),
@@ -120,7 +120,7 @@ export function SettingsGeneralMailcollect() {
             confirmText: t('MAILCOLLECT.duplicate'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: (value) => {
-                let newProcess = { ...selectedProcess };
+                const newProcess = { ...selectedProcess };
                 newProcess.name = value;
                 delete newProcess.id;
 
@@ -186,7 +186,7 @@ export function SettingsGeneralMailcollect() {
             confirmText: t('MAILCOLLECT.create'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: (value) => {
-                let newProcess = {
+                const newProcess = {
                     id: null,
                     name: value,
                     method: 'imap',
@@ -290,10 +290,12 @@ export function SettingsGeneralMailcollect() {
                                     { process.name }
                                 </AccordionMantine.Control>
                                 <InputSwitch
+                                    id={ 'enable_' + idx }
+                                    checked={ process.enabled }
                                     data-tooltip-id="tooltip"
                                     data-tooltip-content={ process.enabled ? t('MAILCOLLECT.disable_process') : t('MAILCOLLECT.enable_process') }
-                                    id={ 'enable_' + idx } checked={ process.enabled }
-                                    onChange={ () => handleToggleEnableProcess(process) }/>
+                                    onChange={ () => handleToggleEnableProcess(process) }
+                                />
                                 <Menu position="bottom-end" withinPortal>
                                     <Menu.Target>
                                         <ActionIcon
