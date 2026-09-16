@@ -48,7 +48,7 @@ esac
 
 # Validation du login : plus permissive que l'id (le tiret est admis, d'où
 # <id>-01), mais ni ':' (séparateur de champ de ftpd.passwd) ni tiret/point en
-# tête (option confondante côté ftpasswd, entrée piégeuse côté authorized_keys).
+# tête.
 case "$user" in
     -*|.*|*[!a-zA-Z0-9_.-]*)
         echo "Login invalide : '$user' — lettres/chiffres/_/-/. uniquement, sans '-' ni '.' en tête" >&2
