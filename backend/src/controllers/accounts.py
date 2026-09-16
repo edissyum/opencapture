@@ -91,9 +91,12 @@ def get_suppliers(_args):
     return response, 200
 
 
-def get_supplier_by_id(supplier_id):
-    select = ["id", "name, lastname, vat_number, siret, siren, iban, duns, email, phone, address_id, "
-              "skip_auto_validate", "document_lang"]
+def get_supplier_by_id(supplier_id, full=True):
+    select = ['*']
+    if not full:
+        select = ["id", "name, lastname, vat_number, siret, siren, iban, duns, email, phone, address_id, "
+                  "skip_auto_validate", "document_lang"]
+
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id, 'select': select})
 
     if error is None:

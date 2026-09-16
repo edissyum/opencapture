@@ -259,7 +259,7 @@ export function VerifierViewerPage() {
         try {
             const idToUse = supplierId ? supplierId : documentData.supplier_id;
 
-            const response = await get(`accounts/suppliers/getById/${ idToUse }`);
+            const response = await get(`accounts/suppliers/getById/${ idToUse }?full=false`);
             if (!response) return;
 
             const addressResponse = await get(`accounts/getAdressById/${ response.address_id }`);
