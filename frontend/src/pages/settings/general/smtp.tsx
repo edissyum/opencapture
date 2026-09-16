@@ -324,6 +324,7 @@ export function SettingsGeneralSMTP() {
                                                 { ...field }
                                                 className='w-1/2'
                                                 autoComplete='new-mail'
+                                                disabled={ !smtpNotifOnError }
                                                 label={ t("SMTP.from_mail") }
                                                 error={ errors.smtpFromMail?.message }
                                             />
@@ -337,6 +338,7 @@ export function SettingsGeneralSMTP() {
                                                 { ...field }
                                                 className='w-1/2'
                                                 autoComplete='new-mail'
+                                                disabled={ !smtpNotifOnError }
                                                 label={ t("SMTP.destination_admin_mail") }
                                                 error={ errors.smtpDestAdminMail?.message }
                                             />
