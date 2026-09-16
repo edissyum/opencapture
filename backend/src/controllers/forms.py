@@ -18,8 +18,9 @@
 
 import json
 from flask import request
-from ..controllers import user
 from flask_babel import gettext
+
+from ..controllers import user, doctypes
 from ..models import forms, accounts, verifier, history
 
 
@@ -266,8 +267,8 @@ def duplicate_form(form_id, module):
         args = {
             'label': new_label,
             'default_form': False,
-            'outputs': form_info['outputs'],
             'module': form_info['module'],
+            'outputs': form_info['outputs'],
             'settings': json.dumps(form_info['settings'])
         }
         res, error = forms.create_form(args)
@@ -277,6 +278,9 @@ def duplicate_form(form_id, module):
                 forms.add_form_fields(res)
                 if 'fields' in fields['form_fields'] and fields['form_fields']['fields']:
                     update_fields({'data': fields['form_fields']['fields'], 'form_id': res})
+
+                if form_info['module'] == 'splitter':
+                    doctypes.clone_form_doctypes(form_id, res)
 
                 history.add_history({
                     'module': module,

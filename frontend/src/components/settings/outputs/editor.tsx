@@ -18,7 +18,7 @@ import { z } from "zod";
 import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Editor } from "@monaco-editor/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Scroller, Tabs, Stepper } from "@mantine/core";
@@ -69,6 +69,8 @@ export function OutputEditor({ module }: { module: string }) {
     const [, setAllowedPath] = useState('');
 
     const { customFields } = useCustomFields(module);
+
+    const saveActionRef = useRef<() => void>(() => {});
 
     let availableSystemFields;
 
@@ -449,6 +451,10 @@ export function OutputEditor({ module }: { module: string }) {
         }
     }
 
+    useEffect(() => {
+        saveActionRef.current = outputType?.output_type_id === 'export_mem' ? handleNextStep : handleSubmit;
+    });
+
     if (loading) return <Loader/>;
 
     return (
@@ -506,13 +512,18 @@ export function OutputEditor({ module }: { module: string }) {
                                                             defaultLanguage={ codeType }
                                                             defaultValue={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                             options={ {
+                                                                contextmenu: true,
                                                                 stickyScroll: {
                                                                     enabled: false
-                                                                },
-                                                                contextmenu: true
+                                                                }
                                                             } }
                                                             onChange={ (value) => {
                                                                 handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                            } }
+                                                            onMount={ (editorInstance, monaco) => {
+                                                                editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                                                    saveActionRef.current();
+                                                                });
                                                             } }
                                                             theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                                                         />
@@ -531,12 +542,16 @@ export function OutputEditor({ module }: { module: string }) {
                                             ) }
                                             { option.type === 'text' && !option.webservice && (
                                                 <Input
-                                                    id={ option.id } type={ option.type } name={ option.id }
-                                                    label={ option.label } hint={ option.hint }
+                                                    id={ option.id }
+                                                    name={ option.id }
+                                                    type={ option.type }
+                                                    hint={ option.hint }
+                                                    label={ option.label }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (e) => {
                                                         handleSpecificLinksChange(e, option, 'parameters')
-                                                    } }/>
+                                                    } }
+                                                />
                                             ) }
                                         </div>
                                     )) }

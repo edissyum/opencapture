@@ -30,15 +30,6 @@ from src.functions import retrieve_config_from_custom_id
 from src.main import launch as launch_verifier, create_classes_from_custom_id, create_database_class
 
 
-def str2bool(value):
-    """
-    Function to convert string to boolean
-
-    :return: Boolean
-    """
-    return value.lower() in "true"
-
-
 def check_folders(folder_crawl, folder_dest=False):
     """
     Check if IMAP folder exist

@@ -113,16 +113,15 @@ const Input: React.FC<InputProps> = ({
                         </>
                     ) }
 
-                    { /*@ts-ignore*/ }
                     <input
                         id={ id }
                         ref={ inputRef }
+                        type={ inputType }
                         className={ `border-0! w-full! px-3! py-2! focus:outline-none! ${ height }` }
                         style={ {
                             fontWeight: `${ textWeight ? textWeight : '400' }`,
                             color: `${ textColor ? `var(--${ textColor })` : 'var(--text-primary)' }`
                         } }
-                        type={ inputType }
                         disabled={ disabled }
                         required={ required }
                         aria-required={ required }

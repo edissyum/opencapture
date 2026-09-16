@@ -41,11 +41,11 @@ export function InputSwitch({ id, label, checked, disabled, onChange, truncate }
             disabled={ disabled }
             onChange={ handleOnChange }
             withThumbIndicator={ false }
-            classNames={ {
+            classNames={ truncate ? {
                 root: 'min-w-0 flex-1',
-                labelWrapper: 'min-w-0 flex-1 overflow-hidden',
-                label: 'truncate block'
-            } }
+                label: 'truncate block',
+                labelWrapper: 'min-w-0 flex-1 overflow-hidden'
+            } : undefined }
         />
     )
 }

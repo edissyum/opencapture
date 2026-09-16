@@ -20,13 +20,13 @@ export const primaryColor = '#19864B';
 
 export const mantineCssVariablesResolver: CSSVariablesResolver = () => ({
     variables: {
-        '--mantine-color-text': 'var(--text-primary)',
         '--mantine-color-body': 'var(--bg-primary)',
+        '--mantine-color-text': 'var(--text-primary)',
         '--mantine-color-dimmed': 'var(--text-secondary)',
         '--mantine-color-placeholder': 'var(--text-secondary)'
     },
-    light: {},
     dark: {},
+    light: {}
 });
 
 export const mantineTheme: MantineThemeOverride = {
@@ -67,7 +67,12 @@ export const mantineTheme: MantineThemeOverride = {
         Switch: {
             defaultProps: {
                 color: primaryColor
-            }
+            },
+            vars: () => ({
+                root: {
+                    '--switch-track-label-padding': '0.2rem'
+                }
+            })
         }
     }
 };

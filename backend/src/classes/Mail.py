@@ -519,15 +519,6 @@ class Mail:
             pass
 
 
-def str2bool(value):
-    """
-    Function to convert string to boolean
-
-    :return: Boolean
-    """
-    return value.lower() in "true"
-
-
 def sanitize_filename(s):
     def safe_char(c):
         if c.isalnum():

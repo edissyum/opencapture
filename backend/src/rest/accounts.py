@@ -19,9 +19,11 @@ import os
 import base64
 import mimetypes
 from flask_babel import gettext
+from flask import Blueprint, request, make_response, jsonify
+
+from ..main import str2bool
 from ..helpers import get_context_var
 from ..functions import rest_validator
-from flask import Blueprint, request, make_response, jsonify
 from ..controllers import auth, accounts, verifier, privileges
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
@@ -85,6 +87,10 @@ def get_supplier_by_id(supplier_id):
           in: path
           type: integer
           required: true
+        - name: full
+          in: query
+          type: boolean
+          required: false
     responses:
         200:
             description: Third party account
@@ -95,7 +101,16 @@ def get_supplier_by_id(supplier_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/getById/{supplier_id}'}), 403
 
-    supplier = accounts.get_supplier_by_id(supplier_id)
+    check, message = rest_validator(request.args, [
+        {'id': 'full', 'type': bool, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    supplier = accounts.get_supplier_by_id(supplier_id, str2bool(request.args.get('full', 'true')))
     return make_response(jsonify(supplier[0])), supplier[1]
 
 
@@ -162,8 +177,7 @@ def update_supplier(supplier_id):
             "message": message
         }, 400)
 
-    data = request.json
-    res = accounts.update_supplier(supplier_id, data)
+    res = accounts.update_supplier(supplier_id, request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

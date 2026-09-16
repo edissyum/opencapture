@@ -256,6 +256,11 @@ export function SettingsVerifierAiLLMEditor() {
         setTimeout(() => setDataCopied(false), 2000);
     }
 
+    const saveActionRef = useRef<() => void>(() => {});
+    useEffect(() => {
+        saveActionRef.current = handleSubmit(handleUpdate);
+    });
+
     return (
         <div className="h-full overflow-y-auto">
             <div className='p-6 pb-0 flex flex-col gap-6'>
@@ -277,8 +282,9 @@ export function SettingsVerifierAiLLMEditor() {
                             <div key={ provider.name }
                                  onClick={ () => setSelectedProvider(provider.name) }
                                  className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
-                             rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
-                             ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--color-primary)' : '' } ` }>
+                                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
+                                              ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--color-primary)' : '' } ` }
+                            >
                                 { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-7'/> }
                                 <p className='text-lg font-semibold'>{ provider.label }</p>
                             </div>
@@ -335,8 +341,8 @@ export function SettingsVerifierAiLLMEditor() {
                 <div className="relative">
                     <Editor
                         height='50vh'
-                        defaultLanguage={ 'json' }
                         value={ aiLLMJson }
+                        defaultLanguage={ 'json' }
                         className='border border-(--border-secondary) rounded-md p-2'
                         options={ {
                             stickyScroll: {
@@ -347,11 +353,14 @@ export function SettingsVerifierAiLLMEditor() {
                         } }
                         onChange={ (value: any) => setAiLLMJson(value) }
                         theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                        onMount={ (editorInstance, monaco) => {
+                            editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                saveActionRef.current();
+                            });
+                        } }
                     />
-                    <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
-                                                        text-(--text-secondary)` }
-                    >
+                    <label className='absolute left-3 select-none pointer-events-none transition-all duration-150 top-0
+                                      -translate-y-1/2 px-1 text-xs bg-(--bg-primary) text-(--text-secondary)'>
                         { t('AI-LLM.json_content') } <span className="text-(--text-error)">*</span>
                     </label>
                 </div>

@@ -113,6 +113,8 @@ class SMTP:
         msg['To'] = self.dest_mail
         if self.from_mail:
             msg['From'] = self.from_mail
+        elif self.login:
+            msg['From'] = self.login
         else:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
@@ -158,6 +160,8 @@ class SMTP:
         msg['To'] = self.dest_mail
         if self.from_mail:
             msg['From'] = self.from_mail
+        elif self.login:
+            msg['From'] = self.login
         else:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
@@ -195,6 +199,8 @@ class SMTP:
         msg['To'] = dest
         if self.from_mail:
             msg['From'] = self.from_mail
+        elif self.login:
+            msg['From'] = self.login
         else:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
@@ -222,6 +228,8 @@ class SMTP:
         msg['To'] = dest
         if self.from_mail:
             msg['From'] = self.from_mail
+        elif self.login:
+            msg['From'] = self.login
         else:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
@@ -242,6 +250,8 @@ class SMTP:
         msg['To'] = dest
         if self.from_mail:
             msg['From'] = self.from_mail
+        elif self.login:
+            msg['From'] = self.login
         else:
             msg['From'] = 'MailCollect@OpenCapture.com'
 

@@ -172,6 +172,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
         'data': [src_form_id, 'DEL']
     }
     src_form_doctypes, error = doctypes.retrieve_doctypes(args)
+
     args = {
         'select': ["SPLIT_PART(code, '-', 2)::INTEGER AS index"],
         'where': ['form_id = %s'],
@@ -179,7 +180,6 @@ def clone_form_doctypes(src_form_id, dest_form_id):
         'order_by': ["SPLIT_PART(code, '-', 2)::INTEGER DESC"],
         'limit': '1'
     }
-
     dest_last_code, error = doctypes.retrieve_doctypes(args)
     if error:
         response = {
