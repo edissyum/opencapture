@@ -846,7 +846,14 @@
         "user_quota_number": "Límite del número de usuarios",
         "user_quota_email_dest": "Destinatario de las notificaciones de superación de cuota",
         "user_quota_updated": "Cuota de usuario actualizada con éxito",
-        "create_success": "Usuario creado con éxito"
+        "create_success": "Usuario creado con éxito",
+        "export": "Exportar usuarios",
+        "import": "Importar usuarios",
+        "export_failed": "",
+        "export_success": "",
+        "export_users": "",
+        "import_success": "",
+        "import_users": ""
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",

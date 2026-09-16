@@ -846,7 +846,14 @@
         "user_quota_number": "Limite du nombre d'utilisateurs",
         "user_quota_email_dest": "Destinataire des notifications de dépassement de quota",
         "user_quota_updated": "Quota utilisateur mis à jour avec succès",
-        "create_success": "Utilisateur créé avec succès"
+        "create_success": "Utilisateur créé avec succès",
+        "export": "Exporter les utilisateurs",
+        "import": "Importer des utilisateurs",
+        "export_failed": "Erreur lors de l'exportation des utilisateurs",
+        "export_success": "Utilisateurs exportés avec succès",
+        "export_users": "Exporter les utilisateurs",
+        "import_success": "Utilisateurs importés avec succès",
+        "import_users": "Importer des utilisateurs"
     },
     "VERIFIER": {
         "creation_date": "Date de création",

@@ -268,7 +268,7 @@ def export_users():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'users_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/users/export'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'columns', 'type': list, 'mandatory': True},
         {'id': 'delimiter', 'type': str, 'mandatory': True},
         {'id': 'extension', 'type': str, 'mandatory': True}
@@ -280,7 +280,7 @@ def export_users():
             "message": message
         }, 400)
 
-    res = user.export_users(request.json['args'])
+    res = user.export_users(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

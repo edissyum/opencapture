@@ -115,7 +115,7 @@ function DoctypeNode({
     );
 }
 
-function SortableFieldItem({ field, lastField, onRemove }: {
+export function SortableFieldItem({ field, lastField, onRemove }: {
     field: any,
     lastField: boolean,
     onRemove?: (field: any) => void
@@ -216,7 +216,7 @@ export function DoctypesTree({
         }
     ];
 
-    const [format, _] = useState("CSV");
+    const [format] = useState("CSV");
     const [delimiter, setDelimiter] = useState(delimiterOptions[2].value);
 
     const availableFields = [
