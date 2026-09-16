@@ -17,7 +17,20 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, CirclePause, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import {
+    ArrowRight,
+    ArrowRightToLine,
+    CirclePause,
+    Download,
+    FileText,
+    Plus,
+    Sheet,
+    Trash2,
+    Upload,
+    UserRoundPlus
+} from "lucide-react";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 
 import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
@@ -26,9 +39,11 @@ import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Table } from "../../../../components/list/Table";
 import { showToast } from "../../../../components/ToastProvider";
+import { ImportSpreadSheet } from "../../../../components/settings/ImportSpreadSheet";
+import { SortableFieldItem } from "../../../../components/settings/doctypes/doctypesTree";
 
 export function SettingsGeneralUsers() {
-    const { get, put, del } = AxiosApiCall();
+    const { get, put, post, del } = AxiosApiCall();
 
     const navigate = useNavigate();
 
@@ -44,6 +59,51 @@ export function SettingsGeneralUsers() {
         sortField: null as string | null,
         sortOrder: null as 1 | -1 | null
     });
+
+    const [loadingExport, setLoadingExport] = useState(false);
+    const [loadingImport, setLoadingImport] = useState(false);
+    const [showExportDialog, setShowExportDialog] = useState(false);
+    const [showImportDialog, setShowImportDialog] = useState(false);
+
+    const availableFields = [
+        { label: t('USERS.username'), id: 'username', selected: true },
+        { label: t('ACCOUNTS.lastname'), id: 'lastname', selected: true },
+        { label: t('ACCOUNTS.firstname'), id: 'firstname', selected: true },
+        { label: t('ACCOUNTS.email'), id: 'email', selected: true },
+        { label: t('USERS.role'), id: 'role', selected: true }
+    ];
+
+    const [unselectedFields, setUnselectedFields] = useState<any[]>(
+        availableFields.filter(f => !f.selected)
+    );
+
+    const [selectedFields, setSelectedFields] = useState<any[]>(
+        availableFields.filter(f => f.selected)
+    );
+
+    const sensors = useSensors(useSensor(PointerSensor));
+    const handleDragEnd = (event: any) => {
+        const { active, over } = event;
+
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = selectedFields.findIndex(f => f.id === active.id);
+        const newIndex = selectedFields.findIndex(f => f.id === over.id);
+
+        setSelectedFields(arrayMove(selectedFields, oldIndex, newIndex));
+    };
+    const delimiterOptions = [
+        { label: t("DOCTYPES.tab"), value: "TAB", icon: <ArrowRightToLine size={ 16 }/> },
+        { label: t("DOCTYPES.comma"), value: "COMMA", icon: <span style={ { transform: "translateY(2px)" } }>,</span> },
+        {
+            label: t("DOCTYPES.semicolon"),
+            value: "SEMICOLON",
+            icon: <span style={ { transform: "translateY(2px)" } }>;</span>
+        }
+    ];
+
+    const [format] = useState("CSV");
+    const [delimiter, setDelimiter] = useState(delimiterOptions[2].value);
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true, className: 'w-16' },
@@ -236,8 +296,167 @@ export function SettingsGeneralUsers() {
         }
     }
 
+    const handleRemoveField = (field: any) => {
+        setSelectedFields(prev => prev.filter(f => f.id !== field.id));
+        setUnselectedFields(prev => [...prev, { ...field, selected: false }]);
+    }
+
+    const exportUsers = async () => {
+        setLoadingExport(true);
+
+        try {
+            const payload = {
+                extension: format,
+                delimiter: delimiter,
+                columns: selectedFields
+            };
+
+            const response = await post(`/users/export`, payload);
+            if (!response.encoded_file) {
+                showToast(t('USERS.export_failed'), 'error');
+                return;
+            }
+
+            const binary = atob(response.encoded_file);
+            const bytes = new Uint8Array(binary.length);
+
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+
+            const blob = new Blob([bytes], { type: "text/csv;charset=utf-8" });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `users.${ format.toLowerCase() }`;
+            link.click();
+            window.URL.revokeObjectURL(url);
+
+            showToast(t('USERS.export_success'), 'success');
+        } catch (error) {
+            console.error("Error exporting users :", error);
+        } finally {
+            setLoadingExport(false);
+        }
+    }
+
+    const importUsers = async (formData: any) => {
+        if (!formData) return;
+
+        setLoadingImport(true);
+
+        await post('/users/csv/import', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+
+        setLoadingImport(false);
+        setShowImportDialog(false);
+        showToast(t('USERS.import_success'), 'success');
+        navigate(0);
+        return;
+    }
+
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
+            { showExportDialog && (
+                <>
+                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                         onClick={ () => setShowExportDialog(false) }/>
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-y-auto
+                                                h-fit max-h-screen border border-(--border-secondary)
+                                                rounded-lg bg-(--bg-primary) flex flex-col">
+                        <div className='flex flex-col p-6 gap-4'>
+                            <h2>
+                                { t('USERS.export_users') }
+                            </h2>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-(--text-secondary) font-semibold'>
+                                    { t('DOCTYPES.format') }
+                                </p>
+                                <div className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                                  ${ format === "CSV" ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
+                                                  rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
+                                    <Sheet/>
+                                    <p className='text-md font-semibold min-w-32'>CSV</p>
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-(--text-secondary) font-semibold'>
+                                    { t('DOCTYPES.delimiter') }
+                                </p>
+                                <div className='flex gap-4'>
+                                    { delimiterOptions.map(opt => (
+                                        <div key={ opt.value } onClick={ () => setDelimiter(opt.value) }
+                                             className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                                    ${ delimiter === opt.value ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
+                                                    rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
+                                            { opt.icon }
+                                            <p className='text-md font-semibold min-w-32'>{ opt.label }</p>
+                                        </div>
+                                    )) }
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-(--text-secondary) font-semibold'>
+                                    { t('DOCTYPES.fields_to_export') }
+                                </p>
+                                <>
+                                    <DndContext sensors={ sensors } collisionDetection={ closestCenter }
+                                                onDragEnd={ handleDragEnd }>
+                                        <SortableContext
+                                            items={ selectedFields.map(f => f.id) }
+                                            strategy={ verticalListSortingStrategy }
+                                        >
+                                            <div
+                                                className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
+                                                { selectedFields.map(field => (
+                                                    <SortableFieldItem key={ field.id } field={ field }
+                                                                       lastField={ field.id === selectedFields[selectedFields.length - 1].id }
+                                                                       onRemove={ () => handleRemoveField(field) }/>
+                                                )) }
+                                            </div>
+                                        </SortableContext>
+                                    </DndContext>
+                                </>
+                                <div className='flex gap-4 mt-2'>
+                                    { unselectedFields.map(field => (
+                                        <div key={ field.id } onClick={ () => {
+                                            setUnselectedFields(prev => prev.filter(f => f.id !== field.id));
+                                            setSelectedFields(prev => [...prev, { ...field, selected: true }]);
+                                        } }
+                                             className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                                    rounded-md px-2 py-1 cursor-pointer flex items-center text-center justify-center gap-2` }>
+                                            { field.label }
+                                            <Plus size={ 16 }/>
+                                        </div>
+                                    )) }
+                                </div>
+                            </div>
+                            <div className='mt-4 flex justify-end w-full gap-4'>
+                                <Button variant={ "no_bg" } onClick={ () => setShowExportDialog(false) }>
+                                    { t('GLOBAL.cancel') }
+                                </Button>
+                                <Button onClick={ () => exportUsers() }>
+                                    { loadingExport ? t('DOCTYPES.exporting') : t('USERS.export_users') }
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            ) }
+
+            { showImportDialog && (
+                <ImportSpreadSheet
+                    loading={ loadingImport }
+                    onValidate={ importUsers }
+                    title={ t('USERS.import_users') }
+                    onClose={ () => setShowImportDialog(false) }
+                    columns={ ['username', 'lastname', 'firstname', 'mail', 'role'] }
+                />
+            ) }
+
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -248,14 +467,28 @@ export function SettingsGeneralUsers() {
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
                        value={ searchTerm } placeholder={ t('GLOBAL.search') }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
-                <span className='ml-auto text-(--text-secondary) cursor-pointer'>
+                <span className='flex gap-2 ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size='sm'
                         variant="bg_white"
-                        className='p-2 px-3 border'
-                        onClick={ () => navigate('/settings/general/users/create') }>
+                        className='px-3 border'
+                        onClick={ () => navigate('/settings/general/users/create') }
+                    >
                         <UserRoundPlus size={ 16 }/> { t('USERS.add_user') }
                     </Button>
+                    <div className="actionsButton ml-auto">
+                        <span className="rounded-l-md bg-(--bg-primary) border"
+                              onClick={ () => setShowImportDialog(true) }
+                              data-tooltip-id='tooltip' data-tooltip-content={ t('USERS.import') }>
+                            <Download size={ 16 }/>
+                        </span>
+
+                        <span className="rounded-r-md bg-(--bg-primary) border border-l-0"
+                              onClick={ () => setShowExportDialog(true) }
+                              data-tooltip-id='tooltip' data-tooltip-content={ t('USERS.export') }>
+                            <Upload size={ 16 }/>
+                        </span>
+                    </div>
                 </span>
             </div>
             <Table
@@ -273,11 +506,11 @@ export function SettingsGeneralUsers() {
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalUsers || 0 }
                 rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                    { "value": 4, "label": "4" },
+                    { "value": 8, "label": "8" },
+                    { "value": 16, "label": "16" },
+                    { "value": 32, "label": "32" }
+                ] }
                 emptyMessage={ t("USERS.no_user") }
                 paginatorLeftText={ t('USERS.selected', { count: selectedUsers.length }) }
                 onLazyParamsChange={ setLazyParams }
