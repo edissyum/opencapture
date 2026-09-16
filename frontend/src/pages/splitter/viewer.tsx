@@ -507,7 +507,6 @@ export function SplitterViewerPage() {
 
         fetchReferential().then();
         fetchWorkflowDetails().then();
-        fetchWorkflowDetails().then();
     }, [batchMetadata])
 
     // Disable loading when batch and documents are loaded
