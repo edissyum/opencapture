@@ -719,3 +719,6 @@ ALTER TABLE mailcollect ADD COLUMN "recipient_custom_id" INTEGER DEFAULT NULL;
 
 -- Nettoyage des paramètres non utilisés dans les formulaires
 UPDATE form_models SET settings = settings - 'display' WHERE settings ? 'display';
+
+-- Changement du type de la colonne label pour les doctype avec des très grand libellé
+ALTER TABLE doctypes ALTER COLUMN label TYPE TEXT;

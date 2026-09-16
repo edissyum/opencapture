@@ -327,7 +327,7 @@ CREATE TABLE "splitter_pages" (
 CREATE TABLE "doctypes" (
     "id"         SERIAL         UNIQUE PRIMARY KEY,
     "key"        VARCHAR(255)   NOT NULL,
-    "label"      VARCHAR(255),
+    "label"      TEXT,
     "code"       VARCHAR(255),
     "is_default" BOOLEAN        DEFAULT False,
     "status"     VARCHAR(20)    DEFAULT 'OK',
