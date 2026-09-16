@@ -354,6 +354,8 @@ export function SettingsGeneralUsers() {
         setLoadingImport(false);
         setShowImportDialog(false);
         showToast(t('USERS.import_success'), 'success');
+        navigate(0);
+        return;
     }
 
     return (
