@@ -85,7 +85,7 @@ import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 import { b64ToFile } from "../settings/general/customization";
 
 export function SplitterViewerPage() {
-    const { get, post, del } = AxiosApiCall();
+    const { get, post, del, put } = AxiosApiCall();
     const navigate = useNavigate();
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);
@@ -951,7 +951,7 @@ export function SplitterViewerPage() {
             onConfirm: async () => {
                 setLoading(true);
                 try {
-                    await post('/splitter/changeForm', { 'batchId': batchId, formId: value });
+                    await put('/splitter/changeForm', { 'batchId': batchId, formId: value });
                     showToast(t('SPLITTER.form_changed'), 'success');
                     setTimeout(() => {
                         navigate(0);
@@ -1291,16 +1291,17 @@ export function SplitterViewerPage() {
                         </div>
 
                         { enableAttachments && (
-                            <div className={ `${ (documents.length === 0 || documents.length > 1) && 'cursor-not-allowed!' }` }
-                                 data-tooltip-id="tooltip"
-                                 data-tooltip-content={ (documents.length === 0 || documents.length > 1) ? t('SPLITTER.one_document') : '' }
+                            <div
+                                className={ `${ (documents.length === 0 || documents.length > 1) && 'cursor-not-allowed!' }` }
+                                data-tooltip-id="tooltip"
+                                data-tooltip-content={ (documents.length === 0 || documents.length > 1) ? t('SPLITTER.one_document') : '' }
                             >
                                 <div className={
-                                    `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                         `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                 border border-(--border-secondary) hover:border-(--border-primary)
                                 hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
                                     ${ (documents.length === 0 || documents.length > 1) && 'opacity-50 pointer-events-none' }`
-                                }
+                                     }
                                      onClick={ () => {
                                          setShowBatches(false);
                                          setShowAttachments(true);
@@ -1400,10 +1401,10 @@ export function SplitterViewerPage() {
                                             <span>{ pagesCount }</span>&nbsp;
                                             { t('SPLITTER.pages', { count: pagesCount }) }
                                         </span>
-                                        <span className='flex items-center'>
+                                            <span className='flex items-center'>
                                             <FileStack size={ 16 }/>&nbsp;
-                                            <span>{ documents.length }</span>&nbsp;
-                                            { t('SPLITTER.documents', { count: documents.length }) }
+                                                <span>{ documents.length }</span>&nbsp;
+                                                { t('SPLITTER.documents', { count: documents.length }) }
                                         </span>
                                         </div>
 
@@ -1426,8 +1427,9 @@ export function SplitterViewerPage() {
                                                 { batchMetadata.map((line: any, index: number) => (
                                                     <div key={ index } className='flex gap-4'>
                                                         { line.map((field: any) => (
-                                                            <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                                { field.metadata_key && metadata.length > 0 &&
+                                                            <div key={ field.id }
+                                                                 className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                { field.metadata_key && metadata.length > 0 ? (
                                                                     <Select
                                                                         id={ field.id }
                                                                         label={ field.label }
@@ -1436,47 +1438,53 @@ export function SplitterViewerPage() {
                                                                         value={ batchMetadataValues[field.label_short] }
                                                                         onChange={ (value) => handleUpdateBatchMetadataValues(field, value) }
                                                                     />
-                                                                }
-                                                                { field.type === 'date' &&
-                                                                    <ISOCalendar
-                                                                        id={ field.id }
-                                                                        key={ field.id }
-                                                                        label={ t(field.label) }
-                                                                        disabled={ disabledBatch }
-                                                                        required={ field.required }
-                                                                        value={ batchMetadataValues[field.label_short] }
-                                                                        onChange={ (e) => {
-                                                                            handleUpdateBatchMetadataValues(field, e)
-                                                                        } }
-                                                                    />
-                                                                }
-                                                                { field.type === 'text' &&
-                                                                    <Input
-                                                                        id={ field.id }
-                                                                        key={ field.id }
-                                                                        type={ field.type }
-                                                                        label={ t(field.label) }
-                                                                        disabled={ disabledBatch }
-                                                                        required={ field.required }
-                                                                        value={ batchMetadataValues[field.label_short] }
-                                                                        onChange={ (e) => {
-                                                                            handleUpdateBatchMetadataValues(field, e.target.value)
-                                                                        } }
-                                                                    />
-                                                                }
-                                                                { field.type === 'select' &&
-                                                                    <Select
-                                                                        id={ field.id }
-                                                                        label={ t(field.label) }
-                                                                        disabled={ disabledBatch }
-                                                                        required={ field.required }
-                                                                        options={ field.settings?.options.map((option: any) => ({ label: t(option.label), value: option.id })) }
-                                                                        value={ batchMetadataValues[field.label_short] }
-                                                                        onChange={ (value) => {
-                                                                            handleUpdateBatchMetadataValues(field, value)
-                                                                        } }
-                                                                    />
-                                                                }
+                                                                ) : (
+                                                                    <>
+                                                                        { field.type === 'date' &&
+                                                                            <ISOCalendar
+                                                                                id={ field.id }
+                                                                                key={ field.id }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disabledBatch }
+                                                                                required={ field.required }
+                                                                                value={ batchMetadataValues[field.label_short] }
+                                                                                onChange={ (e) => {
+                                                                                    handleUpdateBatchMetadataValues(field, e)
+                                                                                } }
+                                                                            />
+                                                                        }
+                                                                        { field.type === 'text' &&
+                                                                            <Input
+                                                                                id={ field.id }
+                                                                                key={ field.id }
+                                                                                type={ field.type }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disabledBatch }
+                                                                                required={ field.required }
+                                                                                value={ batchMetadataValues[field.label_short] }
+                                                                                onChange={ (e) => {
+                                                                                    handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                                } }
+                                                                            />
+                                                                        }
+                                                                        { field.type === 'select' &&
+                                                                            <Select
+                                                                                id={ field.id }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disabledBatch }
+                                                                                required={ field.required }
+                                                                                options={ field.settings?.options.map((option: any) => ({
+                                                                                    label: t(option.label),
+                                                                                    value: option.id
+                                                                                })) }
+                                                                                value={ batchMetadataValues[field.label_short] }
+                                                                                onChange={ (value) => {
+                                                                                    handleUpdateBatchMetadataValues(field, value)
+                                                                                } }
+                                                                            />
+                                                                        }
+                                                                    </>
+                                                                ) }
                                                             </div>
                                                         )) }
                                                     </div>
@@ -1498,72 +1506,74 @@ export function SplitterViewerPage() {
                             <div className='flex flex-col gap-2'>
                                 { documents.map((document: any) => (
                                     <Panel key={ document.id } header={
-                                        <div className="flex items-center gap-1.5 ">
-                                            <div
-                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
-                                                onClick={ () => !disabledBatch && typeDocument(document) }>
-                                                { !document.doctype_label && (
-                                                    <div className='transition-colors items-center gap-2
+                                                                   <div className="flex items-center gap-1.5 ">
+                                                                       <div
+                                                                           className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
+                                                                           onClick={ () => !disabledBatch && typeDocument(document) }>
+                                                                           { !document.doctype_label && (
+                                                                               <div className='transition-colors items-center gap-2
                                                                 hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
-                                                        <div className='bg-(--text-error)/20 rounded-md p-1'>
-                                                            <FolderTree size={ 20 }/>
-                                                        </div>
-                                                        { t('SPLITTER.type_document') }
-                                                    </div>
-                                                ) }
-                                                <div
-                                                    className='transition-colors items-center gap-2 font-semibold flex'>
-                                                    { document.doctype_label && (
-                                                        <div className='bg-(--bg-secondary) rounded-md p-1'>
-                                                            <File size={ 20 }/>
-                                                        </div>
-                                                    ) }
-                                                    <div>{ document.doctype_label }</div>
-                                                </div>
-                                            </div>
-                                            <div
-                                                className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
-                                                <span>{ document.pages.length }&nbsp;</span>
-                                                { t('SPLITTER.pages', { count: document.pages.length }) }
-                                            </div>
-                                            <div className='ml-auto'>
-                                                <Menu position="bottom-end" withinPortal>
-                                                    <Menu.Target>
-                                                        <ActionIcon
-                                                            className='mr-0!'
-                                                            variant="transparent"
-                                                            onClick={ (e: any) => {
-                                                                e.preventDefault();
-                                                                e.stopPropagation();
-                                                                setSelectedDocument(document);
-                                                            } }
-                                                        >
-                                                            <EllipsisVertical
-                                                                size={ 20 }
-                                                                className='text-(--text-primary) hover:text-(--color-primary)'
-                                                            />
-                                                        </ActionIcon>
-                                                    </Menu.Target>
+                                                                                   <div
+                                                                                       className='bg-(--text-error)/20 rounded-md p-1'>
+                                                                                       <FolderTree size={ 20 }/>
+                                                                                   </div>
+                                                                                   { t('SPLITTER.type_document') }
+                                                                               </div>
+                                                                           ) }
+                                                                           <div
+                                                                               className='transition-colors items-center gap-2 font-semibold flex'>
+                                                                               { document.doctype_label && (
+                                                                                   <div
+                                                                                       className='bg-(--bg-secondary) rounded-md p-1'>
+                                                                                       <File size={ 20 }/>
+                                                                                   </div>
+                                                                               ) }
+                                                                               <div>{ document.doctype_label }</div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div
+                                                                           className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
+                                                                           <span>{ document.pages.length }&nbsp;</span>
+                                                                           { t('SPLITTER.pages', { count: document.pages.length }) }
+                                                                       </div>
+                                                                       <div className='ml-auto'>
+                                                                           <Menu position="bottom-end" withinPortal>
+                                                                               <Menu.Target>
+                                                                                   <ActionIcon
+                                                                                       className='mr-0!'
+                                                                                       variant="transparent"
+                                                                                       onClick={ (e: any) => {
+                                                                                           e.preventDefault();
+                                                                                           e.stopPropagation();
+                                                                                           setSelectedDocument(document);
+                                                                                       } }
+                                                                                   >
+                                                                                       <EllipsisVertical
+                                                                                           size={ 20 }
+                                                                                           className='text-(--text-primary) hover:text-(--color-primary)'
+                                                                                       />
+                                                                                   </ActionIcon>
+                                                                               </Menu.Target>
 
-                                                    <Menu.Dropdown>
-                                                        { menuItems?.map((item: any, index: number) => (
-                                                            <Menu.Item
-                                                                key={ index }
-                                                                leftSection={ item.icon }
-                                                                disabled={ item.disabled }
-                                                                onClick={ (e: React.MouseEvent) => {
-                                                                    e.stopPropagation();
-                                                                    item.command(e);
-                                                                } }
-                                                            >
-                                                                { item.label }
-                                                            </Menu.Item>
-                                                        )) }
-                                                    </Menu.Dropdown>
-                                                </Menu>
-                                            </div>
-                                        </div>
-                                    }>
+                                                                               <Menu.Dropdown>
+                                                                                   { menuItems?.map((item: any, index: number) => (
+                                                                                       <Menu.Item
+                                                                                           key={ index }
+                                                                                           leftSection={ item.icon }
+                                                                                           disabled={ item.disabled }
+                                                                                           onClick={ (e: React.MouseEvent) => {
+                                                                                               e.stopPropagation();
+                                                                                               item.command(e);
+                                                                                           } }
+                                                                                       >
+                                                                                           { item.label }
+                                                                                       </Menu.Item>
+                                                                                   )) }
+                                                                               </Menu.Dropdown>
+                                                                           </Menu>
+                                                                       </div>
+                                                                   </div>
+                                                               }>
                                         <div className='p-4 pb-2'>
                                             { documentMetadata.length > 0 && document.pages.length > 0 && (
                                                 <div className='mb-4'>
