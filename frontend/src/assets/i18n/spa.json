@@ -849,11 +849,11 @@
         "create_success": "Usuario creado con éxito",
         "export": "Exportar usuarios",
         "import": "Importar usuarios",
-        "export_failed": "",
-        "export_success": "",
-        "export_users": "",
-        "import_success": "",
-        "import_users": ""
+        "export_failed": "Error al exportar usuarios",
+        "export_success": "Usuarios exportados correctamente",
+        "export_users": "Exportando usuarios",
+        "import_success": "Usuarios importados correctamente",
+        "import_users": "Importando usuarios"
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",
