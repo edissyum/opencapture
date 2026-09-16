@@ -20,10 +20,10 @@
         "build-watch": "tsc -b && vite build --watch",
         "copy:tinymce": "node ./postinstall_tinymce.js",
         "upgrade-all-packages-ncu": "ncu -u && npm run reload-packages",
-        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i && npm run copy-pdfjs-worker",
-        "copy-pdfjs-worker": "cp -R node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/",
         "extract-translations": "i18next-scanner --config i18next-scanner.config.cjs",
-        "i18n:extract:merge": "npm run extract-translations && node src/assets/i18n/merge-i18n.mjs"
+        "copy-pdfjs-worker": "cp -R node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/",
+        "i18n:extract:merge": "npm run extract-translations && node src/assets/i18n/merge-i18n.mjs",
+        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i && npm run copy-pdfjs-worker"
     },
     "dependencies": {
         "@dnd-kit/core": "^6.3.1",
