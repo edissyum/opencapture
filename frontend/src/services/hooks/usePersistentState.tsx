@@ -16,11 +16,13 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { useEffect, useState } from "react";
+import { useCustom } from "../custom/customContext";
 
 // If prefixKey is true, the key will be prefixed with "OpenCapture_" and be deleted on logout, otherwise it will be stored as is and not deleted on logout
 export function usePersistentState<T>(key: string, defaultValue: any, prefixKey = true) {
+    const custom = useCustom();
     if (prefixKey) {
-        const prefix = 'OpenCapture_';
+        const prefix = `OpenCapture_${custom}_`;
         if (!key.startsWith(prefix)) {
             key = prefix + key;
         }
