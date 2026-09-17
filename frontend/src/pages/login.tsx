@@ -122,6 +122,13 @@ export function Login() {
                 const stepModules = import.meta.glob("./onboarding/step*.tsx", { eager: true });
                 const totalSteps = Object.keys(stepModules).length;
 
+                const cachedUrl = localStorage.getItem(`${custom}_cachedUrl`);
+                if (cachedUrl) {
+                    localStorage.removeItem(`${custom}_cachedUrl`);
+                    navigate(cachedUrl);
+                    return;
+                }
+
                 if (!onboardingCompleted || (JSON.parse(onboardingCompleted).length !== totalSteps)) {
                     navigate('/onboarding', { replace: true });
                     setLoadingLogin(false);
@@ -136,7 +143,7 @@ export function Login() {
                 }
             }
             setLoadingLogin(false);
-        } catch (err) {
+        } catch {
             setLoadingLogin(false);
             return null;
         }

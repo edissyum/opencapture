@@ -16,17 +16,20 @@
 
 import { useEffect } from "react";
 import { getI18n, useTranslation } from "react-i18next";
-import { useNavigate, useRouteError, isRouteErrorResponse } from "react-router-dom";
+import { useNavigate, useLocation, useRouteError, isRouteErrorResponse } from "react-router-dom";
 
 import { showToast } from "../ToastProvider";
 
 import { USER_KEY } from "../../services/hooks/useUser";
 import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
+import { useCustom } from "../../services/custom/customContext.tsx";
 
 export default function LoginRequiredError() {
     const { t } = useTranslation();
     const { post } = AxiosApiCall();
+    const custom = useCustom();
     const error = useRouteError();
+    const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,7 +46,7 @@ export default function LoginRequiredError() {
                     sessionStorage.setItem("refreshToken", response.refresh_token);
                     sessionStorage.setItem(USER_KEY, JSON.stringify(response.user));
 
-                    const splitted = window.location.pathname.split('/').filter(Boolean);
+                    const splitted = location.pathname.split('/').filter(Boolean);
                     const route = splitted[splitted.length - 1];
                     navigate('/' + route, { replace: true });
                     navigate(0);
@@ -53,12 +56,13 @@ export default function LoginRequiredError() {
             }
 
             if (!accessToken) {
+                localStorage.setItem(`${custom}_cachedUrl`, location.pathname);
                 showToast(t('ERROR.login_required'), "error");
                 navigate("/login");
             }
         }
 
-    }, [error, navigate]);
+    }, [error, navigate, location]);
 
     return null;
 }
