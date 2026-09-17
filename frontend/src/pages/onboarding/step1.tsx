@@ -18,7 +18,11 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 
+import { useCustom } from "../../services/custom/customContext";
+
 export function Step1() {
+    const custom = useCustom();
+
     const options = [
         {
             id: 'verifier',
@@ -35,12 +39,12 @@ export function Step1() {
     t('ONBOARD.verifier_info');
 
     const [selectedModule, setSelectedModule] = useState<string>(() => {
-        return localStorage.getItem('selectedModule') || 'verifier';
+        return localStorage.getItem(`${custom}_selectedModule`) || 'verifier';
     });
 
     useEffect(() => {
         if (selectedModule) {
-            localStorage.setItem('selectedModule', selectedModule);
+            localStorage.setItem(`${custom}_selectedModule`, selectedModule);
         }
     }, [selectedModule]);
 

@@ -14,16 +14,19 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { useEffect, useState } from "react";
 
 import { VerifierListPage } from "./verifier/list";
 import { SplitterListPage } from "./splitter/list";
 
 import { useUser } from "../services/hooks/useUser";
+import { useCustom } from "../services/custom/customContext";
+
 import { hasRequiredPermissions } from "../components/auth/auth";
-import { t } from "i18next";
 
 export function HomePage() {
+    const custom = useCustom();
     const modules: any = {
         verifier: VerifierListPage,
         splitter: SplitterListPage
@@ -32,7 +35,7 @@ export function HomePage() {
 
     const {user, loadingUser} = useUser();
 
-    const selectedModule = localStorage.getItem('selectedModule') || 'verifier';
+    const selectedModule = localStorage.getItem(`${custom}_selectedModule`) || 'verifier';
     if (selectedModule && selectedModule !== module) {
         setModule(selectedModule);
     }
@@ -41,7 +44,7 @@ export function HomePage() {
 
     useEffect(() => {
         const handler = () => {
-            const module = localStorage.getItem('selectedModule');
+            const module = localStorage.getItem(`${custom}_selectedModule`);
             if (module) {
                 setModule(module);
             }

@@ -24,8 +24,10 @@ import { Button } from "./Button";
 import { hasRequiredPermissions } from "./auth/auth";
 
 import { useUser } from "../services/hooks/useUser";
+import { useCustom } from "../services/custom/customContext";
 
 export default function TopBar() {
+    const custom = useCustom();
     const options = [
         {
             id: 'verifier',
@@ -46,11 +48,11 @@ export default function TopBar() {
 
     const handleSelect = (option: string) => {
         setSelected(option);
-        localStorage.setItem('selectedModule', option);
+        localStorage.setItem(`${custom}_selectedModule`, option);
         window.dispatchEvent(new Event("updateModule"));
     };
 
-    const storedModule = localStorage.getItem('selectedModule');
+    const storedModule = localStorage.getItem(`${custom}_selectedModule`);
     if (storedModule && !selected) {
         handleSelect(storedModule)
     }

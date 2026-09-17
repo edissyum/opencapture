@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Pencil } from "lucide-react";
 
 import { useUser } from "../services/hooks/useUser";
+import { useCustom } from "../services/custom/customContext";
 import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 
 import { Button } from "../components/Button";
@@ -28,6 +29,7 @@ import UploadDropzone from "../components/upload/Dropzone";
 
 export function UploadPage() {
     const { get, post } = AxiosApiCall();
+    const custom = useCustom();
     const { user, loadingUser } = useUser();
 
     const [module, setModule] = useState("");
@@ -41,7 +43,7 @@ export function UploadPage() {
     const [completedFiles, setCompletedFiles] = useState<string[]>([]);
     const [progress, setProgress] = useState<Record<string, number | undefined>>({});
 
-    const selectedModule = localStorage.getItem('selectedModule');
+    const selectedModule = localStorage.getItem(`${custom}_selectedModule`);
     if (selectedModule && selectedModule !== module) {
         setModule(selectedModule);
     }
@@ -62,7 +64,7 @@ export function UploadPage() {
 
     useEffect(() => {
         const handler = () => {
-            const module = localStorage.getItem('selectedModule');
+            const module = localStorage.getItem(`${custom}_selectedModule`);
             if (module) {
                 setFiles([]);
                 setModule(module);

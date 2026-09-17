@@ -15,6 +15,8 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import DOMPurify from "dompurify";
+import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Activity, ChevronDown, CircleCheckBig, Filter, Loader2, Package, RotateCw } from "lucide-react";
 
@@ -26,8 +28,6 @@ import { showToast } from "../../components/ToastProvider";
 import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../services/hooks/usePersistentState";
-import DOMPurify from "dompurify";
-import { Radio } from "@mantine/core";
 
 export function MonitoringList() {
     const { get, put } = AxiosApiCall();

@@ -27,7 +27,7 @@ export async function fetchCurrentLang(api: AxiosInstance): Promise<string | nul
     try {
         const res = await api.get("/i18n/getCurrentLang");
         return res.data?.lang || null;
-    } catch (err) {
+    } catch {
         return null;
     }
 }
