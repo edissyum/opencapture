@@ -726,14 +726,41 @@ ALTER TABLE doctypes ALTER COLUMN label TYPE TEXT;
 -- Ajout d'un nouveau champs pour le type de chaîne sortant OpenCRM
 UPDATE outputs_types
 SET data = jsonb_set(
-        data::jsonb,
-        '{options,auth}',
-        (data::jsonb #> '{options,auth}') || '[{
-            "id": "cert_path",
-            "type": "text",
-            "label": "Chemin vers le certificat",
-            "required": "false",
-            "placeholder": "/home/user/certs/cert.pem"
-        }]'::jsonb
-)
-WHERE output_type_id = 'export_opencrm';
+    data::jsonb,
+    '{options,auth}',
+    (data::jsonb #> '{options,auth}') || '[{
+        "id": "cert_path",
+        "type": "text",
+        "label": "Chemin vers le certificat",
+        "required": "false",
+        "placeholder": "/home/user/certs/cert.pem"
+    }]'::jsonb
+) WHERE output_type_id = 'export_opencrm';
+
+-- Remplacement des appels à #id# par #batch_identifier#
+UPDATE form_models
+SET settings = jsonb_set(
+    settings::jsonb,
+    '{export_zip_file}',
+    to_jsonb(replace(settings::jsonb->>'export_zip_file', '#id', '#batch_identifier'))
+) WHERE settings::jsonb->>'export_zip_file' LIKE '%#id%';
+
+UPDATE outputs
+SET data = jsonb_set(
+    data::jsonb,
+    '{options,parameters}',
+    (
+        SELECT jsonb_agg(
+            CASE
+                WHEN elem->>'value' LIKE '%#id%'
+                    THEN jsonb_set(elem, '{value}', to_jsonb(replace(elem->>'value', '#id', '#batch_identifier')))
+                ELSE elem
+            END
+        )
+        FROM jsonb_array_elements(data::jsonb->'options'->'parameters') AS elem
+    )
+) WHERE EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(data::jsonb->'options'->'parameters') e
+    WHERE e->>'value' LIKE '%#id%'
+);
