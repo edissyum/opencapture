@@ -563,6 +563,7 @@ export class UpdateOutputComponent implements OnInit {
     getOpenCRMConnectionInfo() {
         return {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
+            'cert_path': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'cert_path'),
             'client_id': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'client_id'),
             'client_secret': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'client_secret')
         };

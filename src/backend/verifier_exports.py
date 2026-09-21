@@ -690,7 +690,7 @@ def export_opencrm(data, document_info, log, database):
     log.info('Output execution : OpenCRM export')
     log.debug('Document info : ' + str(document_info))
 
-    host = client_id = client_secret = ''
+    host = client_id = client_secret = cert_path = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
         if _data['id'] == 'host':
@@ -699,12 +699,15 @@ def export_opencrm(data, document_info, log, database):
             client_id = _data['value']
         if _data['id'] == 'client_secret':
             client_secret = _data['value']
+        if _data['id'] == 'cert_path':
+            cert_path = _data['value']
 
     if host and client_id and client_secret:
         _ws = OpenCRMWebServices(
             host,
             client_id,
             client_secret,
+            cert_path,
             log
         )
         if _ws.access_token[0]:

@@ -992,7 +992,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if (supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto or not workflow_settings['input']['apply_process']:
         status = 'END'
-        log.info('All the usefull informations are found. Execute outputs action and end process')
         document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
                              nb_pages, docservers, workflow_settings, log, allow_auto)
     else:
@@ -1029,7 +1028,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         'where': ['id = %s'],
         'data': [document_id]
     })[0]
+
     if status == 'END' and 'form_id' in document_data and document_data['form_id']:
+        log.info('All the usefull informations are found. Execute outputs action and end process')
         outputs = database.select({
             'select': ['outputs'],
             'table': ['form_models'],

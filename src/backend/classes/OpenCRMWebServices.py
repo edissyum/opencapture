@@ -23,11 +23,15 @@ from flask_babel import gettext
 
 
 class OpenCRMWebServices:
-    def __init__(self, host, client_id, client_secret, log):
+    def __init__(self, host, client_id, client_secret, cert_path, log):
         self.log = log
         self.timeout = 10
         self.client_id = client_id
         self.client_secret = client_secret
+        self.cert_path = None
+
+        if cert_path and os.path.isfile(cert_path):
+            self.cert_path = cert_path
         self.base_url = re.sub("^/|/$", "", host)
         self.access_token = self.get_access_token()
 
@@ -38,7 +42,7 @@ class OpenCRMWebServices:
                 "client_id": self.client_id,
                 "client_secret": self.client_secret
             }
-            res = requests.post(self.base_url + '/access_token', data=args, timeout=self.timeout)
+            res = requests.post(self.base_url + '/access_token', data=args, timeout=self.timeout, verify=self.cert_path)
             if res.text:
                 if res.status_code == 404:
                     return [False, gettext('HOST_NOT_FOUND')]
@@ -64,7 +68,7 @@ class OpenCRMWebServices:
         }
 
         res = requests.post(self.base_url + '/V8/custom/traitement-set', data=json.dumps(entry), headers=headers,
-                            timeout=self.timeout)
+                            timeout=self.timeout, verify=self.cert_path)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') createEntryError : ' + str(res.text))
             if 'errors' in res.json():

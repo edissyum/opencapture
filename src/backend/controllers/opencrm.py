@@ -28,10 +28,12 @@ def get_access_token(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
+
     _ws = OpenCRMWebServices(
         args['host'],
         args['client_id'],
         args['client_secret'],
+        args['cert_path'],
         log
     )
     return _ws.access_token
