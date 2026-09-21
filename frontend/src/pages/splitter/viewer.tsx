@@ -1250,11 +1250,11 @@ export function SplitterViewerPage() {
                     <>
                         <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
                              onClick={ () => setShowDoctypeSelection(false) }/>
-                        <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                    w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
-                                    rounded-lg bg-(--bg-primary) flex flex-col ">
+                        <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-3/4
+                                        max-h-screen border border-(--border-secondary) rounded-lg bg-(--bg-primary)
+                                        flex flex-col">
                             <div className='flex items-center px-6 pt-6'>
-                                <h2>{ t('SPLITTER.select_doctype') }</h2>
+                                <h2>{ t('DOCTYPES.select_doctype') }</h2>
                                 <div className='ml-auto cursor-pointer text-(--text-secondary)'
                                      onClick={ () => setShowDoctypeSelection(false) }>
                                     <X/>
@@ -1262,8 +1262,8 @@ export function SplitterViewerPage() {
                             </div>
                             <div className='overflow-hidden'>
                                 <DoctypesTree formId={ batch.form_id } canFolderBeSelected={ false } editor={ false }
-                                              doctypesList={ doctypes } onSelect={ (node) => handleChangeDoctype(node) }
-                                              onTmpSelect={ (node) => setTmpDoctype(node) }/>
+                                              doctypesList={ doctypes } onTmpSelect={ (node) => setTmpDoctype(node) }
+                                              onSelect={ (node) => handleChangeDoctype(node) }/>
                             </div>
                             <div className='flex mt-auto justify-end items-center gap-4 p-4'>
                                 <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>

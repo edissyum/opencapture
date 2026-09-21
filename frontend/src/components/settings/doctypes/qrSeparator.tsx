@@ -144,7 +144,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
 
                 { !loading && !thumbnail && (
                     <div className="mt-4 text-(--text-secondary)">
-                        { t("SPLITTER.select_doctype") }
+                        { t("DOCTYPES.select_doctype") }
                     </div>
                 ) }
             </div>

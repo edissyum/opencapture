@@ -681,7 +681,6 @@
         "empty_documents_error": "Validation impossible: one or more documents in the batch are empty",
         "form_changed": "Form changed successfully",
         "unlabeled_document_error": "Validation impossible: one or more documents in the batch are not typed",
-        "select_doctype": "Select a document type",
         "empty_document_error": "Bundling impossible: a document in the batch is empty. Please delete empty documents before bundling",
         "bundle_separator": "Batch separator",
         "doc_type_separator": "Document type separator",
@@ -1256,7 +1255,6 @@
         "create_success": "AI document type model created successfully. Model training in progress, this may take several minutes. The model will be available once training is complete",
         "update_success": "AI document type model updated successfully",
         "form_associated": "Associated form",
-        "click_to_select_doctype": "Select a document type",
         "select_doctype": "Associated document type",
         "percentage": "Model training status",
         "end": "Finished"
@@ -1312,7 +1310,8 @@
         "export_failed": "Error exporting document types, please try again",
         "export_success": "Document types exported successfully",
         "import_doctypes": "Import document types",
-        "import_success": "Document types imported successfully"
+        "import_success": "Document types imported successfully",
+        "click_to_select_doctype": ""
     },
     "ABOUT": {
         "see_changelog": "see the changelog",

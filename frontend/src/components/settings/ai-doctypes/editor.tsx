@@ -272,7 +272,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                     min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
                         <div className='flex items-center px-6 pt-6'>
-                            <h2>{ t('SPLITTER.select_doctype') }</h2>
+                            <h2>{ t('DOCTYPES.select_doctype') }</h2>
                             <div className='ml-auto cursor-pointer text-(--text-secondary)'
                                  onClick={ () => setShowDoctypeSelection(false) }>
                                 <X/>
@@ -364,7 +364,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                                 ) : (
                                                     <Button variant="no_bg_border" disabled={ !doc.form }
                                                             className='w-full justify-start px-4!'>
-                                                        { t('AI-DOCTYPES.click_to_select_doctype') }
+                                                        { t('DOCTYPES.click_to_select_doctype') }
                                                     </Button>
                                                 ) }
                                             </div>

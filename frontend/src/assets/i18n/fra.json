@@ -725,7 +725,6 @@
         "empty_documents_error": "Validation impossible : un ou plusieurs documents du lot sont vides",
         "form_changed": "Formulaire changé avec succès",
         "unlabeled_document_error": "Validation impossible : un ou plusieurs documents du lot ne sont pas typés",
-        "select_doctype": "Sélectionner un type de document",
         "empty_document_error": "Liassage impossible : un document du lot est vide. Merci de supprimer les documents vides avant de procéder au liassage",
         "bundle_separator": "Séparateur de lot",
         "doc_type_separator": "Séparateur de type de document",
@@ -1345,7 +1344,6 @@
         "create_success": "Modèle de type de document IA créé avec succès. Entraînement du modèle en cours, cela peut prendre plusieurs minutes. Le modèle sera disponible une fois l'entraînement terminé",
         "update_success": "Modèle de type de document IA mis à jour avec succès",
         "form_associated": "Formulaire associé",
-        "click_to_select_doctype": "Sélectionner un type de document",
         "select_doctype": "Type de document associé",
         "percentage": "État de l'entraînement",
         "end": "Terminé"
@@ -1401,7 +1399,8 @@
         "export_failed": "Erreur lors de l'exportation des types de document, veuillez réessayer",
         "export_success": "Types de document exportés avec succès",
         "import_doctypes": "Importer les types de documents",
-        "import_success": "Types de document importés avec succès"
+        "import_success": "Types de document importés avec succès",
+        "click_to_select_doctype": ""
     },
     "ABOUT": {
         "see_changelog": "voir le changelog",
