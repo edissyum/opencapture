@@ -112,7 +112,7 @@ with app.app_context():
     })
 
     if not docservers_mailcollect:
-        exit('Error with smtp settings in configurations table')
+        exit('The docservers are not configured')
 
     docservers_mailcollect = docservers_mailcollect[0]
     config_mail = {}

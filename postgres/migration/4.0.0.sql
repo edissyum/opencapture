@@ -722,3 +722,18 @@ UPDATE form_models SET settings = settings - 'display' WHERE settings ? 'display
 
 -- Changement du type de la colonne label pour les doctype avec des très grand libellé
 ALTER TABLE doctypes ALTER COLUMN label TYPE TEXT;
+
+-- Ajout d'un nouveau champs pour le type de chaîne sortant OpenCRM
+UPDATE outputs_types
+SET data = jsonb_set(
+        data::jsonb,
+        '{options,auth}',
+        (data::jsonb #> '{options,auth}') || '[{
+            "id": "cert_path",
+            "type": "text",
+            "label": "Chemin vers le certificat",
+            "required": "false",
+            "placeholder": "/home/user/certs/cert.pem"
+        }]'::jsonb
+)
+WHERE output_type_id = 'export_opencrm';

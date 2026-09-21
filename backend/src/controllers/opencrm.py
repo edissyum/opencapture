@@ -21,10 +21,12 @@ from ..classes.OpenCRMWebServices import OpenCRMWebServices
 
 def get_access_token(args):
     log = get_context_var('log', 5)
+
     _ws = OpenCRMWebServices(
         args['host'],
         args['client_id'],
         args['client_secret'],
+        args['cert_path'],
         log
     )
     return _ws.access_token

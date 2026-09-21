@@ -288,7 +288,7 @@ export function OutputEditor({ module }: { module: string }) {
 
         const authFunctionName: any = getTestConnectionMapping().find((m: any) => m.id === outputType.output_type_id)?.function;
         const authOptions: any = {};
-        output?.data?.options?.auth.forEach((option: any) => {
+        outputType?.data?.options?.auth.forEach((option: any) => {
             authOptions[option.id] = output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '';
         });
 
