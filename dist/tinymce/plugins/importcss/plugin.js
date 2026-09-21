@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.4.0 (2026-03-31)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -383,11 +383,15 @@
         };
     };
 
+    const PLUGIN_CODE = 'importcss';
     var Plugin = () => {
-        global$4.add('importcss', (editor) => {
+        global$4.add(PLUGIN_CODE, (editor) => {
             register(editor);
             setup(editor);
-            return get(editor);
+            return {
+                ...get(editor),
+                getMetadata: () => ({ name: 'Import CSS', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

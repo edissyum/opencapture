@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.4.0 (2026-03-31)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -653,10 +653,14 @@
         });
     };
 
+    const PLUGIN_CODE = 'directionality';
     var Plugin = () => {
-        global.add('directionality', (editor) => {
+        global.add(PLUGIN_CODE, (editor) => {
             register$1(editor);
             register(editor);
+            return {
+                getMetadata: () => ({ name: 'Directionality', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

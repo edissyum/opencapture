@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.4.0 (2026-03-31)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -1446,7 +1446,8 @@
         if (a) {
             const href = getHref(a);
             if (/^#/.test(href)) {
-                const targetEl = editor.dom.select(`${href},[name="${removeLeading(href, '#')}"]`);
+                const id = removeLeading(href, '#');
+                const targetEl = editor.dom.select(`[id="${id}"],[name="${id}"]`);
                 if (targetEl.length) {
                     editor.selection.scrollIntoView(targetEl[0], true);
                 }
@@ -1692,12 +1693,16 @@
         setupContextToolbars(editor, openLink);
     };
 
+    const PLUGIN_CODE = 'link';
     var Plugin = () => {
-        global$5.add('link', (editor) => {
+        global$5.add(PLUGIN_CODE, (editor) => {
             register$1(editor);
             register(editor);
             setup(editor);
             setup$2(editor);
+            return {
+                getMetadata: () => ({ name: 'Link', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

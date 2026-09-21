@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.4.0 (2026-03-31)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -757,6 +757,7 @@
     const option = (name) => (editor) => editor.options.get(name);
     const getContentStyle = option('content_style');
     const shouldUseContentCssCors = option('content_css_cors');
+    const getCrossOrigin = option('crossorigin');
     const getBodyClass = option('body_class');
     const getBodyId = option('body_id');
 
@@ -767,17 +768,26 @@
             return `<script src="${editor.dom.encode(url)}"${attrs.join('')}></script>`;
         }).join('');
     };
+    const getStyleSheetCrossOrigin = (editor) => {
+        if (shouldUseContentCssCors(editor)) {
+            return constant('anonymous');
+        }
+        const crossOrigin = getCrossOrigin(editor);
+        return (url) => crossOrigin(url, 'stylesheet');
+    };
     const getPreviewHtml = (editor, contentCssResources) => {
         let headHtml = '';
         const encode = editor.dom.encode;
         const contentStyle = getContentStyle(editor) ?? '';
         headHtml += `<base href="${encode(editor.documentBaseURI.getURI())}">`;
-        const cors = shouldUseContentCssCors(editor) ? ' crossorigin="anonymous"' : '';
+        const styleSheetCrossOrigin = getStyleSheetCrossOrigin(editor);
         global.each(contentCssResources, (resource) => {
             if (resource.type === 'bundled') {
                 headHtml += '<style type="text/css">' + resource.content + '</style>';
             }
             else {
+                const corsValue = styleSheetCrossOrigin(resource.url);
+                const cors = corsValue ? ' crossorigin="' + encode(corsValue) + '"' : '';
                 headHtml += '<link type="text/css" rel="stylesheet" href="' + encode(resource.url) + '"' + cors + '>';
             }
         });
@@ -857,14 +867,18 @@
         });
     };
 
+    const PLUGIN_CODE = 'preview';
     var Plugin = () => {
-        global$2.add('preview', (editor) => {
+        global$2.add(PLUGIN_CODE, (editor) => {
             const getContentCssResources = () => map(editor.contentCSS, (key) => Optional.from(tinymce.Resource.get(key))
                 .filter(isString)
                 .map((content) => ({ type: 'bundled', content }))
                 .getOr({ type: 'link', url: editor.documentBaseURI.toAbsolute(key) }));
             register$1(editor, getContentCssResources);
             register(editor);
+            return {
+                getMetadata: () => ({ name: 'Preview', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 
