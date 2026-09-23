@@ -72,6 +72,8 @@ if __name__ == '__main__':
             # Insert into database all the supplier not existing into the database
             count = 0
             count_error = 0
+            count_add = 0
+            count_update = 0
 
             log.info("Line(s) to process : " +  str(len(spreadsheet.referencial_supplier_data)))
             for data in spreadsheet.referencial_supplier_data:
@@ -195,6 +197,7 @@ if __name__ == '__main__':
                         list_existing_supplier.append({'vat_number': vat_number, 'duns': duns})
 
                         if res:
+                            count_add += 1
                             log.info('The following supplier was successfully added into database : ' +
                                      str(data[spreadsheet.referencial_supplier_array['name']]))
                     else:
@@ -310,6 +313,7 @@ if __name__ == '__main__':
                             continue
 
                         if res[0]:
+                            count_update += 1
                             log.info('The following supplier was successfully updated into database : (' + str(current_supplier['id']) + ') ' +
                                      str(data[spreadsheet.referencial_supplier_array['name']]))
                         else:
@@ -318,6 +322,7 @@ if __name__ == '__main__':
 
             log.debug('-' * 40)
             log.info('Referential supplier loaded successfully (' + str(count) + ' supplier(s) processed out of ' + str(len(spreadsheet.referencial_supplier_data)) + ')')
+            log.info('Added : ' + str(count_add) + ' - Updated : ' + str(count_update))
 
             # Commit and close database connection
             database.conn.commit()
