@@ -40,21 +40,21 @@
         "axios": "^1.20.0",
         "dayjs": "^1.11.23",
         "dompurify": "^3.4.15",
-        "fs-extra": "^11.4.0",
+        "fs-extra": "^11.4.1",
         "i18next": "^26.4.2",
         "papaparse": "^5.7.0",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
         "react-dropzone": "^20.1.2",
         "react-hook-form": "^7.88.0",
-        "react-i18next": "^17.0.14",
+        "react-i18next": "^17.0.15",
         "react-pdf": "^11.0.0",
         "react-router-dom": "^7.18.4",
         "react-toastify": "^11.1.0",
         "react-tooltip": "^6.0.8",
         "recharts": "^3.10.1",
         "tailwindcss": "^4.3.3",
-        "tinymce": "^8.9.1",
+        "tinymce": "^8.9.2",
         "zod": "^4.6.5"
     },
     "devDependencies": {
@@ -70,7 +70,7 @@
         "i18next-scanner": "^4.6.0",
         "lucide-react": "^1.47.0",
         "typescript": "~6.0.3",
-        "typescript-eslint": "^8.70.0",
+        "typescript-eslint": "^8.70.1",
         "vite": "^8.3.0"
     }
 }
