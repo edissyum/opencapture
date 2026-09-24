@@ -39,7 +39,7 @@
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.20.0",
         "dayjs": "^1.11.23",
-        "dompurify": "^3.4.15",
+        "dompurify": "^3.4.16",
         "fs-extra": "^11.4.1",
         "i18next": "^26.4.2",
         "papaparse": "^5.7.0",
@@ -68,7 +68,7 @@
         "eslint-plugin-react-refresh": "^0.5.7",
         "globals": "^17.12.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.47.0",
+        "lucide-react": "^1.48.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.70.1",
         "vite": "^8.3.0"
