@@ -37,8 +37,8 @@ from ..helpers import get_context_var
 from ..classes.Files import rotate_img
 from ..scripting_functions import check_code
 from werkzeug.datastructures import FileStorage
-from ..models import verifier, accounts, forms, attachments
 from ..controllers import auth, user, monitoring, history, status
+from ..models import verifier, accounts, forms, attachments, workflow
 from ..functions import retrieve_custom_from_url, delete_documents, check_order_by
 
 
@@ -62,10 +62,18 @@ def retry_from_monitoring(process_id):
         }
         return response, 400
 
-    process = process['process'][0]
+    process = process['process']
+
+    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': process['workflow_id']})
+    if error:
+        response = {
+            "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
+            "message": gettext('WORKFLOW_NOT_FOUND')
+        }
+        return response, 400
 
     error_path = shared.custom_path + '/data/error/'
-    path = error_path + '/' + process['workflow_id'] + '/' + process['filename']
+    path = error_path + '/' + workflow_info['workflow_id'] + '/' + process['filename']
 
     if not os.path.isfile(path):
         response = {

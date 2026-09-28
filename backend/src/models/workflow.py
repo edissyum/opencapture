@@ -46,7 +46,7 @@ def get_workflow_by_id(args):
     })
 
     if not _workflow:
-        error = gettext('WORKFLOW_DOESNT_EXISTS')
+        error = gettext('WORKFLOW_NOT_FOUND')
     else:
         _workflow = _workflow[0]
 
