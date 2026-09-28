@@ -351,6 +351,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 datas['datas'].update({f'custom_{cf}': args['msg']['custom_fields'][cf]})
 
     nb_pages = 1
+    ai_llm = None
     original_file = os.path.basename(file)
     if file.lower().endswith('.pdf'):
         nb_pages = files.get_pages(file)
@@ -370,6 +371,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
         if workflow_settings:
             workflow_settings = workflow_settings[0]
+
+            if 'ai_llm' in workflow_settings['process'] and workflow_settings['process']['ai_llm']:
+                if workflow_settings['process']['ai_llm'] != 'no_ai_llm':
+                    ai_llm = workflow_settings['process']['ai_llm']
+
+            log.debug('AI LLM model to use for document processing based on workflow settings : ' + str(ai_llm))
 
             if workflow_settings['input']['rotation'] and workflow_settings['input']['rotation'] != 'no_rotation':
                 rotate_document(file, workflow_settings['input']['rotation'])
@@ -426,7 +433,89 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     log.debug('Converted document to images and extracted text using OCR for the first time successfully')
 
     supplier = None
+    supplier_found_with_ai = False
     supplier_lang_different = False
+
+    if ai_llm:
+        llm_model, _ = artificial_intelligence.get_model_llm_by_id(ai_llm)
+        if 'errors' in llm_model:
+            log.info('AI LLM model not found for identifier : ' + str(ai_llm))
+            log.info('Use of AI LLM is disabled, fallback to standard processing')
+            ai_llm = False
+        else:
+            log.info(f"Use of the following AI LLM to find document details : <strong>{llm_model['name']} ({llm_model['provider']})</strong>")
+
+            ai_chat = find_with_ai.FindWithAI(log, ocr, llm_model)
+            ai_invoice_values = ai_chat.find_invoice_info(file)
+            if ai_invoice_values:
+                if 'supplier' in ai_invoice_values and ai_invoice_values['supplier']:
+                    supplier_found_with_ai = True
+                    log.info('Supplier found using AI : ' + str(ai_invoice_values['supplier']['name']))
+                    datas['datas']['name'] = ai_invoice_values['supplier']['name']
+
+                    matches = ['vat_number', 'duns']
+                    for match in matches:
+                        if match in ai_invoice_values['supplier'] and ai_invoice_values['supplier'][match]:
+                            value = ai_invoice_values['supplier'][match]
+                            supplier_found = database.select({
+                                'select': ['accounts_supplier.id as supplier_id', '*'],
+                                'table': ['accounts_supplier'],
+                                'where': [match + ' = %s', 'accounts_supplier.status <> %s'],
+                                'data': [value, 'DEL']
+                            })
+
+                            if supplier_found:
+                                log.info(f"Supplier matched in database using {match.upper()} : {supplier_found[0]['name']}")
+                                supplier = [supplier_found[0][match], (('', ''), ('', '')), supplier_found[0], False, match]
+                                break
+
+                    for key in ai_invoice_values['supplier']:
+                        if ai_invoice_values['supplier'][key] and 'name' not in key:
+                            log.info(f"{key} found using AI : {str(ai_invoice_values['supplier'][key])}")
+                            datas['datas'][key] = ai_invoice_values['supplier'][key]
+
+                if 'line_items' in ai_invoice_values and ai_invoice_values['line_items']:
+                    cpt_lines = 0
+                    for line in ai_invoice_values['line_items']:
+                        index_poste = 'poste' if cpt_lines == 0 else 'poste_' + str(cpt_lines)
+                        index_unite = 'unity' if cpt_lines == 0 else 'unity_' + str(cpt_lines)
+                        index_ht = 'line_ht' if cpt_lines == 0 else 'line_ht_' + str(cpt_lines)
+                        index_quantity = 'quantity' if cpt_lines == 0 else 'quantity_' + str(cpt_lines)
+                        index_unit = 'unit_price' if cpt_lines == 0 else 'unit_price_' + str(cpt_lines)
+                        index_reference = 'reference' if cpt_lines == 0 else 'reference_' + str(cpt_lines)
+                        index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
+
+                        datas['datas'][index_poste] = line['poste'] if 'poste' in line else ''
+                        datas['datas'][index_unite] = line['unity'] if 'unity' in line else ''
+                        datas['datas'][index_ht] = line['total_price'] if 'total_price' in line else ''
+                        datas['datas'][index_unit] = line['unit_price'] if 'unit_price' in line else ''
+                        datas['datas'][index_quantity] = line['quantity'] if 'quantity' in line else ''
+                        datas['datas'][index_reference] = line['reference'] if 'reference' in line else ''
+                        datas['datas'][index_description] = line['description'] if 'description' in line else ''
+                        cpt_lines += 1
+
+                for value in ai_invoice_values:
+                    if ai_invoice_values[value] and value not in datas['datas']:
+                        if isinstance(ai_invoice_values[value], (str, int, float)):
+                            if int(configurations['timeDelta']) not in [-1, 0]:
+                                if value in ['document_date', 'document_due_date']:
+                                    today = datetime.now()
+                                    doc_date = datetime.strptime(ai_invoice_values[value], '%Y-%m-%d')
+                                    timedelta = today - doc_date
+
+                                    if timedelta.days > int(configurations['timeDelta']):
+                                        log.info(
+                                            f"{value} is older than {configurations['timeDelta']} days : {str(ai_invoice_values[value])}")
+                                        continue
+                                    if timedelta.days < 0:
+                                        log.info(f"{value} is in the future : {str(ai_invoice_values[value])}")
+                                        continue
+
+                            log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
+                            datas['datas'][value] = ai_invoice_values[value]
+            else:
+                log.info('No data found using AI LLM, fallback to standard processing')
+                ai_llm = False
 
     if args.get('supplier') or (args.get('datas') and args['datas'].get('supplier')):
         if args['datas']['supplier']:
@@ -461,11 +550,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     log.debug('Customer id associated to document based on workflow settings : ' + str(customer_id))
 
-    if workflow_settings['input']['apply_process']:
+    if workflow_settings['input']['apply_process'] and not supplier_found_with_ai:
         log.debug('Start to find supplier or contact in document based on workflow settings')
         if 'name' in system_fields_to_find or 'contact' in system_fields_to_find:
-            # Find supplier in document if not send using upload rest
-            if not supplier or not supplier[0] or not supplier[2]:
+            # Find supplier in document if not send using upload rest or found using AI
+            if (not supplier or not supplier[0] or not supplier[2]):
                 if 'name' in system_fields_to_find:
                     log.debug('Search supplier')
                     supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, 1,
@@ -547,14 +636,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     ocr = PyTesseract(supplier[2]['document_lang'], log, config)
                     convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
-    ai_llm = None
     if workflow_settings:
-        if 'ai_llm' in workflow_settings['process'] and workflow_settings['process']['ai_llm']:
-            if workflow_settings['process']['ai_llm'] != 'no_ai_llm':
-                ai_llm = workflow_settings['process']['ai_llm']
-
-        log.debug('AI LLM model to use for document processing based on workflow settings : ' + str(ai_llm))
-
         if supplier and 'form_id' in supplier[2] and supplier[2]['form_id']:
             form_exists = database.select({
                 'select': ['id'],
@@ -616,83 +698,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            datas, files, configurations, tesseract_function, convert_function)
 
     footer = None
-    if ai_llm:
-        llm_model, _ = artificial_intelligence.get_model_llm_by_id(ai_llm)
-        if 'errors' in llm_model:
-            log.info('AI LLM model not found for identifier : ' + str(ai_llm))
-            log.info('Use of AI LLM is disabled, fallback to standard processing')
-            ai_llm = False
-        else:
-            log.info(f"Use of the following AI LLM to find document details : <strong{llm_model['name']} ({llm_model['provider']})</strong>")
-
-            ai_chat = find_with_ai.FindWithAI(log, ocr, llm_model)
-            ai_invoice_values = ai_chat.find_invoice_info(file)
-            if ai_invoice_values:
-                if 'supplier' in ai_invoice_values and ai_invoice_values['supplier']:
-                    log.info('Supplier found using AI : ' + str(ai_invoice_values['supplier']['name']))
-                    datas['datas']['name'] = ai_invoice_values['supplier']['name']
-                    for key in ai_invoice_values['supplier']:
-                        if ai_invoice_values['supplier'][key] and 'name' not in key:
-                            log.info(f"{key} found using AI : {str(ai_invoice_values['supplier'][key])}")
-                            datas['datas'][key] = ai_invoice_values['supplier'][key]
-
-                    if 'vat_number' in ai_invoice_values['supplier'] and ai_invoice_values['supplier']['vat_number']:
-                        vat_number = ai_invoice_values['supplier']['vat_number']
-                        supplier_found = database.select({
-                            'select': ['accounts_supplier.id as supplier_id', '*'],
-                            'table': ['accounts_supplier'],
-                            'where': ['vat_number = %s', 'accounts_supplier.status <> %s'],
-                            'data': [vat_number, 'DEL']
-                        })
-
-                        if supplier_found:
-                            log.info('Supplier matched in database using VAT NUMBER : ' + supplier_found[0]['name'])
-                            supplier = [supplier_found[0]['vat_number'], (('', ''), ('', '')), supplier_found[0], False,
-                                        'vat_number']
-
-                if 'line_items' in ai_invoice_values and ai_invoice_values['line_items']:
-                    cpt_lines = 0
-                    for line in ai_invoice_values['line_items']:
-                        index_poste = 'poste' if cpt_lines == 0 else 'poste_' + str(cpt_lines)
-                        index_unite = 'unity' if cpt_lines == 0 else 'unity_' + str(cpt_lines)
-                        index_ht = 'line_ht' if cpt_lines == 0 else 'line_ht_' + str(cpt_lines)
-                        index_quantity = 'quantity' if cpt_lines == 0 else 'quantity_' + str(cpt_lines)
-                        index_unit = 'unit_price' if cpt_lines == 0 else 'unit_price_' + str(cpt_lines)
-                        index_reference = 'reference' if cpt_lines == 0 else 'reference_' + str(cpt_lines)
-                        index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
-
-                        datas['datas'][index_poste] = line['poste'] if 'poste' in line else ''
-                        datas['datas'][index_unite] = line['unity'] if 'unity' in line else ''
-                        datas['datas'][index_ht] = line['total_price'] if 'total_price' in line else ''
-                        datas['datas'][index_unit] = line['unit_price'] if 'unit_price' in line else ''
-                        datas['datas'][index_quantity] = line['quantity'] if 'quantity' in line else ''
-                        datas['datas'][index_reference] = line['reference'] if 'reference' in line else ''
-                        datas['datas'][index_description] = line['description'] if 'description' in line else ''
-                        cpt_lines += 1
-
-                for value in ai_invoice_values:
-                    if ai_invoice_values[value] and value not in datas['datas']:
-                        if isinstance(ai_invoice_values[value], (str, int, float)):
-                            if int(configurations['timeDelta']) not in [-1, 0]:
-                                if value in ['document_date', 'document_due_date']:
-                                    today = datetime.now()
-                                    doc_date = datetime.strptime(ai_invoice_values[value], '%Y-%m-%d')
-                                    timedelta = today - doc_date
-
-                                    if timedelta.days > int(configurations['timeDelta']):
-                                        log.info(
-                                            f"{value} is older than {configurations['timeDelta']} days : {str(ai_invoice_values[value])}")
-                                        continue
-                                    if timedelta.days < 0:
-                                        log.info(f"{value} is in the future : {str(ai_invoice_values[value])}")
-                                        continue
-
-                            log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
-                            datas['datas'][value] = ai_invoice_values[value]
-            else:
-                log.info('No data found using AI LLM, fallback to standard processing')
-                ai_llm = False
-
     if workflow_settings['input']['apply_process'] and not ai_llm:
         log.debug('Start to find system fields in document based on workflow settings')
         if 'invoice_number' in system_fields_to_find:
