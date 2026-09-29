@@ -36,7 +36,6 @@ export default tseslint.config([
             reactHooks.configs.flat['recommended-latest']
         ],
         languageOptions: {
-            ecmaVersion: 2020,
             globals: globals.browser
         },
         rules: {
