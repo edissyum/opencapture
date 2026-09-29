@@ -33,7 +33,7 @@ export function HomePage() {
     }
     const [module, setModule] = useState("");
 
-    const {user, loadingUser} = useUser();
+    const { user, loadingUser } = useUser();
 
     const selectedModule = localStorage.getItem(`${custom}_selectedModule`) || 'verifier';
     if (selectedModule && selectedModule !== module) {

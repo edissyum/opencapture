@@ -78,5 +78,5 @@ export function useFavorites() {
         }
     }
 
-    return { ready, addFavorite, toggleFavorite, removeFavorite, getFavorites, loadingFavorites};
+    return { ready, addFavorite, toggleFavorite, removeFavorite, getFavorites, loadingFavorites };
 }

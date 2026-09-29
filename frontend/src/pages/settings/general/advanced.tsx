@@ -92,7 +92,7 @@ export function SettingsGeneralAdvanced() {
     const handleUpdate = () => {
         let options = [];
         if (selectedConfiguration[0].data.options) {
-            options = selectedConfiguration[0].data.options.map((option: string) => ({value: option, label: option}));
+            options = selectedConfiguration[0].data.options.map((option: string) => ({ value: option, label: option }));
         }
 
         showConfirmDialogWithInput({
@@ -126,7 +126,7 @@ export function SettingsGeneralAdvanced() {
     };
 
     const columns = [
-        { id: 'id', field: 'id', header: '', className: 'w-14!', sortable: true},
+        { id: 'id', field: 'id', header: '', className: 'w-14!', sortable: true },
         { id: 'label', field: 'label', header: t('GLOBAL.label'), className: 'w-2/12' },
         {
             id: 'description',

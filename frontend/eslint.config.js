@@ -41,6 +41,8 @@ export default tseslint.config([
         },
         rules: {
             '@stylistic/indent': ['error', 4],
+            '@stylistic/keyword-spacing': "error",
+            '@stylistic/space-before-blocks': "error",
             "@typescript-eslint/naming-convention": [
                 "error",
                 { selector: "typeLike", format: ["PascalCase"] },
@@ -54,7 +56,7 @@ export default tseslint.config([
             'react-hooks/set-state-in-effect': 'off',
             'react-hooks/incompatible-library': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
-            'react-refresh/only-export-components': 'off'
+            'react-refresh/only-export-components': 'off',
         }
     }
 ])

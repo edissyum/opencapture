@@ -35,9 +35,9 @@ export async function fetchCurrentLang(api: AxiosInstance): Promise<string | nul
 export function initI18n(initialLang: string) {
     return i18n.use(initReactI18next).init({
         resources: {
-            fra: {translation: translationFR},
-            eng: {translation: translationEN},
-            spa: {translation: translationSPA}
+            fra: { translation: translationFR },
+            eng: { translation: translationEN },
+            spa: { translation: translationSPA }
         },
         lng: initialLang,
         fallbackLng: "fra",
