@@ -7,6 +7,12 @@
             "method": "process"
         },
         {
+            "id"    : "ai_separation",
+            "label" : "Séparation intelligente par IA",
+            "script": "ai_separation.py",
+            "method": "process"
+        },
+        {
             "id"    : "metadata",
             "label" : "Séparation intelligente par métadonnées des factures",
             "script": "metadata.py",
@@ -28,6 +34,12 @@
             "id"    : "blank_page",
             "label" : "Séparation par pages blanches",
             "script": "blank_pages.py",
+            "method": "process"
+        },
+        {
+            "id"    : "separate_by_document_number",
+            "label" : "Séparation par nombre de pages",
+            "script": "separate_by_document_number.py",
             "method": "process"
         },
         {
