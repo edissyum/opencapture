@@ -349,11 +349,11 @@ class Files:
         return position
 
     def get_pages(self, file):
-
         try:
             pdf = pypdf.PdfReader(file)
             if pdf.is_encrypted:
                 pdf.decrypt('')
+
             try:
                 return len(pdf.pages)
             except ValueError as file_error:
