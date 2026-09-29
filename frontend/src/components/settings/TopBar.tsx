@@ -67,22 +67,22 @@ export default function BreadCrumbTopbar() {
                 }) }
                 { !['/settings', '/settings/general', '/settings/verifier', '/settings/splitter'].includes(location.pathname)
                     && !location.pathname.includes('edit/') && location.pathname.includes('/settings') && (
-                        <div data-tooltip-id="tooltip"
-                             className={ `ml-auto cursor-pointer ${ loadingFavorites ? 'pointer-events-none' : '' }` }
-                             data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
-                             onClick={ () => {
-                                 toggleFavorite(location.pathname).then(() => setRefresh(true))
-                             } }
-                        >
-                            { loadingFavorites ? (
-                                <div
-                                    className="size-6 border-2 border-(--color-primary) border-t-transparent rounded-full animate-spin"/>
-                            ) : (
-                                <Star size={ 26 }
-                                      className={ `${ isFav ? 'fill-(--color-primary) text-(--color-primary)' : '' }` }/>
-                            ) }
-                        </div>
-                    ) }
+                    <div data-tooltip-id="tooltip"
+                        className={ `ml-auto cursor-pointer ${ loadingFavorites ? 'pointer-events-none' : '' }` }
+                        data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
+                        onClick={ () => {
+                            toggleFavorite(location.pathname).then(() => setRefresh(true))
+                        } }
+                    >
+                        { loadingFavorites ? (
+                            <div
+                                className="size-6 border-2 border-(--color-primary) border-t-transparent rounded-full animate-spin"/>
+                        ) : (
+                            <Star size={ 26 }
+                                className={ `${ isFav ? 'fill-(--color-primary) text-(--color-primary)' : '' }` }/>
+                        ) }
+                    </div>
+                ) }
             </div>
         </header>
     );

@@ -19,13 +19,13 @@ import { useEffect, useState } from "react";
 
 import { AxiosApiCall } from "./AxiosApiCall";
 
-interface useFormFieldsResult {
+interface UseFormFieldsResult {
     formFields: any;
     loading: boolean;
     error?: string | null;
 }
 
-export function useFormFields(formId: number): useFormFieldsResult {
+export function useFormFields(formId: number): UseFormFieldsResult {
     const { get, loading, error } = AxiosApiCall();
     const [formFields, setFormFields] = useState<any>([]);
 

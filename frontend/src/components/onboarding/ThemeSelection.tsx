@@ -65,7 +65,7 @@ export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
                         {
                             theme['id'] === 'system' &&
                             <div className="absolute inset-0 bg-white box-border rounded-md"
-                                 style={ { clipPath: 'inset(0 0 0 50%)' } }>
+                                style={ { clipPath: 'inset(0 0 0 50%)' } }>
                                 <div
                                     className="absolute rounded-lg top-2.5 w-[110px] h-20 left-9 bg-gray-200"></div>
                                 <div className="absolute rounded-lg top-2.5 w-8 h-7 left-38 bg-gray-200"></div>

@@ -895,9 +895,9 @@ export function VerifierViewerPage() {
         let field = null;
         Object.keys(formFields).forEach((parentKey: any) => {
             formFields[parentKey].forEach((line: any) => {
-                Object.values(line).filter((l: any) => typeof l !== 'boolean').forEach((l_field: any) => {
-                    if (l_field.id === fieldId) {
-                        field = l_field;
+                Object.values(line).filter((l: any) => typeof l !== 'boolean').forEach((lField: any) => {
+                    if (lField.id === fieldId) {
+                        field = lField;
                     }
                 });
             });
@@ -1053,9 +1053,9 @@ export function VerifierViewerPage() {
         if (currentForm.outputs && currentForm.outputs.length > 0) {
             let outputError = false;
             let cpt = 0;
-            for (const output_id of currentForm.outputs) {
+            for (const outputId of currentForm.outputs) {
                 try {
-                    const output = await get(`outputs/verifier/getById/${ output_id }`);
+                    const output = await get(`outputs/verifier/getById/${ outputId }`);
                     if (!output) return;
 
                     await post(`verifier/documents/${ documentId }/${ output.output_type_id }`, output);
@@ -1238,7 +1238,7 @@ export function VerifierViewerPage() {
                 <div className='w-1/2'>
                     <div className='pt-6 pl-6 pb-4'>
                         <Button size='sm' variant="bg_white_rounded"
-                                icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
+                            icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
                             { t('GLOBAL.back') }
                         </Button>
                     </div>
@@ -1271,9 +1271,9 @@ export function VerifierViewerPage() {
                                 <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                     cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
                                     hover:text-(--color-primary) transition-colors shrink-0 relative"
-                                     onClick={ () => setShowAttachments(true) }
-                                     data-tooltip-id="tooltip"
-                                     data-tooltip-content={ t('VERIFIER.show_attachments') }>
+                                onClick={ () => setShowAttachments(true) }
+                                data-tooltip-id="tooltip"
+                                data-tooltip-content={ t('VERIFIER.show_attachments') }>
                                     <Paperclip size={ 18 }/>
                                     { attachmentsCount > 0 && (
                                         <div
@@ -1284,9 +1284,9 @@ export function VerifierViewerPage() {
                             <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                     cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
                                     hover:text-(--color-primary) transition-colors shrink-0"
-                                 onClick={ handleDownloadOriginalFile }
-                                 data-tooltip-id="tooltip"
-                                 data-tooltip-content={ t('VERIFIER.download_original_file') }>
+                            onClick={ handleDownloadOriginalFile }
+                            data-tooltip-id="tooltip"
+                            data-tooltip-content={ t('VERIFIER.download_original_file') }>
                                 <Download size={ 18 }/>
                             </div>
 
@@ -1298,10 +1298,10 @@ export function VerifierViewerPage() {
                             <div className="flex justify-center items-center gap-2 bg-(--bg-primary) p-2 rounded-full
                                     cursor-pointer border border-(--border-secondary) min-w-[160px] whitespace-nowrap">
                                 <button onClick={ handlePrev }
-                                        disabled={ currentPage === 1 }
-                                        className={ `cursor-pointer rounded-full transition-colors p-2 hover:text-(--color-primary)
+                                    disabled={ currentPage === 1 }
+                                    className={ `cursor-pointer rounded-full transition-colors p-2 hover:text-(--color-primary)
                                                     ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
-                                            : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
+                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
                                 >
                                     <ChevronLeft size={ 16 }/>
                                 </button>
@@ -1315,7 +1315,7 @@ export function VerifierViewerPage() {
                                     disabled={ currentPage === totalPages }
                                     className={ `cursor-pointer rounded-full transition-colors p-2 hover:text-(--color-primary)
                                 ${ currentPage === totalPages ? "text-(--text-secondary) cursor-not-allowed"
-                                        : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
+                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
                                     <ChevronRight size={ 16 }/>
                                 </button>
                             </div>
@@ -1324,9 +1324,9 @@ export function VerifierViewerPage() {
                                     rounded-full cursor-pointer border border-(--border-secondary)
                                     hover:border-(--border-primary) hover:text-(--color-primary)
                                     transition-colors shrink-0"
-                                 data-tooltip-id="tooltip"
-                                 data-tooltip-content={ indicatorsVisible ? t('VERIFIER.hide_indicators') : t('VERIFIER.show_indicators') }
-                                 onClick={ handleChangeIndicatorsVisible }>
+                            data-tooltip-id="tooltip"
+                            data-tooltip-content={ indicatorsVisible ? t('VERIFIER.hide_indicators') : t('VERIFIER.show_indicators') }
+                            onClick={ handleChangeIndicatorsVisible }>
                                 { indicatorsVisible ? <Eye size={ 18 }/> : <EyeOff size={ 18 }/> }
                             </div>
                         </div>
@@ -1400,7 +1400,7 @@ export function VerifierViewerPage() {
                                                 <div key={ index } className={ `flex gap-4` }>
                                                     { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
                                                         <div key={ field.id }
-                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                            className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                             { field.type === 'date' && (
                                                                 <ISOCalendar
                                                                     id={ field.id }
@@ -1492,12 +1492,12 @@ export function VerifierViewerPage() {
                                                     )) }
                                                     { line.duplicable && (
                                                         <div data-tooltip-id="tooltip"
-                                                             data-tooltip-content={ t('FORMS.duplicate_line') }
-                                                             className={ `flex items-center justify-center
+                                                            data-tooltip-content={ t('FORMS.duplicate_line') }
+                                                            className={ `flex items-center justify-center
                                                                 ${ disableFields ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
-                                                             onClick={ () => {
-                                                                 handleDuplicateLine(line, zone, index)
-                                                             } }>
+                                                            onClick={ () => {
+                                                                handleDuplicateLine(line, zone, index)
+                                                            } }>
                                                             <Copy size={ 18 }/>
                                                         </div>
                                                     ) }
@@ -1525,17 +1525,17 @@ export function VerifierViewerPage() {
                                 />
                                 <CircleAlert data-tooltip-id="tooltip-outputs" size={ 18 } className='cursor-pointer'/>
                                 <Save size={ 18 }
-                                      onClick={ () => unSavedChanges && !disableFields && handleSaveChanges() }
-                                      className={ `cursor-pointer ${ (!unSavedChanges || disableFields) && 'pointer-events-none cursor-not-allowed opacity-50' }` }
-                                      data-tooltip-id="tooltip"
-                                      data-tooltip-content={ t('GLOBAL.save_modifications') }/>
+                                    onClick={ () => unSavedChanges && !disableFields && handleSaveChanges() }
+                                    className={ `cursor-pointer ${ (!unSavedChanges || disableFields) && 'pointer-events-none cursor-not-allowed opacity-50' }` }
+                                    data-tooltip-id="tooltip"
+                                    data-tooltip-content={ t('GLOBAL.save_modifications') }/>
                             </div>
                             <div className='grow basis-0 w-full' { ...(supplierChanged && {
                                 "data-tooltip-id": "tooltip",
                                 "data-tooltip-content": t('VERIFIER.save_supplier_modification')
                             }) }>
                                 <Button className='w-full' variant='danger' onClick={ () => refuseDocument() }
-                                        disabled={ loadingUpdateData || supplierChanged || !supplierExists
+                                    disabled={ loadingUpdateData || supplierChanged || !supplierExists
                                             || formHasError || disableFields }>
                                     { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                                 </Button>
@@ -1545,7 +1545,7 @@ export function VerifierViewerPage() {
                                 "data-tooltip-content": t('VERIFIER.save_supplier_modification')
                             }) }>
                                 <Button className='w-full' onClick={ () => validateDocument() }
-                                        disabled={ loadingUpdateData || supplierChanged || (!supplierExists)
+                                    disabled={ loadingUpdateData || supplierChanged || (!supplierExists)
                                             || formHasError || disableFields }>
                                     { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                                 </Button>

@@ -28,19 +28,19 @@ const imageCache: any = {
 type LazyBase64ImageProps = {
     alt?: string;
     module: string;
-    document_info: any;
+    documentInfo: any;
     className?: string;
 };
 
-export function LazyBase64Image({ document_info, alt, className, module }: LazyBase64ImageProps) {
+export function LazyBase64Image({ documentInfo, alt, className, module }: LazyBase64ImageProps) {
     const [src, setSrc] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const { get, post } = AxiosApiCall();
 
     useEffect(() => {
         let active = true;
-        if (imageCache[module].has(document_info.id)) {
-            setSrc(imageCache[module].get(document_info.id)!);
+        if (imageCache[module].has(documentInfo.id)) {
+            setSrc(imageCache[module].get(documentInfo.id)!);
             setLoading(false);
             return;
         }
@@ -50,23 +50,23 @@ export function LazyBase64Image({ document_info, alt, className, module }: LazyB
                 post(`/verifier/getThumb`, {
                     "type": 'full',
                     "compress": true,
-                    "documentId": document_info.id,
-                    "filename": document_info.full_jpg_filename,
-                    "registerDate": document_info.register_date
+                    "documentId": documentInfo.id,
+                    "filename": documentInfo.full_jpg_filename,
+                    "registerDate": documentInfo.register_date
                 }).then((res) => {
                     if (!active) return;
                     const base64 = 'data:image/jpg;base64,' + res.file;
 
-                    imageCache[module].set(document_info.id, base64);
+                    imageCache[module].set(documentInfo.id, base64);
                     setSrc(base64);
                 }).catch(() => setSrc(null)).finally(() => setLoading(false));
             } else if (module === 'splitter') {
-                get(`/splitter/batches/${document_info.id}/getThumb`, {}).then((res) => {
+                get(`/splitter/batches/${documentInfo.id}/getThumb`, {}).then((res) => {
                     const base64 = 'data:image/jpg;base64,' + res.thumbnail;
-                    imageCache[module].set(document_info.id, base64);
+                    imageCache[module].set(documentInfo.id, base64);
                     setSrc(base64);
                 }).catch(() => {
-                    imageCache[module].set(document_info.id, { error: "Erreur lors du chargement de la vignette" });
+                    imageCache[module].set(documentInfo.id, { error: "Erreur lors du chargement de la vignette" });
                 }).finally(() => setLoading(false));
             }
         };
@@ -76,7 +76,7 @@ export function LazyBase64Image({ document_info, alt, className, module }: LazyB
         return () => {
             active = false;
         };
-    }, [document_info]);
+    }, [documentInfo]);
 
     return (
         <div className="w-full h-40 relative">

@@ -75,7 +75,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         fetchCustomField().then();
     }, [customFieldId]);
 
-    let typesList = [
+    const typesList = [
         { id: 'text', label: t('CUSTOM-FIELDS.type_text'), 'logo': 'text' },
         { id: 'date', label: t('CUSTOM-FIELDS.type_date'), 'logo': 'date' },
         { id: 'select', label: t('CUSTOM-FIELDS.type_select'), 'logo': 'select' },
@@ -254,9 +254,8 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         Object.entries(customField).forEach(([key, value]: any) => {
             setValue(key, value);
         });
-
         if (customField.settings) {
-            Object.entries(customField.settings).forEach(([_, value]: any) => {
+            Object.values(customField.settings).forEach((value: any) => {
                 if (value) {
                     Object.entries(value).forEach(([settingKey, settingValue]: any) => {
                         setValue(settingKey, settingValue);
@@ -559,7 +558,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                     } }
                                 />
                                 <label htmlFor='conditional_custom_field'
-                                       className="flex items-center gap-4 cursor-pointer select-none
+                                    className="flex items-center gap-4 cursor-pointer select-none
                                                           text-(--text-secondary)">
                                     { t('CUSTOM-FIELDS.conditional_option') }
                                 </label>
@@ -701,12 +700,12 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             <div className="p-6 w-fit">
                 { customFieldId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
-                            disabled={ !watchType || !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
+                        disabled={ !watchType || !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
                         { loading ? t('GLOBAL.updating') : t('CUSTOM-FIELDS.update_custom_fields') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(handleCreate) }
-                            disabled={ !watchType || !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
+                        disabled={ !watchType || !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
                         { loading ? t('GLOBAL.creating') : t('CUSTOM-FIELDS.create_custom_fields') }
                     </Button>
                 ) }

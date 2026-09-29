@@ -80,7 +80,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     getDoctypesFromMem: async (args: any) => {
         const res = await post('/mem/getDoctypes', args);
         if (res && res.doctypes) {
-            let doctypesOptions: any = [];
+            const doctypesOptions: any = [];
             for (const doctype of res.doctypes) {
                 doctypesOptions.push({ value: doctype.type_id, label: doctype.description });
             }
@@ -90,7 +90,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     getStatusesFromMem: async (args: any) => {
         const res = await post('/mem/getStatuses', args);
         if (res && res.statuses) {
-            let statusesOptions: any = [];
+            const statusesOptions: any = [];
             for (const status of res.statuses) {
                 statusesOptions.push({ value: status.id, label: status.label_status });
             }
@@ -100,7 +100,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     getUsersFromMem: async (args: any) => {
         const res = await post('/mem/getUsers', args);
         if (res && res.users) {
-            let usersOptions: any = [];
+            const usersOptions: any = [];
             for (const user of res.users) {
                 usersOptions.push({ value: user.id, label: user.firstname + ' ' + user.lastname });
             }
@@ -110,7 +110,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     getPrioritiesFromMem: async (args: any) => {
         const res = await post('/mem/getPriorities', args);
         if (res && res.priorities) {
-            let prioritiesOptions: any = [];
+            const prioritiesOptions: any = [];
             for (const priority of res.priorities) {
                 prioritiesOptions.push({ value: priority.id, label: priority.label });
             }
@@ -120,7 +120,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     getEntitiesFromMem: async (args: any) => {
         const res = await post('/mem/getEntities', args);
         if (res && res.entities) {
-            let entitiesOptions: any = [];
+            const entitiesOptions: any = [];
             for (const entity of res.entities) {
                 entitiesOptions.push({ value: entity.serialId, label: entity.entity_label });
             }
@@ -131,7 +131,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         const res = await post('/mem/getIndexingModels', args);
 
         if (res && res.indexingModels) {
-            let indexingModelsOptions: any = [];
+            const indexingModelsOptions: any = [];
             for (const model of res.indexingModels) {
                 indexingModelsOptions.push({ value: model.id, label: model.label });
             }
@@ -141,7 +141,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     getContactsCustomFieldsFromMem: async (args: any) => {
         const res = await post('/mem/getContactsCustomFields', args);
         if (res && res.customFields) {
-            let customFieldsOptions: any = [];
+            const customFieldsOptions: any = [];
             for (const field of res.customFields) {
                 customFieldsOptions.push({ value: field.id, label: field.label });
             }
@@ -151,7 +151,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     getCustomFieldsFromMem: async (args: any) => {
         const res = await post('/mem/getCustomFields', args);
         if (res && res.customFields) {
-            let customFieldsOptions: any = [];
+            const customFieldsOptions: any = [];
             for (const field of res.customFields) {
                 customFieldsOptions.push({ value: field.id, label: field.label });
             }

@@ -46,7 +46,7 @@ export function MonitoringDetails() {
     });
 
     const paginatedSteps = useMemo(() => {
-        let data = [...steps];
+        const data = [...steps];
 
         if (lazyParams.sortField) {
             data.sort((a, b) => {
@@ -77,17 +77,17 @@ export function MonitoringDetails() {
             body: (row: any) => (
                 <span className={ `${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
                                    ${ (row.status === 'error' || row.error) && 'cursor-pointer text-(--text-error)' }` }
-                      { ...((row.status === 'error' || row.error) && {
-                          "data-tooltip-id": "tooltip",
-                          "data-tooltip-content": t('MONITORING.copy_error_message')
-                      }) }
-                      onClick={ async () => {
-                          if (row.status === 'error' || row.error) {
-                              await copyToClipboard(row.message);
-                              showToast(t('MONITORING.error_message_copied'), 'success');
-                          }
-                      } }
-                      dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.message_formatted) } }
+                { ...((row.status === 'error' || row.error) && {
+                    "data-tooltip-id": "tooltip",
+                    "data-tooltip-content": t('MONITORING.copy_error_message')
+                }) }
+                onClick={ async () => {
+                    if (row.status === 'error' || row.error) {
+                        await copyToClipboard(row.message);
+                        showToast(t('MONITORING.error_message_copied'), 'success');
+                    }
+                } }
+                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.message_formatted) } }
                 />
             )
         },
@@ -136,9 +136,9 @@ export function MonitoringDetails() {
                         }
                         if (seconds && seconds !== '00') {
                             if (parseInt(minutes) < 1 && parseInt(hours) < 1) {
-                                const seconds_splitted = seconds.slice(0, 2);
+                                const secondsSplitted = seconds.slice(0, 2);
                                 const microseconds = seconds.slice(3, 5);
-                                message += `${ seconds_splitted } ${ t('MONITORING.seconds', { count: parseInt(seconds_splitted) }) } `;
+                                message += `${ secondsSplitted } ${ t('MONITORING.seconds', { count: parseInt(secondsSplitted) }) } `;
                                 message += `${ t('MONITORING.and') } `;
                                 message += `${ microseconds } ms`;
                             } else {
@@ -265,11 +265,11 @@ export function MonitoringDetails() {
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ steps.length || 0 }
                 rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                    { "value": 4, "label": "4" },
+                    { "value": 8, "label": "8" },
+                    { "value": 16, "label": "16" },
+                    { "value": 32, "label": "32" }
+                ] }
                 emptyMessage={ t("MONITORING.no_processes") }
                 onLazyParamsChange={ setLazyParams }
             />

@@ -24,7 +24,7 @@ import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 type TNLProps = {
     open: boolean;
     module: string;
-    document_info: any;
+    documentInfo: any;
 };
 
 const thumbCache: any = {
@@ -32,42 +32,42 @@ const thumbCache: any = {
     splitter: new Map<string, string>(),
 };
 
-export function Thumbnail({ document_info, open, module }: TNLProps) {
+export function Thumbnail({ documentInfo, open, module }: TNLProps) {
     const { get, post } = AxiosApiCall();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (!open || thumbCache[module].has(document_info.id) || loading) return;
+        if (!open || thumbCache[module].has(documentInfo.id) || loading) return;
 
         setLoading(true);
         if (module == 'verifier') {
             post(`/verifier/getThumb`, {
                 "type": 'full',
                 "compress": true,
-                "documentId": document_info.id,
-                "filename": document_info.full_jpg_filename,
-                "registerDate": document_info.register_date
+                "documentId": documentInfo.id,
+                "filename": documentInfo.full_jpg_filename,
+                "registerDate": documentInfo.register_date
             }).then((res) => {
                 thumbCache[module].set(
-                    document_info.id,
+                    documentInfo.id,
                     'data:image/jpg;base64,' + res.file
                 );
             }).catch(() => {
-                thumbCache[module].set(document_info.id, { error: "Erreur lors du chargement de la vignette" });
+                thumbCache[module].set(documentInfo.id, { error: "Erreur lors du chargement de la vignette" });
             }).finally(() => setLoading(false));
         } else if (module == 'splitter') {
-            get(`/splitter/batches/${document_info.id}/getThumb`, {}).then((res) => {
+            get(`/splitter/batches/${documentInfo.id}/getThumb`, {}).then((res) => {
                 thumbCache[module].set(
-                    document_info.id,
+                    documentInfo.id,
                     'data:image/jpg;base64,' + res.thumbnail
                 );
             }).finally(() => setLoading(false));
         }
-    }, [open, document_info]);
+    }, [open, documentInfo]);
 
     if (!open) return null;
 
-    const cached = thumbCache[module].get(document_info.id);
+    const cached = thumbCache[module].get(documentInfo.id);
 
     return (
         <div className="absolute z-20 top-4 left-4 max-w-[30%] bg-(--bg-primary) border border-(--border-secondary) p-2

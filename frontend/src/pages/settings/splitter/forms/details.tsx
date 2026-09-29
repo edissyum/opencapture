@@ -135,12 +135,12 @@ export function SettingsSplitterFormsDetails({
                         label={ t('SETTINGS.export_zip_file_name') }
                         hint={ t('SETTINGS.export_zip_file_name_hint') }
                         onChange={ (e) => setFormSettings({
-                                ...formSettings,
-                                settings: {
-                                    ...formSettings.settings,
-                                    export_zip_file: e.target.value
-                                }
+                            ...formSettings,
+                            settings: {
+                                ...formSettings.settings,
+                                export_zip_file: e.target.value
                             }
+                        }
                         ) }
                     />
                 </div>
@@ -166,7 +166,7 @@ export function SettingsSplitterFormsDetails({
             </div>
 
             <Button variant="primary" onClick={ handleSubmit }
-                    disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
+                disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
                 { isSubmitting ? submitLabelLoading + "..." : submitLabel }
             </Button>
         </div>

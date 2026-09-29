@@ -220,7 +220,7 @@ export function Annotator({
                     if (r.id !== resizeTarget.id) return r;
 
                     // Calculate a new raw box
-                    let newRegion = { x: r.x, y: r.y, width: r.width, height: r.height };
+                    const newRegion = { x: r.x, y: r.y, width: r.width, height: r.height };
 
                     switch (resizeTarget.corner) {
                         case "top-left":
@@ -378,7 +378,7 @@ export function Annotator({
                     >
                         <div className="absolute -top-6.5 -right-px bg-(--bg-primary) text-xs select-none p-1 border
                                        rounded-md rounded-br-none flex gap-1 items-center z-20 whitespace-nowrap font-semibold"
-                             style={ { borderColor: r.color, color: r.color } }>
+                        style={ { borderColor: r.color, color: r.color } }>
                             <span>{ t(r.label) }</span>
                             { !disabled && (
                                 <button onClick={ () => handleDelete(r.id) } className="cursor-pointer">

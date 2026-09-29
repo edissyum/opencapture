@@ -202,16 +202,16 @@ export function SettingsGeneralUserEditor() {
 
         fetchUser().then(async () => {
             // Also fetch forms and customers associated with the user
-            const response_forms = await get(`/users/getFormsByUserId/${ userId }`);
+            const responseForms = await get(`/users/getFormsByUserId/${ userId }`);
             setUser((prevUser: any) => ({
                 ...prevUser,
-                forms: response_forms
+                forms: responseForms
             }));
 
-            const response_customers = await get(`/users/getCustomersByUserId/${ userId }`);
+            const responseCustomers = await get(`/users/getCustomersByUserId/${ userId }`);
             setUser((prevUser: any) => ({
                 ...prevUser,
-                customers: response_customers
+                customers: responseCustomers
             }));
         });
     }, [userId]);
@@ -325,12 +325,12 @@ export function SettingsGeneralUserEditor() {
                 <div className="w-fit">
                     { userId ? (
                         <Button onClick={ handleSubmit(handleUpdate) }
-                                disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                             { loadingSubmit ? t('GLOBAL.updating') : t('USERS.update_user') }
                         </Button>
                     ) : (
                         <Button onClick={ handleSubmit(handleCreate) }
-                                disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                             { loadingSubmit ? t('GLOBAL.creating') : t('USERS.create_user') }
                         </Button>
                     ) }

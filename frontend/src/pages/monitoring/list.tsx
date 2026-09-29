@@ -65,12 +65,12 @@ export function MonitoringList() {
         sortField: string | null;
         sortOrder: 1 | -1 | null;
     }>('monitoringLazyParams', {
-            first: 0,
-            rows: 16,
-            page: 0,
-            sortField: null,
-            sortOrder: null
-        }
+        first: 0,
+        rows: 16,
+        page: 0,
+        sortField: null,
+        sortOrder: null
+    }
     );
 
     const columns: any = [
@@ -121,7 +121,7 @@ export function MonitoringList() {
                 <span className={ `truncate
                                    ${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
                                    ${ (row.status === 'error' || row.error) && 'text-(--text-error)' }` }
-                      dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.last_message) } }
+                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.last_message) } }
                 />
             )
         },
@@ -147,11 +147,11 @@ export function MonitoringList() {
                             </div>
                             { !row.retry && (
                                 <RotateCw size={ 18 } data-tooltip-content={ t('MONITORING.retry_process') }
-                                          data-tooltip-id="tooltip"
-                                          onClick={ (e) => {
-                                              e.stopPropagation();
-                                              handleRetryProcess(row.id).then();
-                                          } }
+                                    data-tooltip-id="tooltip"
+                                    onClick={ (e) => {
+                                        e.stopPropagation();
+                                        handleRetryProcess(row.id).then();
+                                    } }
                                 />
                             ) }
                         </div>
@@ -247,14 +247,14 @@ export function MonitoringList() {
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
-                          onClick={ handleResetFilters }>
+                        onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
                     <div className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 flex items-center justify-between"
-                             onClick={ () => setOpen({ ...open, module: !open.module }) }>
+                            onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('MAILCOLLECT.module') }</h3>
@@ -286,7 +286,7 @@ export function MonitoringList() {
                     </div>
                     <div className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 flex items-center justify-between"
-                             onClick={ () => setOpen({ ...open, status: !open.status }) }>
+                            onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
@@ -339,8 +339,8 @@ export function MonitoringList() {
                         </span>
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-96' height='h-10' autoFocus
-                           value={ searchFilename } placeholder={ t('MONITORING.search_filename') }
-                           onChange={ (e) => setSearchFilename(e.target.value) }/>
+                        value={ searchFilename } placeholder={ t('MONITORING.search_filename') }
+                        onChange={ (e) => setSearchFilename(e.target.value) }/>
                 </div>
                 <Table
                     baseLink="/monitoring/"
@@ -353,11 +353,11 @@ export function MonitoringList() {
                     skeletonRows={ lazyParams.rows }
                     totalRecords={ totalProcesses || 0 }
                     rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                        { "value": 4, "label": "4" },
+                        { "value": 8, "label": "8" },
+                        { "value": 16, "label": "16" },
+                        { "value": 32, "label": "32" }
+                    ] }
                     emptyMessage={ t("MONITORING.no_processes") }
                     onLazyParamsChange={ setLazyParams }
                 />

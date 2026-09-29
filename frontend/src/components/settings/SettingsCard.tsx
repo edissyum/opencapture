@@ -20,7 +20,7 @@ import { PinOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { type ReactNode, useState } from "react";
 
-interface settingCardsProps {
+interface SettingCardsProps {
     to: string;
     title: string;
     show?: boolean;
@@ -40,7 +40,7 @@ export function SettingsCard({
     className,
     show = true,
     description,
-}: settingCardsProps) {
+}: SettingCardsProps) {
     const [hovered, setHovered] = useState(false);
 
     if (!show) return null;
@@ -50,7 +50,7 @@ export function SettingsCard({
                                      border border-(--border-secondary) rounded-md hover:border-gray-400` }
         >
             <div onMouseEnter={ () => setHovered(true) } onMouseLeave={ () => setHovered(false) }
-                 className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
+                className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
             >
                 { unpinFav && hovered ? (
                     <PinOff

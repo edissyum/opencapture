@@ -126,7 +126,7 @@ export function SettingsGeneralCustomization() {
     }, [get]);
 
     useEffect(() => {
-        let cancelled = false;
+        const cancelled = false;
 
         if (loginMessage !== '') return;
 
@@ -218,7 +218,7 @@ export function SettingsGeneralCustomization() {
                         {
                             files.map((file, index) => (
                                 <div key={ index } onClick={ () => handleSelectedIndex(index) }
-                                     className="w-70 h-auto justify-center items-center cursor-pointer relative mt-4 border-(--border-primary) border rounded-lg p-4">
+                                    className="w-70 h-auto justify-center items-center cursor-pointer relative mt-4 border-(--border-primary) border rounded-lg p-4">
                                     <CheckOverlay show={ selectedIndex === index }/>
                                     <img className="w-full" src={ fileUrls[index] } alt={ file.name }/>
                                 </div>

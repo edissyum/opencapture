@@ -26,9 +26,19 @@ export function LoginImage({ className }: { className?: string }) {
     const custom = useCustom();
     const [image, setImage] = useState<string | undefined>(undefined);
 
-    if (!custom) return null;
+    useEffect(() => {
+        loadImage().then();
+        const handleUpdate = () => {
+            loadImage().then();
+        };
+
+        window.addEventListener("appImageChanged", handleUpdate);
+        return () => window.removeEventListener("appImageChanged", handleUpdate);
+    }, []);
 
     const loadImage = async () => {
+        if (!custom) return;
+
         try {
             const stored = localStorage.getItem(`${ custom }_appImage`);
             if (stored) {
@@ -51,15 +61,7 @@ export function LoginImage({ className }: { className?: string }) {
         }
     };
 
-    useEffect(() => {
-        loadImage().then();
-        const handleUpdate = () => {
-            loadImage().then();
-        };
-
-        window.addEventListener("appImageChanged", handleUpdate);
-        return () => window.removeEventListener("appImageChanged", handleUpdate);
-    }, []);
+    if (!custom) return null;
 
     return <img src={ image } alt="AppImage" className={ className ?? "w-24 h-24 object-contain" }/>;
 }

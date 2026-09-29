@@ -130,15 +130,15 @@ export function SettingsVerifierFormsDetails({
                         }) }
                     />
                     <div className="text-(--text-secondary) cursor-pointer"
-                         data-tooltip-id="tooltip"
-                         data-tooltip-content={ t('FORMS.allow_learning_hint') }>
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content={ t('FORMS.allow_learning_hint') }>
                         <CircleQuestionMark size={ 18 }/>
                     </div>
                 </div>
             </div>
 
             <Button variant="primary" onClick={ handleSubmit }
-                    disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
+                disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
                 { isSubmitting ? submitLabelLoading + "..." : submitLabel }
             </Button>
         </div>

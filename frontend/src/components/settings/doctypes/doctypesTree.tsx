@@ -159,15 +159,15 @@ export function SortableFieldItem({ field, lastField, onRemove }: {
 }
 
 export function DoctypesTree({
-                                 formId,
-                                 editor,
-                                 onSelect,
-                                 onTmpSelect,
-                                 doctypesList,
-                                 selectedDoctype,
-                                 onDoctypesLoaded,
-                                 canFolderBeSelected = true
-                             }: {
+    formId,
+    editor,
+    onSelect,
+    onTmpSelect,
+    doctypesList,
+    selectedDoctype,
+    onDoctypesLoaded,
+    canFolderBeSelected = true
+}: {
     formId: number;
     editor?: boolean;
     doctypesList?: any[];
@@ -425,7 +425,7 @@ export function DoctypesTree({
             { showExportDialog && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                         onClick={ () => setShowExportDialog(false) }/>
+                        onClick={ () => setShowExportDialog(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-y-auto
                                                 h-fit max-h-screen border border-(--border-secondary)
                                                 rounded-lg bg-(--bg-primary) flex flex-col">
@@ -451,7 +451,7 @@ export function DoctypesTree({
                                 <div className='flex gap-4'>
                                     { delimiterOptions.map(opt => (
                                         <div key={ opt.value } onClick={ () => setDelimiter(opt.value) }
-                                             className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                            className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                                                     ${ delimiter === opt.value ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
                                                     rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
                                             { opt.icon }
@@ -466,7 +466,7 @@ export function DoctypesTree({
                                 </p>
                                 <>
                                     <DndContext sensors={ sensors } collisionDetection={ closestCenter }
-                                                onDragEnd={ handleDragEnd }>
+                                        onDragEnd={ handleDragEnd }>
                                         <SortableContext
                                             items={ selectedFields.map(f => f.id) }
                                             strategy={ verticalListSortingStrategy }
@@ -475,8 +475,8 @@ export function DoctypesTree({
                                                 className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
                                                 { selectedFields.map(field => (
                                                     <SortableFieldItem key={ field.id } field={ field }
-                                                                       lastField={ field.id === selectedFields[selectedFields.length - 1].id }
-                                                                       onRemove={ () => handleRemoveField(field) }/>
+                                                        lastField={ field.id === selectedFields[selectedFields.length - 1].id }
+                                                        onRemove={ () => handleRemoveField(field) }/>
                                                 )) }
                                             </div>
                                         </SortableContext>
@@ -488,7 +488,7 @@ export function DoctypesTree({
                                             setUnselectedFields(prev => prev.filter(f => f.id !== field.id));
                                             setSelectedFields(prev => [...prev, { ...field, selected: true }]);
                                         } }
-                                             className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                        className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                                                     rounded-md px-2 py-1 cursor-pointer flex items-center text-center justify-center gap-2` }>
                                             { field.label }
                                             <Plus size={ 16 }/>
@@ -512,7 +512,7 @@ export function DoctypesTree({
             { showCloneDialog && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                         onClick={ () => setShowCloneDialog(false) }/>
+                        onClick={ () => setShowCloneDialog(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                             min-w-[32vw] h-fit max-h-screen border border-(--border-secondary)
                                             rounded-lg bg-(--bg-primary) flex flex-col">
@@ -530,7 +530,7 @@ export function DoctypesTree({
                                 </Hint>
                             </>
                             <div className='absolute right-4 top-4 cursor-pointer text-(--text-secondary)'
-                                 onClick={ () => setShowCloneDialog(false) }>
+                                onClick={ () => setShowCloneDialog(false) }>
                                 <X/>
                             </div>
                             <div className='w-full flex flex-col gap-2 mt-2'>
@@ -575,7 +575,7 @@ export function DoctypesTree({
                             </span>
 
                             <span onClick={ collapseAll }
-                                  className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
+                                className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
                                 <Minimize size={ 16 }/>
                             </span>
                         </div>
@@ -583,21 +583,21 @@ export function DoctypesTree({
                         { editor && (
                             <div className="actionsButton ml-auto">
                                 <span className="rounded-l-md dark:bg-(--bg-secondary) border"
-                                      onClick={ () => setShowImportDialog(true) }
-                                      data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.import') }>
+                                    onClick={ () => setShowImportDialog(true) }
+                                    data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.import') }>
                                     <Download size={ 16 }/>
                                 </span>
 
                                 <span className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0"
-                                      onClick={ () => setShowExportDialog(true) }
-                                      data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.export') }>
+                                    onClick={ () => setShowExportDialog(true) }
+                                    data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.export') }>
                                     <Upload size={ 16 }/>
                                 </span>
 
                                 <span className="rounded-md dark:bg-(--bg-secondary) ml-2 border"
-                                      onClick={ () => setShowCloneDialog(true) }
-                                      data-tooltip-content={ t('DOCTYPES.clone_doctype') }
-                                      data-tooltip-id='tooltip'>
+                                    onClick={ () => setShowCloneDialog(true) }
+                                    data-tooltip-content={ t('DOCTYPES.clone_doctype') }
+                                    data-tooltip-id='tooltip'>
                                     <Copy size={ 16 }/>
                                 </span>
                             </div>

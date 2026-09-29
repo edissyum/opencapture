@@ -248,8 +248,8 @@ export function SuppliersList() {
                     </span>
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                       onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                    onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <div className='flex items-center gap-2'>
                         <Button
@@ -304,11 +304,11 @@ export function SuppliersList() {
                 selectedRows={ selectedSuppliers }
                 totalRecords={ totalSuppliers || 0 }
                 rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                    { "value": 4, "label": "4" },
+                    { "value": 8, "label": "8" },
+                    { "value": 16, "label": "16" },
+                    { "value": 32, "label": "32" }
+                ] }
                 emptyMessage={ t("ACCOUNTS.no_suppliers") }
                 paginatorLeftText={ t('ACCOUNTS.selected', { count: selectedSuppliers.length }) }
                 onLazyParamsChange={ setLazyParams }

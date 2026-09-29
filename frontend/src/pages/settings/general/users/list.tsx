@@ -363,7 +363,7 @@ export function SettingsGeneralUsers() {
             { showExportDialog && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                         onClick={ () => setShowExportDialog(false) }/>
+                        onClick={ () => setShowExportDialog(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-y-auto
                                                 h-fit max-h-screen border border-(--border-secondary)
                                                 rounded-lg bg-(--bg-primary) flex flex-col">
@@ -389,7 +389,7 @@ export function SettingsGeneralUsers() {
                                 <div className='flex gap-4'>
                                     { delimiterOptions.map(opt => (
                                         <div key={ opt.value } onClick={ () => setDelimiter(opt.value) }
-                                             className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                            className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                                                     ${ delimiter === opt.value ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
                                                     rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
                                             { opt.icon }
@@ -404,7 +404,7 @@ export function SettingsGeneralUsers() {
                                 </p>
                                 <>
                                     <DndContext sensors={ sensors } collisionDetection={ closestCenter }
-                                                onDragEnd={ handleDragEnd }>
+                                        onDragEnd={ handleDragEnd }>
                                         <SortableContext
                                             items={ selectedFields.map(f => f.id) }
                                             strategy={ verticalListSortingStrategy }
@@ -413,8 +413,8 @@ export function SettingsGeneralUsers() {
                                                 className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
                                                 { selectedFields.map(field => (
                                                     <SortableFieldItem key={ field.id } field={ field }
-                                                                       lastField={ field.id === selectedFields[selectedFields.length - 1].id }
-                                                                       onRemove={ () => handleRemoveField(field) }/>
+                                                        lastField={ field.id === selectedFields[selectedFields.length - 1].id }
+                                                        onRemove={ () => handleRemoveField(field) }/>
                                                 )) }
                                             </div>
                                         </SortableContext>
@@ -426,7 +426,7 @@ export function SettingsGeneralUsers() {
                                             setUnselectedFields(prev => prev.filter(f => f.id !== field.id));
                                             setSelectedFields(prev => [...prev, { ...field, selected: true }]);
                                         } }
-                                             className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                        className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                                                     rounded-md px-2 py-1 cursor-pointer flex items-center text-center justify-center gap-2` }>
                                             { field.label }
                                             <Plus size={ 16 }/>
@@ -465,8 +465,8 @@ export function SettingsGeneralUsers() {
                     </span>
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                       onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                    onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='flex gap-2 ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size='sm'
@@ -478,14 +478,14 @@ export function SettingsGeneralUsers() {
                     </Button>
                     <div className="actionsButton ml-auto">
                         <span className="rounded-l-md bg-(--bg-primary) border"
-                              onClick={ () => setShowImportDialog(true) }
-                              data-tooltip-id='tooltip' data-tooltip-content={ t('USERS.import') }>
+                            onClick={ () => setShowImportDialog(true) }
+                            data-tooltip-id='tooltip' data-tooltip-content={ t('USERS.import') }>
                             <Download size={ 16 }/>
                         </span>
 
                         <span className="rounded-r-md bg-(--bg-primary) border border-l-0"
-                              onClick={ () => setShowExportDialog(true) }
-                              data-tooltip-id='tooltip' data-tooltip-content={ t('USERS.export') }>
+                            onClick={ () => setShowExportDialog(true) }
+                            data-tooltip-id='tooltip' data-tooltip-content={ t('USERS.export') }>
                             <Upload size={ 16 }/>
                         </span>
                     </div>
@@ -521,7 +521,7 @@ export function SettingsGeneralUsers() {
                 { t('USERS.user_quota') }
             </p>
             <div onClick={ () => navigate('/settings/general/users/quota') }
-                 className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
+                className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
                 { t('SECURITY.here') }
                 <ArrowRight size={ 18 }/>
             </div>

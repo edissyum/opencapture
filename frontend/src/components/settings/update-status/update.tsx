@@ -35,7 +35,7 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
     const [statuses, setStatuses] = useState<any[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
 
-    const [icons, _] = useState<any>([
+    const [icons] = useState<any>([
         {
             'id': 'NEW',
             'icon': <FileCheckCorner/>
@@ -110,8 +110,8 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
             <div className='flex gap-4 mt-2 w-4/5 grid-cols-5'>
                 { statuses.map((status) => (
                     <div key={ status.id }
-                         onClick={ () => setSelectedStatus(status.id) }
-                         className={ `w-full border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                        onClick={ () => setSelectedStatus(status.id) }
+                        className={ `w-full border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2
                              ${ selectedStatus === status.id ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : 'text-(--text-secondary)' } ` }
                     >
@@ -124,41 +124,41 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
             <h1 className="text-md font-bold mt-6 mb-2">{ t('UPDATE-STATUS.id_documents') }</h1>
             <div className='w-4/5'>
                 <Input id="identifier-input"
-                       value={ identifier }
-                       onChange={ (e) => {
-                           if (/^\d*$/.test(e.target.value)) {
-                               setIdentifier(e.target.value)
-                           }
-                       } }
-                       placeholder={ t('UPDATE-STATUS.id_placeholder') }
-                       onKeyDown={ (e) => {
-                           if ((e.key === 'Enter' || e.key === ',') && identifier.trim() !== '') {
-                               if (!identifierList.includes(identifier.trim())) {
-                                   setIdentifierList([...identifierList, identifier.trim()]);
-                               }
-                               setIdentifier('');
-                           }
-                       } }
+                    value={ identifier }
+                    onChange={ (e) => {
+                        if (/^\d*$/.test(e.target.value)) {
+                            setIdentifier(e.target.value)
+                        }
+                    } }
+                    placeholder={ t('UPDATE-STATUS.id_placeholder') }
+                    onKeyDown={ (e) => {
+                        if ((e.key === 'Enter' || e.key === ',') && identifier.trim() !== '') {
+                            if (!identifierList.includes(identifier.trim())) {
+                                setIdentifierList([...identifierList, identifier.trim()]);
+                            }
+                            setIdentifier('');
+                        }
+                    } }
                 />
 
                 <div className='flex flex-wrap gap-2 my-4'>
                     { identifierList.map((id) => (
                         <div key={ id }
-                             className='bg-(--color-primary)/10 text-(--text-primary) rounded-sm px-2 py-1 border-0 flex items-center'>
+                            className='bg-(--color-primary)/10 text-(--text-primary) rounded-sm px-2 py-1 border-0 flex items-center'>
                             <span>{ id }</span>
                             <X size={ 16 } className='text-(--color-primary) cursor-pointer ml-2'
-                               onClick={ () => setIdentifierList(identifierList.filter((item) => item !== id)) }/>
+                                onClick={ () => setIdentifierList(identifierList.filter((item) => item !== id)) }/>
                         </div>
                     )) }
                 </div>
 
                 <div className='text-(--text-secondary)'
-                     dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('UPDATE-STATUS.informations')) } }/>
+                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('UPDATE-STATUS.informations')) } }/>
             </div>
             <div className='w-fit'>
                 <Button className='mt-8'
-                        disabled={ selectedStatus === '' || identifierList.length === 0 }
-                        onClick={ handleUpdate }>
+                    disabled={ selectedStatus === '' || identifierList.length === 0 }
+                    onClick={ handleUpdate }>
                     { updating ? t('GLOBAL.updating') : t('UPDATE-STATUS.update') }
                 </Button>
             </div>

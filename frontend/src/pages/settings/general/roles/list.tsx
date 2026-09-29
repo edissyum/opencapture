@@ -143,7 +143,7 @@ export function SettingsGeneralRoles() {
                     </span>
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('ROLES.search') } onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    value={ searchTerm } placeholder={ t('ROLES.search') } onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size='sm'
@@ -170,11 +170,11 @@ export function SettingsGeneralRoles() {
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalRoles || 0 }
                 rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                    { "value": 4, "label": "4" },
+                    { "value": 8, "label": "8" },
+                    { "value": 16, "label": "16" },
+                    { "value": 32, "label": "32" }
+                ] }
                 emptyMessage={ t("ROLES.no_role") }
                 paginatorLeftText={ t('ROLES.selected', { count: selectedRoles.length }) }
                 onLazyParamsChange={ setLazyParams }

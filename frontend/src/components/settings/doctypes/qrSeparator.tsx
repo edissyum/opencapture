@@ -124,9 +124,9 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 <div className={ `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                  ${ allowDownload ? 'cursor-pointer hover:border-(--border-primary)' : 'cursor-not-allowed opacity-50' }
                                  border border-(--border-secondary) hover:text-(--color-primary) transition-colors shrink-0` }
-                     onClick={ allowDownload ? handleDownloadSeparator : undefined }
-                     data-tooltip-id="tooltip"
-                     data-tooltip-content={ t('SPLITTER.download_separator') }>
+                onClick={ allowDownload ? handleDownloadSeparator : undefined }
+                data-tooltip-id="tooltip"
+                data-tooltip-content={ t('SPLITTER.download_separator') }>
                     <Download size={ 18 }/>
                 </div>
             </div>
@@ -138,7 +138,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 { thumbnail && (
                     <div className="mt-4 size-102">
                         <img src={ thumbnail } alt="QR Separator"
-                             className="object-contain border border-(--border-secondary) rounded-lg"/>
+                            className="object-contain border border-(--border-secondary) rounded-lg"/>
                     </div>
                 ) }
 

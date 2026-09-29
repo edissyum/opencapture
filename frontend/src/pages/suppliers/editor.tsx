@@ -153,11 +153,11 @@ export function SupplierEditor({
                     }]);
                 }
 
-                const response_duns = await get('/config/getRegexById/duns');
-                if (response_duns && response_duns.regex) {
+                const responseDuns = await get('/config/getRegexById/duns');
+                if (responseDuns && responseDuns.regex) {
                     setRegexes((prevRegexes) => [...prevRegexes, {
                         id: 'duns',
-                        content: response_duns.regex[0].content
+                        content: responseDuns.regex[0].content
                     }]);
                 }
             } catch (error) {
@@ -249,15 +249,15 @@ export function SupplierEditor({
             label: t("ACCOUNTS.function")
         })),
         vat_number: z.string().optional().refine((value) => {
-                if (!value) return true;
-                const regex = regexes.find(r => r.id === "vat_number")?.content;
-                if (!regex) return true;
+            if (!value) return true;
+            const regex = regexes.find(r => r.id === "vat_number")?.content;
+            if (!regex) return true;
 
-                return new RegExp(regex).test(value);
-            },
-            {
-                message: t("ACCOUNTS.invalid_vat_number"),
-            }
+            return new RegExp(regex).test(value);
+        },
+        {
+            message: t("ACCOUNTS.invalid_vat_number"),
+        }
         ).describe(JSON.stringify({
             component: "input",
             type: "text",
@@ -276,15 +276,15 @@ export function SupplierEditor({
             label: t("ACCOUNTS.siren")
         })),
         duns: z.string().refine((value) => {
-                if (!value) return true;
-                const regex = regexes.find(r => r.id === "duns")?.content;
-                if (!regex) return true;
+            if (!value) return true;
+            const regex = regexes.find(r => r.id === "duns")?.content;
+            if (!regex) return true;
 
-                return new RegExp(regex).test(value);
-            },
-            {
-                message: t("ACCOUNTS.invalid_duns"),
-            }
+            return new RegExp(regex).test(value);
+        },
+        {
+            message: t("ACCOUNTS.invalid_duns"),
+        }
         ).describe(JSON.stringify({
             component: "input",
             type: "text",
@@ -399,11 +399,11 @@ export function SupplierEditor({
 
     const duns = watch("duns");
     const vat = watch("vat_number");
-    const informal_contact: any = watch("informal_contact");
+    const informalContactZod: any = watch("informal_contact");
 
     useEffect(() => {
-        setInformalContact(informal_contact);
-        if (informal_contact) {
+        setInformalContact(informalContactZod);
+        if (informalContactZod) {
             setVatMandatory(false);
             clearErrors("vat_number");
             clearErrors("duns");
@@ -430,7 +430,7 @@ export function SupplierEditor({
                 clearErrors("duns");
             }
         }
-    }, [vat, duns, informal_contact]);
+    }, [vat, duns, informalContactZod]);
 
     const onSubmit = async (data: any) => {
         try {
@@ -490,9 +490,9 @@ export function SupplierEditor({
         <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
             { onClose && (
                 <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer w-fit'
-                     onClick={ () => {
-                         onClose();
-                     } }>
+                    onClick={ () => {
+                        onClose();
+                    } }>
                     <ArrowLeft/>
                     { t('VERIFIER.back_to_form') }
                 </div>
@@ -525,12 +525,12 @@ export function SupplierEditor({
             <div className="w-fit">
                 { supplierId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
-                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                         { loadingSubmit ? t('GLOBAL.updating') : t('ACCOUNTS.update_supplier') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(onSubmit) }
-                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                         { loadingSubmit ? t('GLOBAL.creating') : t('ACCOUNTS.create_supplier') }
                     </Button>
                 ) }

@@ -44,12 +44,12 @@ export function SettingsVerifierPositionsMasksList() {
         sortField: string | null;
         sortOrder: 1 | -1 | null;
     }>(`positionsMasksListVerifierLazyParams`, {
-            first: 0,
-            rows: 16,
-            page: 0,
-            sortField: null,
-            sortOrder: null
-        }
+        first: 0,
+        rows: 16,
+        page: 0,
+        sortField: null,
+        sortOrder: null
+    }
     );
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
@@ -163,7 +163,7 @@ export function SettingsVerifierPositionsMasksList() {
                     { t('SETTINGS.positions-masks', { count: totalPositionsMasks }) } ({ totalPositionsMasks || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') } onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    value={ searchTerm } placeholder={ t('GLOBAL.search') } onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/verifier/positions-masks/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
@@ -187,11 +187,11 @@ export function SettingsVerifierPositionsMasksList() {
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalPositionsMasks || 0 }
                 rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                    { "value": 4, "label": "4" },
+                    { "value": 8, "label": "8" },
+                    { "value": 16, "label": "16" },
+                    { "value": 32, "label": "32" }
+                ] }
                 emptyMessage={ t("POSITIONS-MASKS.no_positions_masks") }
                 paginatorLeftText={ t('POSITIONS-MASKS.selected', { count: selectedPositionsMasks.length }) }
                 onLazyParamsChange={ setLazyParams }

@@ -25,7 +25,7 @@ export const getPrivilegesParent: any = () => [
     { 'id': 'accounts', 'name': t('ROLES.accounts_privileges'), icon: <UsersRound size={ 18 }/> },
 ];
 
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _ = [
     t('PRIVILEGES.access_verifier'),
     t('PRIVILEGES.access_splitter'),

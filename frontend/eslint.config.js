@@ -18,12 +18,16 @@ import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
+import stylistic from '@stylistic/eslint-plugin';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
 export default tseslint.config([
-    globalIgnores(['dist']),
+    globalIgnores(['dist', 'public']),
     {
+        plugins: {
+            '@stylistic': stylistic
+        },
         files: ['**/*.{ts,tsx}'],
         extends: [
             js.configs.recommended,
@@ -36,6 +40,15 @@ export default tseslint.config([
             globals: globals.browser
         },
         rules: {
+            '@stylistic/indent': ['error', 4],
+            "@typescript-eslint/naming-convention": [
+                "error",
+                { selector: "typeLike", format: ["PascalCase"] },
+                { selector: "function", format: ["camelCase", "PascalCase"] },
+                { selector: "enumMember", format: ["UPPER_CASE", "PascalCase"] },
+                { selector: "parameter", format: ["camelCase"], leadingUnderscore: "allow" },
+                { selector: "variable", format: ["camelCase", "UPPER_CASE", "PascalCase"], leadingUnderscore: "allow" }
+            ],
             'react-hooks/immutability': 'off',
             'react-hooks/exhaustive-deps': 'off',
             'react-hooks/set-state-in-effect': 'off',

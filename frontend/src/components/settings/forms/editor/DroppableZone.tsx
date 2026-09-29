@@ -39,7 +39,7 @@ export function DroppableZone({
     return (
         <div ref={ setNodeRef } className={ `DroppableZone rounded-xl ${ bg } ${ padding }` }>
             <SortableContext id={ zone.id } items={ zone.lines.map((l: any) => l.id) }
-                             strategy={ verticalListSortingStrategy }>
+                strategy={ verticalListSortingStrategy }>
                 { zone.lines.length === 0 && (
                     <span className={ `w-full rounded-md text-(--text-secondary) text-sm p-6` }>
                         { t("VERIFIER.drop_create_new_line") }
@@ -48,11 +48,11 @@ export function DroppableZone({
                 <div className="flex flex-col gap-3">
                     { zone.lines.map((line: any) => (
                         <SortableLine key={ line.id } line={ line } zoneId={ zone.id }
-                                      onUpdateField={ onUpdateField }
-                                      onDeleteField={ onDeleteField }
-                                      onUpdateLine={ onUpdateLine }
-                                      module={ module }
-                                      onDeleteLine={ onDeleteLine }/>
+                            onUpdateField={ onUpdateField }
+                            onDeleteField={ onDeleteField }
+                            onUpdateLine={ onUpdateLine }
+                            module={ module }
+                            onDeleteLine={ onDeleteLine }/>
                     )) }
                 </div>
             </SortableContext>

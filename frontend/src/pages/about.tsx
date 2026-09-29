@@ -92,8 +92,8 @@ export function AboutPage() {
                                 { packageJson.version }
                             </div>
                             <a href={ `${ packageJson.repository }/releases/tag/${ packageJson.version }` }
-                               target='_blank'
-                               className='w-fit text-(--text-secondary) text-md flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
+                                target='_blank'
+                                className='w-fit text-(--text-secondary) text-md flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
                                 { t('ABOUT.see_changelog') }
                                 <ArrowRight size={ 20 }/>
                             </a>
@@ -127,7 +127,7 @@ export function AboutPage() {
                                 </div>
                                 <div className='ml-auto'>
                                     <a target='_blank'
-                                       href={ `${ packageJson.repository }/releases/tag/${ lastVersion }` }>
+                                        href={ `${ packageJson.repository }/releases/tag/${ lastVersion }` }>
                                         <Button variant="primary">
                                             { t('ABOUT.see_on_github') }
                                             <ArrowRight size={ 18 } className='ml-2'/>
@@ -182,21 +182,21 @@ export function AboutPage() {
                                 <div className={ classesWithBorder }>
                                     <p className='w-1/3 font-medium'>{ t('ABOUT.software_website') }</p>
                                     <a className='text-(--color-primary)' href='https://open-capture.com'
-                                       target='_blank'>
+                                        target='_blank'>
                                         https://open-capture.com
                                     </a>
                                 </div>
                                 <div className={ classesWithBorder }>
                                     <p className='w-1/3 font-medium'>{ t('ABOUT.documentation') }</p>
                                     <a className='text-(--color-primary)'
-                                       href='https://edissyum.gitbook.io/open-capture-v4' target='_blank'>
+                                        href='https://edissyum.gitbook.io/open-capture-v4' target='_blank'>
                                         https://edissyum.gitbook.io/open-capture
                                     </a>
                                 </div>
                                 <div className={ classes }>
                                     <p className='w-1/3 font-medium'>{ t('ABOUT.support') }</p>
                                     <a className='text-(--color-primary)'
-                                       href='https://github.com/edissyum/opencapture/issues' target='_blank'>
+                                        href='https://github.com/edissyum/opencapture/issues' target='_blank'>
                                         https://github.com/edissyum/opencapture/issues
                                     </a>
                                 </div>
@@ -335,11 +335,11 @@ export function AboutPage() {
 
                                     return (
                                         <div key={ index }
-                                             className={ `w-full border-b border-(--border-secondary) 
+                                            className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
                                                       ${ isLastRow ? 'border-b-0!' : '' }
                                                       ${ index % 2 === 0 ? 'border-r' : '' }`
-                                             }>
+                                            }>
                                             <div className='font-semibold flex items-center gap-2 w-10/12'>
                                                 <div className='bg-(--color-primary) rounded-full size-1.5 shrink-0'/>
                                                 <div className='truncate'>{ key }</div>
@@ -367,11 +367,11 @@ export function AboutPage() {
 
                                     return (
                                         <div key={ index }
-                                             className={ `w-full border-b border-(--border-secondary) 
+                                            className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
                                                       ${ isLastRow ? 'border-b-0!' : '' }
                                                       ${ index % 2 === 0 ? 'border-r' : '' }`
-                                             }>
+                                            }>
                                             <div className='font-semibold flex items-center gap-2'>
                                                 <div className='bg-(--color-primary) rounded-full size-1.5'/>
                                                 { backendPackages[key].split('==')[0] }

@@ -68,7 +68,7 @@ export function DroppableDocumentZone({
 
     return (
         <div ref={ setDropRef }
-             className={ `DroppableDocument w-full transition-colors rounded-md
+            className={ `DroppableDocument w-full transition-colors rounded-md
                 ${ isEmpty && 'border-2 border-dashed border-(--border-secondary)' }
                 ${ isOver && 'bg-(--bg-selected) border-(--border-primary)' }` }>
             { isEmpty && !isOver && (
@@ -89,10 +89,10 @@ export function DroppableDocumentZone({
                             const page = pages[virtualItem.index];
                             return (
                                 <div key={ page.id } className='absolute top-0'
-                                     style={ {
-                                         left: virtualItem.start,
-                                         width: virtualItem.size - 12
-                                     } } // subtract gap from width to prevent horizontal scrollbar
+                                    style={ {
+                                        left: virtualItem.start,
+                                        width: virtualItem.size - 12
+                                    } } // subtract gap from width to prevent horizontal scrollbar
                                 >
                                     <DraggablePage
                                         page={ page }

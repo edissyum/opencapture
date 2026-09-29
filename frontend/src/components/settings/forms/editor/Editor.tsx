@@ -60,8 +60,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const [doctypeUpdatedCpt, setDoctypeUpdatedCpt] = useState(0);
     const [selectedDoctype, setSelectedDoctype] = useState<any>(null);
 
-    if (!formId) return null;
-
     const [mainTabIndex, setMainTabIndex] = useState('');
 
     let tabs: any;
@@ -104,7 +102,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const [zones, setZones] = useState(moduleZones);
     const [selectedZone, setSelectedZone] = useState<any>(null);
 
-    const { formFields } = useFormFields(formId);
+    const { formFields } = useFormFields(formId ? formId : '');
     const { customFields } = useCustomFields(module);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -112,6 +110,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
     const [formSettingsLoading, setFormSettingsLoading] = useState(true);
     const [formSettings, setFormSettings] = useState<any>({ "label": '', default_form: false, "settings": {} });
+
 
     const getUniqueId = () => {
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -433,7 +432,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     }
 
     const handleChangeLabel = async () => {
-        const zone_id = selectedZone.id.replace("zone-", "");
+        const zoneId = selectedZone.id.replace("zone-", "");
         showConfirmDialogWithInput({
             value: selectedZone.name,
             title: t('FORMS.change_label'),
@@ -443,7 +442,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             onConfirm: (value) => {
                 selectedZone.name = value;
                 setZones([...zones]);
-                put(`forms/updateLabel/${ formId }/${ zone_id }`, { label: value });
+                put(`forms/updateLabel/${ formId }/${ zoneId }`, { label: value });
             }
         });
     }
@@ -473,6 +472,8 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
         return base;
     }
+
+    if (!formId) return null;
 
     return (
         <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart } collisionDetection={ pointerWithin }>
@@ -508,7 +509,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                         <Tabs.Panel value="fields">
                             <div className='p-6 flex flex-col gap-4'>
                                 <Accordion chevronPosition="left" variant="separated" multiple
-                                           defaultValue={ ['zone-supplier', 'zone-facturation', 'zone-batch_metadata', 'zone-document_metadata'] }>
+                                    defaultValue={ ['zone-supplier', 'zone-facturation', 'zone-batch_metadata', 'zone-document_metadata'] }>
                                     { zones.map((zone: any) => (
                                         <Accordion.Item key={ zone.id } value={ zone.id }>
                                             <div className='flex items-center'>
@@ -607,9 +608,9 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 { ['doctypes', 'qr_code'].includes(mainTabIndex) && module === 'splitter' && (
                     <div className="shrink-0 w-[22rem] h-full flex flex-col">
                         <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) }
-                                      selectedDoctype={ selectedDoctype } editor={ true }
-                                      onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
-                                      onSelect={ (node) => setSelectedDoctype(node) }/>
+                            selectedDoctype={ selectedDoctype } editor={ true }
+                            onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
+                            onSelect={ (node) => setSelectedDoctype(node) }/>
                     </div>
                 ) }
             </div>

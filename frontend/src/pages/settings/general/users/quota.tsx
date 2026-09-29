@@ -92,8 +92,8 @@ export function SettingsGeneralUserQuota() {
                 </div>
                 <div className='w-1/3'>
                     <Input label={ t('USERS.user_quota_number') } type='number'
-                           value={ userQuota.number } disabled={ !userQuota.enabled } required
-                           onChange={ (e) => setUserQuota({ ...userQuota, number: e.target.value }) }/>
+                        value={ userQuota.number } disabled={ !userQuota.enabled } required
+                        onChange={ (e) => setUserQuota({ ...userQuota, number: e.target.value }) }/>
                 </div>
 
                 <MultiSelectInput
@@ -105,8 +105,8 @@ export function SettingsGeneralUserQuota() {
 
                 <div className='w-1/3'>
                     <Input label={ t('USERS.user_quota_email_dest') } type='email'
-                           value={ userQuota.email_dest } disabled={ !userQuota.enabled }
-                           onChange={ (e) => setUserQuota({ ...userQuota, email_dest: e.target.value }) }/>
+                        value={ userQuota.email_dest } disabled={ !userQuota.enabled }
+                        onChange={ (e) => setUserQuota({ ...userQuota, email_dest: e.target.value }) }/>
                 </div>
             </div>
 

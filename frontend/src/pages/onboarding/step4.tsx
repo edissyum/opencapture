@@ -44,7 +44,7 @@ export function Step4() {
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border 
                         border-(--border-primary) rounded-lg transition-colors
                         ${ selectedView === 'grid' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
-                     onClick={ () => setSelectedView('grid') }>
+                onClick={ () => setSelectedView('grid') }>
                     <CheckOverlay show={ selectedView === 'grid' }/>
 
                     <div className='p-2'>
@@ -59,7 +59,7 @@ export function Step4() {
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border 
                         border-(--border-primary) rounded-lg transition-colors
                         ${ selectedView === 'list' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
-                     onClick={ () => setSelectedView('list') }>
+                onClick={ () => setSelectedView('list') }>
                     <CheckOverlay show={ selectedView === 'list' }/>
 
                     <div className='p-2'>

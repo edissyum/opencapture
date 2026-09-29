@@ -340,26 +340,26 @@ export function SettingsGeneralSecurity() {
                 { t('SECURITY.generate_auth_token') }
             </h3>
             <div onClick={ () => navigate('/settings/general/security/token') }
-                 className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
+                className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
                 { t('SECURITY.here') }
                 <ArrowRight size={ 18 }/>
             </div>
 
             <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ activeIndex }
-                              onChange={ (e) => setActiveIndex(e) }>
+                onChange={ (e) => setActiveIndex(e) }>
                 <Accordion.Item key='default' value='default'>
                     <div className='flex items-center'>
                         <Accordion.Control>
                             { t('SECURITY.default_auth') }
                         </Accordion.Control>
                         <span className='flex ml-auto mr-4' onClick={ (e) => e.stopPropagation() }>
-                        <RadioBox
-                            key='default'
-                            border={ false }
-                            value={ enabledAuth }
-                            checked={ enabledAuth === 'default' }
-                            onChange={ () => setEnabledAuth('default') }/>
-                    </span>
+                            <RadioBox
+                                key='default'
+                                border={ false }
+                                value={ enabledAuth }
+                                checked={ enabledAuth === 'default' }
+                                onChange={ () => setEnabledAuth('default') }/>
+                        </span>
                     </div>
                     <Accordion.Panel>
                         <div className='p-6 text-(--text-primary) flex flex-col gap-4'>
@@ -382,8 +382,8 @@ export function SettingsGeneralSecurity() {
                                     />
                                 </div>
                                 <DynamicForm schema={ defaultSchema } control={ defaultControl }
-                                             errors={ defaultErrors }
-                                             gap={ 2 }/>
+                                    errors={ defaultErrors }
+                                    gap={ 2 }/>
                             </div>
                         </div>
                     </Accordion.Panel>
@@ -407,14 +407,14 @@ export function SettingsGeneralSecurity() {
                         <Stepper className='p-6' active={ stepperIndex } onStepClick={ setStepperIndex }>
                             <Stepper.Step label={ t("MAILCOLLECT.connection") }>
                                 <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl }
-                                             errors={ ldapErrors }
-                                             grid={ 4 }/>
+                                    errors={ ldapErrors }
+                                    grid={ 4 }/>
                                 <div className="flex justify-end mt-6">
                                     <Button onClick={ ldapHandleSubmit(handleTestConnexion) }
-                                            className="ml-auto px-12"
-                                            data-tooltip-id='tooltip'
-                                            data-tooltip-content={ t("MAILCOLLECT.test_connexion_next") }
-                                            disabled={ loadingLdap || Object.keys(ldapErrors).length > 0 }>
+                                        className="ml-auto px-12"
+                                        data-tooltip-id='tooltip'
+                                        data-tooltip-content={ t("MAILCOLLECT.test_connexion_next") }
+                                        disabled={ loadingLdap || Object.keys(ldapErrors).length > 0 }>
                                         { loadingLdap ? (
                                             t("MAILCOLLECT.loading_test_connexion")
                                         ) : (
@@ -426,16 +426,16 @@ export function SettingsGeneralSecurity() {
 
                             <Stepper.Step label={ t("SECURITY.synchronisation") }>
                                 <DynamicForm schema={ ldapSynchronisationSchema } control={ ldapControl }
-                                             errors={ ldapErrors } grid={ 4 }/>
+                                    errors={ ldapErrors } grid={ 4 }/>
 
                                 <div className="flex justify-between mt-6">
                                     <Button onClick={ handlePreviousStep } variant="no_bg"
-                                            className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                        className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                     </Button>
                                     <Button onClick={ ldapHandleSubmit(launchSync) }
-                                            disabled={ Object.keys(ldapErrors).length > 0 || loadingLdap }
-                                            className="ml-auto px-12">
+                                        disabled={ Object.keys(ldapErrors).length > 0 || loadingLdap }
+                                        className="ml-auto px-12">
                                         { loadingLdap ? (
                                             t("SECURITY.test_sync_loading")
                                         ) : (
@@ -451,7 +451,7 @@ export function SettingsGeneralSecurity() {
 
             <div>
                 <Button className='mt-8'
-                        onClick={ enabledAuth === 'default' ? defaultHandleSubmit(handleUpdate) : ldapHandleSubmit(handleUpdate) }>
+                    onClick={ enabledAuth === 'default' ? defaultHandleSubmit(handleUpdate) : ldapHandleSubmit(handleUpdate) }>
                     { t('GLOBAL.save_settings') }
                 </Button>
             </div>

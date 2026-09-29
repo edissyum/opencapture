@@ -48,6 +48,7 @@ export function Button({
 }: ButtonProps) {
     let isActive = false;
     if (to) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const location = useLocation();
         isActive = exact ? location.pathname === to : location.pathname.includes(to)
     }

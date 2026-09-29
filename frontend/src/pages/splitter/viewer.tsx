@@ -767,12 +767,12 @@ export function SplitterViewerPage() {
             }))
         }));
 
-        Object.keys(documentMetadataValues).forEach((document_id: any) => {
-            const doc = documentsWithoutTnl.find((d: any) => String(d.id) === String(document_id));
+        Object.keys(documentMetadataValues).forEach((documentId: any) => {
+            const doc = documentsWithoutTnl.find((d: any) => String(d.id) === String(documentId));
             if (doc) {
                 doc.document_metadata = {
                     ...doc.document_metadata,
-                    ...documentMetadataValues[document_id]
+                    ...documentMetadataValues[documentId]
                 }
             }
         });
@@ -833,10 +833,10 @@ export function SplitterViewerPage() {
         setUnSavedChanges(true);
     }
 
-    const handleUpdateDocumentMetadataValues = (document_id: number, field: any, value: any) => {
+    const handleUpdateDocumentMetadataValues = (documentId: number, field: any, value: any) => {
         setDocumentMetadataValues((prev: any) => ({
-            ...prev, [document_id]: {
-                ...prev[document_id],
+            ...prev, [documentId]: {
+                ...prev[documentId],
                 [field.label_short]: value
             }
         }));
@@ -1078,7 +1078,7 @@ export function SplitterViewerPage() {
         }
     }
 
-    const getFilteredConditionalOptions = (document_id: number, field: any) => {
+    const getFilteredConditionalOptions = (documentId: number, field: any) => {
         if (!field.settings?.options) return [];
         if (!field.settings?.conditional) {
             return field.settings.options.map((option: any) => {
@@ -1090,7 +1090,7 @@ export function SplitterViewerPage() {
         field.settings.options.forEach((option: any) => {
             const conditionalCustomField: any = customFields.find((f) => f.id === option.conditional_custom_field);
             if (conditionalCustomField) {
-                let conditionalFieldValue = documentMetadataValues[document_id]?.[conditionalCustomField.label_short];
+                let conditionalFieldValue = documentMetadataValues[documentId]?.[conditionalCustomField.label_short];
                 if (conditionalCustomField.type === 'select' && conditionalFieldValue) {
                     const conditionalOption = conditionalCustomField.settings.options.find((o: any) => o.id === conditionalFieldValue.id);
                     if (conditionalOption) {
@@ -1114,16 +1114,16 @@ export function SplitterViewerPage() {
     return (
         <div className='flex h-full w-full relative'>
             <div className='flex flex-col h-full w-full overflow-y-auto'
-                 onDragOver={ (e) => {
-                     if (draggingBatchId) e.preventDefault();
-                 } }
-                 onDrop={ (e) => {
-                     e.preventDefault();
-                     if (draggingBatchId) {
-                         handleBatchDrop(draggingBatchId);
-                         setDraggingBatchId(null);
-                     }
-                 } }
+                onDragOver={ (e) => {
+                    if (draggingBatchId) e.preventDefault();
+                } }
+                onDrop={ (e) => {
+                    e.preventDefault();
+                    if (draggingBatchId) {
+                        handleBatchDrop(draggingBatchId);
+                        setDraggingBatchId(null);
+                    }
+                } }
             >
                 { draggingBatchId && (
                     <div className="absolute inset-2 z-30 bg-(--bg-selected)/90 border-2 border-dashed
@@ -1150,8 +1150,8 @@ export function SplitterViewerPage() {
                             <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
                                               ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
                                 <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
-                                          indeterminate={ selectedPages.length != pagesCount }
-                                          disabled={ disabledBatch }/>
+                                    indeterminate={ selectedPages.length != pagesCount }
+                                    disabled={ disabledBatch }/>
                                 <div
                                     className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
                                     onClick={ selectAll }>
@@ -1161,7 +1161,7 @@ export function SplitterViewerPage() {
                                 </div>
                             </div>
                             <div onClick={ handleDeletePage }
-                                 className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
+                                className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
                                         hover:bg-(--bg-error) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <Trash size={ 16 }/>
@@ -1169,7 +1169,7 @@ export function SplitterViewerPage() {
                             </div>
 
                             <div onClick={ handleRotation }
-                                 className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
+                                className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
                                         hover:bg-(--bg-secondary) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <RotateCw size={ 14 }/>
@@ -1196,7 +1196,7 @@ export function SplitterViewerPage() {
                             </div>
 
                             <div onClick={ () => unSavedChanges && !disabledBatch && handleSaveChanges() }
-                                 className={ `flex items-center text-(--text-primary) text-sm gap-1
+                                className={ `flex items-center text-(--text-primary) text-sm gap-1
                               hover:bg-(--bg-secondary) transition-colors rounded-full p-3
                              ${ !unSavedChanges || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
                                 <Save size={ 16 }/>
@@ -1217,12 +1217,12 @@ export function SplitterViewerPage() {
                                     ) }
                                 />
                                 <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 }
-                                             className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
+                                    className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
                             </div>
 
                             <Button disabled={ loading || disabledBatch || documents.length === 0 }
-                                    className='flex items-center gap-2 px-3!'
-                                    onClick={ handleValidateBatch }>
+                                className='flex items-center gap-2 px-3!'
+                                onClick={ handleValidateBatch }>
                                 <PackageCheck size={ 16 }/>
                                 { t('SPLITTER.validate_batch') }
                             </Button>
@@ -1233,13 +1233,13 @@ export function SplitterViewerPage() {
                 { thumbnail && (
                     <>
                         <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                             onClick={ () => setThumbnailSafe(null) }/>
+                            onClick={ () => setThumbnailSafe(null) }/>
                         <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     max-w-[32vw] border border-(--border-secondary)
                                     rounded-lg overflow-hidden">
                             <img src={ thumbnail } alt="Thumbnail"/>
                             <Button variant="secondary" size="sm" className="absolute top-2 right-2"
-                                    onClick={ () => setThumbnailSafe(null) }>
+                                onClick={ () => setThumbnailSafe(null) }>
                                 <X size={ 16 }/>
                             </Button>
                         </div>
@@ -1249,21 +1249,21 @@ export function SplitterViewerPage() {
                 { showDoctypeSelection && (
                     <>
                         <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                             onClick={ () => setShowDoctypeSelection(false) }/>
+                            onClick={ () => setShowDoctypeSelection(false) }/>
                         <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-3/4
                                         max-h-screen border border-(--border-secondary) rounded-lg bg-(--bg-primary)
                                         flex flex-col">
                             <div className='flex items-center px-6 pt-6'>
                                 <h2>{ t('DOCTYPES.select_doctype') }</h2>
                                 <div className='ml-auto cursor-pointer text-(--text-secondary)'
-                                     onClick={ () => setShowDoctypeSelection(false) }>
+                                    onClick={ () => setShowDoctypeSelection(false) }>
                                     <X/>
                                 </div>
                             </div>
                             <div className='overflow-hidden'>
                                 <DoctypesTree formId={ batch.form_id } canFolderBeSelected={ false } editor={ false }
-                                              doctypesList={ doctypes } onTmpSelect={ (node) => setTmpDoctype(node) }
-                                              onSelect={ (node) => handleChangeDoctype(node) }/>
+                                    doctypesList={ doctypes } onTmpSelect={ (node) => setTmpDoctype(node) }
+                                    onSelect={ (node) => handleChangeDoctype(node) }/>
                             </div>
                             <div className='flex mt-auto justify-end items-center gap-4 p-4'>
                                 <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
@@ -1280,12 +1280,12 @@ export function SplitterViewerPage() {
                 { !showAttachments && (
                     <div className='px-8 py-4 flex items-center gap-2'>
                         <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 16 }/> }
-                                onClick={ () => navigate('/home') }>
+                            onClick={ () => navigate('/home') }>
                             { t('GLOBAL.back') }
                         </Button>
                         <div className='ml-auto'>
                             <Button variant='bg_white_rounded' icon={ <Download size={ 18 }/> }
-                                    onClick={ handleDownloadOriginalFile }>
+                                onClick={ handleDownloadOriginalFile }>
                                 { batch.file_name }
                             </Button>
                         </div>
@@ -1297,17 +1297,17 @@ export function SplitterViewerPage() {
                                 data-tooltip-content={ (documents.length === 0 || documents.length > 1) ? t('SPLITTER.one_document') : '' }
                             >
                                 <div className={
-                                         `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                    `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                 border border-(--border-secondary) hover:border-(--border-primary)
                                 hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
                                     ${ (documents.length === 0 || documents.length > 1) && 'opacity-50 pointer-events-none' }`
-                                     }
-                                     onClick={ () => {
-                                         setShowBatches(false);
-                                         setShowAttachments(true);
-                                     } }
-                                     data-tooltip-id="tooltip"
-                                     data-tooltip-content={ t('VERIFIER.show_attachments') }
+                                }
+                                onClick={ () => {
+                                    setShowBatches(false);
+                                    setShowAttachments(true);
+                                } }
+                                data-tooltip-id="tooltip"
+                                data-tooltip-content={ t('VERIFIER.show_attachments') }
                                 >
                                     <Paperclip size={ 16 }/>
                                     { attachmentsCount > 0 && (
@@ -1324,11 +1324,11 @@ export function SplitterViewerPage() {
                                           hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
                                           ${ showBatches ? 'border-(--color-primary) bg-(--bg-selected)' : '' }`
                             }
-                                 onClick={ handleShowBatches }
-                                 { ...(!certifiedCopy && {
-                                     "data-tooltip-id": "tooltip",
-                                     "data-tooltip-content": t('SPLITTER.show_batches')
-                                 }) }
+                            onClick={ handleShowBatches }
+                            { ...(!certifiedCopy && {
+                                "data-tooltip-id": "tooltip",
+                                "data-tooltip-content": t('SPLITTER.show_batches')
+                            }) }
                             >
                                 <Package size={ 18 }/>
                             </div>
@@ -1396,16 +1396,16 @@ export function SplitterViewerPage() {
                                 <Accordion.Panel>
                                     <div className='flex flex-col gap-6 p-4'>
                                         <div className='text-(--text-secondary) flex items-center gap-4'>
-                                        <span className='flex items-center'>
-                                            <Layers size={ 16 }/>&nbsp;
-                                            <span>{ pagesCount }</span>&nbsp;
-                                            { t('SPLITTER.pages', { count: pagesCount }) }
-                                        </span>
                                             <span className='flex items-center'>
-                                            <FileStack size={ 16 }/>&nbsp;
+                                                <Layers size={ 16 }/>&nbsp;
+                                                <span>{ pagesCount }</span>&nbsp;
+                                                { t('SPLITTER.pages', { count: pagesCount }) }
+                                            </span>
+                                            <span className='flex items-center'>
+                                                <FileStack size={ 16 }/>&nbsp;
                                                 <span>{ documents.length }</span>&nbsp;
                                                 { t('SPLITTER.documents', { count: documents.length }) }
-                                        </span>
+                                            </span>
                                         </div>
 
                                         <Select
@@ -1428,7 +1428,7 @@ export function SplitterViewerPage() {
                                                     <div key={ index } className='flex gap-4'>
                                                         { line.map((field: any) => (
                                                             <div key={ field.id }
-                                                                 className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                                 { field.metadata_key && metadata.length > 0 ? (
                                                                     <Select
                                                                         id={ field.id }
@@ -1506,74 +1506,74 @@ export function SplitterViewerPage() {
                             <div className='flex flex-col gap-2'>
                                 { documents.map((document: any) => (
                                     <Panel key={ document.id } header={
-                                                                   <div className="flex items-center gap-1.5 ">
-                                                                       <div
-                                                                           className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
-                                                                           onClick={ () => !disabledBatch && typeDocument(document) }>
-                                                                           { !document.doctype_label && (
-                                                                               <div className='transition-colors items-center gap-2
+                                        <div className="flex items-center gap-1.5 ">
+                                            <div
+                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
+                                                onClick={ () => !disabledBatch && typeDocument(document) }>
+                                                { !document.doctype_label && (
+                                                    <div className='transition-colors items-center gap-2
                                                                 hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
-                                                                                   <div
-                                                                                       className='bg-(--text-error)/20 rounded-md p-1'>
-                                                                                       <FolderTree size={ 20 }/>
-                                                                                   </div>
-                                                                                   { t('SPLITTER.type_document') }
-                                                                               </div>
-                                                                           ) }
-                                                                           <div
-                                                                               className='transition-colors items-center gap-2 font-semibold flex'>
-                                                                               { document.doctype_label && (
-                                                                                   <div
-                                                                                       className='bg-(--bg-secondary) rounded-md p-1'>
-                                                                                       <File size={ 20 }/>
-                                                                                   </div>
-                                                                               ) }
-                                                                               <div>{ document.doctype_label }</div>
-                                                                           </div>
-                                                                       </div>
-                                                                       <div
-                                                                           className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
-                                                                           <span>{ document.pages.length }&nbsp;</span>
-                                                                           { t('SPLITTER.pages', { count: document.pages.length }) }
-                                                                       </div>
-                                                                       <div className='ml-auto'>
-                                                                           <Menu position="bottom-end" withinPortal>
-                                                                               <Menu.Target>
-                                                                                   <ActionIcon
-                                                                                       className='mr-0!'
-                                                                                       variant="transparent"
-                                                                                       onClick={ (e: any) => {
-                                                                                           e.preventDefault();
-                                                                                           e.stopPropagation();
-                                                                                           setSelectedDocument(document);
-                                                                                       } }
-                                                                                   >
-                                                                                       <EllipsisVertical
-                                                                                           size={ 20 }
-                                                                                           className='text-(--text-primary) hover:text-(--color-primary)'
-                                                                                       />
-                                                                                   </ActionIcon>
-                                                                               </Menu.Target>
+                                                        <div
+                                                            className='bg-(--text-error)/20 rounded-md p-1'>
+                                                            <FolderTree size={ 20 }/>
+                                                        </div>
+                                                        { t('SPLITTER.type_document') }
+                                                    </div>
+                                                ) }
+                                                <div
+                                                    className='transition-colors items-center gap-2 font-semibold flex'>
+                                                    { document.doctype_label && (
+                                                        <div
+                                                            className='bg-(--bg-secondary) rounded-md p-1'>
+                                                            <File size={ 20 }/>
+                                                        </div>
+                                                    ) }
+                                                    <div>{ document.doctype_label }</div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
+                                                <span>{ document.pages.length }&nbsp;</span>
+                                                { t('SPLITTER.pages', { count: document.pages.length }) }
+                                            </div>
+                                            <div className='ml-auto'>
+                                                <Menu position="bottom-end" withinPortal>
+                                                    <Menu.Target>
+                                                        <ActionIcon
+                                                            className='mr-0!'
+                                                            variant="transparent"
+                                                            onClick={ (e: any) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                setSelectedDocument(document);
+                                                            } }
+                                                        >
+                                                            <EllipsisVertical
+                                                                size={ 20 }
+                                                                className='text-(--text-primary) hover:text-(--color-primary)'
+                                                            />
+                                                        </ActionIcon>
+                                                    </Menu.Target>
 
-                                                                               <Menu.Dropdown>
-                                                                                   { menuItems?.map((item: any, index: number) => (
-                                                                                       <Menu.Item
-                                                                                           key={ index }
-                                                                                           leftSection={ item.icon }
-                                                                                           disabled={ item.disabled }
-                                                                                           onClick={ (e: React.MouseEvent) => {
-                                                                                               e.stopPropagation();
-                                                                                               item.command(e);
-                                                                                           } }
-                                                                                       >
-                                                                                           { item.label }
-                                                                                       </Menu.Item>
-                                                                                   )) }
-                                                                               </Menu.Dropdown>
-                                                                           </Menu>
-                                                                       </div>
-                                                                   </div>
-                                                               }>
+                                                    <Menu.Dropdown>
+                                                        { menuItems?.map((item: any, index: number) => (
+                                                            <Menu.Item
+                                                                key={ index }
+                                                                leftSection={ item.icon }
+                                                                disabled={ item.disabled }
+                                                                onClick={ (e: React.MouseEvent) => {
+                                                                    e.stopPropagation();
+                                                                    item.command(e);
+                                                                } }
+                                                            >
+                                                                { item.label }
+                                                            </Menu.Item>
+                                                        )) }
+                                                    </Menu.Dropdown>
+                                                </Menu>
+                                            </div>
+                                        </div>
+                                    }>
                                         <div className='p-4 pb-2'>
                                             { documentMetadata.length > 0 && document.pages.length > 0 && (
                                                 <div className='mb-4'>
@@ -1587,14 +1587,14 @@ export function SplitterViewerPage() {
                                                         />
                                                     </h3>
                                                     <div className='grid transition-all'
-                                                         style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
+                                                        style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
                                                     >
                                                         <div className="overflow-hidden">
                                                             { documentMetadata.map((line: any, index: number) => (
                                                                 <div key={ index } className='flex gap-4 mt-4'>
                                                                     { line.map((field: any) => (
                                                                         <div key={ field.id }
-                                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                            className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                                             { field.type === 'date' && (
                                                                                 <ISOCalendar
                                                                                     id={ field.id }
@@ -1645,7 +1645,7 @@ export function SplitterViewerPage() {
                                                 </div>
                                             ) }
                                             <SortableContext strategy={ verticalListSortingStrategy }
-                                                             items={ document.pages.map((p: any) => `page-${ p.id }`) }>
+                                                items={ document.pages.map((p: any) => `page-${ p.id }`) }>
                                                 <DroppableDocumentZone
                                                     pages={ document.pages }
                                                     documentId={ document.id }
@@ -1691,8 +1691,8 @@ export function SplitterViewerPage() {
                     ) }
                     { batchesList.map((row: any) => (
                         <BatchCard key={ row.id } row={ row } navigate={ navigate }
-                                   onBatchDragStart={ (id: number) => setDraggingBatchId(id) }
-                                   onBatchDragEnd={ () => setDraggingBatchId(null) }/>
+                            onBatchDragStart={ (id: number) => setDraggingBatchId(id) }
+                            onBatchDragEnd={ () => setDraggingBatchId(null) }/>
                     )) }
                 </div>
             </div>

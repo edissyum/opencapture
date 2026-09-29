@@ -84,12 +84,12 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
         <Popover opened={ open } withinPortal position="bottom-start" onChange={ setOpen }>
             <Popover.Target>
                 <div ref={ setNodeRef } style={ style } onClick={ () => setOpen(!open) }
-                     className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
+                    className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
                        rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
                        transition-colors select-none">
                     <button type="button" aria-label="Déplacer le champ" { ...attributes } { ...listeners }
-                            onClick={ (e) => e.stopPropagation() }
-                            className="cursor-grab text-(--text-secondary) hover:text-(--text-primary)">
+                        onClick={ (e) => e.stopPropagation() }
+                        className="cursor-grab text-(--text-secondary) hover:text-(--text-primary)">
                         <GripVertical size={ 16 }/>
                     </button>
 
@@ -135,11 +135,11 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                     { module === 'verifier' && (
                         <div ref={ ref } className="relative inline-block w-full">
                             <div onClick={ () => setOpenColors((o) => !o) }
-                                 className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
-                                 style={ {
-                                     backgroundColor: editableField.color + '1A',
-                                     color: editableField.color
-                                 } }
+                                className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
+                                style={ {
+                                    backgroundColor: editableField.color + '1A',
+                                    color: editableField.color
+                                } }
                             >
                                 { editableField.color ? (
                                     <>
@@ -195,37 +195,37 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                                     </Hint>
                                     <div className='flex gap-4'>
                                         <Input id={ 'search_mask-' + editableField.id }
-                                               className="w-1/3"
-                                               label={ t('FORMS.search_mask') }
-                                               value={ editableField.search_mask }
-                                               onChange={ (e: any) =>
-                                                   setEditableField((prev) => ({
-                                                       ...prev,
-                                                       search_mask: e.target.value
-                                                   }))
-                                               }
+                                            className="w-1/3"
+                                            label={ t('FORMS.search_mask') }
+                                            value={ editableField.search_mask }
+                                            onChange={ (e: any) =>
+                                                setEditableField((prev) => ({
+                                                    ...prev,
+                                                    search_mask: e.target.value
+                                                }))
+                                            }
                                         />
                                         <Input id={ 'result_mask-' + editableField.id }
-                                               className="w-1/3"
-                                               label={ t('FORMS.result_mask') }
-                                               value={ editableField.result_mask }
-                                               onChange={ (e: any) =>
-                                                   setEditableField((prev) => ({
-                                                       ...prev,
-                                                       result_mask: e.target.value
-                                                   }))
-                                               }
+                                            className="w-1/3"
+                                            label={ t('FORMS.result_mask') }
+                                            value={ editableField.result_mask }
+                                            onChange={ (e: any) =>
+                                                setEditableField((prev) => ({
+                                                    ...prev,
+                                                    result_mask: e.target.value
+                                                }))
+                                            }
                                         />
                                         <Input id={ 'validation_mask-' + editableField.id }
-                                               className="w-1/3"
-                                               label={ t('FORMS.validation_mask') }
-                                               value={ editableField.validation_mask }
-                                               onChange={ (e: any) =>
-                                                   setEditableField((prev) => ({
-                                                       ...prev,
-                                                       validation_mask: e.target.value
-                                                   }))
-                                               }
+                                            className="w-1/3"
+                                            label={ t('FORMS.validation_mask') }
+                                            value={ editableField.validation_mask }
+                                            onChange={ (e: any) =>
+                                                setEditableField((prev) => ({
+                                                    ...prev,
+                                                    validation_mask: e.target.value
+                                                }))
+                                            }
                                         />
                                     </div>
                                 </div>

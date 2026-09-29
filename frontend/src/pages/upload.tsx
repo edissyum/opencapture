@@ -174,7 +174,7 @@ export function UploadPage() {
                         <div className='ml-auto'>
                             { selectedWorkflow && (
                                 <div onClick={ () => setSelectedWorkflow(null) }
-                                     className='flex items-center gap-2 bg-(--bg-selected) px-2 py-1 rounded-md text-sm
+                                    className='flex items-center gap-2 bg-(--bg-selected) px-2 py-1 rounded-md text-sm
                                                border-(--border-primary) border text-(--color-primary) font-semibold
                                                cursor-pointer '>
                                     <Pencil size={ 16 }/>
@@ -254,7 +254,7 @@ export function UploadPage() {
                 </div>
                 <div className="w-fit">
                     <Button onClick={ handleUpload }
-                            disabled={ files.length === 0 || !selectedWorkflow || sending }>
+                        disabled={ files.length === 0 || !selectedWorkflow || sending }>
                         { t('UPLOAD.upload_files', { count: files.length }) }
                     </Button>
                 </div>

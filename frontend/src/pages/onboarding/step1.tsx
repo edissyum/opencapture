@@ -59,10 +59,10 @@ export function Step1() {
             <div className="flex gap-4">
                 { options.map((module) => (
                     <div key={ module['id'] }
-                         className={ `border flex bg-(--bg-primary) items-center rounded-md cursor-pointer p-6
+                        className={ `border flex bg-(--bg-primary) items-center rounded-md cursor-pointer p-6
                                       hover:border-gray-400 transition-colors
                                       ${ selectedModule === module['id'] ? 'border-(--border-primary) bg-(--bg-selected)' : 'border-(--border-secondary)' }` }
-                         onClick={ () => setSelectedModule(module['id']) }>
+                        onClick={ () => setSelectedModule(module['id']) }>
                         <img src={ module['img'] } alt="" className="w-20 mr-4"/>
                         <div className="flex flex-col justify-center items-start">
                             <h2 className={ `${ selectedModule === module['id'] ? 'text-(--color-primary)' : '' }` }>{ t('ONBOARD.' + module['id']) }</h2>

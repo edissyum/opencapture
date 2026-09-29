@@ -90,7 +90,7 @@ export function Checkbox({
             </div>
             { label &&
                 <span onClick={ toggle } title={ label }
-                      className="ml-2 text-(--text-secondary) truncate">
+                    className="ml-2 text-(--text-secondary) truncate">
                     { label }
                 </span>
             }

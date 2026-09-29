@@ -184,7 +184,7 @@ export function SettingsVerifierAiLLMEditor() {
         try {
             JSON.parse(aiLLMJson);
             setJsonValid(true);
-        } catch (error) {
+        } catch {
             setJsonValid(false);
         }
 
@@ -212,7 +212,7 @@ export function SettingsVerifierAiLLMEditor() {
     }, [selectedProvider]);
 
     const getPayload = (data: any) => {
-        let payload = { ...data, json_content: JSON.parse(aiLLMJson), provider: selectedProvider };
+        const payload = { ...data, json_content: JSON.parse(aiLLMJson), provider: selectedProvider };
         payload['settings'] = {};
         if (data.input_price) {
             payload['settings']['input_price'] = data.input_price;
@@ -280,8 +280,8 @@ export function SettingsVerifierAiLLMEditor() {
                     <div className='flex gap-4'>
                         { providers.map((provider: any) => (
                             <div key={ provider.name }
-                                 onClick={ () => setSelectedProvider(provider.name) }
-                                 className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                onClick={ () => setSelectedProvider(provider.name) }
+                                className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                                               rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                                               ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--color-primary)' : '' } ` }
                             >
@@ -323,10 +323,10 @@ export function SettingsVerifierAiLLMEditor() {
                         { t('AI-LLM.json_content_hint_prefix') }
                         <span className='bg-(--bg-selected) border-(--border-primary) text-(--color-primary)
                                          p-1 rounded-md'>
-                             { ocrPlaceholder }
+                            { ocrPlaceholder }
                         </span>
                         <span onClick={ handleCopy }
-                              className='bg-(--bg-selected) border-(--border-primary) p-1.5 rounded-md cursor-pointer relative'>
+                            className='bg-(--bg-selected) border-(--border-primary) p-1.5 rounded-md cursor-pointer relative'>
                             <div
                                 className={ `absolute opacity-0 top-0 left-1/2 -translate-x-1/2 text-nowrap ${ dataCopied ? '-top-10! opacity-100!' : '' }
                                               transition-all bg-[#E4DDD3] border-(--border-primary) p-1.5 rounded-md` }>
@@ -369,12 +369,12 @@ export function SettingsVerifierAiLLMEditor() {
             <div className="p-6 w-fit">
                 { aiLLMId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
-                            disabled={ loading || Object.keys(errors).length > 0 || !jsonValid }>
+                        disabled={ loading || Object.keys(errors).length > 0 || !jsonValid }>
                         { loading ? t('GLOBAL.updating') : t('AI-LLM.update_ai_llm') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(handleCreate) }
-                            disabled={ loading || Object.keys(errors).length > 0 || !jsonValid }>
+                        disabled={ loading || Object.keys(errors).length > 0 || !jsonValid }>
                         { loading ? t('GLOBAL.creating') : t('AI-LLM.create_ai_llm') }
                     </Button>
                 ) }

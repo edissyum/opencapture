@@ -45,12 +45,12 @@ export function WorkflowsList({ module }: { module: string }) {
         sortField: string | null;
         sortOrder: 1 | -1 | null;
     }>(`workflowsList${module}LazyParams`, {
-            first: 0,
-            rows: 16,
-            page: 0,
-            sortField: null,
-            sortOrder: null
-        }
+        first: 0,
+        rows: 16,
+        page: 0,
+        sortField: null,
+        sortOrder: null
+    }
     );
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
@@ -198,8 +198,8 @@ export function WorkflowsList({ module }: { module: string }) {
                     { t('SETTINGS.workflows', { count: totalWorkflows }) } ({ totalWorkflows || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                       onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                    onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/workflows/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
@@ -223,11 +223,11 @@ export function WorkflowsList({ module }: { module: string }) {
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalWorkflows || 0 }
                 rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                    { "value": 4, "label": "4" },
+                    { "value": 8, "label": "8" },
+                    { "value": 16, "label": "16" },
+                    { "value": 32, "label": "32" }
+                ] }
                 emptyMessage={ t("WORKFLOWS.no_workflows") }
                 paginatorLeftText={ t('WORKFLOWS.selected', { count: selectedWorkflows.length }) }
                 onLazyParamsChange={ setLazyParams }

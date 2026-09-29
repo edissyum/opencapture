@@ -44,12 +44,12 @@ export function SettingsVerifierAiLLMList() {
         sortField: string | null;
         sortOrder: 1 | -1 | null;
     }>(`aiLlmListVerifierLazyParams`, {
-            first: 0,
-            rows: 16,
-            page: 0,
-            sortField: null,
-            sortOrder: null
-        }
+        first: 0,
+        rows: 16,
+        page: 0,
+        sortField: null,
+        sortOrder: null
+    }
     );
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
@@ -169,8 +169,8 @@ export function SettingsVerifierAiLLMList() {
                     { t('SETTINGS.ai_llm', { count: totalAiLlm }) } ({ totalAiLlm || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                       onChange={ (e) => setSearchTerm(e.target.value) }/>
+                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                    onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/verifier/ai-llm/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
@@ -194,11 +194,11 @@ export function SettingsVerifierAiLLMList() {
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalAiLlm || 0 }
                 rowsPerPageOptions={ [
-                            { "value": 4, "label": "4" },
-                            { "value": 8, "label": "8" },
-                            { "value": 16, "label": "16" },
-                            { "value": 32, "label": "32" }
-                        ] }
+                    { "value": 4, "label": "4" },
+                    { "value": 8, "label": "8" },
+                    { "value": 16, "label": "16" },
+                    { "value": 32, "label": "32" }
+                ] }
                 emptyMessage={ t("AI-LLM.no_models") }
                 paginatorLeftText={ t('AI-LLM.selected', { count: selectedAiLlm.length }) }
                 onLazyParamsChange={ setLazyParams }

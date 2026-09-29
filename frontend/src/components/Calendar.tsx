@@ -103,7 +103,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                 ) }
             </div>
             { error && <p className="text-(--text-error) text-sm "
-                          dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }></p> }
+                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }></p> }
         </div>
     );
 };
