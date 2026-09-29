@@ -1,0 +1,18 @@
+[MESSAGES CONTROL]
+disable=broad-except,too-many-return-statements,wrong-import-order,too-many-boolean-expressions,inconsistent-return-statements,too-many-nested-blocks,import-error,no-else-return,missing-function-docstring,missing-class-docstring,missing-module-docstring,line-too-long,consider-using-sys-exit,too-few-public-methods,too-many-instance-attributes,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
+
+[BASIC]
+good-names=i,j,k,e,df,_,id
+bad-names=foo,bar,baz,toto,tmp
+include-naming-hint=yes
+
+variable-naming-style=snake_case
+function-naming-style=snake_case
+method-naming-style=snake_case
+argument-naming-style=snake_case
+attr-naming-style=snake_case
+class-naming-style=PascalCase
+const-naming-style=UPPER_CASE
+
+[MASTER]
+ignore=tests
