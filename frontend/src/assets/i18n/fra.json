@@ -1269,10 +1269,10 @@
     "STATISTICS": {
         "select_statistic": "Choix de la statistique à afficher",
         "select_year": "Choix de l'année",
-        "verifier_documents_uploaded_per_month": "Documents uploadés sur l'année",
-        "verifier_documents_uploaded_per_user": "Documents uploadés par utilisateur",
-        "verifier_documents_uploaded_per_worklow": "Documents uploadés par workflow",
-        "verifier_documents_uploaded_per_year": "Documents uploadés par année",
+        "verifier_documents_uploaded_per_month": "Documents téléversés sur l'année",
+        "verifier_documents_uploaded_per_user": "Documents téléversés par utilisateur",
+        "verifier_documents_uploaded_per_worklow": "Documents téléversés par workflow",
+        "verifier_documents_uploaded_per_year": "Documents téléversés par année",
         "verifier_documents_validated_per_form": "Documents traités par formulaire",
         "verifier_documents_validated_per_user": "Documents traités par utilisateur",
         "all_years": "Toutes les années",
@@ -1283,8 +1283,8 @@
         "splitter_documents_processed_per_worklow": "Documents traités par workflow",
         "splitter_documents_processed_per_month": "Documents traités sur l'année",
         "splitter_documents_processed_per_year": "Documents traités par année",
-        "splitter_batches_uploaded_per_month": "Lots uploadés sur l'année",
-        "splitter_batches_uploaded_per_year": "Lots uploadés par année"
+        "splitter_batches_uploaded_per_month": "Lots téléversés sur l'année",
+        "splitter_batches_uploaded_per_year": "Lots téléversés par année"
     },
     "POSITIONS-MASKS": {
         "add_model": "Ajouter un masque de position",
@@ -1534,7 +1534,7 @@
         "key_hint": "La clé privée doit être au format .pem et ne doit pas être protégée par un mot de passe (génération d'un fichier de clé avec le mot de passe en amont)",
         "key_upload": "Clé privée RSA",
         "settings": "Paramètres de la copie conforme",
-        "file_upload_success": "Fichier <strong>{{fileName}}</strong> uploadé avec succès. Pensez à mettre à jour la configuration pour appliquer ce changement",
+        "file_upload_success": "Fichier <strong>{{fileName}}</strong> téléversés avec succès. Pensez à mettre à jour la configuration pour appliquer ce changement",
         "update_success": "Configuration de la copie conforme mise à jour avec succès"
     }
 }
