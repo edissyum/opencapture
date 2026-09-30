@@ -18,8 +18,11 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { Check, MousePointer, Search, SlidersHorizontal, Star } from "lucide-react";
 
-import { Loader } from "../../components/loader/Loader";
+import { useUser } from "../../services/hooks/useUser";
 import { useFavorites } from "../../services/hooks/useFavorite";
+
+import { Loader } from "../../components/loader/Loader";
+import { hasRequiredPermissions } from "../../components/auth/auth";
 import { SettingsCard } from "../../components/settings/SettingsCard";
 
 import { getSettingsGeneralOptions } from "./general";
@@ -27,6 +30,8 @@ import { getSettingsVerifierOptions } from "./verifier";
 import { getSettingsSplitterOptions } from "./splitter";
 
 export function SettingsIndex() {
+    const { user, loadingUser } = useUser();
+
     const options = [
         {
             name: t('SETTINGS.general'),
@@ -38,12 +43,14 @@ export function SettingsIndex() {
             name: t('SETTINGS.verifier'),
             description: t('SETTINGS.verifier_description'),
             icon: <Check/>,
+            privileges: ['verifier_settings'],
             href: '/settings/verifier'
         },
         {
             name: t('SETTINGS.splitter'),
             description: t('SETTINGS.splitter_description'),
             icon: <Search/>,
+            privileges: ['splitter_settings'],
             href: '/settings/splitter'
         }
     ];
@@ -76,7 +83,7 @@ export function SettingsIndex() {
         setFavoriteOptions((prev: any) => prev.filter((option: any) => option.href !== route));
     };
 
-    if (loading) {
+    if (loading || loadingUser) {
         return <Loader/>;
     }
 
@@ -93,7 +100,7 @@ export function SettingsIndex() {
                 </div>
                 { favoriteOptions && favoriteOptions.length > 0 ? (
                     <div className='grid grid-cols-3 gap-4'>
-                        { favoriteOptions.map((option, index) => (
+                        { favoriteOptions.filter(option => hasRequiredPermissions(user, option['privileges'])).map((option, index) => (
                             <SettingsCard key={ index } icon={ option['icon'] } title={ option['name'] }
                                 description={ option['description'] } to={ option['href'] }
                                 module={ option['module'] ?? false } unpinFav={ () => handleUnpin(option['href']) }/>
@@ -140,7 +147,7 @@ export function SettingsIndex() {
                     </p>
                 </div>
                 <div className='grid grid-cols-3 gap-4'>
-                    { options.map((option) => (
+                    { options.filter((option) => hasRequiredPermissions(user, option.privileges)).map((option) => (
                         <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                             description={ option['description'] } to={ option['href'] }/>
                     )) }

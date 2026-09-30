@@ -17,7 +17,12 @@
 import { t } from "i18next";
 import { BrainCircuit, BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, ScanLine, Workflow } from "lucide-react";
 
+import { useUser } from "../../../services/hooks/useUser";
+
+import { Loader } from "../../../components/loader/Loader";
+import { hasRequiredPermissions } from "../../../components/auth/auth";
 import { SettingsCard } from "../../../components/settings/SettingsCard";
+
 
 export const getSettingsVerifierOptions = () => [
     {
@@ -25,6 +30,7 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.forms_description'),
         icon: <LayoutTemplate/>,
         href: '/settings/verifier/forms',
+        privileges: ['forms_list'],
         module: 'verifier'
     },
     {
@@ -32,6 +38,7 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.custom_fields_description'),
         icon: <CodeXml/>,
         href: '/settings/verifier/custom-fields',
+        privileges: ['custom_fields_advanced'],
         module: 'verifier'
     },
     {
@@ -39,6 +46,7 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.workflows_description'),
         icon: <Workflow/>,
         href: '/settings/verifier/workflows',
+        privileges: ['workflows_list'],
         module: 'verifier'
     },
     {
@@ -46,6 +54,7 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.outputs_description'),
         icon: <FolderOutput/>,
         href: '/settings/verifier/outputs',
+        privileges: ['outputs_list'],
         module: 'verifier'
     },
     {
@@ -53,6 +62,7 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.ai_llm_description'),
         icon: <BrainCircuit/>,
         href: '/settings/verifier/ai-llm',
+        privileges: ['list_llm_models'],
         module: 'verifier'
     },
     {
@@ -60,6 +70,7 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.ai_doctypes_description'),
         icon: <BrainCog/>,
         href: '/settings/verifier/ai-doctypes',
+        privileges: ['list_ai_model'],
         module: 'verifier'
     },
     {
@@ -67,6 +78,7 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.positions-masks_description'),
         icon: <ScanLine/>,
         href: '/settings/verifier/positions-masks',
+        privileges: ['position_mask_list'],
         module: 'verifier'
     },
     {
@@ -74,16 +86,22 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.update-status_description_verifier'),
         icon: <Flag/>,
         href: '/settings/verifier/update-status',
+        privileges: ['update_status'],
         module: 'verifier'
     }
 ];
 
 export function SettingsVerifierIndex() {
+    const { user, loadingUser } = useUser();
     const options = getSettingsVerifierOptions();
+
+    if (loadingUser) {
+        return <Loader />;
+    }
 
     return (
         <div className='grid grid-cols-3 gap-4 p-6'>
-            { options.map((option) => (
+            { options.filter((option) => hasRequiredPermissions(user, option.privileges)).map((option) => (
                 <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                     description={ option['description'] } to={ option['href'] }/>
             )) }

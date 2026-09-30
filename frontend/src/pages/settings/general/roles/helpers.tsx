@@ -105,5 +105,9 @@ const _ = [
     t('PRIVILEGES.add_llm_models'),
     t('PRIVILEGES.update_llm_models'),
     t('PRIVILEGES.list_llm_models'),
-    t('PRIVILEGES.certified_copy')
+    t('PRIVILEGES.certified_copy'),
+    t('PRIVILEGES.smtp'),
+    t('PRIVILEGES.security'),
+    t('PRIVILEGES.advanced'),
+    t('PRIVILEGES.customization')
 ];

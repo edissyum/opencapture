@@ -21,8 +21,8 @@ import { useNavigate, useLocation, useRouteError, isRouteErrorResponse } from "r
 import { showToast } from "../ToastProvider";
 
 import { USER_KEY } from "../../services/hooks/useUser";
+import { useCustom } from "../../services/custom/customContext";
 import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
-import { useCustom } from "../../services/custom/customContext.tsx";
 
 export default function LoginRequiredError() {
     const { t } = useTranslation();

@@ -276,7 +276,7 @@ export const router = createBrowserRouter(
                         },
                         {
                             path: "smtp",
-                            loader: protectedLoader(),
+                            loader: protectedLoader(['settings', 'smtp']),
                             element: <SettingsGeneralSMTP/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.smtp' }
@@ -290,7 +290,7 @@ export const router = createBrowserRouter(
                         },
                         {
                             path: "advanced",
-                            loader: protectedLoader(),
+                            loader: protectedLoader(['settings', 'advanced']),
                             element: <SettingsGeneralAdvanced/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.advanced' }
@@ -311,6 +311,7 @@ export const router = createBrowserRouter(
                         },
                         {
                             path: "security",
+                            loader: protectedLoader(['settings', 'security']),
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.security' },
                             children: [

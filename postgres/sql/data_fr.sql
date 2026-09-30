@@ -1415,6 +1415,8 @@ ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 13;
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (2, 'access_splitter', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (3, 'settings', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'verifier_settings', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (78, 'splitter_settings', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (4, 'upload', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (6, 'users_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (7, 'add_user', 'administration');
@@ -1452,12 +1454,11 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (38, 'add_document_typ
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (39, 'update_document_type', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (40, 'import_suppliers', 'accounts');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (41, 'statistics', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'configurations', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'docservers', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'regex', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'configurations', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'docservers', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'regex', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'document_type_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'login_methods', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'verifier_settings', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'login_methods', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'mailcollect', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'user_quota', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'list_ai_model_splitter', 'splitter');
@@ -1476,9 +1477,9 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (62, 'update_workflow'
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'workflows_list_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'add_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_login_bottom_message', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'custom_fields_advanced', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_login_bottom_message', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'custom_fields_advanced', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (70, 'attachments_list_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (71, 'attachments_list_verifier', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (72, 'upload_attachments_verifier', 'verifier');
@@ -1487,8 +1488,11 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (74, 'list_llm_models'
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (75, 'add_llm_models', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (76, 'update_llm_models', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (77, 'certified_copy', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (78, 'splitter_settings', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 79;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (79, 'smtp', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (80, 'customization', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (81, 'security', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (82, 'advanced', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 83;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

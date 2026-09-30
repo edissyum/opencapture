@@ -1517,7 +1517,11 @@
         "workflows_list": "Lista de flujos de trabajo",
         "workflows_list_splitter": "Lista de flujos de trabajo",
         "certified_copy": "Acceso a las copias certificadas",
-        "splitter_settings": "Configuración específica del Splitter"
+        "splitter_settings": "Configuración específica del Splitter",
+        "advanced": "Configuración avanzada",
+        "customization": "Configuración de personalización",
+        "security": "Configuración de seguridad",
+        "smtp": "Configuración SMTP"
     },
     "PROFILE": {
         "details": "Detalles del perfil",

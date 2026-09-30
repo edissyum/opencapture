@@ -617,6 +617,12 @@ DELETE FROM "privileges" WHERE label IN ('splitter_settings', 'verifier_settings
 INSERT INTO "privileges" ("label", "parent") VALUES ('splitter_settings', 'administration');
 INSERT INTO "privileges" ("label", "parent") VALUES ('verifier_settings', 'administration');
 
+-- Rajout des priviléges manquantes
+INSERT INTO "privileges" ("label", "parent") VALUES ('smtp', 'general');
+INSERT INTO "privileges" ("label", "parent") VALUES ('security', 'general');
+INSERT INTO "privileges" ("label", "parent") VALUES ('advanced', 'general');
+INSERT INTO "privileges" ("label", "parent") VALUES ('customization', 'general');
+
 -- Utiliser l'id technique pour le workflow dans la table monitoring au lieu du workflow_id
 UPDATE monitoring m SET workflow_id = w.id FROM workflows w WHERE m.workflow_id = w.workflow_id AND m.module = w.module;
 UPDATE monitoring SET workflow_id = NULL WHERE workflow_id !~ '^\d+$';

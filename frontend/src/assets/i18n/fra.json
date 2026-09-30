@@ -1517,7 +1517,11 @@
         "workflows_list": "Liste des workflows",
         "workflows_list_splitter": "Liste des workflows",
         "certified_copy": "Paramétrage de la copie conforme",
-        "splitter_settings": "Paramétrage spécifique au Splitter"
+        "splitter_settings": "Paramétrage spécifique au Splitter",
+        "advanced": "Paramétrage avancé",
+        "customization": "Paramétrage de la personnalisation",
+        "security": "Paramétrage de la sécurité",
+        "smtp": "Paramétrage SMTP"
     },
     "PROFILE": {
         "details": "Détails du profil",

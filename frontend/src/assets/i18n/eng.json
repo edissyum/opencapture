@@ -1428,7 +1428,11 @@
         "workflows_list": "Workflows list",
         "workflows_list_splitter": "Workflows list",
         "certified_copy": "Certified copy management",
-        "splitter_settings": "Splitter-specific settings"
+        "splitter_settings": "Splitter-specific settings",
+        "advanced": "Advanced settings",
+        "customization": "Customization settings",
+        "security": "Security settings",
+        "smtp": "SMTP settings"
     },
     "PROFILE": {
         "details": "Profile details",

@@ -16,6 +16,11 @@
 
 import { t } from "i18next";
 import { BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, ShieldCheck, Workflow } from "lucide-react";
+
+import { useUser } from "../../../services/hooks/useUser";
+
+import { Loader } from "../../../components/loader/Loader";
+import { hasRequiredPermissions } from "../../../components/auth/auth";
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
 export const getSettingsSplitterOptions = () => [
@@ -24,6 +29,7 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.forms_description'),
         icon: <LayoutTemplate/>,
         href: '/settings/splitter/forms',
+        privileges: ['forms_list_splitter'],
         module: 'splitter'
     },
     {
@@ -31,6 +37,7 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.custom_fields_description'),
         icon: <CodeXml/>,
         href: '/settings/splitter/custom-fields',
+        privileges: ['custom_fields_advanced'],
         module: 'splitter'
     },
     {
@@ -38,6 +45,7 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.workflows_description'),
         icon: <Workflow/>,
         href: '/settings/splitter/workflows',
+        privileges: ['workflows_list_splitter'],
         module: 'splitter'
     },
     {
@@ -45,6 +53,7 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.outputs_description'),
         icon: <FolderOutput/>,
         href: '/settings/splitter/outputs',
+        privileges: ['outputs_list_splitter'],
         module: 'splitter'
     },
     {
@@ -52,6 +61,7 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.ai_doctypes_description'),
         icon: <BrainCog/>,
         href: '/settings/splitter/ai-doctypes',
+        privileges: ['list_ai_model_splitter'],
         module: 'splitter'
     },
     {
@@ -59,6 +69,7 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.update-status_description_splitter'),
         icon: <Flag/>,
         href: '/settings/splitter/update-status',
+        privileges: ['update_status_splitter'],
         module: 'splitter'
     },
     {
@@ -66,16 +77,22 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.certified_copy_description'),
         icon: <ShieldCheck/>,
         href: '/settings/splitter/certified-copy',
+        privileges: ['certified_copy'],
         module: 'splitter'
     }
 ];
 
 export function SettingsSplitterIndex() {
+    const { user, loadingUser } = useUser();
     const options = getSettingsSplitterOptions();
+
+    if (loadingUser) {
+        return <Loader />;
+    }
 
     return (
         <div className='grid grid-cols-3 gap-4 p-6'>
-            { options.map((option) => (
+            { options.filter((option) => hasRequiredPermissions(user, option.privileges)).map((option) => (
                 <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                     description={ option['description'] } to={ option['href'] }/>
             )) }
