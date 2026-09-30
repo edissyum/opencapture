@@ -198,8 +198,8 @@ export function WorkflowsList({ module }: { module: string }) {
                     { t('SETTINGS.workflows', { count: totalWorkflows }) } ({ totalWorkflows || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                    onChange={ (e) => setSearchTerm(e.target.value) }/>
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/workflows/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">

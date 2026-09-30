@@ -177,8 +177,8 @@ export function SettingsGeneralSMTP() {
                         <div className='flex gap-4 mt-4'>
                             { providers.map((provider) => (
                                 <div key={ provider.name }
-                                    onClick={ () => handleProviderChange(provider.name) }
-                                    className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                     onClick={ () => handleProviderChange(provider.name) }
+                                     className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                              ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)!' : '' } ` }>
                                     { provider.logo &&
@@ -385,11 +385,11 @@ export function SettingsGeneralSMTP() {
                             <p className='mt-2 text-(--text-secondary)'>{ t('SMTP.send_test_infos') }</p>
                         </div>
                         <Input id='testEmail' type='email' value={ destinationTestEmail }
-                            label={ t('SMTP.destination_test_email') }
-                            onChange={ (e) => setDestinationTestEmail(e.target.value) }/>
+                               label={ t('SMTP.destination_test_email') }
+                               onChange={ (e) => setDestinationTestEmail(e.target.value) }/>
 
                         <Button disabled={ destinationTestEmail === '' || statusLoadingTestEmail }
-                            onClick={ handleTestEmail }>
+                                onClick={ handleTestEmail }>
                             { statusLoadingTestEmail ? t('SMTP.sending') + "..." : t('SMTP.send_test_email') }
                         </Button>
                     </div>

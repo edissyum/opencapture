@@ -200,13 +200,13 @@ export function SplitterListPage() {
             body: (item: any) => (
                 <div className='flex gap-1 justify-end'>
                     <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                        data-tooltip-id="tooltip" data-tooltip-content={ t('SPLITTER.nb_documents') }>
+                         data-tooltip-id="tooltip" data-tooltip-content={ t('SPLITTER.nb_documents') }>
                         <span>{ item.documents_count }</span>
                         <FileText size={ 15 }/>
                     </div>
                     { item.attachments_count > 0 && (
                         <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                            data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_attachments') }>
+                             data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_attachments') }>
                             <span>{ item.attachments_count }</span>
                             <Paperclip size={ 15 }/>
                         </div>
@@ -447,14 +447,14 @@ export function SplitterListPage() {
                         { t('VERIFIER.filters') }
                     </h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
-                        onClick={ handleResetFilters }>
+                          onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
                     <div className={ `${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
+                             onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
                                 <Clock className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
@@ -486,7 +486,7 @@ export function SplitterListPage() {
                     </div>
                     <div className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, status: !open.status }) }>
+                             onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
@@ -518,7 +518,7 @@ export function SplitterListPage() {
                     </div>
                     <div className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
+                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
                             <div className="flex items-center gap-2 whitespace-nowrap">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
@@ -546,13 +546,13 @@ export function SplitterListPage() {
                     </div>
                     <div className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
+                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
                             <div className="flex items-center gap-2 whitespace-nowrap">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
-                                className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
+                                         className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
                         </div>
 
                         { open.customers && (
@@ -581,7 +581,7 @@ export function SplitterListPage() {
             { showMerge && (
                 <>
                     <div className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm"
-                        onClick={ () => setShowMerge(false) }/>
+                         onClick={ () => setShowMerge(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
@@ -589,17 +589,17 @@ export function SplitterListPage() {
                             <div className='px-6 flex items-center'>
                                 <h2 className='mb-0!'>{ t('SPLITTER.merge_batch') }</h2>
                                 <div className='ml-auto cursor-pointer text-(--text-secondary)'
-                                    onClick={ () => setShowMerge(false) }>
+                                     onClick={ () => setShowMerge(false) }>
                                     <X/>
                                 </div>
                             </div>
                             <p className='px-6 text-(--text-secondary)'
-                                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.merge_batch_details')) } }/>
+                               dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.merge_batch_details')) } }/>
 
                             <div className='px-6 mt-2 h-full overflow-y-auto'>
                                 { selectedBatches.map((batch) => (
                                     <div key={ batch.id } onClick={ () => setSelectedPrincipalBatchId(batch.id) }
-                                        className={ `w-full cursor-pointer p-4 border border-(--border-secondary) rounded-lg mb-2
+                                         className={ `w-full cursor-pointer p-4 border border-(--border-secondary) rounded-lg mb-2
                                                       hover:border-(--color-primary) hover:bg-(--bg-selected) transition-colors
                                                       ${ selectedPrincipalBatchId === batch.id && 'bg-(--bg-selected) border-(--color-primary)' }` }>
                                         <div className='flex items-center gap-4'>
@@ -649,7 +649,7 @@ export function SplitterListPage() {
                             <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
                             <Filter size={ 14 }/>
                     }
-                    onClick={ handleDisplayFilters }>
+                            onClick={ handleDisplayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>
@@ -659,17 +659,17 @@ export function SplitterListPage() {
                         </span>
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
-                        autoFocus value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                        onChange={ (e) => setSearchTerm(e.target.value) }/>
+                           autoFocus value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                           onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
-                            onClick={ () => setView('list') }
-                            className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md border` }>
+                              onClick={ () => setView('list') }
+                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md border` }>
                             <Rows3 size={ 20 }/>
                         </span>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
-                            onClick={ () => setView('grid') }
-                            className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md border` }>
+                              onClick={ () => setView('grid') }
+                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-(--bg-primary) border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md border` }>
                             <LayoutGrid size={ 20 }/>
                         </span>
                     </span>

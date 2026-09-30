@@ -690,7 +690,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                 <div className='w-full'>
                     <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema }
-                        grid={ 2 }/>
+                                 grid={ 2 }/>
                 </div>
             </div>
 
@@ -698,9 +698,9 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 <StepperMantine.Step label={ t("WORKFLOWS.input") }>
                     <div className='flex flex-col gap-2'>
                         <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors }
-                            grid={ 2 }/>
+                                     grid={ 2 }/>
                         <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl }
-                            errors={ workflowErrors } gap={ 2 }/>
+                                     errors={ workflowErrors } gap={ 2 }/>
 
                         { allowScripting && (
                             <div className='flex items-center gap-2'>
@@ -715,7 +715,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                         <div className="flex justify-end">
                             <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="ml-auto px-12"
-                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
                                 { loadingUpdate ? t("WORKFLOWS.validating") : t("GLOBAL.next") }
                             </Button>
                         </div>
@@ -726,7 +726,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <StepperMantine.Step className='stepper-secondary' label={
                         <div className='flex items-center gap-2'>
                             <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
-                                size={ 36 }/>
+                                      size={ 36 }/>
                             <div className='text-(--text-secondary)'>
                                 { t("WORKFLOWS.input_scripting") }
                             </div>
@@ -755,14 +755,14 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             </div>
                             <div className='flex justify-between'>
                                 <Button onClick={ handlePreviousStep } variant="no_bg"
-                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                        className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                     <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                 </Button>
 
                                 <Button data-tooltip-id='tooltip'
-                                    data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
-                                    onClick={ () => handleSubmitScript(inputScript, 'input') } className="px-12"
-                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                        data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
+                                        onClick={ () => handleSubmitScript(inputScript, 'input') } className="px-12"
+                                        disabled={ loading || Object.keys(workflowErrors).length > 0 }>
                                     { loadingScript ? t("WORKFLOWS.validating_script") : t("GLOBAL.next") }
                                 </Button>
                             </div>
@@ -773,14 +773,14 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 <StepperMantine.Step label={ t("WORKFLOWS.process") }>
                     <div className='flex flex-col gap-2'>
                         <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl }
-                            errors={ workflowErrors }
-                            gap={ 2 } className='mb-2'/>
+                                     errors={ workflowErrors }
+                                     gap={ 2 } className='mb-2'/>
                         <DynamicForm schema={ processSchemaInputFields } control={ workflowControl }
-                            errors={ workflowErrors }
-                            grid={ 2 }/>
+                                     errors={ workflowErrors }
+                                     grid={ 2 }/>
                         <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl }
-                            errors={ workflowErrors }
-                            gap={ 2 }/>
+                                     errors={ workflowErrors }
+                                     gap={ 2 }/>
 
                         { allowScripting && (
                             <div className='flex items-center gap-2'>
@@ -795,12 +795,12 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                         <div className='flex justify-between'>
                             <Button onClick={ handlePreviousStep } variant="no_bg"
-                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                 <ArrowLeft/> { t("MAILCOLLECT.previous") }
                             </Button>
 
                             <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="px-12"
-                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
                                 { t("GLOBAL.next") }
                             </Button>
                         </div>
@@ -811,7 +811,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <StepperMantine.Step className='stepper-secondary' label={
                         <div className='flex items-center gap-2'>
                             <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
-                                size={ 36 }/>
+                                      size={ 36 }/>
                             <div className='text-(--text-secondary)'>
                                 { t("WORKFLOWS.process_scripting") }
                             </div>
@@ -840,14 +840,14 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                         <div className='mt-4 flex justify-between'>
                             <Button onClick={ handlePreviousStep } variant="no_bg"
-                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                 <ArrowLeft/> { t("MAILCOLLECT.previous") }
                             </Button>
 
                             <Button data-tooltip-id='tooltip'
-                                data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
-                                onClick={ () => handleSubmitScript(processScript, 'process') } className="px-12"
-                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                    data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
+                                    onClick={ () => handleSubmitScript(processScript, 'process') } className="px-12"
+                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
                                 { loadingScript ? t("WORKFLOWS.validating_script") : t("GLOBAL.next") }
                             </Button>
                         </div>
@@ -859,12 +859,12 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                     <div className='mt-4 flex justify-between'>
                         <Button onClick={ handlePreviousStep } variant="no_bg"
-                            className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                             <ArrowLeft/> { t("MAILCOLLECT.previous") }
                         </Button>
 
                         <Button onClick={ workflowHandleSubmit(handleSubmit) } className="px-12"
-                            disabled={ loadingUpdate || Object.keys(workflowErrors).length > 0 }>
+                                disabled={ loadingUpdate || Object.keys(workflowErrors).length > 0 }>
                             { workflowId && (
                                 <>
                                     { loadingUpdate ? t("WORKFLOWS.updating") : t("WORKFLOWS.update") }

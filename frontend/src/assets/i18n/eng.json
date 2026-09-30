@@ -599,7 +599,8 @@
         "certified_copy_description": "Compliance with standard NF Z42-020/26",
         "favorites_added": "Favorites added successfully",
         "favorites_removed": "Favorites removed successfully",
-        "remove_favorite": "Remove from favorites"
+        "remove_favorite": "Remove from favorites",
+        "qr_code_description": "Generation of QR codes"
     },
     "SMTP": {
         "authentication": "Authentication",

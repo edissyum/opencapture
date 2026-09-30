@@ -135,12 +135,12 @@ export default function UploadDropzone({
                 <div className="mt-4 space-y-2 overflow-y-auto">
                     { files.map((file: any) => (
                         <div key={ file.name + file.size }
-                            className="relative flex items-center rounded-lg gap-4 px-3 py-2 bg-(--bg-primary) border border-(--border-secondary)">
+                             className="relative flex items-center rounded-lg gap-4 px-3 py-2 bg-(--bg-primary) border border-(--border-secondary)">
                             { progressByFile?.[file.id] !== undefined && (
                                 <div className="absolute top-0 left-0 h-full bg-(--color-primary)/10 transition-[width]
                                                 duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
                                                 border-r-2 border-(--border-primary) rounded-md"
-                                style={ { width: `${ progressByFile[file.id] }%` } }/>
+                                     style={ { width: `${ progressByFile[file.id] }%` } }/>
                             ) }
 
                             <div className='text-(--text-primary) bg-(--bg-secondary) p-2 rounded-lg'>
@@ -166,8 +166,8 @@ export default function UploadDropzone({
                             </div>
                             { progressByFile?.[file.id] === undefined && (
                                 <Trash2 size={ 16 }
-                                    className="cursor-pointer hover:text-(--text-error) ml-auto"
-                                    onClick={ (e) => removeFile(e, file) }/>
+                                        className="cursor-pointer hover:text-(--text-error) ml-auto"
+                                        onClick={ (e) => removeFile(e, file) }/>
                             ) }
                         </div>
                     )) }

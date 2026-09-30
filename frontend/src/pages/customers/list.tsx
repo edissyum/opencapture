@@ -147,11 +147,11 @@ export function CustomersList() {
                     </span>
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                    onChange={ (e) => setSearchTerm(e.target.value) }/>
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button size='sm' variant="bg_white" className='p-2 px-3'
-                        onClick={ () => navigate('/customers/create') }>
+                            onClick={ () => navigate('/customers/create') }>
                         <UserRoundPlus size={ 16 } className="mr-2"/> { t('ACCOUNTS.add_customer') }
                     </Button>
                 </span>

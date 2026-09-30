@@ -267,21 +267,21 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             { showDoctypeSelection && selectedFormId && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                        onClick={ () => setShowDoctypeSelection(false) }/>
+                         onClick={ () => setShowDoctypeSelection(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
                         <div className='flex items-center px-6 pt-6'>
                             <h2>{ t('DOCTYPES.select_doctype') }</h2>
                             <div className='ml-auto cursor-pointer text-(--text-secondary)'
-                                onClick={ () => setShowDoctypeSelection(false) }>
+                                 onClick={ () => setShowDoctypeSelection(false) }>
                                 <X/>
                             </div>
                         </div>
                         <div className='overflow-hidden'>
                             <DoctypesTree formId={ selectedFormId } canFolderBeSelected={ false }
-                                editor={ false } onSelect={ (node) => handleDoctypeChange(node) }
-                                onTmpSelect={ (node) => setTmpDoctype(node) }/>
+                                          editor={ false } onSelect={ (node) => handleDoctypeChange(node) }
+                                          onTmpSelect={ (node) => setTmpDoctype(node) }/>
                         </div>
                         <div className='mt-auto flex justify-end items-center gap-4 p-6'>
                             <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
@@ -327,21 +327,21 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                 <div className='p-4'>
                                     { module === 'verifier' ? (
                                         <Select id={ 'workflow' } value={ doc.workflow_id }
-                                            label={ t('AI-DOCTYPES.workflow_associated') }
-                                            options={ workflows.map((wf: any) => ({
-                                                label: wf.label,
-                                                value: wf.workflow_id
-                                            })) }
-                                            onChange={ (value) => handleWorkflowChange(value, doc) }/>
+                                                label={ t('AI-DOCTYPES.workflow_associated') }
+                                                options={ workflows.map((wf: any) => ({
+                                                    label: wf.label,
+                                                    value: wf.workflow_id
+                                                })) }
+                                                onChange={ (value) => handleWorkflowChange(value, doc) }/>
                                     ) : (
                                         <div>
                                             <Select id={ 'form' } value={ doc.form }
-                                                label={ t('AI-DOCTYPES.form_associated') }
-                                                options={ forms.map((f: any) => ({
-                                                    label: f.label,
-                                                    value: f.id
-                                                })) }
-                                                onChange={ (value) => handleFormChange(value, doc) }/>
+                                                    label={ t('AI-DOCTYPES.form_associated') }
+                                                    options={ forms.map((f: any) => ({
+                                                        label: f.label,
+                                                        value: f.id
+                                                    })) }
+                                                    onChange={ (value) => handleFormChange(value, doc) }/>
 
                                             <div
                                                 className='relative mt-4 gap-4 cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
@@ -356,14 +356,14 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                                             { t('AI-DOCTYPES.select_doctype') }
                                                         </p>
                                                         <Button variant="no_bg_border"
-                                                            className='w-full justify-start px-4! text-(--text-primary)'>
+                                                                className='w-full justify-start px-4! text-(--text-primary)'>
                                                             <File size={ 18 }/>
                                                             <span>{ doctypes.find((dt: any) => dt.key === doc.doctype)?.label }</span>
                                                         </Button>
                                                     </>
                                                 ) : (
                                                     <Button variant="no_bg_border" disabled={ !doc.form }
-                                                        className='w-full justify-start px-4!'>
+                                                            className='w-full justify-start px-4!'>
                                                         { t('DOCTYPES.select_doctype') }
                                                     </Button>
                                                 ) }

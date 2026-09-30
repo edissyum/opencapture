@@ -162,7 +162,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['settings']) && (
                     <Link to="/settings"
-                        className={ `${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
                         <Settings className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.settings')
@@ -173,7 +173,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['history']) && (
                     <Link to="/history"
-                        className={ `${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
                         <Clock4 className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.history')
@@ -184,7 +184,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['statistics']) && (
                     <Link to="/statistics"
-                        className={ `${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
                         <ChartNoAxesColumn className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.statistics')
@@ -195,7 +195,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['monitoring']) && (
                     <Link to="/monitoring"
-                        className={ `${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
                         <Activity className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.monitoring')
@@ -206,7 +206,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['suppliers_list']) && (
                     <Link to="/suppliers"
-                        className={ `${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
                         <Building2 className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('ACCOUNTS.suppliers_list')
@@ -217,7 +217,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['customers_list']) && (
                     <Link to="/customers"
-                        className={ `${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
                         <Briefcase className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('ACCOUNTS.customers_list')
@@ -227,7 +227,7 @@ export default function Sidebar() {
                 ) }
 
                 <Link to="/about"
-                    className={ `${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
+                      className={ `${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
                     <Info className='shrink-0' size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('SETTINGS.abouts_us')
@@ -237,7 +237,7 @@ export default function Sidebar() {
             </nav>
 
             <div ref={ userPanelRef }
-                className="relative mt-auto text-(--text-secondary) flex flex-col gap-3 bg-(--bg-secondary) rounded-lg">
+                 className="relative mt-auto text-(--text-secondary) flex flex-col gap-3 bg-(--bg-secondary) rounded-lg">
                 { userPanelOpen && (
                     <div
                         className='absolute bottom-full mb-2 z-30 rounded-lg border border-(--border-secondary) bg-(--bg-primary) shadow-lg'>
@@ -272,10 +272,10 @@ export default function Sidebar() {
                                 text-(--text-secondary) font-semibold transition-colors ${ collapsed ? '' : 'px-3' }` }
                     onClick={ () => setUserPanelOpen((prev) => !prev) }>
                     <img src='/imgs/user.svg' alt='user profile'
-                        className='shrink-0 size-8' { ...(collapsed && {
-                            "data-tooltip-id": "tooltip",
-                            "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
-                        }) }/>
+                         className='shrink-0 size-8' { ...(collapsed && {
+                             "data-tooltip-id": "tooltip",
+                             "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
+                         }) }/>
 
                     { !collapsed &&
                         <>

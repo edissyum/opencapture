@@ -635,7 +635,8 @@
         "certified_copy_description": "Conformité norme NF Z42-020/26",
         "favorites_added": "Favoris ajouté avec succès",
         "favorites_removed": "Favoris supprimé avec succès",
-        "remove_favorite": "Supprimer des favoris"
+        "remove_favorite": "Supprimer des favoris",
+        "qr_code_description": "Génération de QR Code pour la séparation"
     },
     "SMTP": {
         "authentication": "Authentification",

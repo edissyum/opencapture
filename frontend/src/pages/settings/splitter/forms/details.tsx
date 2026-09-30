@@ -166,7 +166,7 @@ export function SettingsSplitterFormsDetails({
             </div>
 
             <Button variant="primary" onClick={ handleSubmit }
-                disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
+                    disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
                 { isSubmitting ? submitLabelLoading + "..." : submitLabel }
             </Button>
         </div>

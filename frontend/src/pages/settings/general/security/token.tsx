@@ -79,18 +79,18 @@ export const SettingsGeneralTokenAuth = () => {
 
             <div className='w-1/3 flex flex-col gap-6'>
                 <Select id='token-user-dropdown' filter value={ selectedUser }
-                    options={ users.map((user) => ({ value: user.username, label: `${user.firstname} ${user.lastname}` })) }
-                    label={ t('SECURITY.token_user') } required
-                    onChange={ (value) => {
-                        setSelectedUser(value)
-                    } }
+                        options={ users.map((user) => ({ value: user.username, label: `${user.firstname} ${user.lastname}` })) }
+                        label={ t('SECURITY.token_user') } required
+                        onChange={ (value) => {
+                            setSelectedUser(value)
+                        } }
                 />
 
                 <Input label={ t('SECURITY.token_expiration') }
-                    value={ tokenExpiration } required
-                    onChange={ (e: any) => {
-                        setTokenExpiration(e.target.value)
-                    } }/>
+                       value={ tokenExpiration } required
+                       onChange={ (e: any) => {
+                           setTokenExpiration(e.target.value)
+                       } }/>
 
                 <Button onClick={ handleGenerateAuthToken } disabled={ loadingSubmit || !selectedUser }>
                     { loadingSubmit ? t('SECURITY.token_generation') : t('SECURITY.generate_token') }
@@ -117,11 +117,11 @@ export const SettingsGeneralTokenAuth = () => {
                         </div>
                         <div className='flex justify-end items-center cursor-pointer rounded-lg'>
                             <div className='bg-(--bg-secondary) p-2 rounded-lg' data-tooltip-id='tooltip'
-                                data-tooltip-content={ t('SECURITY.copy_token') }
-                                onClick={ async () => {
-                                    await copyToClipboard(token);
-                                    showToast(t('SECURITY.token_copied'), 'success');
-                                } }>
+                                 data-tooltip-content={ t('SECURITY.copy_token') }
+                                 onClick={ async () => {
+                                     await copyToClipboard(token);
+                                     showToast(t('SECURITY.token_copied'), 'success');
+                                 } }>
                                 <Copy size={ 20 } className="text-(--text-primary)"/>
                             </div>
                         </div>

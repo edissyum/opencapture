@@ -177,11 +177,11 @@ export function Login() {
                             </div>
                             <div className="absolute top-0 right-0 p-4 flex gap-2 z-10">
                                 <span onClick={ () => setActiveCard('guide') }
-                                    className={ `size-2 rounded-full cursor-pointer transition-colors
+                                      className={ `size-2 rounded-full cursor-pointer transition-colors
                                         ${ activeCard === 'guide' ? 'bg-(--color-primary)' : 'bg-(--bg-secondary)' }` }
                                 />
                                 <span onClick={ () => setActiveCard('capture') }
-                                    className={ `size-2 rounded-full cursor-pointer transition-colors
+                                      className={ `size-2 rounded-full cursor-pointer transition-colors
                                             ${ activeCard === 'capture' ? 'bg-(--color-primary)' : 'bg-(--bg-secondary)' }` }
                                 />
                             </div>
@@ -191,7 +191,7 @@ export function Login() {
                                         <span className='text-(--color-primary)'>{ t('AUTH.usage_guide') }</span>
 
                                         <a target='_blank'
-                                            href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction">
+                                           href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction">
                                             <Button
                                                 size='sm'
                                                 variant='bg_white'
@@ -240,7 +240,7 @@ export function Login() {
                         </div>
 
                         <form onSubmit={ handleSubmit(handleLogin) }
-                            className='flex flex-col gap-4 align-center h-full justify-center'>
+                              className='flex flex-col gap-4 align-center h-full justify-center'>
                             <div className='flex flex-col'>
                                 <span className='font-bold text-2xl'>{ t('AUTH.connexion') }</span>
                                 { loginMessage ? (
@@ -273,7 +273,7 @@ export function Login() {
                                 <p className='text-(--text-secondary) text-xs text-center mt-2'>
                                     { t('AUTH.forgot_password') }&nbsp;
                                     <span onClick={ handleNavigateToReset }
-                                        className="cursor-pointer text-(--color-primary)">{ t('AUTH.reset_here') } </span>
+                                          className="cursor-pointer text-(--color-primary)">{ t('AUTH.reset_here') } </span>
                                 </p>
                             }
                         </form>
@@ -286,7 +286,7 @@ export function Login() {
                 </span>
                 <span>
                     Powered by <a href="https://edissyum.com" target="_blank"
-                        className="underline text-(--color-primary)">Edissyum</a>
+                                  className="underline text-(--color-primary)">Edissyum</a>
                 </span>
             </div>
         </div>

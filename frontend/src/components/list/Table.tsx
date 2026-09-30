@@ -196,7 +196,7 @@ export function Table<T extends { id: string }>({
                     <div className='flex flex-row p-3 bg-(--bg-primary) border-y border-(--border-secondary)'>
                         { columns.map((col, i) => (
                             <span key={ i }
-                                className={ `${ col.className || 'flex-1' } ml-3 text-left font-bold text-(--text-secondary)` }>
+                                  className={ `${ col.className || 'flex-1' } ml-3 text-left font-bold text-(--text-secondary)` }>
                                 <span className='block'>
                                     { col.header }
                                 </span>
@@ -206,7 +206,7 @@ export function Table<T extends { id: string }>({
                     <div className="flex flex-col">
                         { Array.from({ length: skeletonRows }).map((_, idx) => (
                             <div key={ idx }
-                                className="flex p-6 gap-4 bg-(--bg-secondary) even:bg-(--bg-primary) border-b border-(--border-secondary)">
+                                 className="flex p-6 gap-4 bg-(--bg-secondary) even:bg-(--bg-primary) border-b border-(--border-secondary)">
                                 { columns.map((col, ci) => (
                                     <span key={ ci } className={ `${ col.className?.replace('p-', '') || 'flex-1' } text-sm` }>
                                         <Skeleton className='dark:bg-(--bg-secondary)! h-3!'/>

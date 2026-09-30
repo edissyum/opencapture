@@ -222,7 +222,7 @@ export function AiDoctypesList({ module }: { module: string }) {
             { testingModel && (
                 <div>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                        onClick={ () => setTestingModel(false) }/>
+                         onClick={ () => setTestingModel(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl
                                     outline-none shadow-none bg-(--bg-primary) text-(--text-secondary) w-1/2
                                     border border-(--border-secondary) hover:border hover:border-(--text-secondary)">
@@ -230,7 +230,7 @@ export function AiDoctypesList({ module }: { module: string }) {
                             <h3 className="font-semibold text-(--text-primary)">{ t('AI-DOCTYPES.test_model') }</h3>
                             <p className='text-(--text-secondary)'>{ t('AI-DOCTYPES.test_model_desc') }</p>
                             <div className="absolute top-6 right-6 cursor-pointer"
-                                onClick={ () => setTestingModel(false) }>
+                                 onClick={ () => setTestingModel(false) }>
                                 { <X size={ 18 }/> }
                             </div>
                             <UploadDropzone
@@ -276,8 +276,8 @@ export function AiDoctypesList({ module }: { module: string }) {
                     { t('SETTINGS.ai_doctypes', { count: totalAiDoctypes }) } ({ totalAiDoctypes || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                    onChange={ (e) => setSearchTerm(e.target.value) }/>
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/ai-doctypes/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">

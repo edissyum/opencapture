@@ -311,12 +311,12 @@ export function SettingsVerifierPositionMaskEditor() {
                         <div>
                             { positionMaskId ? (
                                 <Button onClick={ handleSubmit(handleUpdate) }
-                                    disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                                     { loadingSubmit ? t('GLOBAL.updating') : t('POSITIONS-MASKS.update_mask') }
                                 </Button>
                             ) : (
                                 <Button onClick={ handleSubmit(handleCreate) }
-                                    disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                                     { loadingSubmit ? t('GLOBAL.creating') : t('POSITIONS-MASKS.create_mask') }
                                 </Button>
                             ) }
@@ -330,10 +330,10 @@ export function SettingsVerifierPositionMaskEditor() {
                                 <div className="size-fit flex gap-3 bg-(--bg-primary) p-3 rounded-full
                                                 cursor-pointer border border-(--border-secondary)">
                                     <button onClick={ handlePrev }
-                                        disabled={ currentPage === 1 }
-                                        className={ `cursor-pointer rounded-full transition-colors
+                                            disabled={ currentPage === 1 }
+                                            className={ `cursor-pointer rounded-full transition-colors
                                                     ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
-                                : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
+                                                : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
                                     >
                                         <ChevronLeft size={ 16 }/>
                                     </button>
@@ -347,7 +347,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                         disabled={ currentPage === positionMask.nb_pages }
                                         className={ `cursor-pointer rounded-full transition-colors 
                                                      ${ currentPage === positionMask.nb_pages ? "text-(--text-secondary) cursor-not-allowed"
-                                : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
+                                            : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
                                         <ChevronRight size={ 16 }/>
                                     </button>
                                 </div>
@@ -398,15 +398,15 @@ export function SettingsVerifierPositionMaskEditor() {
                         <Tabs.Panel value="facturation" className="bg-(--bg-primary)!">
                             { availableBillingFields.map((field: any) => (
                                 <div key={ field.id }
-                                    onClick={ () => setFocusedField(field) }
-                                    className="p-3 flex flex-col gap-4 hover:bg-(--bg-secondary) cursor-pointer rounded border-b
+                                     onClick={ () => setFocusedField(field) }
+                                     className="p-3 flex flex-col gap-4 hover:bg-(--bg-secondary) cursor-pointer rounded border-b
                                                 border-(--border-secondary)">
                                     { t(field.label) }
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
-                                        type="text" name={ field.id } value={ positionMask.regex[field.id] || '' }
-                                        onBlur={ (e: any) => {
-                                            updateRegex(field.id, e.target.value).then()
-                                        } }
+                                           type="text" name={ field.id } value={ positionMask.regex[field.id] || '' }
+                                           onBlur={ (e: any) => {
+                                               updateRegex(field.id, e.target.value).then()
+                                           } }
                                     />
                                 </div>
                             )) }
@@ -414,21 +414,21 @@ export function SettingsVerifierPositionMaskEditor() {
                         <Tabs.Panel value="custom_fields" className="bg-(--bg-primary)!">
                             { customFields.map((field: any) => (
                                 <div key={ `custom_${ field.id }` }
-                                    onClick={ () => {
-                                        if (!field.id.toString().startsWith('custom_')) {
-                                            field.id = `custom_${ field.id }`;
-                                        }
-                                        setFocusedField(field)
-                                    } }
-                                    className="p-3 flex flex-col gap-4 hover:bg-(--bg-secondary) cursor-pointer rounded border-b
+                                     onClick={ () => {
+                                         if (!field.id.toString().startsWith('custom_')) {
+                                             field.id = `custom_${ field.id }`;
+                                         }
+                                         setFocusedField(field)
+                                     } }
+                                     className="p-3 flex flex-col gap-4 hover:bg-(--bg-secondary) cursor-pointer rounded border-b
                                                 border-(--border-secondary)">
                                     { t(field.label) }
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
-                                        type="text" name={ `custom_${ field.id }` }
-                                        onBlur={ (e: any) => {
-                                            updateRegex(field.id, e.target.value).then()
-                                        } }
-                                        value={ positionMask.regex[`custom_${ field.id }`] }/>
+                                           type="text" name={ `custom_${ field.id }` }
+                                           onBlur={ (e: any) => {
+                                               updateRegex(field.id, e.target.value).then()
+                                           } }
+                                           value={ positionMask.regex[`custom_${ field.id }`] }/>
                                 </div>
                             )) }
                         </Tabs.Panel>

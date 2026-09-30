@@ -110,7 +110,7 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                                     { field.hint && (
                                         <span className={ `absolute cursor-pointer z-10 -right-5 top-0 text-(--text-secondary)` }>
                                             <CircleQuestionMark data-tooltip-id="tooltip" size={ 16 }
-                                                data-tooltip-content={ field.hint }/>
+                                                                data-tooltip-content={ field.hint }/>
                                         </span>
                                     ) }
                                 </div>
@@ -161,7 +161,7 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
 
                                 { errors[field.name]?.message && (
                                     <p className="text-(--text-error) text-xs ml-1 mt-1"
-                                        dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(errors[field.name]?.message) } }/>
+                                       dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(errors[field.name]?.message) } }/>
                                 ) }
                             </div>
                         ) }
@@ -217,10 +217,10 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                             <div className='flex gap-4'>
                                 { field.options.map((action: any) => (
                                     <div key={ action.value }
-                                        onClick={ () => f.onChange(action.value) }
-                                        className={ `cursor-pointer border w-1/3 py-5 rounded-md text-center
+                                         onClick={ () => f.onChange(action.value) }
+                                         className={ `cursor-pointer border w-1/3 py-5 rounded-md text-center
                                                      ${ f.value === action.value ? "text-(--color-primary) bg-(--bg-selected) border-(--border-primary)"
-                                        : "border-(--border-secondary) hover:border-(--text-secondary) text-(--text-primary)" }
+                                             : "border-(--border-secondary) hover:border-(--text-secondary) text-(--text-primary)" }
                                         ` }>
                                         <div className="flex justify-center mb-2">
                                             { logoMap[action.logo] }

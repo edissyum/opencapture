@@ -49,11 +49,11 @@ function PaletteItem({ field }: any) {
 
     return (
         <div ref={ setNodeRef } { ...attributes } { ...listeners } style={ style }
-            className={ `flex gap-2 justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
+             className={ `flex gap-2 justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
             <div
                 className='flex border items-center border-(--border-secondary) rounded-lg bg-(--bg-primary) p-2 gap-2 w-full'>
                 <div className='cursor-grab text-(--text-secondary) hover:text-(--text-primary)'
-                    ref={ setActivatorNodeRef } { ...listeners } aria-label="Drag handle">
+                     ref={ setActivatorNodeRef } { ...listeners } aria-label="Drag handle">
                     <GripVertical size={ 24 }/>
                 </div>
                 <div className='flex flex-col'>

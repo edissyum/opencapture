@@ -254,23 +254,23 @@ export function AttachmentsList({
                 { !showAttachment && (
                     <div className='flex gap-2 sticky p-6 top-0 z-10'>
                         <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 18 }/> }
-                            onClick={ () => onClose() } size='sm'>
+                                onClick={ () => onClose() } size='sm'>
                             { module === 'verifier' ? t('ATTACHMENTS.back_to_file') : t('ATTACHMENTS.back_to_batch') }
                         </Button>
                         { module === 'splitter' && (
                             <Button variant='bg_white_rounded' icon={ <Unlink size={ 18 }/> }
-                                onClick={ () => unBinding && unBinding() } size='sm'
-                                disabled={ attachments.length === 0 || containsNotPdf || disabled || disableUnbinding }>
+                                    onClick={ () => unBinding && unBinding() } size='sm'
+                                    disabled={ attachments.length === 0 || containsNotPdf || disabled || disableUnbinding }>
                                 { t('ATTACHMENTS.unbinding') }
                             </Button>
                         ) }
 
                         <div className='ml-auto'>
                             <input ref={ fileInputRef } disabled={ disabled } type="file" className="hidden"
-                                onChange={ handleFileSelected }/>
+                                   onChange={ handleFileSelected }/>
                             <Button variant='bg_white_rounded' icon={ <CloudUpload size={ 18 }/> }
-                                onClick={ () => fileInputRef.current?.click() }
-                                disabled={ disabled } size='sm'>
+                                    onClick={ () => fileInputRef.current?.click() }
+                                    disabled={ disabled } size='sm'>
                                 { t('ATTACHMENTS.upload_new_file') }
                             </Button>
                         </div>
@@ -299,7 +299,7 @@ export function AttachmentsList({
                                 className={ `grid ${ module === 'verifier' ? 'grid-cols-2' : 'grid-cols-3' } gap-4 px-6 pb-6` }>
                                 { attachments.map((attachment) => (
                                     <div key={ attachment.id } onClick={ () => handleAttachementView(attachment) }
-                                        className="cursor-pointer bg-(--bg-primary) rounded-md group">
+                                         className="cursor-pointer bg-(--bg-primary) rounded-md group">
                                         <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6
                                                 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)
                                                 border border-b-0 border-(--border-secondary) group-hover:border-(--text-secondary)
@@ -307,8 +307,8 @@ export function AttachmentsList({
                                             <div className="w-full h-40 relative">
                                                 { attachment['thumb'] ? (
                                                     <img alt={ attachment.filename }
-                                                        src={ 'data:image/jpg;base64,' + attachment['thumb'] }
-                                                        className='object-cover object-top rounded-t-lg w-full! h-full!'
+                                                         src={ 'data:image/jpg;base64,' + attachment['thumb'] }
+                                                         className='object-cover object-top rounded-t-lg w-full! h-full!'
                                                     />
                                                 ) : (
                                                     <div className='w-full h-full flex items-center justify-center'>

@@ -467,7 +467,7 @@ export function OutputEditor({ module }: { module: string }) {
 
                     <div className='w-full'>
                         <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema }
-                            grid={ 2 }/>
+                                     grid={ 2 }/>
                     </div>
                 </div>
 
@@ -479,18 +479,18 @@ export function OutputEditor({ module }: { module: string }) {
                                     { outputType?.data?.options.auth && outputType?.data?.options.auth.map((option: any) => (
                                         <div key={ option.id } className="w-full gap-2">
                                             <Input id={ option.id } type={ option.type } name={ option.id }
-                                                label={ option.label }
-                                                placeholder={ option?.placeholder }
-                                                value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
-                                                onChange={ (e) => {
-                                                    handleAuthChange(e, option)
-                                                } }/>
+                                                   label={ option.label }
+                                                   placeholder={ option?.placeholder }
+                                                   value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
+                                                   onChange={ (e) => {
+                                                       handleAuthChange(e, option)
+                                                   } }/>
                                         </div>
                                     )) }
                                 </div>
                                 <div className="flex justify-end">
                                     <Button onClick={ handleAuthStep } className="ml-auto px-8"
-                                        disabled={ loadingStep }>
+                                            disabled={ loadingStep }>
                                         { loadingStep ? t("OUTPUTS.testing_connection") : t("OUTPUTS.test_connection") }
                                     </Button>
                                 </div>
@@ -502,7 +502,7 @@ export function OutputEditor({ module }: { module: string }) {
                                 <div className='grid grid-cols-2 gap-4'>
                                     { outputType?.data?.options.parameters.map((option: any) => (
                                         <div key={ option.id }
-                                            className={ `w-full gap-2 ${ option.type === 'textarea' ? 'col-span-2' : '' }` }>
+                                             className={ `w-full gap-2 ${ option.type === 'textarea' ? 'col-span-2' : '' }` }>
                                             { option.type === 'textarea' && (
                                                 <>
                                                     { ['xml', 'json'].includes(codeType) && (
@@ -558,8 +558,8 @@ export function OutputEditor({ module }: { module: string }) {
                                 </div>
                                 <div className='flex justify-between'>
                                     <Button onClick={ handlePreviousStep } variant="no_bg"
-                                        disabled={ outputType?.data?.options?.auth?.length === 0 }
-                                        className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                            disabled={ outputType?.data?.options?.auth?.length === 0 }
+                                            className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                     </Button>
 
@@ -595,7 +595,7 @@ export function OutputEditor({ module }: { module: string }) {
                                     <div className='grid grid-cols-2 gap-4'>
                                         { outputType?.data?.options.links.map((option: any) => (
                                             <div key={ option.id }
-                                                className={ `w-full gap-2 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
+                                                 className={ `w-full gap-2 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
                                                 { option.type === 'text' && option.webservice && (
                                                     <Select
                                                         id={ option.id } label={ option.label }
@@ -619,19 +619,19 @@ export function OutputEditor({ module }: { module: string }) {
                                                 ) }
                                                 { option.type === 'text' && !option.webservice && (
                                                     <Input id={ option.id } type={ option.type } name={ option.id }
-                                                        label={ option.label } hint={ option.hint }
-                                                        value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
-                                                        onChange={ (e) => {
-                                                            handleSpecificLinksChange(e, option, 'links')
-                                                        } }/>
+                                                           label={ option.label } hint={ option.hint }
+                                                           value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
+                                                           onChange={ (e) => {
+                                                               handleSpecificLinksChange(e, option, 'links')
+                                                           } }/>
                                                 ) }
                                             </div>
                                         )) }
                                     </div>
                                     <div className='flex justify-between'>
                                         <Button onClick={ handlePreviousStep } variant="no_bg"
-                                            disabled={ outputType?.data?.options.auth.length === 0 }
-                                            className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                                disabled={ outputType?.data?.options.auth.length === 0 }
+                                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                             <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                         </Button>
 
@@ -675,11 +675,11 @@ export function OutputEditor({ module }: { module: string }) {
                             <div className="p-4 flex flex-col gap-2">
                                 { availableSystemFields.map((option: any) => (
                                     <div key={ option.id } data-tooltip-id='tooltip'
-                                        data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
-                                        onClick={ async () => {
-                                            await copyToClipboard(option.id);
-                                        } }
-                                        className='flex flex-col border border-(--border-secondary) rounded-lg
+                                         data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
+                                         onClick={ async () => {
+                                             await copyToClipboard(option.id);
+                                         } }
+                                         className='flex flex-col border border-(--border-secondary) rounded-lg
                                                     transition-colors bg-(--bg-primary) px-4 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
                                         <div className='text-(--text-primary) font-semibold'>
                                             { option.label }
@@ -696,11 +696,11 @@ export function OutputEditor({ module }: { module: string }) {
                                 <div className="p-4 flex flex-col gap-2">
                                     { customFields.map((field: any) => (
                                         <div key={ field.id } data-tooltip-id='tooltip'
-                                            data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
-                                            onClick={ async () => {
-                                                await copyToClipboard(`custom_${ field.id }`);
-                                            } }
-                                            className='flex flex-col border border-(--border-secondary) rounded-lg
+                                             data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
+                                             onClick={ async () => {
+                                                 await copyToClipboard(`custom_${ field.id }`);
+                                             } }
+                                             className='flex flex-col border border-(--border-secondary) rounded-lg
                                                         transition-colors bg-(--bg-primary) px-4 py-2 w-full
                                                         cursor-pointer hover:bg-(--bg-secondary)'
                                         >

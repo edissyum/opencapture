@@ -47,7 +47,7 @@ export const FloatingLabel: React.FC<FloatingLabelProps> = ({
         htmlFor={ htmlFor }
         className={ `${ className } max-w-10/12 truncate absolute left-3 select-none pointer-events-none transition-all duration-150
             ${ floating ? 'top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) text-(--text-secondary)' 
-        : 'top-1/2 -translate-y-1/2 text-(--text-secondary)' }` }
+            : 'top-1/2 -translate-y-1/2 text-(--text-secondary)' }` }
     >
         { children }
         { required && <span className="text-(--text-error) ml-1">*</span> }

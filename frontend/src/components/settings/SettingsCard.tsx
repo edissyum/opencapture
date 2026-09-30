@@ -50,7 +50,7 @@ export function SettingsCard({
                                      border border-(--border-secondary) rounded-md hover:border-gray-400` }
         >
             <div onMouseEnter={ () => setHovered(true) } onMouseLeave={ () => setHovered(false) }
-                className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
+                 className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
             >
                 { unpinFav && hovered ? (
                     <PinOff

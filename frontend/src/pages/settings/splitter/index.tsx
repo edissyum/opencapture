@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, ShieldCheck, Workflow } from "lucide-react";
+import { BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, QrCode, ShieldCheck, Workflow } from "lucide-react";
 
 import { useUser } from "../../../services/hooks/useUser";
 
@@ -79,6 +79,14 @@ export const getSettingsSplitterOptions = () => [
         href: '/settings/splitter/certified-copy',
         privileges: ['certified_copy'],
         module: 'splitter'
+    },
+    {
+        name: t('FORMS.qr_code'),
+        description: t('SETTINGS.qr_code_description'),
+        icon: <QrCode/>,
+        href: '/settings/splitter/separator',
+        privileges: ['certified_copy'],
+        module: 'splitter'
     }
 ];
 
@@ -94,7 +102,7 @@ export function SettingsSplitterIndex() {
         <div className='grid grid-cols-3 gap-4 p-6'>
             { options.filter((option) => hasRequiredPermissions(user, option.privileges)).map((option) => (
                 <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
-                    description={ option['description'] } to={ option['href'] }/>
+                              description={ option['description'] } to={ option['href'] }/>
             )) }
         </div>
     );

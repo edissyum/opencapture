@@ -88,7 +88,7 @@ export function HistoryList() {
             className: 'w-4/12',
             body: (row: any) => (
                 <div className='truncate' title={ row.history_desc }
-                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.history_desc) } }></div>
+                     dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.history_desc) } }></div>
             )
         },
         { id: 'user_ip', field: 'user_ip', header: t('HISTORY.ip'), className: 'w-1/12' },
@@ -172,14 +172,14 @@ export function HistoryList() {
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
-                        onClick={ handleResetFilters }>
+                          onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
                     <div className={ `${ open.user ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, user: !open.user }) }>
+                             onClick={ () => setOpen({ ...open, user: !open.user }) }>
                             <div className="flex items-center gap-2">
                                 <User className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('HISTORY.user') }</h3>
@@ -207,7 +207,7 @@ export function HistoryList() {
                     </div>
                     <div className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, module: !open.module }) }>
+                             onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('MAILCOLLECT.module') }</h3>
@@ -239,7 +239,7 @@ export function HistoryList() {
                     </div>
                     <div className={ `${ open.submodule ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }>
+                             onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }>
                             <div className="flex items-center gap-2">
                                 <Package2 className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('HISTORY.submodule') }</h3>

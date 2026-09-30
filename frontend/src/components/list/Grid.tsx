@@ -127,8 +127,8 @@ export function Grid<T extends { id: string }>({
             <div className="flex items-center gap-4">
                 <span className="flex" data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.select_all') }>
                     <Checkbox label={ selectedRows.length + " " + paginatorLeftText }
-                        indeterminate={ selectedRows.length !== data.length }
-                        checked={ selectedRows.length !== 0 } onChange={ selectAll }/>
+                              indeterminate={ selectedRows.length !== data.length }
+                              checked={ selectedRows.length !== 0 } onChange={ selectAll }/>
                 </span>
                 { actions &&
                     actions.map((action, idx) => (
@@ -160,7 +160,7 @@ export function Grid<T extends { id: string }>({
                 <div className="grid grid-cols-4 gap-6">
                     { Array.from({ length: skeletonRows }).map((_, idx) => (
                         <div key={ idx }
-                            className="border border-(--border-secondary) rounded-lg p-4">
+                             className="border border-(--border-secondary) rounded-lg p-4">
                             <Skeleton width="100%" height="8rem" className='dark:bg-(--text-secondary)!'/>
                             <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="60%" height={ 12 }/>
                             <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="40%" height={ 12 }/>
@@ -194,8 +194,8 @@ export function Grid<T extends { id: string }>({
                 <div className="grid grid-cols-4 gap-4 overflow-y-auto pt-4">
                     { data.map((row) => (
                         <div key={ row.id }
-                            onClick={ () => handleRowClick(row) }
-                            className={ `rounded-md group cursor-pointer bg-(--bg-primary)
+                             onClick={ () => handleRowClick(row) }
+                             className={ `rounded-md group cursor-pointer bg-(--bg-primary)
                                           ${ selectedRows.some(r => r.id === row.id) ? 'border-(--color-primary)' : '' }` }>
                             <div
                                 className={`relative bg-[#D0DAD5] dark:bg-(--bg-secondary) border border-b-0 transition-colors

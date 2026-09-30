@@ -256,14 +256,14 @@ export function SettingsGeneralRoleEditor() {
             { showAssignRoles && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                        onClick={ () => setShowAssignRoles(false) }/>
+                         onClick={ () => setShowAssignRoles(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     min-w-[32vw] h-3/5 max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
                         <div className='flex items-center px-6 pt-6'>
                             <h2>{ t('ROLES.authorized_assign_roles') }</h2>
                             <div className='ml-auto cursor-pointer text-(--text-secondary)'
-                                onClick={ () => setShowAssignRoles(false) }>
+                                 onClick={ () => setShowAssignRoles(false) }>
                                 <X/>
                             </div>
                         </div>
@@ -272,7 +272,7 @@ export function SettingsGeneralRoleEditor() {
                                 <div className='p-6 flex flex-col gap-4 h-full overflow-y-auto'>
                                     { roles.map((r: any) => (
                                         <div key={ r.id }
-                                            className='flex items-center gap-3 border border-(--border-primary) rounded-md p-3'>
+                                             className='flex items-center gap-3 border border-(--border-primary) rounded-md p-3'>
                                             <InputSwitch
                                                 id={ r.id }
                                                 label={ r.label }
@@ -340,7 +340,7 @@ export function SettingsGeneralRoleEditor() {
 
                 { privileges && Object.keys(privileges).length > 0 && (
                     <Accordion variant="separated" multiple
-                        defaultValue={ ['general', 'administration', 'verifier', 'splitter', 'accounts'] }
+                               defaultValue={ ['general', 'administration', 'verifier', 'splitter', 'accounts'] }
                     >
                         { getPrivilegesParent().map((parent: any) => (
                             <Accordion.Item key={ parent.name } value={ parent.id }>
@@ -367,10 +367,10 @@ export function SettingsGeneralRoleEditor() {
 
                                                 { (privilege.label === 'add_role' || privilege.label === 'update_role') && (
                                                     <div key={ privilege.label }
-                                                        className='cursor-pointer hover:text-(--color-primary)'
-                                                        data-tooltip-id='tooltip'
-                                                        data-tooltip-content={ t('ROLES.authorized_assign_roles') }
-                                                        onClick={ () => setShowAssignRoles(true) }
+                                                         className='cursor-pointer hover:text-(--color-primary)'
+                                                         data-tooltip-id='tooltip'
+                                                         data-tooltip-content={ t('ROLES.authorized_assign_roles') }
+                                                         onClick={ () => setShowAssignRoles(true) }
                                                     >
                                                         <ShieldCog/>
                                                     </div>
@@ -389,12 +389,12 @@ export function SettingsGeneralRoleEditor() {
             <div className="mt-4">
                 { roleId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
-                        disabled={ loading || Object.keys(errors).length > 0 }>
+                            disabled={ loading || Object.keys(errors).length > 0 }>
                         { loading ? t('GLOBAL.updating') : t('ROLES.update_role') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(handleCreate) }
-                        disabled={ loading || Object.keys(errors).length > 0 }>
+                            disabled={ loading || Object.keys(errors).length > 0 }>
                         { loading ? t('GLOBAL.creating') : t('ROLES.create_role') }
                     </Button>
                 ) }

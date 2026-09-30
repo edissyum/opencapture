@@ -206,18 +206,18 @@ export function ResetPassword() {
                             <form onSubmit={ handleReset } className="flex flex-col gap-4">
                                 <DynamicForm schema={ passwordSchema } errors={ errors } control={ control }/>
                                 <Button loading={ sending } type="submit" className='w-full'
-                                    disabled={ Object.keys(errors).length > 0 || !password || !passwordConfirm }>
+                                        disabled={ Object.keys(errors).length > 0 || !password || !passwordConfirm }>
                                     { t('AUTH.reset') }
                                 </Button>
                             </form>
                         ) : (
                             <form onSubmit={ handleSendEmail } className="flex flex-col gap-4">
                                 <Input id="email" type="text" name="email" required disabled={ !smtpStatus }
-                                    onChange={ checkEmail } error={ emailError }
-                                    label={ t('USERS.email') }/>
+                                       onChange={ checkEmail } error={ emailError }
+                                       label={ t('USERS.email') }/>
 
                                 <Button loading={ sending } type="submit" className='w-full'
-                                    disabled={ !smtpStatus || !!emailError || !email }>
+                                        disabled={ !smtpStatus || !!emailError || !email }>
                                     { t('AUTH.send_email') }
                                 </Button>
                             </form>
@@ -228,7 +228,7 @@ export function ResetPassword() {
             <p className='text-(--text-secondary) text-xs text-center mt-2'>
                 { t('AUTH.know_password') }&nbsp;
                 <span onClick={ handleNavigateToLogin }
-                    className="cursor-pointer text-(--color-primary)">{ t('AUTH.login_here') } </span>
+                      className="cursor-pointer text-(--color-primary)">{ t('AUTH.login_here') } </span>
             </p>
         </div>
     )

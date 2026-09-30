@@ -102,8 +102,8 @@ export function SettingsIndex() {
                     <div className='grid grid-cols-3 gap-4'>
                         { favoriteOptions.filter(option => hasRequiredPermissions(user, option['privileges'])).map((option, index) => (
                             <SettingsCard key={ index } icon={ option['icon'] } title={ option['name'] }
-                                description={ option['description'] } to={ option['href'] }
-                                module={ option['module'] ?? false } unpinFav={ () => handleUnpin(option['href']) }/>
+                                          description={ option['description'] } to={ option['href'] }
+                                          module={ option['module'] ?? false } unpinFav={ () => handleUnpin(option['href']) }/>
                         )) }
                     </div>
                 ) : (
@@ -149,7 +149,7 @@ export function SettingsIndex() {
                 <div className='grid grid-cols-3 gap-4'>
                     { options.filter((option) => hasRequiredPermissions(user, option.privileges)).map((option) => (
                         <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
-                            description={ option['description'] } to={ option['href'] }/>
+                                      description={ option['description'] } to={ option['href'] }/>
                     )) }
                 </div>
             </div>

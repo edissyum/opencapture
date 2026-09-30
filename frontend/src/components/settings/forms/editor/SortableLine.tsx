@@ -72,10 +72,10 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
 
     return (
         <div ref={ setNodeRef } style={ style }
-            className={ `SortableLine relative mt-1 flex justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
+             className={ `SortableLine relative mt-1 flex justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
             { line.fields.length >= 1 && (
                 <div className='cursor-grab text-(--text-secondary) hover:text-(--text-primary)'
-                    ref={ setActivatorNodeRef } { ...listeners } aria-label="Drag handle">
+                     ref={ setActivatorNodeRef } { ...listeners } aria-label="Drag handle">
                     <GripVertical size={ 22 }/>
                 </div>
             ) }
@@ -122,12 +122,12 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                 </div>
 
                 <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
-                    module={ module }/>
+                               module={ module }/>
             </div>
 
             { line.duplicable && (
                 <Copy size={ 16 } data-tooltip-id="tooltip" data-tooltip-content={ t('FORMS.duplicated_line') }
-                    className='text-(--text-secondary) cursor-pointer ml-2'/>
+                      className='text-(--text-secondary) cursor-pointer ml-2'/>
             ) }
         </div>
     );

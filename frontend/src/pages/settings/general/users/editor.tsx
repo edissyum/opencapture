@@ -325,12 +325,12 @@ export function SettingsGeneralUserEditor() {
                 <div className="w-fit">
                     { userId ? (
                         <Button onClick={ handleSubmit(handleUpdate) }
-                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                                disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                             { loadingSubmit ? t('GLOBAL.updating') : t('USERS.update_user') }
                         </Button>
                     ) : (
                         <Button onClick={ handleSubmit(handleCreate) }
-                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                                disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                             { loadingSubmit ? t('GLOBAL.creating') : t('USERS.create_user') }
                         </Button>
                     ) }

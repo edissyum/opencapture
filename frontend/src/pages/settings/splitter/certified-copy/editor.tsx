@@ -257,7 +257,7 @@ export function SettingsSplitterCertifiedCopy() {
                             <p className="text-sm text-(--text-secondary)">{ t("CERTIFIED-COPY.cert_hint") }</p>
                             { savedCertValue && !certFile && (
                                 <p className="text-sm text-(--text-secondary) mt-1"
-                                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t("CERTIFIED-COPY.current_file", { fileName: extractFileName(savedCertValue) })) } }/>
+                                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t("CERTIFIED-COPY.current_file", { fileName: extractFileName(savedCertValue) })) } }/>
                             ) }
                         </div>
                         <UploadDropzone
@@ -276,7 +276,7 @@ export function SettingsSplitterCertifiedCopy() {
                             <p className="text-sm text-(--text-secondary)">{ t("CERTIFIED-COPY.key_hint") }</p>
                             { savedKeyValue && (
                                 <p className="text-sm text-(--text-secondary) mt-1"
-                                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t("CERTIFIED-COPY.current_file", { fileName: extractFileName(savedKeyValue) })) } }/>
+                                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t("CERTIFIED-COPY.current_file", { fileName: extractFileName(savedKeyValue) })) } }/>
                             ) }
                         </div>
                         <UploadDropzone
@@ -292,7 +292,7 @@ export function SettingsSplitterCertifiedCopy() {
             ) }
 
             <Button onClick={ handleSubmit(handleUpdate) }
-                disabled={ loading || loadingUpdate || Object.keys(errors).length > 0 }>
+                    disabled={ loading || loadingUpdate || Object.keys(errors).length > 0 }>
                 { loadingUpdate ? t('GLOBAL.saving') : t('GLOBAL.save') }
             </Button>
         </div>

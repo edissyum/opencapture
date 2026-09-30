@@ -1114,16 +1114,16 @@ export function SplitterViewerPage() {
     return (
         <div className='flex h-full w-full relative'>
             <div className='flex flex-col h-full w-full overflow-y-auto'
-                onDragOver={ (e) => {
-                    if (draggingBatchId) e.preventDefault();
-                } }
-                onDrop={ (e) => {
-                    e.preventDefault();
-                    if (draggingBatchId) {
-                        handleBatchDrop(draggingBatchId);
-                        setDraggingBatchId(null);
-                    }
-                } }
+                 onDragOver={ (e) => {
+                     if (draggingBatchId) e.preventDefault();
+                 } }
+                 onDrop={ (e) => {
+                     e.preventDefault();
+                     if (draggingBatchId) {
+                         handleBatchDrop(draggingBatchId);
+                         setDraggingBatchId(null);
+                     }
+                 } }
             >
                 { draggingBatchId && (
                     <div className="absolute inset-2 z-30 bg-(--bg-selected)/90 border-2 border-dashed
@@ -1150,8 +1150,8 @@ export function SplitterViewerPage() {
                             <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
                                               ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
                                 <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
-                                    indeterminate={ selectedPages.length != pagesCount }
-                                    disabled={ disabledBatch }/>
+                                          indeterminate={ selectedPages.length != pagesCount }
+                                          disabled={ disabledBatch }/>
                                 <div
                                     className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
                                     onClick={ selectAll }>
@@ -1161,7 +1161,7 @@ export function SplitterViewerPage() {
                                 </div>
                             </div>
                             <div onClick={ handleDeletePage }
-                                className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
+                                 className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
                                         hover:bg-(--bg-error) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <Trash size={ 16 }/>
@@ -1169,7 +1169,7 @@ export function SplitterViewerPage() {
                             </div>
 
                             <div onClick={ handleRotation }
-                                className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
+                                 className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
                                         hover:bg-(--bg-secondary) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <RotateCw size={ 14 }/>
@@ -1196,7 +1196,7 @@ export function SplitterViewerPage() {
                             </div>
 
                             <div onClick={ () => unSavedChanges && !disabledBatch && handleSaveChanges() }
-                                className={ `flex items-center text-(--text-primary) text-sm gap-1
+                                 className={ `flex items-center text-(--text-primary) text-sm gap-1
                               hover:bg-(--bg-secondary) transition-colors rounded-full p-3
                              ${ !unSavedChanges || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
                                 <Save size={ 16 }/>
@@ -1217,12 +1217,12 @@ export function SplitterViewerPage() {
                                     ) }
                                 />
                                 <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 }
-                                    className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
+                                             className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
                             </div>
 
                             <Button disabled={ loading || disabledBatch || documents.length === 0 }
-                                className='flex items-center gap-2 px-3!'
-                                onClick={ handleValidateBatch }>
+                                    className='flex items-center gap-2 px-3!'
+                                    onClick={ handleValidateBatch }>
                                 <PackageCheck size={ 16 }/>
                                 { t('SPLITTER.validate_batch') }
                             </Button>
@@ -1233,13 +1233,13 @@ export function SplitterViewerPage() {
                 { thumbnail && (
                     <>
                         <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                            onClick={ () => setThumbnailSafe(null) }/>
+                             onClick={ () => setThumbnailSafe(null) }/>
                         <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     max-w-[32vw] border border-(--border-secondary)
                                     rounded-lg overflow-hidden">
                             <img src={ thumbnail } alt="Thumbnail"/>
                             <Button variant="secondary" size="sm" className="absolute top-2 right-2"
-                                onClick={ () => setThumbnailSafe(null) }>
+                                    onClick={ () => setThumbnailSafe(null) }>
                                 <X size={ 16 }/>
                             </Button>
                         </div>
@@ -1249,21 +1249,21 @@ export function SplitterViewerPage() {
                 { showDoctypeSelection && (
                     <>
                         <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                            onClick={ () => setShowDoctypeSelection(false) }/>
+                             onClick={ () => setShowDoctypeSelection(false) }/>
                         <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-3/4
                                         max-h-screen border border-(--border-secondary) rounded-lg bg-(--bg-primary)
                                         flex flex-col">
                             <div className='flex items-center px-6 pt-6'>
                                 <h2>{ t('DOCTYPES.select_doctype') }</h2>
                                 <div className='ml-auto cursor-pointer text-(--text-secondary)'
-                                    onClick={ () => setShowDoctypeSelection(false) }>
+                                     onClick={ () => setShowDoctypeSelection(false) }>
                                     <X/>
                                 </div>
                             </div>
                             <div className='overflow-hidden'>
                                 <DoctypesTree formId={ batch.form_id } canFolderBeSelected={ false } editor={ false }
-                                    doctypesList={ doctypes } onTmpSelect={ (node) => setTmpDoctype(node) }
-                                    onSelect={ (node) => handleChangeDoctype(node) }/>
+                                              doctypesList={ doctypes } onTmpSelect={ (node) => setTmpDoctype(node) }
+                                              onSelect={ (node) => handleChangeDoctype(node) }/>
                             </div>
                             <div className='flex mt-auto justify-end items-center gap-4 p-4'>
                                 <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
@@ -1280,12 +1280,12 @@ export function SplitterViewerPage() {
                 { !showAttachments && (
                     <div className='px-8 py-4 flex items-center gap-2'>
                         <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 16 }/> }
-                            onClick={ () => navigate('/home') }>
+                                onClick={ () => navigate('/home') }>
                             { t('GLOBAL.back') }
                         </Button>
                         <div className='ml-auto'>
                             <Button variant='bg_white_rounded' icon={ <Download size={ 18 }/> }
-                                onClick={ handleDownloadOriginalFile }>
+                                    onClick={ handleDownloadOriginalFile }>
                                 { batch.file_name }
                             </Button>
                         </div>
@@ -1302,12 +1302,12 @@ export function SplitterViewerPage() {
                                 hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
                                     ${ (documents.length === 0 || documents.length > 1) && 'opacity-50 pointer-events-none' }`
                                 }
-                                onClick={ () => {
-                                    setShowBatches(false);
-                                    setShowAttachments(true);
-                                } }
-                                data-tooltip-id="tooltip"
-                                data-tooltip-content={ t('VERIFIER.show_attachments') }
+                                     onClick={ () => {
+                                         setShowBatches(false);
+                                         setShowAttachments(true);
+                                     } }
+                                     data-tooltip-id="tooltip"
+                                     data-tooltip-content={ t('VERIFIER.show_attachments') }
                                 >
                                     <Paperclip size={ 16 }/>
                                     { attachmentsCount > 0 && (
@@ -1324,11 +1324,11 @@ export function SplitterViewerPage() {
                                           hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
                                           ${ showBatches ? 'border-(--color-primary) bg-(--bg-selected)' : '' }`
                             }
-                            onClick={ handleShowBatches }
-                            { ...(!certifiedCopy && {
-                                "data-tooltip-id": "tooltip",
-                                "data-tooltip-content": t('SPLITTER.show_batches')
-                            }) }
+                                 onClick={ handleShowBatches }
+                                 { ...(!certifiedCopy && {
+                                     "data-tooltip-id": "tooltip",
+                                     "data-tooltip-content": t('SPLITTER.show_batches')
+                                 }) }
                             >
                                 <Package size={ 18 }/>
                             </div>
@@ -1428,7 +1428,7 @@ export function SplitterViewerPage() {
                                                     <div key={ index } className='flex gap-4'>
                                                         { line.map((field: any) => (
                                                             <div key={ field.id }
-                                                                className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                 className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                                 { field.metadata_key && metadata.length > 0 ? (
                                                                     <Select
                                                                         id={ field.id }
@@ -1587,14 +1587,14 @@ export function SplitterViewerPage() {
                                                         />
                                                     </h3>
                                                     <div className='grid transition-all'
-                                                        style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
+                                                         style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
                                                     >
                                                         <div className="overflow-hidden">
                                                             { documentMetadata.map((line: any, index: number) => (
                                                                 <div key={ index } className='flex gap-4 mt-4'>
                                                                     { line.map((field: any) => (
                                                                         <div key={ field.id }
-                                                                            className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                                             { field.type === 'date' && (
                                                                                 <ISOCalendar
                                                                                     id={ field.id }
@@ -1645,7 +1645,7 @@ export function SplitterViewerPage() {
                                                 </div>
                                             ) }
                                             <SortableContext strategy={ verticalListSortingStrategy }
-                                                items={ document.pages.map((p: any) => `page-${ p.id }`) }>
+                                                             items={ document.pages.map((p: any) => `page-${ p.id }`) }>
                                                 <DroppableDocumentZone
                                                     pages={ document.pages }
                                                     documentId={ document.id }
@@ -1691,8 +1691,8 @@ export function SplitterViewerPage() {
                     ) }
                     { batchesList.map((row: any) => (
                         <BatchCard key={ row.id } row={ row } navigate={ navigate }
-                            onBatchDragStart={ (id: number) => setDraggingBatchId(id) }
-                            onBatchDragEnd={ () => setDraggingBatchId(null) }/>
+                                   onBatchDragStart={ (id: number) => setDraggingBatchId(id) }
+                                   onBatchDragEnd={ () => setDraggingBatchId(null) }/>
                     )) }
                 </div>
             </div>

@@ -45,19 +45,19 @@ export function LangSelection({ i18n, refresh = true }: LangSelectionProps) {
         <div className="flex gap-4 mt-4">
             { options.map((lang) => (
                 <div key={ lang['code'] }
-                    className={ `relative border flex bg-(--bg-primary) items-center rounded-md cursor-pointer px-4 py-2 transition-colors
+                     className={ `relative border flex bg-(--bg-primary) items-center rounded-md cursor-pointer px-4 py-2 transition-colors
                      ${ selectedLang === lang['code'] ? 'border-(--border-primary)! bg-(--bg-selected)' : 'border-(--border-secondary) hover:border-gray-400' }` }
-                    onClick={ () => {
-                        setSelectedlang(lang['code']);
-                        setTimeout(() => {
-                            if (selectedLang !== lang['code'] && refresh) {
-                                window.dispatchEvent(new Event('forceAppReload'))
-                            }
-                        });
-                    } }>
+                     onClick={ () => {
+                         setSelectedlang(lang['code']);
+                         setTimeout(() => {
+                             if (selectedLang !== lang['code'] && refresh) {
+                                 window.dispatchEvent(new Event('forceAppReload'))
+                             }
+                         });
+                     } }>
                     <CheckOverlay show={ selectedLang === lang['code'] }/>
                     <img src={ `/imgs/i18n/${ lang['code'] }.svg` } alt=""
-                        className="w-8 mr-4 rounded-sm"/>
+                         className="w-8 mr-4 rounded-sm"/>
                     <div className="flex flex-col justify-center items-start">
                         <span className='text-lg font-semibold'>
                             { lang['label'] }

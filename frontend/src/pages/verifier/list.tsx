@@ -180,8 +180,8 @@ export function VerifierListPage() {
                     </span>
                     { item.facturx && (
                         <span className='text-(--text-secondary) text-xs w-fit'
-                            data-tooltip-id="tooltip"
-                            data-tooltip-content={ t('VERIFIER.facturx_level') + ' : ' + item.facturx_level }
+                              data-tooltip-id="tooltip"
+                              data-tooltip-content={ t('VERIFIER.facturx_level') + ' : ' + item.facturx_level }
                         >
                             FacturX
                         </span>
@@ -232,13 +232,13 @@ export function VerifierListPage() {
             body: (item: any) => (
                 <div className='flex gap-1 justify-end'>
                     <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                        data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_pages') }>
+                         data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_pages') }>
                         <span>{ item.nb_pages }</span>
                         <FileText size={ 15 }/>
                     </div>
                     { item.attachments_count > 0 && (
                         <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                            data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_attachments') }>
+                             data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_attachments') }>
                             <span>{ item.attachments_count }</span>
                             <Paperclip size={ 15 }/>
                         </div>
@@ -488,13 +488,13 @@ export function VerifierListPage() {
                     <div
                         className={ `${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
+                             onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
                                 <Clock className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
-                                className={ `transition-transform ${ open.batches && "rotate-180" }` }/>
+                                         className={ `transition-transform ${ open.batches && "rotate-180" }` }/>
                         </div>
 
                         { open.batches && (
@@ -510,7 +510,7 @@ export function VerifierListPage() {
                                             } }>
                                         </Radio>
                                         <label htmlFor={ time.id } key={ time.id }
-                                            className='cursor-pointer whitespace-nowrap'>
+                                               className='cursor-pointer whitespace-nowrap'>
                                             { time.label } ({ time.totals || 0 })
                                         </label>
                                     </div>
@@ -521,13 +521,13 @@ export function VerifierListPage() {
                     <div
                         className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, status: !open.status }) }>
+                             onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
-                                className={ `transition-transform ${ open.status && "rotate-180" }` }/>
+                                         className={ `transition-transform ${ open.status && "rotate-180" }` }/>
                         </div>
 
                         { open.status && (
@@ -553,13 +553,13 @@ export function VerifierListPage() {
                     <div
                         className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
+                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
                             <div className="flex items-center gap-2">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
-                                className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
+                                         className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
                         </div>
 
                         { open.forms && (
@@ -581,13 +581,13 @@ export function VerifierListPage() {
                     <div
                         className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
+                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
                             <div className="flex items-center gap-2 whitespace-nowrap">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
-                                className={ `transition-transform ${ open.customers && "rotate-180" }` }/>
+                                         className={ `transition-transform ${ open.customers && "rotate-180" }` }/>
                         </div>
 
                         { open.customers && (
@@ -609,13 +609,13 @@ export function VerifierListPage() {
                     <div
                         className={ `${ open.suppliers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
-                            onClick={ () => setOpen({ ...open, suppliers: !open.suppliers }) }>
+                             onClick={ () => setOpen({ ...open, suppliers: !open.suppliers }) }>
                             <div className="flex items-center gap-2 whitespace-nowrap">
                                 <Building2 className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.suppliers_list') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
-                                className={ `transition-transform ${ open.suppliers && "rotate-180" }` }/>
+                                         className={ `transition-transform ${ open.suppliers && "rotate-180" }` }/>
                         </div>
 
                         { open.suppliers && (
@@ -676,17 +676,17 @@ export function VerifierListPage() {
                         </span>
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                        value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                        onChange={ (e) => setSearchTerm(e.target.value) }/>
+                           value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                           onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
-                            onClick={ () => setView('list') }
-                            className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
+                              onClick={ () => setView('list') }
+                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
                             <Rows3 size={ 20 }/>
                         </span>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
-                            onClick={ () => setView('grid') }
-                            className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
+                              onClick={ () => setView('grid') }
+                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
                             <LayoutGrid size={ 20 }/>
                         </span>
                     </span>

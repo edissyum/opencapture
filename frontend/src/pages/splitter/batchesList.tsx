@@ -24,20 +24,20 @@ export function BatchCard({ row, navigate, onBatchDragStart, onBatchDragEnd }: a
 
     return (
         <div key={ row.id }
-            draggable
-            onDragStart={ (e) => {
-                e.dataTransfer.setData('batchId', String(row.id));
-                e.dataTransfer.effectAllowed = 'move';
-                onBatchDragStart?.(row.id);
-            } }
-            onDragEnd={ () => onBatchDragEnd?.() }
-            onClick={ () => {
-                navigate(`/splitter/viewer/${ row.id }`);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);
-            } }
-            className={ `group rounded-md cursor-grab active:cursor-grabbing bg-(--bg-primary)` }
+             draggable
+             onDragStart={ (e) => {
+                 e.dataTransfer.setData('batchId', String(row.id));
+                 e.dataTransfer.effectAllowed = 'move';
+                 onBatchDragStart?.(row.id);
+             } }
+             onDragEnd={ () => onBatchDragEnd?.() }
+             onClick={ () => {
+                 navigate(`/splitter/viewer/${ row.id }`);
+                 setTimeout(() => {
+                     window.location.reload();
+                 }, 100);
+             } }
+             className={ `group rounded-md cursor-grab active:cursor-grabbing bg-(--bg-primary)` }
         >
             <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex
                             items-center justify-center text-(--text-secondary)
@@ -53,14 +53,14 @@ export function BatchCard({ row, navigate, onBatchDragStart, onBatchDragEnd }: a
                 <div className="flex gap-2 mb-1">
                     <div className='flex gap-1 justify-end'>
                         <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                            data-tooltip-id="tooltip" data-tooltip-content={ t('SPLITTER.nb_documents') }>
+                             data-tooltip-id="tooltip" data-tooltip-content={ t('SPLITTER.nb_documents') }>
                             <span>{ row.documents_count }</span>
                             <FileText size={ 15 }/>
                         </div>
                         { row.attachments_count > 0 && (
                             <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                                data-tooltip-id="tooltip"
-                                data-tooltip-content={ t('VERIFIER.nb_attachments') }>
+                                 data-tooltip-id="tooltip"
+                                 data-tooltip-content={ t('VERIFIER.nb_attachments') }>
                                 <span>{ row.attachments_count }</span>
                                 <Paperclip size={ 15 }/>
                             </div>

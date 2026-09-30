@@ -169,8 +169,8 @@ export function SettingsVerifierAiLLMList() {
                     { t('SETTINGS.ai_llm', { count: totalAiLlm }) } ({ totalAiLlm || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                    value={ searchTerm } placeholder={ t('GLOBAL.search') }
-                    onChange={ (e) => setSearchTerm(e.target.value) }/>
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/verifier/ai-llm/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">

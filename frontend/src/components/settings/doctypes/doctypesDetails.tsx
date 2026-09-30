@@ -200,7 +200,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
             { showAddDoctype && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                        onClick={ () => setShowAddDoctype(false) }/>
+                         onClick={ () => setShowAddDoctype(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     min-w-[32vw] h-fit max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
@@ -214,7 +214,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                 </h2>
                             </div>
                             <div className='absolute right-4 top-4 cursor-pointer text-(--text-secondary)'
-                                onClick={ () => setShowAddDoctype(false) }>
+                                 onClick={ () => setShowAddDoctype(false) }>
                                 <X/>
                             </div>
                             <div className='w-full flex flex-col gap-4 mt-2'>
@@ -264,13 +264,13 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                 <span className='flex items-center'>
                                     <span className='px-2.5 py-1 rounded-full flex items-center gap-1 bg-transparent transition-colors
                                                    hover:bg-(--bg-secondary) cursor-pointer'
-                                    onClick={ () => doctypeChanged?.(() => {
-                                        const node = doctypes.find((d: any) => d.code === b.code);
-                                        if (b.type === 'root') {
-                                            return ROOT_NODE;
-                                        }
-                                        return node || selectedDoctype;
-                                    }) }>
+                                          onClick={ () => doctypeChanged?.(() => {
+                                              const node = doctypes.find((d: any) => d.code === b.code);
+                                              if (b.type === 'root') {
+                                                  return ROOT_NODE;
+                                              }
+                                              return node || selectedDoctype;
+                                          }) }>
                                         { b.type !== "document" && (
                                             <FolderOpen size={ 16 } fill='var(--color-primary)' stroke='white'/>
                                         ) }
@@ -338,14 +338,14 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                         </h3>
                         <div className='flex gap-4'>
                             <Input className='w-2/3' label={ t('GLOBAL.label') } value={ selectedDoctype.label }
-                                onChange={ (e) => {
-                                    doctypeChanged?.({
-                                        ...selectedDoctype,
-                                        label: e.target.value || ""
-                                    });
-                                } }/>
+                                   onChange={ (e) => {
+                                       doctypeChanged?.({
+                                           ...selectedDoctype,
+                                           label: e.target.value || ""
+                                       });
+                                   } }/>
                             <Input className='w-1/3' label={ t('ROLES.label_short') } value={ selectedDoctype.key }
-                                disabled/>
+                                   disabled/>
                         </div>
                         <div className="flex items-center gap-2">
                             <InputSwitch
@@ -376,15 +376,15 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                 </h3>
                                 <div className='flex gap-4 mt-4'>
                                     <Input className='w-2/3' label={ t('GLOBAL.label') } value={ selectedDoctype.label }
-                                        onChange={ (e) => {
-                                            doctypeChanged?.({
-                                                ...selectedDoctype,
-                                                label: e.target.value || ""
-                                            });
-                                        } }/>
+                                           onChange={ (e) => {
+                                               doctypeChanged?.({
+                                                   ...selectedDoctype,
+                                                   label: e.target.value || ""
+                                               });
+                                           } }/>
                                     <Input className='w-1/3' label={ t('ROLES.label_short') }
-                                        value={ selectedDoctype.key }
-                                        disabled/>
+                                           value={ selectedDoctype.key }
+                                           disabled/>
                                 </div>
                             </div>
                             <div className='flex justify-end mt-4'>
@@ -404,8 +404,8 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                 <div className='flex flex-col gap-2 w-full'>
                                     { info?.children?.map((child: any) => (
                                         <div key={ child.code }
-                                            className="flex items-center gap-2 cursor-pointer hover:bg-(--bg-selected) rounded-md p-2"
-                                            onClick={ () => doctypeChanged?.(child) }>
+                                             className="flex items-center gap-2 cursor-pointer hover:bg-(--bg-selected) rounded-md p-2"
+                                             onClick={ () => doctypeChanged?.(child) }>
                                             <div className='bg-(--bg-secondary) rounded-md p-2'>
                                                 { child.type === "folder" ? (
                                                     <FolderOpen size={ 18 }/>

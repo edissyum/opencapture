@@ -108,7 +108,7 @@ function ConfirmDialogWithInputView({
                     <Button className='outline-none! shadow-none! bg-(--color-primary)! ml-4! border!
                                        border-(--border-primary)! text-white! hover:bg-(--bg-selected)!
                                        hover:text-(--color-primary)! disabled:opacity-40!'
-                    onClick={ () => accept(val) }>
+                            onClick={ () => accept(val) }>
                         { confirmText }
                     </Button>
                 </div>

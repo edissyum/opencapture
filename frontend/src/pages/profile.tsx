@@ -185,7 +185,7 @@ export default function ProfilePage() {
             </div>
 
             <Button onClick={ handleSubmit(handleUpdateProfile) }
-                disabled={ loading || loadingSubmit || Object.keys(errors).length > 0 }>
+                    disabled={ loading || loadingSubmit || Object.keys(errors).length > 0 }>
                 { loadingSubmit ? t('GLOBAL.updating') : t('PROFILE.update_profile') }
             </Button>
         </div>

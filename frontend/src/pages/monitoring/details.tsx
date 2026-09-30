@@ -77,17 +77,17 @@ export function MonitoringDetails() {
             body: (row: any) => (
                 <span className={ `${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
                                    ${ (row.status === 'error' || row.error) && 'cursor-pointer text-(--text-error)' }` }
-                { ...((row.status === 'error' || row.error) && {
-                    "data-tooltip-id": "tooltip",
-                    "data-tooltip-content": t('MONITORING.copy_error_message')
-                }) }
-                onClick={ async () => {
-                    if (row.status === 'error' || row.error) {
-                        await copyToClipboard(row.message);
-                        showToast(t('MONITORING.error_message_copied'), 'success');
-                    }
-                } }
-                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.message_formatted) } }
+                      { ...((row.status === 'error' || row.error) && {
+                          "data-tooltip-id": "tooltip",
+                          "data-tooltip-content": t('MONITORING.copy_error_message')
+                      }) }
+                      onClick={ async () => {
+                          if (row.status === 'error' || row.error) {
+                              await copyToClipboard(row.message);
+                              showToast(t('MONITORING.error_message_copied'), 'success');
+                          }
+                      } }
+                      dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.message_formatted) } }
                 />
             )
         },

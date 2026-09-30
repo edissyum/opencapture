@@ -156,7 +156,7 @@ export const Select: React.FC<SelectProps> = ({
             ) }
             { error && (
                 <p className="text-(--text-error) text-xs ml-1"
-                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
+                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
             ) }
         </div>
     );

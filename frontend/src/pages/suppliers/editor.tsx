@@ -490,9 +490,9 @@ export function SupplierEditor({
         <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
             { onClose && (
                 <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer w-fit'
-                    onClick={ () => {
-                        onClose();
-                    } }>
+                     onClick={ () => {
+                         onClose();
+                     } }>
                     <ArrowLeft/>
                     { t('VERIFIER.back_to_form') }
                 </div>
@@ -525,12 +525,12 @@ export function SupplierEditor({
             <div className="w-fit">
                 { supplierId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
-                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                         { loadingSubmit ? t('GLOBAL.updating') : t('ACCOUNTS.update_supplier') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(onSubmit) }
-                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                         { loadingSubmit ? t('GLOBAL.creating') : t('ACCOUNTS.create_supplier') }
                     </Button>
                 ) }

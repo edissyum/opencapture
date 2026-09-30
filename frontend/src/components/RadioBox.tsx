@@ -30,7 +30,7 @@ export function RadioBox({ label, value, checked, onChange, border = true }: {
 
     return (
         <label key={ value }
-            className={ `peer peer-checked:bg-(--color-primary) justify-center gap-2 
+               className={ `peer peer-checked:bg-(--color-primary) justify-center gap-2 
                             ${ border ? 'border border-(--border-secondary) hover:border-(--border-primary) ' +
                                         'rounded-lg px-3 py-2' : '' 
         } transition-colors text-(--text-primary) cursor-pointer flex items-center bg-(--bg-primary)

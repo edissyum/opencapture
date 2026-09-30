@@ -277,8 +277,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='hostname'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("SMTP.host") }
-                                    error={ authErrors.hostname?.message }/>
+                                       label={ t("SMTP.host") }
+                                       error={ authErrors.hostname?.message }/>
                             ) }
                         />
                         <Controller
@@ -286,9 +286,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='port'
                             render={ ({ field }) => (
                                 <Input className='w-1/6'
-                                    { ...field }
-                                    label={ t("SMTP.port") }
-                                    error={ authErrors.port?.message }/>
+                                       { ...field }
+                                       label={ t("SMTP.port") }
+                                       error={ authErrors.port?.message }/>
                             ) }
                         />
                         <Controller
@@ -296,8 +296,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='login'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("SMTP.login") }
-                                    error={ authErrors.login?.message }/>
+                                       label={ t("SMTP.login") }
+                                       error={ authErrors.login?.message }/>
                             ) }
                         />
                         <Controller
@@ -305,10 +305,10 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='password'
                             render={ ({ field }) => (
                                 <Input className='w-1/2'
-                                    { ...field }
-                                    type="password"
-                                    label={ t("SMTP.password") }
-                                    error={ authErrors.password?.message }/>
+                                       { ...field }
+                                       type="password"
+                                       label={ t("SMTP.password") }
+                                       error={ authErrors.password?.message }/>
                             ) }
                         />
                     </div>
@@ -321,8 +321,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='hostname'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("SMTP.host") }
-                                    error={ authErrors.hostname?.message }/>
+                                       label={ t("SMTP.host") }
+                                       error={ authErrors.hostname?.message }/>
                             ) }
                         />
                         <Controller
@@ -330,8 +330,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='login'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("SMTP.login") }
-                                    error={ authErrors.login?.message }/>
+                                       label={ t("SMTP.login") }
+                                       error={ authErrors.login?.message }/>
                             ) }
                         />
                         <Controller
@@ -339,8 +339,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='scopes'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.scope") }
-                                    error={ authErrors.scopes?.message }/>
+                                       label={ t("MAILCOLLECT.scope") }
+                                       error={ authErrors.scopes?.message }/>
                             ) }
                         />
                         <Controller
@@ -348,8 +348,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='authority_url'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.authority_url") }
-                                    error={ authErrors.authority_url?.message }/>
+                                       label={ t("MAILCOLLECT.authority_url") }
+                                       error={ authErrors.authority_url?.message }/>
                             ) }
                         />
                         <Controller
@@ -357,8 +357,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='client_id'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.client_id") }
-                                    error={ authErrors.client_id?.message }/>
+                                       label={ t("MAILCOLLECT.client_id") }
+                                       error={ authErrors.client_id?.message }/>
                             ) }
                         />
                         <Controller
@@ -366,8 +366,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='tenant_id'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.tenant_id") }
-                                    error={ authErrors.tenant_id?.message }/>
+                                       label={ t("MAILCOLLECT.tenant_id") }
+                                       error={ authErrors.tenant_id?.message }/>
                             ) }
                         />
                         <Controller
@@ -375,8 +375,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='client_secret'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.client_secret") }
-                                    error={ authErrors.client_secret?.message }/>
+                                       label={ t("MAILCOLLECT.client_secret") }
+                                       error={ authErrors.client_secret?.message }/>
                             ) }
                         />
                     </div>
@@ -389,9 +389,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='login'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    autoComplete='new-mail'
-                                    label={ t("SMTP.login") }
-                                    error={ authErrors.login?.message }/>
+                                       autoComplete='new-mail'
+                                       label={ t("SMTP.login") }
+                                       error={ authErrors.login?.message }/>
                             ) }
                         />
                         <Controller
@@ -399,8 +399,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='grant_type'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.grant_type") }
-                                    error={ authErrors.grant_type?.message }/>
+                                       label={ t("MAILCOLLECT.grant_type") }
+                                       error={ authErrors.grant_type?.message }/>
                             ) }
                         />
                         <Controller
@@ -408,8 +408,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='scope'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.scope") }
-                                    error={ authErrors.scope?.message }/>
+                                       label={ t("MAILCOLLECT.scope") }
+                                       error={ authErrors.scope?.message }/>
                             ) }
                         />
                         <Controller
@@ -417,8 +417,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='users_url'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.users_url") }
-                                    error={ authErrors.users_url?.message }/>
+                                       label={ t("MAILCOLLECT.users_url") }
+                                       error={ authErrors.users_url?.message }/>
                             ) }
                         />
                         <Controller
@@ -426,8 +426,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='message_url'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.message_url") }
-                                    error={ authErrors.message_url?.message }/>
+                                       label={ t("MAILCOLLECT.message_url") }
+                                       error={ authErrors.message_url?.message }/>
                             ) }
                         />
                         <Controller
@@ -435,8 +435,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='get_token_url'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.get_token_url") }
-                                    error={ authErrors.get_token_url?.message }/>
+                                       label={ t("MAILCOLLECT.get_token_url") }
+                                       error={ authErrors.get_token_url?.message }/>
                             ) }
                         />
                         <Controller
@@ -444,8 +444,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='client_id'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.client_id") }
-                                    error={ authErrors.client_id?.message }/>
+                                       label={ t("MAILCOLLECT.client_id") }
+                                       error={ authErrors.client_id?.message }/>
                             ) }
                         />
                         <Controller
@@ -453,8 +453,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='tenant_id'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.tenant_id") }
-                                    error={ authErrors.tenant_id?.message }/>
+                                       label={ t("MAILCOLLECT.tenant_id") }
+                                       error={ authErrors.tenant_id?.message }/>
                             ) }
                         />
                         <Controller
@@ -462,8 +462,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='client_secret'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                    label={ t("MAILCOLLECT.client_secret") }
-                                    error={ authErrors.client_secret?.message }/>
+                                       label={ t("MAILCOLLECT.client_secret") }
+                                       error={ authErrors.client_secret?.message }/>
                             ) }
                         />
                     </div>
@@ -471,8 +471,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
                 <div className="flex justify-end mt-6">
                     <Button onClick={ handleSubmitAuth(handleTestConnexion) } className="ml-auto px-12"
-                        data-tooltip-id='tooltip' data-tooltip-content={ t("MAILCOLLECT.test_connexion_next") }
-                        disabled={ loading }>
+                            data-tooltip-id='tooltip' data-tooltip-content={ t("MAILCOLLECT.test_connexion_next") }
+                            disabled={ loading }>
                         { loading ? (
                             t("MAILCOLLECT.loading_test_connexion")
                         ) : (
@@ -506,11 +506,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         <div className='flex gap-4 my-6'>
                             { actionsAfterProcessValues.map((action: any) => (
                                 <div key={ action.value }
-                                    onClick={ () => {
-                                        field.onChange(action.value);
-                                        setActionAfterProcess(action.value);
-                                    } }
-                                    className={ `cursor-pointer border w-1/2 py-5 rounded-md text-(--text-primary)
+                                     onClick={ () => {
+                                         field.onChange(action.value);
+                                         setActionAfterProcess(action.value);
+                                     } }
+                                     className={ `cursor-pointer border w-1/2 py-5 rounded-md text-(--text-primary)
                                                 ${ field.value === action.value ? "bg-(--bg-selected) border-(--border-primary)" : "border-(--border-secondary) hover:border-(--text-secondary)" }
                                                 text-center` }>
                                     <div className="flex justify-center mb-2">
@@ -545,7 +545,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
                 <div className="flex justify-between mt-6">
                     <Button onClick={ handlePreviousStep } variant="no_bg"
-                        className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                            className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                     </Button>
                     <Button onClick={ handleSubmitFolders(handleNextStep) } className="ml-auto px-12">
@@ -595,8 +595,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     <span
                                         className={ `absolute cursor-pointer z-10 -right-6 -top-0.5 text-(--text-secondary)` }>
                                         <CircleQuestionMark data-tooltip-id="tooltip"
-                                            data-tooltip-content={ t('MAILCOLLECT.ocr_attachments_hint') }
-                                            size={ 16 }/>
+                                                            data-tooltip-content={ t('MAILCOLLECT.ocr_attachments_hint') }
+                                                            size={ 16 }/>
                                     </span>
                                 </div>
                             ) }
@@ -763,11 +763,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
                 <div className="flex justify-between mt-6">
                     <Button onClick={ handlePreviousStep } variant="no_bg"
-                        className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                            className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                     </Button>
                     <Button type="submit" className="ml-auto px-12" onClick={ handleSubmitModules(onSubmit) }
-                        disabled={ loading }>
+                            disabled={ loading }>
                         { loading ? (
                             t("MAILCOLLECT.loading_save")
                         ) : (

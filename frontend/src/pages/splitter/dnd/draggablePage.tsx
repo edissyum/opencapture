@@ -72,15 +72,15 @@ export const DraggablePage = React.memo(function DraggablePage({
 
     return (
         <div ref={ setNodeRef } style={ isDragOverlay ? {} : style }
-            onClick={ () => !disabled && onSelectionChange?.(page, !isSelected) }
-            className={ `DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary)
+             onClick={ () => !disabled && onSelectionChange?.(page, !isSelected) }
+             className={ `DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary)
                 transition-colors bg-(--bg-secondary) cursor-default select-none h-full
                 hover:bg-(--bg-selected) hover:cursor-pointer min-w-64
                 ${ isSelected && 'bg-(--bg-selected) border-(--color-primary)' }` }>
             <div className={ `h-full w-full flex flex-col items-center cursor-grab active:cursor-grabbing
                               ${ disabled && 'pointer-events-none' }` }
-            { ...attributes }
-            { ...listeners }
+                 { ...attributes }
+                 { ...listeners }
             >
                 { thumbnailUrl && (
                     <div className='w-full p-4 relative h-82'>

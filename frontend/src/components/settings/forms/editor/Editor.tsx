@@ -509,7 +509,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                         <Tabs.Panel value="fields">
                             <div className='p-6 flex flex-col gap-4'>
                                 <Accordion chevronPosition="left" variant="separated" multiple
-                                    defaultValue={ ['zone-supplier', 'zone-facturation', 'zone-batch_metadata', 'zone-document_metadata'] }>
+                                           defaultValue={ ['zone-supplier', 'zone-facturation', 'zone-batch_metadata', 'zone-document_metadata'] }>
                                     { zones.map((zone: any) => (
                                         <Accordion.Item key={ zone.id } value={ zone.id }>
                                             <div className='flex items-center'>
@@ -608,9 +608,9 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 { ['doctypes', 'qr_code'].includes(mainTabIndex) && module === 'splitter' && (
                     <div className="shrink-0 w-[22rem] h-full flex flex-col">
                         <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) }
-                            selectedDoctype={ selectedDoctype } editor={ true }
-                            onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
-                            onSelect={ (node) => setSelectedDoctype(node) }/>
+                                      selectedDoctype={ selectedDoctype } editor={ true }
+                                      onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
+                                      onSelect={ (node) => setSelectedDoctype(node) }/>
                     </div>
                 ) }
             </div>

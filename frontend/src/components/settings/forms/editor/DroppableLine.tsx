@@ -30,13 +30,13 @@ export function DroppableLine({ line, onUpdateField, onDeleteField, module }: an
 
     return (
         <SortableContext id={ line.id } items={ line.fields.map((f: any) => f.id) }
-            strategy={ horizontalListSortingStrategy }>
+                         strategy={ horizontalListSortingStrategy }>
             <div ref={ setNodeRef } className="DroppableLine flex gap-4 flex-wrap relative">
                 { line.fields.length >= 1 && (
                     line.fields.map((f: any) => (
                         <div key={ f.id } className={ `${ fieldWidth } flex-1 min-w-1/6` }>
                             <SortableField field={ f } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
-                                module={ module } />
+                                           module={ module } />
                         </div>
                     ))
                 ) }

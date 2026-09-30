@@ -96,7 +96,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
     return (
         <>
             <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                onClick={ () => onClose() }/>
+                 onClick={ () => onClose() }/>
             <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                             w-4/5 h-11/12 max-h-screen border border-(--border-secondary)
                             rounded-lg bg-(--bg-primary) flex flex-col">
@@ -122,7 +122,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
                             <h4 className='font-semibold'>{ t('ACCOUNTS.columns_config') }</h4>
                             <div className='ml-auto flex items-center gap-2'>
                                 <InputSwitch id='skipHeader' checked={ skipHeader }
-                                    onChange={ (value) => setSkipHeader(value) }/>
+                                             onChange={ (value) => setSkipHeader(value) }/>
                                 <label htmlFor='skipHeader' className="flex items-center gap-4 cursor-pointer">
                                     { t('GLOBAL.skip_header') }
                                 </label>
@@ -173,7 +173,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
                             { t('GLOBAL.cancel') }
                         </Button>
                         <Button disabled={ rows.length == 0 || headers.length == 0 || loading || parsing }
-                            onClick={ handleValidate }>
+                                onClick={ handleValidate }>
                             { loading ? t('GLOBAL.importing') : t('GLOBAL.import') }
                         </Button>
                     </div>

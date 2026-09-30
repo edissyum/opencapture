@@ -243,12 +243,12 @@ export function CustomerEditor() {
             <div className="w-fit">
                 { customerId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
-                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                         { loadingSubmit ? t('GLOBAL.updating') : t('ACCOUNTS.update_customer') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(onSubmit) }
-                        disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
                         { loadingSubmit ? t('GLOBAL.creating') : t('ACCOUNTS.create_customer') }
                     </Button>
                 ) }
