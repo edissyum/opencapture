@@ -138,8 +138,8 @@ def generate_separator(args):
 
         if doctype['type'] == 'folder':
             _doctypes, _ = doctypes.retrieve_doctypes({
-                'where': ['status <> %s', 'form_id = %s', 'code like %s'],
-                'data': ['DEL', doctype['form_id'], f"{doctype['code']}-%"]
+                'where': ['status <> %s', 'form_id = %s', 'code like %s', 'type = %s'],
+                'data': ['DEL', doctype['form_id'], f"{doctype['code']}-%", 'document']
             })
 
         for doctype in _doctypes:

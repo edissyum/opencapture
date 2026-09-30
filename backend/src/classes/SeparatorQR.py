@@ -365,9 +365,10 @@ class SeparatorQR:
         :return: base64 encoded separator file, thumbnail and total
         """
 
-        # Defining the ELEMENTS that will compose the template
         total = 0
         encoded_thumbnails = []
+
+        pdf = SeparatorPDF(format='A4', unit='mm')
         for separator in separators:
             total += 1
 
@@ -375,9 +376,6 @@ class SeparatorQR:
             img = qrcode.make(separator['qr_code_value'])
             img.save(qrcode_path)
 
-            file_path = shared.tmp_path + "/last_generated_doctype_file.pdf"
-
-            pdf = SeparatorPDF(format='A4', unit='mm')
             pdf.build({
                 'code_qr': qrcode_path,
                 'type': separator['type'],
@@ -387,19 +385,21 @@ class SeparatorQR:
                 'label': unidecode(separator['label']).encode('latin-1', 'replace').decode('latin-1')
             })
 
-            try:
-                pdf.output(file_path)
+        file_path = shared.tmp_path + "/last_generated_doctype_file.pdf"
 
-                with open(file_path, 'rb') as pdf_file:
-                    encoded_file = f"data:application/pdf;base64, {base64.b64encode(pdf_file.read()).decode('utf-8')}"
-                pages = pdf2image.convert_from_path(file_path, size=(None, 720))
+        try:
+            pdf.output(file_path)
 
-                for page in pages:
-                    buffered = BytesIO()
-                    page.save(buffered, format="JPEG")
-                    encoded_thumbnails.append(f"data:image/jpeg;base64," f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
-            except (Exception,) as _e:
-                return {'error': str(_e)}
+            with open(file_path, 'rb') as pdf_file:
+                encoded_file = f"data:application/pdf;base64, {base64.b64encode(pdf_file.read()).decode('utf-8')}"
+
+            pages = pdf2image.convert_from_path(file_path, size=(None, 720))
+            for page in pages:
+                buffered = BytesIO()
+                page.save(buffered, format="JPEG")
+                encoded_thumbnails.append(f"data:image/jpeg;base64," f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
+        except (Exception,) as _e:
+            return {'error': str(_e)}
 
         return {
             'total': total,

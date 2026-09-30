@@ -32,7 +32,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     const [allowDownload, setAllowDownload] = useState<boolean>(false);
 
     const [separator, setSeparator] = useState<any>({});
-    const [selectedSeparator, setSelectedSeparator] = useState<string>('docTypeSeparator');
+    const [selectedSeparator, setSelectedSeparator] = useState<string>('doctypeSeparator');
 
     const [thumbnail, setThumbnail] = useState<string | null>(null);
     const thumbnailRef = useRef<string | null>(null);
@@ -47,15 +47,15 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     const separators = [
         { id: 'bundleSeparator', name: t("SPLITTER.bundle_separator") },
         { id: 'documentSeparator', name: t("SPLITTER.document_separator") },
-        { id: 'docTypeSeparator', name: t("SPLITTER.doc_type_separator") }
+        { id: 'doctypeSeparator', name: t("SPLITTER.doc_type_separator") }
     ]
 
     useEffect(() => {
         setAllowDownload(false);
 
         if (!selectedSeparator) return;
-        if (selectedSeparator === 'docTypeSeparator') {
-            if (!selectedDoctype || (selectedDoctype && ['folder', 'root'].includes(selectedDoctype.type))) {
+        if (selectedSeparator === 'doctypeSeparator') {
+            if (!selectedDoctype || (selectedDoctype && ['root'].includes(selectedDoctype.type))) {
                 setThumbnailSafe(null);
                 return;
             }
@@ -73,7 +73,6 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 if (response && response.encoded_thumbnails) {
                     const blob = b64ToFile(response.encoded_thumbnails[0]);
                     setThumbnailSafe(URL.createObjectURL(blob));
-
                     setAllowDownload(true);
                 }
             } catch (error) {
@@ -89,8 +88,8 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
 
     const handleDownloadSeparator = async () => {
         if (!selectedSeparator) return;
-        if (selectedSeparator === 'docTypeSeparator' && !selectedDoctype) return;
-        if (selectedDoctype && ['folder', 'root'].includes(selectedDoctype.type)) return;
+        if (selectedSeparator === 'doctypeSeparator' && !selectedDoctype) return;
+        if (selectedDoctype && ['root'].includes(selectedDoctype.type)) return;
 
         try {
             if (separator['encoded_file']) {
