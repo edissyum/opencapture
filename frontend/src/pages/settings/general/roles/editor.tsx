@@ -74,6 +74,7 @@ export function SettingsGeneralRoleEditor() {
 
     const routesSchema = z.object({
         default_route: z.string().describe(JSON.stringify({
+            required: true,
             component: "radio_box",
             options: routes,
             label: t("ROLES.default_route")
@@ -83,7 +84,7 @@ export function SettingsGeneralRoleEditor() {
     const { control, setValue, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: zodResolver(schema.extend(routesSchema.shape)),
         defaultValues: {
-            default_route: '/home',
+            default_route: '/home'
         },
         mode: "onChange"
     });
@@ -325,7 +326,7 @@ export function SettingsGeneralRoleEditor() {
 
             <div className='flex flex-col gap-2'>
                 <h1 className="text-lg font-semibold">
-                    { t('ROLES.default_route') }
+                    { t('ROLES.default_route') } <span className="text-(--text-error) text-sm">*</span>
                 </h1>
                 <div className='w-1/3'>
                     <DynamicForm schema={ routesSchema } errors={ errors } control={ control }/>

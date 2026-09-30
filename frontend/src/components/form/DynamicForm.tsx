@@ -15,6 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { type JSX } from "react";
+import DOMPurify from "dompurify";
 import { Controller } from "react-hook-form";
 import { Calendar, CaseSensitive, CircleQuestionMark, ListTodo, Regex, SquareCheckBig, TextInitial } from "lucide-react";
 
@@ -146,16 +147,22 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                         name={ field.name }
                         control={ control }
                         render={ ({ field: f }) => (
-                            <div className='flex gap-2'>
-                                { field.options.map((option: any) => (
-                                    <RadioBox
-                                        key={ option.value }
-                                        label={ option.label }
-                                        value={ option.value }
-                                        checked={ f.value === option.value }
-                                        onChange={ () => f.onChange(option.value) }/>
-                                ))
-                                }
+                            <div>
+                                <div className='flex gap-2'>
+                                    { field.options.map((option: any) => (
+                                        <RadioBox
+                                            key={ option.value }
+                                            label={ option.label }
+                                            value={ option.value }
+                                            checked={ f.value === option.value }
+                                            onChange={ () => f.onChange(option.value) }/>
+                                    )) }
+                                </div>
+
+                                { errors[field.name]?.message && (
+                                    <p className="text-(--text-error) text-xs ml-1 mt-1"
+                                        dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(errors[field.name]?.message) } }/>
+                                ) }
                             </div>
                         ) }
                     />
