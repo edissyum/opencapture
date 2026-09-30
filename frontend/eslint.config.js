@@ -39,7 +39,8 @@ export default tseslint.config([
             globals: globals.browser
         },
         rules: {
-            '@stylistic/indent': ['error', 4],
+            '@stylistic/indent': ['error', 4, { ignoredNodes: ['JSXAttribute', 'JSXSpreadAttribute'] }],
+            '@stylistic/jsx-indent-props': ['error', 'first'],
             '@stylistic/keyword-spacing': "error",
             '@stylistic/space-before-blocks': "error",
             "@typescript-eslint/naming-convention": [

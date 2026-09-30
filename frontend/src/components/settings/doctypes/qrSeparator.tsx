@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Select } from "../../Select";
@@ -34,15 +34,23 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     const [separator, setSeparator] = useState<any>({});
     const [selectedSeparator, setSelectedSeparator] = useState<string>('doctypeSeparator');
 
-    const [thumbnail, setThumbnail] = useState<string | null>(null);
-    const thumbnailRef = useRef<string | null>(null);
-    const setThumbnailSafe = useCallback((url: string | null) => {
-        if (thumbnailRef.current) {
-            URL.revokeObjectURL(thumbnailRef.current);
-        }
-        thumbnailRef.current = url;
-        setThumbnail(url);
+    const [thumbnails, setThumbnails] = useState<string[]>([]);
+    const [currentThumbnail, setCurrentThumbnail] = useState<number>(0);
+    const thumbnailsRef = useRef<string[]>([]);
+    const setThumbnailsSafe = useCallback((urls: string[]) => {
+        thumbnailsRef.current.forEach((url) => URL.revokeObjectURL(url));
+        thumbnailsRef.current = urls;
+        setThumbnails(urls);
+        setCurrentThumbnail(0);
     }, []);
+
+    useEffect(() => {
+        return () => thumbnailsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    }, []);
+
+    const thumbnail = thumbnails[currentThumbnail] ?? null;
+    const hasPrevious = currentThumbnail > 0;
+    const hasNext = currentThumbnail < thumbnails.length - 1;
 
     const separators = [
         { id: 'bundleSeparator', name: t("SPLITTER.bundle_separator") },
@@ -56,23 +64,24 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
         if (!selectedSeparator) return;
         if (selectedSeparator === 'doctypeSeparator') {
             if (!selectedDoctype || (selectedDoctype && ['root'].includes(selectedDoctype.type))) {
-                setThumbnailSafe(null);
+                setThumbnailsSafe([]);
                 return;
             }
         }
 
         const generateQrSeparator = async () => {
             setLoading(true);
-            setThumbnailSafe(null);
+            setThumbnailsSafe([]);
             try {
                 const response = await post(`/doctypes/generateSeparator`, {
                     id: selectedDoctype?.id,
                     type: selectedSeparator
                 });
                 setSeparator(response);
-                if (response && response.encoded_thumbnails) {
-                    const blob = b64ToFile(response.encoded_thumbnails[0]);
-                    setThumbnailSafe(URL.createObjectURL(blob));
+                if (response && response.encoded_thumbnails?.length) {
+                    setThumbnailsSafe(response.encoded_thumbnails.map(
+                        (encodedThumbnail: string) => URL.createObjectURL(b64ToFile(encodedThumbnail))
+                    ));
                     setAllowDownload(true);
                 }
             } catch (error) {
@@ -123,9 +132,10 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 <div className={ `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                  ${ allowDownload ? 'cursor-pointer hover:border-(--border-primary)' : 'cursor-not-allowed opacity-50' }
                                  border border-(--border-secondary) hover:text-(--color-primary) transition-colors shrink-0` }
-                onClick={ allowDownload ? handleDownloadSeparator : undefined }
-                data-tooltip-id="tooltip"
-                data-tooltip-content={ t('SPLITTER.download_separator') }>
+                     onClick={ allowDownload ? handleDownloadSeparator : undefined }
+                     data-tooltip-id="tooltip"
+                     data-tooltip-content={ t('SPLITTER.download_separator') }
+                >
                     <Download size={ 18 }/>
                 </div>
             </div>
@@ -135,9 +145,35 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 ) }
 
                 { thumbnail && (
-                    <div className="mt-4 size-102">
-                        <img src={ thumbnail } alt="QR Separator"
-                            className="object-contain border border-(--border-secondary) rounded-lg"/>
+                    <div className="flex flex-col items-center gap-3 mt-4">
+                        { thumbnails.length > 1 && (
+                            <div className="flex items-center gap-4">
+                                <button type="button"
+                                        disabled={ !hasPrevious }
+                                        onClick={ () => setCurrentThumbnail((index) => index - 1) }
+                                        className={ `flex items-center justify-center bg-(--bg-primary) p-2.5 rounded-full
+                                                     border border-(--border-secondary) transition-colors shrink-0
+                                                     ${ hasPrevious ? 'cursor-pointer hover:border-(--border-primary) hover:text-(--color-primary)' : 'cursor-not-allowed opacity-50' }` }>
+                                    <ChevronLeft size={ 18 }/>
+                                </button>
+                                <span className="text-sm text-(--text-secondary)">
+                                    { currentThumbnail + 1 } / { thumbnails.length }
+                                </span>
+                                <button type="button"
+                                        disabled={ !hasNext }
+                                        onClick={ () => setCurrentThumbnail((index) => index + 1) }
+                                        className={ `flex items-center justify-center bg-(--bg-primary) p-2.5 rounded-full
+                                                     border border-(--border-secondary) transition-colors shrink-0
+                                                     ${ hasNext ? 'cursor-pointer hover:border-(--border-primary) hover:text-(--color-primary)' : 'cursor-not-allowed opacity-50' }` }>
+                                    <ChevronRight size={ 18 }/>
+                                </button>
+                            </div>
+                        ) }
+
+                        <div className="size-102">
+                            <img src={ thumbnail } alt="QR Separator"
+                                 className="object-contain border border-(--border-secondary) rounded-lg"/>
+                        </div>
                     </div>
                 ) }
 
