@@ -1155,7 +1155,7 @@
         "rotation_270": "Rotation 270°",
         "rotation_90": "Rotation 90°",
         "rotation_none": "Aucune rotation",
-        "separate_by_document_number": "Séparer par nombre de pages",
+        "separate_by_document_number": "Séparation par nombre de pages",
         "separate_by_document_number_value": "Nombre de pages par document",
         "splitter_method_id": "Méthode de séparation",
         "system_fields": "Champs système à rechercher",
@@ -1192,7 +1192,8 @@
         "certified_copy": "Activer la copie conforme (NF Z42-020/26)",
         "certified_copy_hint": "Si activé, la rotation/modification des pages, la suppression des pages blanches et la fusion de documents seront désactivés pour garantir l'intégrité du document original. Seule la séparation est disponible pour séparer les documents sans les modifier",
         "system_fields_hint": "Si la recherche de tiers est activée, la recherche de contact informel est indisponible. Et si la recherche de contact informel est activée, la recherche de tiers est indisponible",
-        "workflow_id_required": "Le workflow est obligatoire"
+        "workflow_id_required": "Le workflow est obligatoire",
+        "ai_separation": "Séparation intelligente par IA"
     },
     "MONITORING": {
         "processes": "Processus",
@@ -1399,8 +1400,7 @@
         "export_failed": "Erreur lors de l'exportation des types de document, veuillez réessayer",
         "export_success": "Types de document exportés avec succès",
         "import_doctypes": "Importer les types de documents",
-        "import_success": "Types de document importés avec succès",
-        "click_to_select_doctype": ""
+        "import_success": "Types de document importés avec succès"
     },
     "ABOUT": {
         "see_changelog": "voir le changelog",
@@ -1516,7 +1516,8 @@
         "version_update": "Version et mise à jour",
         "workflows_list": "Liste des workflows",
         "workflows_list_splitter": "Liste des workflows",
-        "certified_copy": "Paramétrage de la copie conforme"
+        "certified_copy": "Paramétrage de la copie conforme",
+        "splitter_settings": "Paramétrage spécifique au Splitter"
     },
     "PROFILE": {
         "details": "Détails du profil",

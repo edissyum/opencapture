@@ -76,6 +76,7 @@ const _ = [
     t('PRIVILEGES.add_document_type'),
     t('PRIVILEGES.login_methods'),
     t('PRIVILEGES.verifier_settings'),
+    t('PRIVILEGES.splitter_settings'),
     t('PRIVILEGES.mailcollect'),
     t('PRIVILEGES.user_quota'),
     t('PRIVILEGES.list_ai_model'),

@@ -1118,7 +1118,8 @@
         "certified_copy": "Certified copy",
         "certified_copy_hint": "If enabled, page rotation/modification, blank page deletion, and document merging will be disabled to ensure the integrity of the original document. Only splitting is available to separate documents without modifying them.",
         "system_fields_hint": "If third-party search is enabled, informal contact search is unavailable. And if informal contact search is enabled, third-party search is unavailable.",
-        "workflow_id_required": "Workflow is required"
+        "workflow_id_required": "Workflow is required",
+        "ai_separation": "AI separation"
     },
     "MONITORING": {
         "processes": "Processes",
@@ -1310,8 +1311,7 @@
         "export_failed": "Error exporting document types, please try again",
         "export_success": "Document types exported successfully",
         "import_doctypes": "Import document types",
-        "import_success": "Document types imported successfully",
-        "click_to_select_doctype": ""
+        "import_success": "Document types imported successfully"
     },
     "ABOUT": {
         "see_changelog": "see the changelog",
@@ -1427,7 +1427,8 @@
         "version_update": "Version and update",
         "workflows_list": "Workflows list",
         "workflows_list_splitter": "Workflows list",
-        "certified_copy": "Certified copy management"
+        "certified_copy": "Certified copy management",
+        "splitter_settings": "Splitter-specific settings"
     },
     "PROFILE": {
         "details": "Profile details",
