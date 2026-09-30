@@ -559,16 +559,6 @@ def create_document(args):
     return {"newDocumentId": res}, 200
 
 
-def get_output_parameters(parameters):
-    data = {}
-    for parameter in parameters:
-        if type(parameter['value']) is dict and 'id' in parameter['value']:
-            data[parameter['id']] = parameter['value']['id']
-        else:
-            data[parameter['id']] = parameter['value']
-    return data
-
-
 def save_modifications(data):
     database = get_context_var('database', 0)
 
