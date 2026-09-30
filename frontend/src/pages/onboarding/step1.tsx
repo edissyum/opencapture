@@ -18,20 +18,27 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 
+import { useUser } from "../../services/hooks/useUser";
 import { useCustom } from "../../services/custom/customContext";
+
+import { Loader } from "../../components/loader/Loader";
+import { hasRequiredPermissions } from "../../components/auth/auth.tsx";
 
 export function Step1() {
     const custom = useCustom();
+    const { user, loadingUser } = useUser();
 
     const options = [
         {
             id: 'verifier',
             label: t('ONBOARD.verifier'),
+            privileges: ['access_verifier'],
             img: '/imgs/Open-Capture_Verifier.svg'
         },
         {
             id: 'splitter',
             label: t('ONBOARD.splitter'),
+            privileges: ['access_splitter'],
             img: '/imgs/Open-Capture_Splitter.svg'
         }
     ];
@@ -48,6 +55,10 @@ export function Step1() {
         }
     }, [selectedModule]);
 
+    if (loadingUser) {
+        return <Loader/>;
+    }
+
     return (
         <div className='flex flex-col gap-4'>
             <div>
@@ -57,7 +68,7 @@ export function Step1() {
                 </p>
             </div>
             <div className="flex gap-4">
-                { options.map((module) => (
+                { options.filter((module) => hasRequiredPermissions(user, module['privileges'])).map((module) => (
                     <div key={ module['id'] }
                         className={ `border flex bg-(--bg-primary) items-center rounded-md cursor-pointer p-6
                                       hover:border-gray-400 transition-colors
