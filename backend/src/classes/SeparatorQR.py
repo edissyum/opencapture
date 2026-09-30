@@ -25,7 +25,6 @@ import base64
 import qrcode
 import pdf2image
 import subprocess
-from .. import shared
 from fpdf import FPDF
 from io import BytesIO
 from unidecode import unidecode
@@ -34,6 +33,8 @@ from fpdf.enums import RenderStyle
 import xml.etree.ElementTree as Et
 from PIL import Image, ImageEnhance
 
+from .. import shared
+from .SeparatorHelpers import get_model
 
 class SeparatorQR:
     def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages, splitter_method):
@@ -139,6 +140,41 @@ class SeparatorQR:
             offset = offset + int(page_per_doc)
             end = end + int(page_per_doc)
         return array_of_files
+
+    def split_using_ai(self, file):
+        from flask import current_app
+        model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/splitter_separation/')
+        model = get_model(model_dir, self.log)
+
+        path = os.path.dirname(file)
+        file_without_extention = os.path.splitext(os.path.basename(file))[0]
+
+        pdf = pypdf.PdfReader(file, strict=False)
+        nb_pages = len(pdf.pages)
+        array_of_files = []
+        embeddings_files = []
+        _break = False
+
+        pages = pdf2image.convert_from_path(file)
+        i = 0
+        for page in pages:
+            page.save(self.tmp_dir + '/result-' + str(i) + '.jpg', 'JPEG')
+            i = i + 1
+
+        for cpt in range(0, nb_pages):
+            if self.remove_blank_pages:
+                if self.files.is_blank_page(self.tmp_dir + '/result-' + str(cpt) + '.jpg'):
+                    continue
+            embeddings_files.append([self.tmp_dir + '/result-' + str(cpt) + '.jpg', str(cpt + 1).zfill(3)])
+
+        embeddings = [model.embed(page[0]) for page in embeddings_files]
+        for i in range(len(embeddings_files) - 1):
+            probability = model.continuity(embeddings[i], embeddings[i + 1])
+            if probability < model.threshold:
+                page = embeddings_files[i + 1][1]
+                self.log.info(f"Page {page} detected as new document (confidence {1 - probability:.0%})")
+
+
 
     def run(self, file, saved_pages=None):
         """
@@ -333,6 +369,8 @@ class SeparatorQR:
         total = 0
         encoded_thumbnails = []
         for separator in separators:
+            total += 1
+
             qrcode_path = shared.tmp_path + f"/code_qr_{separator['qr_code_value']}.png"
             img = qrcode.make(separator['qr_code_value'])
             img.save(qrcode_path)
