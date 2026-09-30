@@ -254,16 +254,25 @@ def launch(args):
                                 res = execute(args, path + file, log, config, files, ocr, regex, database, docservers,
                                               configurations, languages, mail_class, smtp)
                                 list_of_ids.append(res)
-                                log.debug('End of processing for file : ' + path)
+                                log.debug('End of processing for file : ' + file)
                     elif splitter_method == 'separate_by_document_number':
                         list_of_files = separator_qr.split_document_every_x_pages(path, separate_every_x_page)
                         for file in list_of_files:
                             log.debug('Process separated file : ' + file)
-                            res = execute(args, file, log, config, files, ocr, regex, database, docservers, configurations,
-                                          languages, mail_class, smtp)
+                            res = execute(args, file, log, config, files, ocr, regex, database, docservers,
+                                          configurations, languages, mail_class, smtp)
                             list_of_ids.append(res)
-                            log.debug('End of processing for file : ' + path)
+                            log.debug('End of processing for file : ' + file)
 
+                        os.remove(path)
+                    elif splitter_method == 'ai_separation':
+                        list_of_files = separator_qr.split_using_ai(path)
+                        for file in list_of_files:
+                            log.debug('Process separated file : ' + file)
+                            res = execute(args, file, log, config, files, ocr, regex, database, docservers,
+                                          configurations, languages, mail_class, smtp)
+                            list_of_ids.append(res)
+                            log.debug('End of processing for file : ' + file)
                         os.remove(path)
                     else:
                         if separator_qr.remove_blank_pages and extension == '.pdf':

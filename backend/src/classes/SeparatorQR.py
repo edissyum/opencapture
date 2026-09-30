@@ -144,7 +144,6 @@ class SeparatorQR:
     def split_using_ai(self, file):
         from flask import current_app
         model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/splitter_separation/')
-        model = get_model(model_dir, self.log)
 
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
@@ -152,8 +151,7 @@ class SeparatorQR:
         pdf = pypdf.PdfReader(file, strict=False)
         nb_pages = len(pdf.pages)
         array_of_files = []
-        embeddings_files = []
-        _break = False
+        kept_pages = []
 
         pages = pdf2image.convert_from_path(file)
         i = 0
@@ -165,16 +163,45 @@ class SeparatorQR:
             if self.remove_blank_pages:
                 if self.files.is_blank_page(self.tmp_dir + '/result-' + str(cpt) + '.jpg'):
                     continue
-            embeddings_files.append([self.tmp_dir + '/result-' + str(cpt) + '.jpg', str(cpt + 1).zfill(3)])
+            kept_pages.append(cpt)
 
-        embeddings = [model.embed(page[0]) for page in embeddings_files]
-        for i in range(len(embeddings_files) - 1):
-            probability = model.continuity(embeddings[i], embeddings[i + 1])
-            if probability < model.threshold:
-                page = embeddings_files[i + 1][1]
-                self.log.info(f"Page {page} detected as new document (confidence {1 - probability:.0%})")
+        if not kept_pages:
+            self.log.info('No page left after blank pages removal, skipping AI separation')
+            return array_of_files
 
+        # Chaque document est une liste d'index de pages (base 0) du PDF d'origine
+        documents = [[kept_pages[0]]]
+        try:
+            model = get_model(model_dir, self.log)
+            embeddings = [model.embed(self.tmp_dir + '/result-' + str(cpt) + '.jpg') for cpt in kept_pages]
+            for i in range(len(kept_pages) - 1):
+                probability = model.continuity(embeddings[i], embeddings[i + 1])
+                if probability < model.threshold:
+                    self.log.info(f"Page {kept_pages[i + 1] + 1} detected as new document (confidence {1 - probability:.0%})")
+                    documents.append([])
+                documents[-1].append(kept_pages[i + 1])
+        except (Exception,) as error:
+            self.log.error('AI Separation failed, single document fallback : ' + str(error))
+            documents = [kept_pages]
 
+        for cpt, document_pages in enumerate(documents):
+            output = pypdf.PdfWriter()
+            for page_index in document_pages:
+                output.add_page(pdf.pages[page_index])
+
+            newname = path + '/' + file_without_extention + "-" + str(cpt + 1) + ".pdf"
+            with open(newname, 'wb') as output_stream:
+                output.write(output_stream)
+            array_of_files.append(newname)
+
+        for cpt in range(0, nb_pages):
+            try:
+                os.remove(self.tmp_dir + '/result-' + str(cpt) + '.jpg')
+            except FileNotFoundError:
+                pass
+
+        self.log.info(f"AI Separation : {len(array_of_files)} document(s) created")
+        return array_of_files
 
     def run(self, file, saved_pages=None):
         """
