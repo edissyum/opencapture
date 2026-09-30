@@ -15,8 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
 import os
+import json
+import glob
 import uuid
 from datetime import datetime
 
@@ -170,6 +171,18 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
 
     log.info('Document not inserted in database based on workflow settings')
     return None
+
+
+def reset_document_context(files, ocr):
+    for image in glob.glob(glob.escape(files.img_name) + '*.jpg'):
+        try:
+            os.remove(image)
+        except FileNotFoundError:
+            pass
+
+    ocr.last_text = ''
+    ocr.header_last_text = ''
+    ocr.footer_last_text = ''
 
 
 def convert(file, files, ocr, nb_pages, tesseract_function, convert_function, custom_pages=False):
@@ -339,6 +352,8 @@ def found_data_recursively(log, data_name, ocr, file, nb_pages, text_by_pages, d
 
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
+    reset_document_context(files, ocr)
+
     datas = {
         'datas': {},
         'pages': {},
