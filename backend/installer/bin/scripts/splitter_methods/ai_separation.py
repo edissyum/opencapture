@@ -17,12 +17,7 @@
 # @dev : Serena Tetart <serena.tetart@edissyum.com>
 
 import os
-import threading
 from src.classes.SeparatorHelpers import get_model
-
-
-_MODEL = None
-_MODEL_LOCK = threading.Lock()
 
 
 def process(args):

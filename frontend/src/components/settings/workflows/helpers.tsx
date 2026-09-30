@@ -64,5 +64,9 @@ export const getSplitterMethods = () => [
     {
         'id': 'separate_by_document_number',
         'label': t('WORKFLOWS.separate_by_document_number')
+    },
+    {
+        'id': 'ai_separation',
+        'label': t('WORKFLOWS.ai_separation')
     }
 ];
