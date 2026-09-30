@@ -351,7 +351,7 @@ def handle_xml_output(batch, parameters, regex):
     return {'result_batch': batch}, 200
 
 
-def handle_cmis_output(output, batch, log, docservers, regex):
+def handle_cmis_output(output, batch, log, docservers, regex, nfz42020):
     cmis_auth = get_output_parameters(output['data']['options']['auth'])
     cmis_params = get_output_parameters(output['data']['options']['parameters'])
     cmis = CMIS(cmis_auth['cmis_ws'], cmis_auth['login'], cmis_auth['password'], cmis_auth['folder'])
@@ -363,7 +363,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
         'filename': cmis_params['pdf_filename'],
         'compress_type': output['compress_type']
     }
-    res_pdf_export, _ = export_pdf_files(batch, parameters, log, docservers)
+    res_pdf_export, _ = export_pdf_files(batch, parameters, log, docservers, nfz42020)
 
     for document in res_pdf_export['result_batch']['documents']:
         cmis_res = cmis.create_document(document['export_path'], 'application/pdf')
@@ -375,8 +375,8 @@ def handle_cmis_output(output, batch, log, docservers, regex):
             log.error(f"File not sent : {document['export_path']}")
             log.error(f"CMIS Response : {str(cmis_res)}")
             response = {
-                "errors": gettext('EXPORT_PDF_ERROR'),
-                "message": cmis_res[1]
+                "message": cmis_res[1],
+                "errors": gettext('EXPORT_PDF_ERROR')
             }
             return response, 500
 
@@ -398,6 +398,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
                 if os.path.isfile(document['export_path']):
                     os.remove(document['export_path'])
             return res_export_xml, status
+
         cmis_res = cmis.create_document(res_export_xml['result_batch']['metadata_file'], 'text/xml')
 
         if os.path.isfile(res_export_xml['result_batch']['metadata_file']):
@@ -407,6 +408,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
             for document in res_pdf_export['result_batch']['documents']:
                 if os.path.isfile(document['export_path']):
                     os.remove(document['export_path'])
+
             response = {
                 "errors": gettext('EXPORT_XML_ERROR'),
                 "message": cmis_res[1]
@@ -420,7 +422,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
     return {'result_batch': batch}, 200
 
 
-def handle_openads_output(output, batch, log, docservers):
+def handle_openads_output(output, batch, log, docservers, nfz42020):
     openads_auth = get_output_parameters(output['data']['options']['auth'])
     openads_params = get_output_parameters(output['data']['options']['parameters'])
     _openads = OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])
@@ -446,7 +448,7 @@ def handle_openads_output(output, batch, log, docservers):
         'compress_type': output['compress_type']
     }
 
-    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers)
+    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers, nfz42020)
     if status != 200:
         return res_export_pdf
 
