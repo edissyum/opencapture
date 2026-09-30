@@ -85,7 +85,7 @@ export const getSettingsSplitterOptions = () => [
         description: t('SETTINGS.qr_code_description'),
         icon: <QrCode/>,
         href: '/settings/splitter/separator',
-        privileges: ['certified_copy'],
+        privileges: ['separator_splitter'],
         module: 'splitter'
     }
 ];
