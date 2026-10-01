@@ -117,7 +117,7 @@ export function StatisticsPage() {
         };
 
         const fetchAvailableYears = async () => {
-            const res = await get('/history/getAvailableYears');
+            const res = await get('/statistics/getAvailableYears');
             if (res.years) {
                 const uniqueYears: any = Array.from(new Set(res.years.map((data: any) => {
                     return { 'value': data.year, 'label': data.year }
