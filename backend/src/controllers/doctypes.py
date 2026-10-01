@@ -149,19 +149,26 @@ def generate_separator(args):
                 "qr_code_value": f"DOCSTART|{doctype['key']}"
             })
 
-    res_separators = SeparatorQR.generate_separator(separators)
-    if 'error' in res_separators:
-        response = {
-            "errors": gettext("DOCTYPE_ERROR"),
-            "message": res_separators['error']
-        }
-        return response, 400
+    if separators:
+        res_separators = SeparatorQR.generate_separator(separators)
+        if 'error' in res_separators:
+            response = {
+                "errors": gettext("DOCTYPE_ERROR"),
+                "message": res_separators['error']
+            }
+            return response, 400
 
-    response = {
-        'total': res_separators['total'],
-        'encoded_file': res_separators['encoded_file'],
-        'encoded_thumbnails': res_separators['encoded_thumbnails']
-    }
+        response = {
+            'total': res_separators['total'],
+            'encoded_file': res_separators['encoded_file'],
+            'encoded_thumbnails': res_separators['encoded_thumbnails']
+        }
+    else:
+        response = {
+            'total': 0,
+            'encoded_file': None,
+            'encoded_thumbnails': None
+        }
 
     return response, 200
 
