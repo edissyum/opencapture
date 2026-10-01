@@ -127,7 +127,7 @@ CREATE TABLE "roles" (
     "status"        VARCHAR(20)   DEFAULT 'OK',
     "editable"      BOOLEAN       DEFAULT True,
     "assign_roles"  JSONB         DEFAULT '[]',
-    "default_route" VARCHAR(255)
+    "default_route" VARCHAR(255)  DEFAULT '/home'
 );
 
 CREATE TABLE "roles_privileges" (
