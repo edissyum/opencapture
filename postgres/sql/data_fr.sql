@@ -1512,11 +1512,15 @@ INSERT INTO "accounts_customer" (id, name, module) VALUES (1, 'Splitter - Compte
 ALTER SEQUENCE "accounts_customer_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES UTILISATEURS
-INSERT INTO "users" ("id", "username", "firstname", "lastname", "password", "role") VALUES (1, 'admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
+INSERT INTO "users" ("id", "username", "firstname", "lastname", "password", "role") VALUES (1, 'admin', 'Super', 'ADMIN', 'scrypt:32768:8:1$kaveEXWpGGTkeNSE$df63d70539ffe1faeb49ef0f0a585215c85205a121b0f0b5faf332c1d4e5e84c8874aede2793e2a7bb4d1600e41827cb40674b2c3d662a900c57aaf53d0ebfbf', 1);
 INSERT INTO "users" ("id", "username", "firstname", "lastname", "mode", "password", "role") VALUES (2, 'user_ws', 'Utilisateur', 'WebServices', 'webservice', 'pbkdf2:sha256:600000$j2F2BOOhYAjBqTiD$6840209a20bd78a70d004da1627942485e2492ac9e6a4494412cdd87933d97fe', 4);
-ALTER SEQUENCE "users_id_seq" RESTART WITH 3;
+INSERT INTO "users" ("id", "username", "firstname", "lastname", "password", "role") VALUES (3, 'user', 'Utilisateur', 'STANDARD', 'scrypt:32768:8:1$kgraMfbigH8DSKqY$a0746c81603ba39883144cb3b8af8b236ad5b5e70c228a0e43989d4c5f7c78198d2aab1c24e38d458ab60ef67a28eb7a022a01a20d737b213cafa1250d86268a', 3);
+ALTER SEQUENCE "users_id_seq" RESTART WITH 4;
+
+INSERT INTO "users_forms" ("user_id", "forms_id") VALUES (3, '{"data": "[1, 5]"}');
 
 INSERT INTO "users_customers" ("user_id", "customers_id") VALUES (2, '{"data": "[1]"}');
+INSERT INTO "users_customers" ("user_id", "customers_id") VALUES (3, '{"data": "[1]"}');
 
 -- CRÉATION D'UN MASQUE DE POSITIONNEMENT D'EXEMPLE
 INSERT INTO "positions_masks" ("id", "label", "form_id", "regex") VALUES (1, 'Masque par défaut', 1, '{"document_date": "date", "document_due_date": "date"}');
