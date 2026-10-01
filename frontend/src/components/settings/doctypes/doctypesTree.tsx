@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { CSS } from "@dnd-kit/utilities";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import {
@@ -237,10 +237,10 @@ export function DoctypesTree({
         availableFields.filter(f => f.selected)
     );
 
-    const ROOT_NODE: DoctypeTreeNode = {
+    const ROOT_NODE: DoctypeTreeNode = useMemo(() => ({
         key: "0",
         data: { code: "0", label: t('DOCTYPES.root'), type: "root" }
-    };
+    }), []);
 
     // Fetch doctypes and forms
     useEffect(() => {
@@ -252,7 +252,7 @@ export function DoctypesTree({
             }
         }
 
-        const fetchDocTypes = async () => {
+        const fetchDoctypes = async () => {
             try {
                 const response = await get(`/doctypes/list/${ formId }`);
                 setDoctypes(response.doctypes);
@@ -274,7 +274,7 @@ export function DoctypesTree({
         };
 
         fetchForms().then();
-        fetchDocTypes().then();
+        fetchDoctypes().then();
     }, [formId, forceRelaunch]);
 
     // Set selected key from props
@@ -302,22 +302,22 @@ export function DoctypesTree({
                 children
             }
         ];
-    }, [doctypes]);
+    }, [doctypes, editor, ROOT_NODE]);
 
     // Expand all when nodes change
     useEffect(() => {
         setExpandedKeys(collectExpanded(treeNodes));
     }, [treeNodes]);
 
-    const expandAll = useCallback(() => {
+    const expandAll = () => {
         setExpandedKeys(collectExpanded(treeNodes));
-    }, [treeNodes]);
+    };
 
-    const collapseAll = useCallback(() => {
+    const collapseAll = () => {
         setExpandedKeys({});
-    }, []);
+    };
 
-    const handleSelect = useCallback((e: any) => {
+    const handleSelect = (e: any) => {
         const key = e.value as string;
         if (key === ROOT_NODE.key) {
             setSelectedKey(key);
@@ -332,8 +332,7 @@ export function DoctypesTree({
 
         setSelectedKey(key);
         onSelect?.(flat);
-
-    }, [doctypes, canFolderBeSelected, onSelect]);
+    };
 
     const cloneDoctypes = async () => {
         try {

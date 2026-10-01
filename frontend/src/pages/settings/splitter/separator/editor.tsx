@@ -72,8 +72,10 @@ export function SettingsSplitterSeparator() {
                 <div className="flex-1 min-w-0 overflow-auto border-r border-(--border-secondary)">
                     { selectedForm ? (
                         <DoctypesTree
-                            key='doctypes' formId={ selectedForm }
-                            selectedDoctype={ selectedDoctype } editor={ true }
+                            key='doctypes'
+                            editor={ true }
+                            formId={ selectedForm }
+                            selectedDoctype={ selectedDoctype }
                             onSelect={ (node) => setSelectedDoctype(node) }
                         />
                     ) : (

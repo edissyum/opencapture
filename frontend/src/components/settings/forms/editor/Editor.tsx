@@ -598,10 +598,14 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
                 { ['doctypes'].includes(mainTabIndex) && module === 'splitter' && (
                     <div className="shrink-0 w-[22rem] h-full flex flex-col">
-                        <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) }
-                                      selectedDoctype={ selectedDoctype } editor={ true }
-                                      onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
-                                      onSelect={ (node) => setSelectedDoctype(node) }/>
+                        <DoctypesTree
+                            editor={ true }
+                            key={ doctypeUpdatedCpt }
+                            formId={ parseInt(formId) }
+                            selectedDoctype={ selectedDoctype }
+                            onSelect={ (node) => setSelectedDoctype(node) }
+                            onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
+                        />
                     </div>
                 ) }
             </div>

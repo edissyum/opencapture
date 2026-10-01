@@ -48,8 +48,8 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
         return () => thumbnailsRef.current.forEach((url) => URL.revokeObjectURL(url));
     }, []);
 
-    const thumbnail = thumbnails[currentThumbnail] ?? null;
     const hasPrevious = currentThumbnail > 0;
+    const thumbnail = thumbnails[currentThumbnail] ?? null;
     const hasNext = currentThumbnail < thumbnails.length - 1;
 
     const separators = [
@@ -170,7 +170,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                             </div>
                         ) }
 
-                        <div className="pb-4 w-90">
+                        <div className="pb-4 w-[80%]">
                             <img src={ thumbnail } alt="QR Separator"
                                  className="object-contain border border-(--border-secondary) rounded-lg"/>
                         </div>
