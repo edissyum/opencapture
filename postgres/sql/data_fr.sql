@@ -1504,7 +1504,7 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 5;
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51, 53, 59, 65, 69, 70, 71, 72]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 6, 13, 18, 19, 20, 30, 34, 42, 53, 59, 65, 69, 70, 71, 72]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 6, 13, 18, 19, 20, 30, 42, 53, 59, 69, 70, 71, 72]"}');
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 49, 50, 51, 52, 53, 54, 55, 59, 65, 66, 69, 70, 71, 72]"}');
 
 -- CRÉATION DU COMPTE CLIENT PAR DÉFAUT Splitter
