@@ -1453,5 +1453,9 @@
         "settings": "Copy settings",
         "file_upload_success": "File <strong>{{fileName}}</strong> successfully uploaded. Remember to update the configuration to apply this change.",
         "update_success": "The true copy configuration has been successfully updated."
+    },
+    "SEPARATOR": {
+        "select_form": "Select a form",
+        "form_choice": "Form choice"
     }
 }

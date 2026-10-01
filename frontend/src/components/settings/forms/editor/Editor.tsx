@@ -40,7 +40,6 @@ import { SettingsVerifierFormsDetails } from "../../../../pages/settings/verifie
 import { SettingsSplitterFormsDetails } from "../../../../pages/settings/splitter/forms/details";
 import { getAvailableFields } from "../../../../pages/settings/verifier/forms/availableFieldsSchema";
 
-import { QrSeparator } from "../../doctypes/qrSeparator";
 import { DoctypesTree } from "../../doctypes/doctypesTree";
 import { DoctypeDetails } from "../../doctypes/doctypesDetails";
 
@@ -487,9 +486,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                 { module === 'splitter' && (
                                     <Tabs.Tab value="doctypes">{ t('FORMS.doctypes') }</Tabs.Tab>
                                 ) }
-                                { module === 'splitter' && (
-                                    <Tabs.Tab value="qr_code">{ t('FORMS.qr_code') }</Tabs.Tab>
-                                ) }
                             </Scroller>
                         </Tabs.List>
                         <Tabs.Panel value="details" className="bg-(--bg-primary)!">
@@ -576,11 +572,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                 />
                             </Tabs.Panel>
                         ) }
-                        { module === 'splitter' && (
-                            <Tabs.Panel value="qr_code" className='bg-(--bg-primary)!'>
-                                <QrSeparator selectedDoctype={ selectedDoctype }/>
-                            </Tabs.Panel>
-                        ) }
                     </Tabs>
                 </div>
 
@@ -605,7 +596,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                     </div>
                 ) }
 
-                { ['doctypes', 'qr_code'].includes(mainTabIndex) && module === 'splitter' && (
+                { ['doctypes'].includes(mainTabIndex) && module === 'splitter' && (
                     <div className="shrink-0 w-[22rem] h-full flex flex-col">
                         <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) }
                                       selectedDoctype={ selectedDoctype } editor={ true }

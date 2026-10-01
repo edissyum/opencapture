@@ -1542,5 +1542,9 @@
         "file_upload_success": "Archivo <strong>{{fileName}}</strong> cargado correctamente. Recuerde actualizar la configuración para aplicar los cambios",
         "key_upload": "Clave privada RSA",
         "update_success": "La configuración de la copia verdadera se ha actualizado correctamente"
+    },
+    "SEPARATOR": {
+        "select_form": "Seleccionar un formulario",
+        "form_choice": "Selección del formulario"
     }
 }

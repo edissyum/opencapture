@@ -118,16 +118,16 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     };
 
     return (
-        <div className="p-6 h-full">
-            <div className='flex items-center justify-between gap-6'>
-                <div className='w-1/3'>
+        <div className="flex flex-col h-full gap-4">
+            <div className='flex items-center justify-between gap-4'>
+                <>
                     <Select
                         id='qr-separator'
                         value={ selectedSeparator }
                         label={ t("SPLITTER.qr_separator") }
                         onChange={ (value) => setSelectedSeparator(value) }
                         options={ separators.map((s) => ({ label: s.name, value: s.id })) }/>
-                </div>
+                </>
 
                 <div className={ `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                  ${ allowDownload ? 'cursor-pointer hover:border-(--border-primary)' : 'cursor-not-allowed opacity-50' }
@@ -139,13 +139,13 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                     <Download size={ 18 }/>
                 </div>
             </div>
-            <div className='flex flex-col items-center mt-6'>
+            <div className='flex flex-col items-center overflow-auto'>
                 { loading && (
                     <Loader/>
                 ) }
 
                 { thumbnail && (
-                    <div className="flex flex-col items-center gap-3 mt-4">
+                    <div className="flex flex-col items-center gap-4">
                         { thumbnails.length > 1 && (
                             <div className="flex items-center gap-4">
                                 <button type="button"
@@ -170,7 +170,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                             </div>
                         ) }
 
-                        <div className="size-102">
+                        <div className="pb-4 w-90">
                             <img src={ thumbnail } alt="QR Separator"
                                  className="object-contain border border-(--border-secondary) rounded-lg"/>
                         </div>
@@ -178,7 +178,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 ) }
 
                 { !loading && !thumbnail && (
-                    <div className="mt-4 text-(--text-secondary)">
+                    <div className="text-(--text-secondary)">
                         { t("DOCTYPES.select_doctype") }
                     </div>
                 ) }

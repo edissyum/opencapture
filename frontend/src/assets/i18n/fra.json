@@ -1542,5 +1542,9 @@
         "settings": "Paramètres de la copie conforme",
         "file_upload_success": "Fichier <strong>{{fileName}}</strong> téléversés avec succès. Pensez à mettre à jour la configuration pour appliquer ce changement",
         "update_success": "Configuration de la copie conforme mise à jour avec succès"
+    },
+    "SEPARATOR": {
+        "select_form": "Sélectionner un formulaire",
+        "form_choice": "Choix du formulaire"
     }
 }
