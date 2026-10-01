@@ -97,7 +97,7 @@ def get_supplier_by_id(supplier_id):
             schema:
                 $ref: '#/definitions/Supplier'
     """
-    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/getById/{supplier_id}'}), 403
 

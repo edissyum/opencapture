@@ -90,7 +90,7 @@ def generate_separator():
 @auth.token_required
 def clone_form_doctypes(src_form_id, dest_form_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/doctypes/clone/{src_form_id}/{dest_form_id}'}), 403
 
     res = doctypes.clone_form_doctypes(src_form_id, dest_form_id)
     return make_response(jsonify(res[0])), res[1]
@@ -100,7 +100,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
 @auth.token_required
 def import_from_csv():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/csv/import'}), 403
 
     args = {
         'files': request.files,
@@ -116,7 +116,7 @@ def import_from_csv():
 @auth.token_required
 def export_doctypes():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/export'}), 403
 
     res = doctypes.export_doctypes(request.json)
     return make_response(jsonify(res[0])), res[1]
