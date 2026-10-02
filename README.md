@@ -4,9 +4,11 @@
 
 ## 🚀 Open-Capture V4 — a new major version
 
-Open-Capture V4 is a major release, rebuilt from the ground up. The interface has been completely rewritten
-as a modern React / TypeScript application, the Flask backend has been reworked, and AI is now at the heart
+Open-Capture V4 is a major release, rebuilt from the ground up.
+
+The interface has been completely rewritten as a modern React / TypeScript application, the Flask backend has been reworked, and AI is now at the heart
 of document processing (field extraction, document splitting, rotation detection).
+
 Deployment is also simplified with an official Docker setup.
 
 > ⚠️ V4 is not a drop-in upgrade from previous versions. Please read the documentation before migrating
@@ -15,3 +17,11 @@ Deployment is also simplified with an official Docker setup.
 <pre>
 Full documentation : <a href="https://edissyum.gitbook.io/open-capture-v4/technique/deploiement">https://edissyum.gitbook.io/open-capture-v4/</a>
 </pre>
+
+## Licence
+
+This project is distributed under the **[GNU General Public License v3.0 (GPL-3.0)](https://www.gnu.org/licenses/gpl-3.0)**.
+See the [`LICENSE.txt`](./LICENSE.txt) file for more details.
+
+© 2026 Edissyum Consulting – The modifications made to the original work are
+the exclusive property of Edissyum Consulting.
