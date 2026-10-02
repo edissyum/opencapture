@@ -357,7 +357,7 @@ def get_split_methods():
 @auth.token_required
 def get_metadata_methods(form_id=False):
     if not form_id:
-        if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_form_splitter']):
+        if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_form_splitter | add_form_splitter']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/metadataMethods'}), 403
     else:
         if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
