@@ -252,30 +252,38 @@ jobs:
                     sudo systemctl daemon-reload
                     sudo systemctl enable --now worker_verifier-test
                     sudo systemctl enable --now worker_splitter-test
-
             -   name: Service status
                 run: |
                     sudo systemctl status worker_verifier-test --no-pager
                     sudo systemctl status worker_splitter-test --no-pager
                 continue-on-error: true
 
+    launch-tests:
+        name: Launch tests
+        runs-on: self-hosted
+        needs: [ install-custom ]
+        defaults:
+            run:
+                working-directory: /
+
+        steps:
             -   name: Launch backend tests
                 run: |
                     source /opt/edissyum/opencapture/install/classic/venv/opencapture/bin/activate
                     cd /opt/edissyum/opencapture/
-                    
+
                     export POSTGRES_DB='opencapture_test'
                     export POSTGRES_USER='edissyum_actions'
                     export POSTGRES_PASSWORD='edissyum_actions'
                     export POSTGRES_HOST='localhost'
                     export POSTGRES_PORT='5432'
-                    
+
                     /opt/edissyum/opencapture/install/classic/venv/opencapture/bin/python3 -m unittest discover -s backend/src/tests -t backend/
-                    
+
                     sudo su postgres -c "psql -c 'DROP DATABASE opencapture_test'"
-                    
+
                     sudo a2dissite opencapture
-                    
+
                     sudo rm -rf /opt/edissyum/opencapture/
                     sudo rm -rf /var/docservers/
                     sudo rm -f /etc/apache2/sites-available/opencapture.conf
@@ -284,3 +292,4 @@ jobs:
                     sudo rm -f /etc/systemd/system/worker_splitter-test.service
                     sudo systemctl daemon-reload
                     sudo systemctl restart apache2
+                continue-on-error: true
