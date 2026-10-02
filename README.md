@@ -4,10 +4,10 @@
 
 ## 🚀 Open-Capture V4 — a new major version
 
-Open-Capture V4 is a major release, rebuilt from the ground up.
+**Open-Capture V4** is a major release, rebuilt from the ground up.
 
-The interface has been completely rewritten as a modern React / TypeScript application, the Flask backend has been reworked, and AI is now at the heart
-of document processing (field extraction, document splitting, rotation detection).
+The interface has been completely rewritten as a modern **React / TypeScript application**, the Flask backend has been reworked, and **AI is now at the heart
+of document processing** (field extraction, document splitting, rotation detection).
 
 Deployment is also simplified with an official Docker setup.
 
