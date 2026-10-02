@@ -69,7 +69,7 @@ export function SettingsCard({
                 ) }
             </div>
             <div className="w-full min-w-0 flex flex-col justify-center gap-1" title={ description }>
-                <h3 className="text-lg font-semibold text-(--text-primary) min-w-0 truncate">
+                <h3 className="text-lg font-semibold text-(--text-primary) min-w-0">
                     <span className="truncate min-w-0">
                         { title }
                     </span>
@@ -81,8 +81,8 @@ export function SettingsCard({
                         ) }
                     </span>
                 </h3>
-                <p className='text-(--text-secondary) truncate min-w-0'>
-                    { description }
+                <p className='text-(--text-secondary) truncate min-w-0 leading-[1.1rem]'>
+                    { description } aaaaaaaaaaaaaaaaaa
                 </p>
             </div>
         </Link>
