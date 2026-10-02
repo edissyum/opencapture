@@ -47,6 +47,7 @@ export function Login() {
 
     const [loginMessage, setLoginMessage] = useState<string>('');
     const [enabledLoginMethod, setEnabledLoginMethod] = useState<string>('');
+    const [loginGuideUrl, setLoginGuideUrl] = useState<string>('https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction');
 
     const [activeCard, setActiveCard] = useState<'guide' | 'capture'>('guide');
     document.title = t('AUTH.connexion') + " - Open-Capture";
@@ -69,9 +70,23 @@ export function Login() {
             });
         }
 
+        async function fetchLoginGuideUrl() {
+            await get("/config/getConfigurationNoAuth/loginGuideUrl").then((response) => {
+                if (response && response.configuration) {
+                    try {
+                        const url = new URL(response.configuration[0]?.data.value);
+                        setLoginGuideUrl(url.href);
+                    } catch {
+                        // URL invalide
+                    }
+                }
+            });
+        }
+
         if (custom) {
             fetchLoginMessage().then();
             fetchEnabledMethod().then();
+            fetchLoginGuideUrl().then();
         }
 
         setLoading(false);
@@ -190,8 +205,7 @@ export function Login() {
                                     <div className='flex-col gap-4 transition-all'>
                                         <span className='text-(--color-primary)'>{ t('AUTH.usage_guide') }</span>
 
-                                        <a target='_blank'
-                                           href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction">
+                                        <a target='_blank' href={ loginGuideUrl }>
                                             <Button
                                                 size='sm'
                                                 variant='bg_white'

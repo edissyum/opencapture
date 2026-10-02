@@ -119,7 +119,7 @@ def get_configuration_by_label(config_label):
 @bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
 def get_configuration_by_label_simple(config_label):
     no_auth_labels = ['userQuota', 'defaultModule', 'passwordRules', 'loginMessage', 'enableSplitterProgressBar',
-                      'enableAttachments']
+                      'enableAttachments', 'loginGuideUrl']
     if config_label not in no_auth_labels:
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403

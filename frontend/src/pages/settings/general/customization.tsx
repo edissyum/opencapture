@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { Editor } from "@tinymce/tinymce-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import Input from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { showToast } from "../../../components/ToastProvider";
 import { CheckOverlay } from "../../../components/CheckOverlay";
@@ -50,6 +51,8 @@ export function SettingsGeneralCustomization() {
     const [loading, setLoading] = useState(false);
     const [loginMessage, setLoginMessage] = useState<string>('');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [loginGuideUrl, setLoginGuideUrl] = useState<string>('https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction');
+    const [loginGuideUrlError, setLoginGuideUrlError] = useState<string>('');
 
     // Create stable Object URLs for preview images, revoke old ones on change / unmount
     const fileUrls = useMemo(() => files.map(f => URL.createObjectURL(f)), [files]);
@@ -63,7 +66,7 @@ export function SettingsGeneralCustomization() {
         };
     }, [fileUrls]);
 
-    const defaultImage = "/imgs/login_image.svg"
+    const defaultImage = "/imgs/login_image.svg";
 
     if (files.length === 0) {
         fetch(defaultImage).then(res => {
@@ -137,7 +140,18 @@ export function SettingsGeneralCustomization() {
                 setLoginMessage(data.configuration[0].data.value);
             }
         });
-    }, [loginMessage])
+
+        get('config/getConfigurationNoAuth/loginGuideUrl').then((data: any) => {
+            if (data.configuration.length === 1) {
+                try {
+                    const url = new URL(data.configuration[0].data.value);
+                    setLoginGuideUrl(url.href);
+                } catch {
+                    // URL invalide
+                }
+            }
+        });
+    }, []);
 
     const storeAndUpdateAppImage = (file: File) => {
         const reader = new FileReader();
@@ -170,10 +184,25 @@ export function SettingsGeneralCustomization() {
         storeAndUpdateAppImage(file);
     }
 
-    const handleUpdateLoginMessage = () => {
+    const handleUpdateLoginMessageAndUrl = () => {
         put('config/updateConfiguration/loginMessage', { value: loginMessage }).then(() => {
             showToast(t('CUSTOMIZATION.login_message_updated'));
         });
+
+        put('config/updateConfiguration/loginGuideUrl', { value: loginGuideUrl }).then(() => {
+            showToast(t('CUSTOMIZATION.login_guide_url_updated'));
+        });
+    }
+
+    const handleUpdateLoginGuideUrl = (value: string) => {
+        setLoginGuideUrl(value);
+        try {
+            new URL(value);
+            setLoginGuideUrlError('');
+        } catch {
+            setLoginGuideUrlError(t('CUSTOMIZATION.login_guide_url_error'));
+        }
+
     }
 
     return (
@@ -280,8 +309,22 @@ export function SettingsGeneralCustomization() {
                     } }
                 />
             </div>
-            <Button className="mt-4" onClick={ () => handleUpdateLoginMessage() }>
-                { t('CUSTOMIZATION.save_login_message') }
+
+            <hr className='text-(--border-secondary)'/>
+
+            <div className='w-[60%]'>
+                <h3 className="text-xl font-bold">{ t('CUSTOMIZATION.login_guide_url') }</h3>
+                <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.login_guide_url_description') }</p>
+                <Input
+                    type="text"
+                    value={ loginGuideUrl }
+                    error={ loginGuideUrlError }
+                    placeholder={ t('CUSTOMIZATION.login_guide_url_placeholder') }
+                    onChange={ (e: any) => handleUpdateLoginGuideUrl(e.target.value) }
+                />
+            </div>
+            <Button className="mt-4" onClick={ () => handleUpdateLoginMessageAndUrl() }>
+                { t('GLOBAL.save') }
             </Button>
         </div>
     );

@@ -130,7 +130,12 @@
         "login_message": "Message de bienvenue",
         "login_message_description": "Court message affiché sur la page de connexion",
         "login_message_updated": "Message de bienvenue mis à jour avec succès",
-        "save_login_message": "Sauvegarder le message de bienvenue"
+        "save_login_message_and_url": "Sauvegarder le message de bienvenue et l'URL de l'aide à la connexion",
+        "login_guide_url": "URL du guide d'utilisation",
+        "login_guide_url_description": "URL de la page d'aide à la connexion présente sur l'écran de connexion",
+        "login_guide_url_error": "L'URL du guide d'utilisation est invalide",
+        "login_guide_url_placeholder": "URL de la page d'aide à la connexion",
+        "login_guide_url_updated": "URL du guide d'utilisation mise à jour avec succès"
     },
     "ERROR": {
         "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",

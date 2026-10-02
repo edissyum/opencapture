@@ -123,7 +123,12 @@
         "login_message": "Welcome message",
         "login_message_description": "Short message displayed on the login page",
         "login_message_updated": "Welcome message updated successfully",
-        "save_login_message": "Save welcome message"
+        "save_login_message_and_url": "Save welcome message and login URL",
+        "login_guide_url": "User guide URL",
+        "login_guide_url_description": "URL of the login help page displayed on the login screen",
+        "login_guide_url_error": "The user guide URL is invalid",
+        "login_guide_url_placeholder": "Login help page URL",
+        "login_guide_url_updated": "User guide URL successfully updated"
     },
     "ERROR": {
         "admin_password_alert": "You are still using the default admin account password. Please change it as soon as possible for security reasons",

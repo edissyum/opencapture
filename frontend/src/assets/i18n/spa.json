@@ -130,7 +130,12 @@
         "login_message": "Mensaje de bienvenida",
         "login_message_description": "Mensaje corto que se muestra en la página de inicio de sesión",
         "login_message_updated": "Mensaje de bienvenida actualizado con éxito",
-        "save_login_message": "Guardar el mensaje de bienvenida"
+        "save_login_message_and_url": "Guardar el mensaje de bienvenida y la URL de la ayuda a la conexión",
+        "login_guide_url": "URL de la guía de usuario",
+        "login_guide_url_description": "URL de la página de ayuda para el inicio de sesión que aparece en la pantalla de acceso",
+        "login_guide_url_error": "La URL de la guía de usuario no es válida",
+        "login_guide_url_placeholder": "URL de la página de ayuda para el inicio de sesión",
+        "login_guide_url_updated": "URL de la guía de usuario actualizada correctamente"
     },
     "ERROR": {
         "admin_password_alert": "Todavía está usando la contraseña predeterminada de la cuenta de administrador. Por favor, cámbiela lo antes posible por razones de seguridad",

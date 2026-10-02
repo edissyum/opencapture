@@ -22,7 +22,7 @@ import { useUser } from "../../services/hooks/useUser";
 import { useCustom } from "../../services/custom/customContext";
 
 import { Loader } from "../../components/loader/Loader";
-import { hasRequiredPermissions } from "../../components/auth/auth.tsx";
+import { hasRequiredPermissions } from "../../components/auth/auth";
 
 export function Step1() {
     const custom = useCustom();
