@@ -42,3 +42,13 @@ install/docker/host/sftp/ftpd.passwd
 
 .claude/
 .vscode/__pycache__/
+
+# Bytecode Python
+__pycache__/
+*.pyc
+
+# Modèles IA : trop lourds pour git, déployés à part (seuls les .gitkeep et rotate_document.pt sont suivis)
+backend/instance/artificial_intelligence/**
+!backend/instance/artificial_intelligence/*/
+!backend/instance/artificial_intelligence/*/.gitkeep
+!backend/instance/artificial_intelligence/rotate_document.pt
