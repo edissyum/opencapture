@@ -29,7 +29,7 @@ class AuthTest(unittest.TestCase):
         warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def test_error_user_ws_connection(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getAllowWFScripting',
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/accounts/suppliers/deletePositions/1', json={},
                                 headers={'Content-Type': 'application/json',
                                          'Authorization': 'Basic ' + self.basic_auth})
         self.assertEqual(403, response.status_code)
