@@ -82,7 +82,7 @@ export function SettingsCard({
                     </span>
                 </h3>
                 <p className='text-(--text-secondary) truncate min-w-0 leading-[1.1rem]'>
-                    { description } aaaaaaaaaaaaaaaaaa
+                    { description }
                 </p>
             </div>
         </Link>
