@@ -61,7 +61,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     };
 
     const [authMethod, setAuthMethod] = useState<"imap" | "oauth" | "graphql">(
-        (process.authMethod as any) || "imap"
+        (process.method as any) || "imap"
     );
 
     const [folders, setFolders] = useState<string[]>([]);
@@ -227,7 +227,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     }
 
     const [active, setActive] = useState(0);
-
+    console.log(authMethod)
     return (
         <Stepper className='p-6' active={ active } onStepClick={ setActive }>
             <Stepper.Step label={ t("MAILCOLLECT.connection") }>
@@ -241,7 +241,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             render={ ({ field }) => (
                                 <RadioBox
                                     label={ method.label }
-                                    value={ method.value }
+                                    value={ authMethod }
                                     checked={ authMethod === method.value }
                                     onChange={ () => {
                                         field.onChange(method.value);
