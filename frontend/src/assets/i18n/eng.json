@@ -137,7 +137,7 @@
         "too_many_requests": "Too many requests. Please try again in a few moments.",
         "too_many_requests_details": "It seems you have made too many requests in a short period of time. For security reasons, we have temporarily limited the number of requests you can make. Please wait a moment before trying again.",
         "backend_not_reachable": "The backend is inaccessible; please check your internet connection or contact your administrator.",
-        "permission_error": ""
+        "permission_error": "You do not have the necessary rights to access this page"
     },
     "FORMATS": {
         "alphanum": "Alphanumeric characters [0-9aA-zZ']",

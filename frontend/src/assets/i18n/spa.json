@@ -144,7 +144,7 @@
         "too_many_requests": "Demasiadas solicitudes. Por favor, inténtelo de nuevo en unos instantes.",
         "too_many_requests_details": "Parece que ha realizado demasiadas solicitudes en poco tiempo. Por razones de seguridad, hemos limitado temporalmente el número de solicitudes que puede realizar. Por favor, espere unos instantes antes de volver a intentarlo.",
         "backend_not_reachable": "El servidor es inaccesible. Por favor, compruebe su conexión a Internet o póngase en contacto con su administrador.",
-        "permission_error": ""
+        "permission_error": "No tiene los permisos necesarios para acceder a esta página"
     },
     "FORMATS": {
         "alphanum": "Caracteres alfanuméricos [0-9aA-zZ']",
