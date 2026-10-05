@@ -298,6 +298,7 @@ class Mail:
                     file.write('Erreur lors de la remontée de cette pièce jointe')
                 file.close()
 
+            attachment_content_id_in_html = None
             if 'content_id' in attachment and attachment['content_id']:
                 attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
                 if attachment_content_id_in_html:
@@ -305,12 +306,13 @@ class Mail:
                                        f"src='data:image/{attachment['format'].replace('.', '')};"
                                        f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
                                        html_body)
-                else:
-                    data['attachments'].append({
-                        'file': path,
-                        'format': attachment['format'],
-                        'filename': sanitize_filename(attachment['filename']) + attachment['format']
-                    })
+
+            if attachment_content_id_in_html is None:
+                data['attachments'].append({
+                    'file': path,
+                    'format': attachment['format'],
+                    'filename': sanitize_filename(attachment['filename']) + attachment['format']
+                })
 
         if insert_body_as_doc:
             with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
