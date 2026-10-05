@@ -51,7 +51,7 @@ ultralytics==8.4.173
 python-magic==0.4.27
 transformers==5.18.0
 Flask-Limiter==4.1.1
-pycryptodome==3.23.0
+pycryptodome==3.24.0
 pypdf[crypto]==6.19.0
 qwen-vl-utils==0.0.14
 opencv-python==5.0.0.93
