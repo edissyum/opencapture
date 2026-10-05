@@ -130,7 +130,6 @@
         "login_message": "Mensaje de bienvenida",
         "login_message_description": "Mensaje corto que se muestra en la página de inicio de sesión",
         "login_message_updated": "Mensaje de bienvenida actualizado con éxito",
-        "save_login_message_and_url": "Guardar el mensaje de bienvenida y la URL de la ayuda a la conexión",
         "login_guide_url": "URL de la guía de usuario",
         "login_guide_url_description": "URL de la página de ayuda para el inicio de sesión que aparece en la pantalla de acceso",
         "login_guide_url_error": "La URL de la guía de usuario no es válida",
@@ -144,7 +143,8 @@
         "unknown_error": "Error desconocido",
         "too_many_requests": "Demasiadas solicitudes. Por favor, inténtelo de nuevo en unos instantes.",
         "too_many_requests_details": "Parece que ha realizado demasiadas solicitudes en poco tiempo. Por razones de seguridad, hemos limitado temporalmente el número de solicitudes que puede realizar. Por favor, espere unos instantes antes de volver a intentarlo.",
-        "backend_not_reachable": "El servidor es inaccesible. Por favor, compruebe su conexión a Internet o póngase en contacto con su administrador."
+        "backend_not_reachable": "El servidor es inaccesible. Por favor, compruebe su conexión a Internet o póngase en contacto con su administrador.",
+        "permission_error": ""
     },
     "FORMATS": {
         "alphanum": "Caracteres alfanuméricos [0-9aA-zZ']",

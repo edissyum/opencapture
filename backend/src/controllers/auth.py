@@ -32,8 +32,8 @@ from ldap3.core.exceptions import LDAPException
 from ldap3.utils.conv import escape_filter_chars
 from datetime import datetime, timezone, timedelta
 from ..models import auth, user, roles, monitoring, history
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import request, g as current_context, jsonify, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def handle_login(data):

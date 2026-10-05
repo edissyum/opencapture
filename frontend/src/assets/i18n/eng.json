@@ -123,7 +123,6 @@
         "login_message": "Welcome message",
         "login_message_description": "Short message displayed on the login page",
         "login_message_updated": "Welcome message updated successfully",
-        "save_login_message_and_url": "Save welcome message and login URL",
         "login_guide_url": "User guide URL",
         "login_guide_url_description": "URL of the login help page displayed on the login screen",
         "login_guide_url_error": "The user guide URL is invalid",
@@ -137,7 +136,8 @@
         "unknown_error": "Unknown error",
         "too_many_requests": "Too many requests. Please try again in a few moments.",
         "too_many_requests_details": "It seems you have made too many requests in a short period of time. For security reasons, we have temporarily limited the number of requests you can make. Please wait a moment before trying again.",
-        "backend_not_reachable": "The backend is inaccessible; please check your internet connection or contact your administrator."
+        "backend_not_reachable": "The backend is inaccessible; please check your internet connection or contact your administrator.",
+        "permission_error": ""
     },
     "FORMATS": {
         "alphanum": "Alphanumeric characters [0-9aA-zZ']",

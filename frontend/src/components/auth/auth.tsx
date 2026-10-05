@@ -15,7 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
+import { redirect } from "react-router-dom";
 import { showToast } from "../ToastProvider";
+
 import { getUserFromStorage } from "../../services/hooks/useUser";
 
 export function isAuthenticated(): boolean {
@@ -46,8 +49,8 @@ export function protectedLoader(requiredPermissions: string[] = []) {
             const res = hasRequiredPermissions(user, requiredPermissions);
 
             if (!res) {
-                showToast("Unauthorized", "error");
-                throw new Response("Forbidden", { status: 403 });
+                showToast(t('ERROR.permission_error'), "error");
+                throw redirect("/home");
             }
         }
         return null;

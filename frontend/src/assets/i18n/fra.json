@@ -130,7 +130,6 @@
         "login_message": "Message de bienvenue",
         "login_message_description": "Court message affiché sur la page de connexion",
         "login_message_updated": "Message de bienvenue mis à jour avec succès",
-        "save_login_message_and_url": "Sauvegarder le message de bienvenue et l'URL de l'aide à la connexion",
         "login_guide_url": "URL du guide d'utilisation",
         "login_guide_url_description": "URL de la page d'aide à la connexion présente sur l'écran de connexion",
         "login_guide_url_error": "L'URL du guide d'utilisation est invalide",
@@ -144,7 +143,8 @@
         "unknown_error": "Erreur inconnue",
         "too_many_requests": "Trop de requêtes. Veuillez réessayer dans quelques instants.",
         "too_many_requests_details": "Il semble que vous ayez effectué trop de requêtes en peu de temps. Pour des raisons de sécurité, nous avons temporairement limité le nombre de requêtes que vous pouvez effectuer. Veuillez patienter quelques instants avant de réessayer.",
-        "backend_not_reachable": "Le backend n'est pas accessible, veuillez vérifier votre connexion internet ou contacter votre administrateur"
+        "backend_not_reachable": "Le backend n'est pas accessible, veuillez vérifier votre connexion internet ou contacter votre administrateur",
+        "permission_error": "Vous n'avez pas les droits nécessaires pour accéder à cette page"
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",
@@ -1469,7 +1469,7 @@
         "create_supplier": "Créer un tiers",
         "custom_fields": "Accès aux champs personnalisés",
         "custom_fields_advanced": "Champs personnalisés",
-        "customers_list": "Liste des clients",
+        "customers_list": "Liste des comptes clients",
         "docservers": "Zones de stockage",
         "document_type_splitter": "Type de documents",
         "export_suppliers": "Exporter les tiers",
