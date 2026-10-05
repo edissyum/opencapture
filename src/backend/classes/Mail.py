@@ -32,9 +32,12 @@ from tnefparse import TNEF
 from xhtml2pdf import pisa
 from socket import gaierror
 from imaplib import IMAP4_SSL
+from reportlab import rl_config
 from flask_babel import gettext
 from imap_tools import MailBox, MailBoxUnencrypted, UnexpectedCommandStatusError
 
+# Ignore reportlab table bounds errors (cell too wide / negative cell width) raised by complex HTML layouts
+rl_config.allowTableBoundsErrors = 3
 
 class Mail:
     def __init__(self, config):
@@ -148,7 +151,7 @@ class Mail:
             return requests.post(url, data=data, headers=headers, timeout=30)
         return None
 
-    def check_if_folder_exist(self, folder):
+    def check_if_folder_exist(self, folder, save_folder_id=False):
         """
         Check if a folder exist into the IMAP mailbox
 
@@ -170,10 +173,12 @@ class Mail:
 
                     for subfolder in subfolders_list.json()['value']:
                         if folder == fol['displayName'] + '/' + subfolder['displayName']:
-                            self.folder_id = subfolder['id']
+                            if save_folder_id:
+                                self.folder_id = subfolder['id']
                             return True
                 if folder == fol['displayName']:
-                    self.folder_id = fol['id']
+                    if save_folder_id:
+                        self.folder_id = fol['id']
                     return True
         else:
             folders = self.conn.folder.list()
@@ -292,18 +297,22 @@ class Mail:
                     file.write('Erreur lors de la remontée de cette pièce jointe')
                 file.close()
 
-            attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
-            if attachment_content_id_in_html:
-                html_body = re.sub(r'src="cid:\s*' + re.escape(attachment['content_id']),
-                                   f"src='data:image/{attachment['format'].replace('.', '')};"
-                                   f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
-                                   html_body)
-            else:
+            attachment_content_id_in_html = None
+            if 'content_id' in attachment and attachment['content_id']:
+                attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
+                if attachment_content_id_in_html:
+                    html_body = re.sub(r'src="cid:\s*' + re.escape(attachment['content_id']),
+                                       f"src='data:image/{attachment['format'].replace('.', '')};"
+                                       f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
+                                       html_body)
+
+            if attachment_content_id_in_html is None:
                 data['attachments'].append({
                     'file': path,
                     'format': attachment['format'],
                     'filename': sanitize_filename(attachment['filename']) + attachment['format']
                 })
+
 
         if insert_body_as_doc:
             with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
