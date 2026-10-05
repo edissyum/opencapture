@@ -38,7 +38,7 @@ def check_folders(folder_crawl, folder_dest=False):
     :param folder_dest: IMAP destination folder (if action is made to move or delete)
     :return: Boolean
     """
-    if not mail.check_if_folder_exist(folder_crawl):
+    if not mail.check_if_folder_exist(folder_crawl, True):
         print('The folder to crawl "' + folder_to_crawl + '" doesnt exist')
         return False
     else:
@@ -177,21 +177,25 @@ with app.app_context():
                 Log.debug('Display basic informations for each e-mail to process')
                 for email in emails:
                     if mail.method == 'graphql':
-                        Log.debug('E-mail id : ' + str(email.id))
+                        Log.debug('E-mail id : ' + str(email['id']))
+                        Log.debug('E-mail from : ' + str(email['from']))
+                        Log.debug('E-mail to : ' + str(email['toRecipients']))
                     else:
                         Log.debug('E-mail id : ' + str(email.uid))
+                        Log.debug('E-mail from : ' + str(email.from_))
+                        Log.debug('E-mail to : ' + str(email.to))
 
-                    Log.debug('E-mail subject : ' + str(email.subject))
-                    Log.debug('E-mail from : ' + str(email.from_))
-                    Log.debug('E-mail to : ' + str(email.to))
-                    Log.debug('E-mail attachments count : ' + str(len(email.attachments)))
-                    Log.debug('Email attachments details : ')
-                    cpt_att = 1
-                    for att in email.attachments:
-                        Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att.filename)
-                        Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att.content_type)
-                        Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att.size))
-                        cpt_att = cpt_att + 1
+                    Log.debug('E-mail subject : ' + str(email['subject']))
+
+                    if 'attachments' in email:
+                        Log.debug('E-mail attachments count : ' + str(len(email['attachments'])))
+                        Log.debug('Email attachments details : ')
+                        cpt_att = 1
+                        for att in email['attachments']:
+                            Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att.filename)
+                            Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att.content_type)
+                            Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att.size))
+                            cpt_att = cpt_att + 1
 
                 cpt_mail = 1
                 for msg in emails:
