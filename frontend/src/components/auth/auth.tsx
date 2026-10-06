@@ -50,7 +50,7 @@ export function protectedLoader(requiredPermissions: string[] = []) {
 
             if (!res) {
                 const currentroute = window.location.pathname;
-                showToast(t('ERROR.permission_error') + ' : ' + currentroute, "error");
+                showToast(t('ERROR.permission_error') + ' : <strong>' + currentroute + '</strong>', "error");
                 throw redirect("/home");
             }
         }
