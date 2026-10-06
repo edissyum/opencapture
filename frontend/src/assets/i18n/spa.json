@@ -1237,7 +1237,8 @@
         "copy_error_message": "Copiar el contenido del error al portapapeles",
         "error_message_copied": "Mensaje de error copiado al portapapeles",
         "list": "Monitorización de procesos",
-        "details": "Detalles del proceso"
+        "details": "Detalles del proceso",
+        "warning_small": "Alerta"
     },
     "AI-LLM": {
         "provider": "Proveedor",

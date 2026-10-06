@@ -1237,7 +1237,8 @@
         "copy_error_message": "Copier le contenu de l'erreur dans le presse-papier",
         "error_message_copied": "Message d'erreur copié dans le presse-papier",
         "list": "Monitoring des processus",
-        "details": "Détails du processus"
+        "details": "Détails du processus",
+        "warning_small": "Alerte"
     },
     "AI-LLM": {
         "provider": "Fournisseur",

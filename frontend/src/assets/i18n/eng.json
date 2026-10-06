@@ -1160,7 +1160,8 @@
         "copy_error_message": "Copy error content to clipboard",
         "error_message_copied": "Error message copied to clipboard",
         "list": "Process monitoring",
-        "details": "Process details"
+        "details": "Process details",
+        "warning_small": "Warning"
     },
     "AI-LLM": {
         "provider": "Provider",

@@ -227,7 +227,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     }
 
     const [active, setActive] = useState(0);
-    console.log(authMethod)
+
     return (
         <Stepper className='p-6' active={ active } onStepClick={ setActive }>
             <Stepper.Step label={ t("MAILCOLLECT.connection") }>
