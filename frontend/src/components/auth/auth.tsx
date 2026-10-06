@@ -49,7 +49,8 @@ export function protectedLoader(requiredPermissions: string[] = []) {
             const res = hasRequiredPermissions(user, requiredPermissions);
 
             if (!res) {
-                showToast(t('ERROR.permission_error'), "error");
+                const currentroute = window.location.pathname;
+                showToast(t('ERROR.permission_error') + ' : ' + currentroute, "error");
                 throw redirect("/home");
             }
         }
