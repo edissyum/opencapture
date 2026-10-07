@@ -40,17 +40,14 @@ def check_connection_ldap_server(username_ldap_admin, domain_ldap, port_ldap, pa
     ldsp_server = domain_ldap + ":" + str(port_ldap) + ""
     try:
         if type_ad == 'openLDAP':
-            username_admin = f'cn={username_ldap_admin},{base_dn}'
+            username = f'cn={username_ldap_admin},{base_dn}'
             server = Server(ldsp_server, get_info=ALL, use_ssl=True)
-            with ldap3.Connection(server, user=username_admin, password=password_ldap_admin,
-                                  auto_bind=True) as connection:
+            with ldap3.Connection(server, user=username, password=password_ldap_admin, auto_bind=True) as connection:
                 if not connection.bind():
-                    print('Connection to the ldap server status: ' + str(
-                        connection.result["description"]))  # "success" if bind is ok
+                    print('Connection to the ldap server status: ' + str(connection.result["description"]))
                     return {'status_server_ldap': False, 'connection_object': None}
                 else:
-                    print('Connection to the ldap server status: ' + str(
-                        connection.result["description"]))  # "success" if bind is ok
+                    print('Connection to the ldap server status: ' + str(connection.result["description"]))
                     return {'status_server_ldap': True, 'connection_object': connection}
         elif type_ad == 'adLDAP':
             server = Server(ldsp_server, get_info=ALL)

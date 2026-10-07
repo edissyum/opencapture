@@ -858,8 +858,8 @@ def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
             return {'status_search': True, 'ldap_users': connection.entries}
         else:
             return {'status_search': False, 'ldap_users': ""}
-    except LDAPException:
-        return False
+    except LDAPException as _e:
+        return {'status_search': False, 'error': str(_e)}
 
 
 def ldap_users_synchro(ldap_synchronization_data):
@@ -902,6 +902,11 @@ def ldap_users_synchro(ldap_synchronization_data):
                             "errors": gettext('LDAP_SYNCHRO_ERROR'),
                             "message": gettext('LDAP_SYNCHRO_INFOS_ERROR')
                         }
+                        if list_ldap_users['error']:
+                            error = {
+                                "errors": gettext('LDAP_SYNCHRO_ERROR'),
+                                "message": gettext('LDAP_SYNCHRO_INFOS_ERROR') + f" : {list_ldap_users['error']}"
+                            }
                 else:
                     error = {
                         "errors": gettext('LDAP_SYNCHRO_ERROR'),
