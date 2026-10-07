@@ -85,8 +85,8 @@ import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 import { b64ToFile } from "../settings/general/customization";
 
 export function SplitterViewerPage() {
-    const { get, post, del, put } = AxiosApiCall();
     const navigate = useNavigate();
+    const { get, post, del, put } = AxiosApiCall();
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
@@ -247,6 +247,10 @@ export function SplitterViewerPage() {
                                     if (field) {
                                         const fieldId = parseInt(field.id.replace('custom_', ''));
                                         const customField = customFields.find((f: any) => f.id === fieldId);
+
+                                        if (field.default_value) {
+                                            field.value = field.default_value;
+                                        }
 
                                         if (customField) {
                                             field = { ...field, ...customField };
@@ -421,6 +425,10 @@ export function SplitterViewerPage() {
                     if (field) {
                         const fieldId = parseInt(field.id.replace('custom_', ''));
                         const customField = customFields.find((f: any) => f.id === fieldId);
+
+                        if (field.default_value) {
+                            field.value = field.default_value;
+                        }
 
                         if (customField) {
                             field = { ...field, ...customField };
@@ -1388,7 +1396,7 @@ export function SplitterViewerPage() {
 
                 { !showAttachments && (
                     <div ref={ listRef } className='pb-24 px-8 h-full overflow-y-auto'>
-                        <Accordion className='mb-6' chevronPosition="left" defaultValue={ 'batch_metadata' }>
+                        <Accordion className='mb-6' chevronPosition="left" defaultValue='batch_metadata'>
                             <Accordion.Item key={ 'zone.id' } value='batch_metadata'>
                                 <Accordion.Control>
                                     { t('SPLITTER.batch_content') }
