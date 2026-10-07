@@ -610,18 +610,6 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                         <div className='w-1/3 flex flex-col gap-4'>
                                             <Input
                                                 type="text"
-                                                value={ option.label }
-                                                label={ t('GLOBAL.label') }
-                                                autoFocus={ autoFocusOptionIndex === index }
-                                                onChange={ (e) => {
-                                                    const newOptions = [...selectOptions];
-                                                    newOptions[index].label = e.target.value;
-                                                    newOptions[index].id = toIdentifier(e.target.value);
-                                                    setSelectOptions(newOptions);
-                                                } }
-                                            />
-                                            <Input
-                                                type="text"
                                                 value={ option.id }
                                                 label={ t('ROLES.label_short') }
                                                 error={ duplicateOptionLabelShortIndexes.has(index)
@@ -630,6 +618,18 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                                 onChange={ (e) => {
                                                     const newOptions = [...selectOptions];
                                                     newOptions[index].id = e.target.value;
+                                                    setSelectOptions(newOptions);
+                                                } }
+                                            />
+                                            <Input
+                                                type="text"
+                                                value={ option.label }
+                                                label={ t('GLOBAL.label') }
+                                                autoFocus={ autoFocusOptionIndex === index }
+                                                onChange={ (e) => {
+                                                    const newOptions = [...selectOptions];
+                                                    newOptions[index].label = e.target.value;
+                                                    newOptions[index].id = toIdentifier(e.target.value);
                                                     setSelectOptions(newOptions);
                                                 } }
                                             />
