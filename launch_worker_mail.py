@@ -191,7 +191,17 @@ with app.app_context():
                         Log.debug('E-mail from : ' + str(email['from']))
                         Log.debug('E-mail to : ' + str(email['toRecipients']))
                         Log.debug('E-mail subject : ' + str(email['subject']))
-                        attachments = email['attachments']
+                        if 'attachments' in email:
+                            attachments = email['attachments']
+
+                            Log.debug('E-mail attachments count : ' + str(len(attachments)))
+                            Log.debug('E-mail attachments details : ')
+                            cpt_att = 1
+                            for att in attachments:
+                                Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att['filename'])
+                                Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att['content_type'])
+                                Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att['size']))
+                                cpt_att = cpt_att + 1
                     else:
                         Log.debug('E-mail id : ' + str(email.uid))
                         Log.debug('E-mail from : ' + str(email.from_))
@@ -199,15 +209,15 @@ with app.app_context():
                         Log.debug('E-mail subject : ' + str(email.subject))
                         attachments = email.attachments
 
-                    if attachments:
-                        Log.debug('E-mail attachments count : ' + str(len(attachments)))
-                        Log.debug('Email attachments details : ')
-                        cpt_att = 1
-                        for att in attachments:
-                            Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att.filename)
-                            Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att.content_type)
-                            Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att.size))
-                            cpt_att = cpt_att + 1
+                        if attachments:
+                            Log.debug('E-mail attachments count : ' + str(len(attachments)))
+                            Log.debug('E-mail attachments details : ')
+                            cpt_att = 1
+                            for att in attachments:
+                                Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att.filename)
+                                Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att.content_type)
+                                Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att.size))
+                                cpt_att = cpt_att + 1
 
                 cpt_mail = 1
                 for msg in emails:

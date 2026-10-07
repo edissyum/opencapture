@@ -175,11 +175,11 @@ class Mail:
                         if folder == fol['displayName'] + '/' + subfolder['displayName']:
                             if save_folder_id:
                                 self.folder_id = subfolder['id']
-                            return True
+                            return subfolder['id']
                 if folder == fol['displayName']:
                     if save_folder_id:
                         self.folder_id = fol['id']
-                    return True
+                    return fol['id']
         else:
             folders = self.conn.folder.list()
             for fold in folders:
@@ -211,6 +211,20 @@ class Mail:
             messages = self.graphql_request(url, 'GET', None, self.graphql_headers)
             for msg in messages.json()['value']:
                 emails.append(msg)
+
+                msg['attachments'] = []
+                url = self.users_url + '/' + self.graphql_user['id'] + '/messages/' + msg['id'] + '/attachments'
+                attachments = self.graphql_request(url, 'GET', None, self.graphql_headers)
+                for att in attachments.json()['value']:
+                    if 'contentBytes' in att:
+                        msg['attachments'].append({
+                            'size': att['size'],
+                            'filename': att['name'],
+                            'content_id': att['contentId'],
+                            'content_type': att['contentType'],
+                            'format': att['name'].split('.')[-1],
+                            'payload': base64.b64decode(att['contentBytes'])
+                        })
         else:
             for mail in self.conn.fetch():
                 emails.append(mail)
@@ -382,19 +396,6 @@ class Mail:
             orig_file.close()
 
         # Backup attachments
-        if self.method == 'graphql':
-            msg['attachments'] = []
-            url = self.users_url + '/' + self.graphql_user['id'] + '/messages/' + msg_id + '/attachments'
-            attachments = self.graphql_request(url, 'GET', None, self.graphql_headers)
-            for att in attachments.json()['value']:
-                if 'contentBytes' in att:
-                    msg['attachments'].append({
-                        'filename': att['name'],
-                        'content_id': att['contentId'],
-                        'content_type': att['contentType'],
-                        'format': att['name'].split('.')[-1],
-                        'payload': base64.b64decode(att['contentBytes'])
-                    })
         attachments = self.retrieve_attachment(msg)
 
         if len(attachments) > 0:
@@ -418,10 +419,12 @@ class Mail:
         :return: Boolean
         """
         if self.method.lower() == 'graphql':
+            folder_id = self.check_if_folder_exist(destination)
+
             url = self.users_url + '/' + self.graphql_user['id'] + '/mailFolders/' + self.folder_id
             url = url + '/messages/' + msg['id'] + '/move'
             body = {
-                'destinationId': destination
+                'destinationId': folder_id
             }
             res = self.graphql_request(url, 'POST', json.dumps(body), self.graphql_headers)
             if res.status_code != 200 and res.status_code != 201:
