@@ -250,16 +250,15 @@ class Mail:
             html_body = msg['body']['content']
             msg_id = str(msg['id'])
             from_val = msg['from']['emailAddress']['address']
-            cc_values = msg['ccRecipients']
-            to_values = msg['toRecipients']
             document_date = msg['receivedDateTime']
         else:
             html_body = msg['html']
             msg_id = str(msg['uid'])
             document_date = msg['date']
-            cc_values = msg['cc_values']
-            to_values = msg['to_values']
             from_val = msg['from_values'].full
+
+        cc_values = msg['ccRecipients']
+        to_values = msg['toRecipients']
 
         primary_mail_path = backup_path + '/mail_' + msg_id + '/mail_origin/'
         if not os.path.exists(primary_mail_path):
@@ -292,7 +291,7 @@ class Mail:
         mail_data += gettext('TO') + ': ' + to_str.rstrip(';') + '<br>'
         if cc_str:
             mail_data += gettext('COPIES') + ': ' + cc_str.rstrip(';') + '<br>'
-        mail_data += gettext('SUBJECT') + ': ' + msg['subject'] + '<br><br>'
+        mail_data += gettext('SUBJECT') + ': ' + (msg.get('subject') or gettext('NO_SUBJECT')) + '<br><br>'
 
         if len(html_body) == 0 and len(msg['text']) >= 0:
             for line in msg['text'].split('\n'):
@@ -377,7 +376,7 @@ class Mail:
         # Then body
         if self.method == 'graphql' and len(html_body) == 0:
             with open(primary_mail_path + 'body.txt', 'w', encoding='UTF-8') as fp:
-                if len(msg['text']) != 0:
+                if len(msg.get('text', '')) != 0:
                     fp.write(msg['text'])
                 else:
                     fp.write(' ')
@@ -466,13 +465,13 @@ class Mail:
         for att in msg['attachments']:
             if att['filename'] == 'winmail.dat':
                 mime_type = ''
-                winmail = TNEF(att.payload, do_checksum=True)
+                winmail = TNEF(att['payload'], do_checksum=True)
                 for att_wm in winmail.attachments:
                     for attr in att_wm.mapi_attrs:
                         if attr.attr_type == 30 and attr.name == 14094:
                             mime_type = attr.raw_data[0]
 
-                    filename = att_wm.name()
+                    filename = att_wm.long_filename()
                     file_format = os.path.splitext(filename)[1]
                     args.append({
                         'filename': os.path.splitext(filename)[0].replace(' ', '_'),

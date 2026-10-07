@@ -621,6 +621,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                                     setSelectOptions(newOptions);
                                                 } }
                                             />
+
                                             <Input
                                                 type="text"
                                                 value={ option.label }

@@ -64,10 +64,10 @@ def convert_to_dict(message):
         'html': message.html,
         'attachments': [],
         'from_values': message.from_values,
-        'to_values': message.to_values,
-        'cc_values': message.cc_values,
-        'bcc_values': message.bcc_values,
-        'reply_to_values': message.reply_to_values
+        'toRecipients': message.to_values,
+        'ccRecipients': message.cc_values,
+        'bccRecipients': message.bcc_values,
+        'replyTo': message.reply_to_values
     }
 
     for att_msg in message.attachments:
@@ -174,41 +174,42 @@ with app.app_context():
                 Log.info('Number of e-mail to process : ' + str(len(emails)))
                 Log.info('Folder to crawl : ' + folder_to_crawl)
 
-                Log.debug('Display basic informations for each e-mail to process')
-                for email in emails:
-                    attachments = []
-                    if mail.method == 'graphql':
-                        Log.debug('E-mail id : ' + str(email['id']))
-                        Log.debug('E-mail from : ' + str(email['from']))
-                        Log.debug('E-mail to : ' + str(email['toRecipients']))
-                        Log.debug('E-mail subject : ' + str(email['subject']))
-                        if 'attachments' in email:
-                            attachments = email['attachments']
+                if config['GLOBAL']['debugmode'].lower() == 'true':
+                    Log.debug('Display basic informations for each e-mail to process')
+                    for email in emails:
+                        attachments = []
+                        if mail.method == 'graphql':
+                            Log.debug('E-mail id : ' + str(email['id']))
+                            Log.debug('E-mail from : ' + str(email['from']))
+                            Log.debug('E-mail to : ' + str(email['toRecipients']))
+                            Log.debug('E-mail subject : ' + str(email['subject']))
+                            if 'attachments' in email:
+                                attachments = email['attachments']
 
-                            Log.debug('E-mail attachments count : ' + str(len(attachments)))
-                            Log.debug('E-mail attachments details : ')
-                            cpt_att = 1
-                            for att in attachments:
-                                Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att['filename'])
-                                Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att['content_type'])
-                                Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att['size']))
-                                cpt_att = cpt_att + 1
-                    else:
-                        Log.debug('E-mail id : ' + str(email.uid))
-                        Log.debug('E-mail from : ' + str(email.from_))
-                        Log.debug('E-mail to : ' + str(email.to))
-                        Log.debug('E-mail subject : ' + str(email.subject))
-                        attachments = email.attachments
+                                Log.debug('E-mail attachments count : ' + str(len(attachments)))
+                                Log.debug('E-mail attachments details : ')
+                                cpt_att = 1
+                                for att in attachments:
+                                    Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att['filename'])
+                                    Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att['content_type'])
+                                    Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att['size']))
+                                    cpt_att = cpt_att + 1
+                        else:
+                            Log.debug('E-mail id : ' + str(email.uid))
+                            Log.debug('E-mail from : ' + str(email.from_))
+                            Log.debug('E-mail to : ' + str(email.to))
+                            Log.debug('E-mail subject : ' + str(email.subject))
+                            attachments = email.attachments
 
-                        if attachments:
-                            Log.debug('E-mail attachments count : ' + str(len(attachments)))
-                            Log.debug('E-mail attachments details : ')
-                            cpt_att = 1
-                            for att in attachments:
-                                Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att.filename)
-                                Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att.content_type)
-                                Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att.size))
-                                cpt_att = cpt_att + 1
+                            if attachments:
+                                Log.debug('E-mail attachments count : ' + str(len(attachments)))
+                                Log.debug('E-mail attachments details : ')
+                                cpt_att = 1
+                                for att in attachments:
+                                    Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att.filename)
+                                    Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att.content_type)
+                                    Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att.size))
+                                    cpt_att = cpt_att + 1
 
                 cpt_mail = 1
                 for msg in emails:
@@ -265,20 +266,25 @@ with app.app_context():
 
                     custom_fields = {}
                     if sender_custom_id and msg['from']:
-                        custom_fields[sender_custom_id] = msg['from']
+                        from_str = ''
+                        if mail.method == 'graphql':
+                            from_str = msg['from']['emailAddress']['name'] + ' <' + msg['from']['emailAddress']['address'] + '>'
+                        else:
+                            from_str = msg['from_values'].full
+                        custom_fields[sender_custom_id] = from_str
 
-                    if recipient_custom_id and msg['to']:
+                    if recipient_custom_id and msg['toRecipients']:
                         to_str = ''
-                        for to in msg['to_values']:
+                        for to in msg['toRecipients']:
                             if mail.method == 'graphql':
                                 to_str += to['emailAddress']['name'] + ' <' + to['emailAddress']['address'] + '>;'
                             else:
                                 to_str += to.full + ';'
                         custom_fields[recipient_custom_id] = to_str
 
-                    if copy_custom_id and msg['cc_values']:
+                    if copy_custom_id and msg['ccRecipients']:
                         cc_str = ''
-                        for cc in msg['cc_values']:
+                        for cc in msg['ccRecipients']:
                             if mail.method == 'graphql':
                                 cc_str += cc['emailAddress']['name'] + ' <' + cc['emailAddress']['address'] + '>;'
                             else:
@@ -327,7 +333,7 @@ with app.app_context():
                                             'msg': {
                                                 'uid': msg_id,
                                                 'date': document_date,
-                                                'subject': msg['subject'],
+                                                'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT'),
                                                 'custom_fields': custom_fields
                                             }
                                         })
@@ -396,7 +402,7 @@ with app.app_context():
                                 'msg': {
                                     'uid': msg_id,
                                     'date': document_date,
-                                    'subject': msg['subject'],
+                                    'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT'),
                                     'custom_fields': custom_fields
                                 }
                             })
@@ -421,7 +427,7 @@ with app.app_context():
                                     'uid': msg_id,
                                     'date': document_date,
                                     'custom_fields': custom_fields,
-                                    'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT') + ' - ' + document_date
+                                    'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT')
                                 }
                             })
                             Log.debug('Splitter launched for mail body')
