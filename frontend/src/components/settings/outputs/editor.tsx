@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Scroller, Tabs, Stepper } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
+import { executeAuthFunction, executeMEMFunction, executeOC4MEMFunction, getTestConnectionMapping } from "./functions";
 import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFieldsOptionsVerifier } from "./helpers";
 
 import Hint from "../../Hint";
@@ -297,11 +297,18 @@ export function OutputEditor({ module }: { module: string }) {
         let errorInWs = false;
 
         if (res && res.success) {
-            if (outputType.output_type_id === 'export_mem') {
+            if (outputType.output_type_id === 'export_mem' || outputType.output_type_id === 'export_opencaptureformem') {
                 for (const data of Object.keys(output.data.options)) {
                     for (const option of output.data.options[data]) {
                         if (option.webservice) {
-                            const res = await executeMEMFunction(option.webservice, authOptions, { post });
+                            let res = null;
+                            if (outputType.output_type_id === 'export_mem') {
+                                res = await executeMEMFunction(option.webservice, authOptions, { post });
+                            } else if (outputType.output_type_id === 'export_opencaptureformem') {
+                                console.log(option)
+                                res = await executeOC4MEMFunction(option.webservice, authOptions, { post });
+                                console.log(res)
+                            }
 
                             if (res && res.success && res.data) {
                                 setOutput((prev: any) => {

@@ -45,7 +45,7 @@ def get_access_token():
 @bp.route('opencaptureformem/getProcesses', methods=['POST'])
 @auth.token_required
 def get_processes():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'secret_key', 'type': str, 'mandatory': True}
     ])
@@ -56,5 +56,5 @@ def get_processes():
             "message": message
         }, 400)
 
-    processes = opencaptureformem.get_processes(request.json['args'])
+    processes = opencaptureformem.get_processes(request.json)
     return make_response(jsonify(processes)), 200

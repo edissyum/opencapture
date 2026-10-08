@@ -55,11 +55,11 @@ class OpenCaptureForMEMWebServices:
 
 
     def get_processes(self):
-        bearer = "Bearer " + self.access_token[1]
-        self.headers['Authorization'] = bearer
+        self.headers['Authorization'] =  f"Bearer {self.access_token[1]}"
 
         args = json.dumps({'custom_id': self.custom_id})
-        res = requests.post(self.base_url + '/get_process_list', data=args, headers=self.headers, timeout=self.timeout)
+        res = requests.post(self.base_url + '/get_process_list', data=args, headers=self.headers, timeout=self.timeout,
+                            verify=False)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') getProcessesError : ' + str(res.text))
             return res.text
