@@ -55,11 +55,11 @@ class OpenCaptureForMEMWebServices:
 
 
     def get_processes(self):
-        self.headers['Authorization'] =  f"Bearer {self.access_token[1]}"
+        self.headers['Authorization'] = f"Bearer {self.access_token[1]}"
 
         args = json.dumps({'custom_id': self.custom_id})
-        res = requests.post(self.base_url + '/get_process_list', data=args, headers=self.headers, timeout=self.timeout,
-                            verify=False)
+        res = requests.post(self.base_url + '/get_process_list', data=args,
+                            headers=self.headers, timeout=self.timeout, verify=False)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') getProcessesError : ' + str(res.text))
             return res.text
@@ -67,8 +67,7 @@ class OpenCaptureForMEMWebServices:
 
 
     def send_documents(self, files, output):
-        bearer = "Bearer " + self.access_token[1]
-        self.headers['Authorization'] = bearer
+        self.headers['Authorization'] = f"Bearer {self.access_token[1]}"
         args = json.dumps({
             'files': files,
             'custom_id': self.custom_id,
@@ -78,7 +77,8 @@ class OpenCaptureForMEMWebServices:
             'read_destination_from_filename': True if output['rdff'].lower() == 'true' else False
         })
 
-        res = requests.post(self.base_url + '/upload', data=args, headers=self.headers, timeout=self.timeout)
+        res = requests.post(self.base_url + '/upload', data=args,
+                            headers=self.headers, timeout=self.timeout, verify=False)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') uploadError : ' + str(res.text))
             return res.text, res.status_code

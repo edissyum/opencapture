@@ -18,14 +18,14 @@ import { z } from "zod";
 import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
 import { Editor } from "@monaco-editor/react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Scroller, Tabs, Stepper } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { executeAuthFunction, executeMEMFunction, executeOC4MEMFunction, getTestConnectionMapping } from "./functions";
 import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFieldsOptionsVerifier } from "./helpers";
+import { executeAuthFunction, executeMEMFunction, executeOC4MEMFunction, getTestConnectionMapping } from "./functions";
 
 import Hint from "../../Hint";
 import Input from "../../Input";
@@ -305,9 +305,7 @@ export function OutputEditor({ module }: { module: string }) {
                             if (outputType.output_type_id === 'export_mem') {
                                 res = await executeMEMFunction(option.webservice, authOptions, { post });
                             } else if (outputType.output_type_id === 'export_opencaptureformem') {
-                                console.log(option)
                                 res = await executeOC4MEMFunction(option.webservice, authOptions, { post });
-                                console.log(res)
                             }
 
                             if (res && res.success && res.data) {
@@ -537,9 +535,23 @@ export function OutputEditor({ module }: { module: string }) {
                                                     ) }
                                                 </>
                                             ) }
+
+                                            { option.type === 'select' && (
+                                                <Select
+                                                    id={ option.id }
+                                                    label={ option.label }
+                                                    value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
+                                                    onChange={ (value) => {
+                                                        handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                    } }
+                                                    options={ option.values || [] }
+                                                />
+                                            ) }
+
                                             { option.type === 'text' && option.webservice && (
                                                 <Select
-                                                    id={ option.id } label={ option.label }
+                                                    id={ option.id }
+                                                    label={ option.label }
                                                     options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (value) => {
