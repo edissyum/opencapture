@@ -69,7 +69,7 @@
         "eslint-plugin-react-refresh": "^0.5.7",
         "globals": "^17.13.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.52.0",
+        "lucide-react": "^1.53.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.71.1",
         "vite": "^8.3.3"
