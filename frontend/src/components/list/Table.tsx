@@ -171,10 +171,11 @@ export function Table<T extends { id: string }>({
                     <Button
                         size='sm'
                         key={ idx }
+                        className='border'
                         variant="no_bg_border"
-                        className='p-2 border gap-1'
                         onClick={ action.command }
-                        disabled={ selectedRows.length === 0 || action.disabled }>
+                        disabled={ selectedRows.length === 0 || action.disabled }
+                    >
                         { action.icon } { action.label }
                     </Button>
                 )) }
@@ -187,8 +188,9 @@ export function Table<T extends { id: string }>({
             <div className='flex-1 overflow-hidden flex flex-col rounded-lg'>
                 <div className={ `w-full overflow-hidden border border-(--border-secondary) rounded-md` }>
                     { pagination && (
-                        <div
-                            className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md text-(--text-secondary) font-normal h-15">
+                        <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md
+                                        text-(--text-secondary) font-normal h-15"
+                        >
                             <Skeleton width='20%' className='dark:bg-(--bg-secondary)! h-3!'/>
                             <Skeleton width='30%' className='dark:bg-(--bg-secondary)! h-3!'/>
                         </div>
@@ -208,7 +210,8 @@ export function Table<T extends { id: string }>({
                             <div key={ idx }
                                  className="flex p-6 gap-4 bg-(--bg-secondary) even:bg-(--bg-primary) border-b border-(--border-secondary)">
                                 { columns.map((col, ci) => (
-                                    <span key={ ci } className={ `${ col.className?.replace('p-', '') || 'flex-1' } text-sm` }>
+                                    <span key={ ci }
+                                          className={ `${ col.className?.replace('p-', '') || 'flex-1' } text-sm` }>
                                         <Skeleton className='dark:bg-(--bg-secondary)! h-3!'/>
                                     </span>
                                 )) }
@@ -238,7 +241,8 @@ export function Table<T extends { id: string }>({
                 </div>
             ) }
             <div className='flex-1 overflow-y-auto overflow-x-hidden'>
-                <MantineTable stickyHeader className={ `table-fixed w-full ${ !baseLink && 'no_hover' } ${ checkboxSelection && 'checkbox'}` }>
+                <MantineTable stickyHeader
+                              className={ `table-fixed w-full ${ !baseLink && 'no_hover' } ${ checkboxSelection && 'checkbox' }` }>
                     <MantineTable.Thead>
                         <MantineTable.Tr>
                             { checkboxSelection && (
@@ -277,7 +281,8 @@ export function Table<T extends { id: string }>({
                     <MantineTable.Tbody>
                         { data?.length === 0 ? (
                             <MantineTable.Tr>
-                                <MantineTable.Td colSpan={ colSpan } className="text-center py-8 text-(--text-secondary)">
+                                <MantineTable.Td colSpan={ colSpan }
+                                                 className="text-center py-8 text-(--text-secondary)">
                                     { emptyMessage }
                                 </MantineTable.Td>
                             </MantineTable.Tr>
@@ -307,15 +312,18 @@ export function Table<T extends { id: string }>({
                                 ) }
 
                                 { columns.map((col, ci) => (
-                                    <MantineTable.Td key={ ci } className={ `${ col.className } truncate ${ ci === 0 && !checkboxSelection ? 'pl-4' : 'pl-1' } pr-1 text-sm py-2` }>
+                                    <MantineTable.Td key={ ci }
+                                                     className={ `${ col.className } truncate ${ ci === 0 && !checkboxSelection ? 'pl-4' : 'pl-1' } pr-1 text-sm py-2` }>
                                         { col.body
                                             ? col.body({ ...row, hoveredRow, setHoveredRow } as any)
-                                            : (row as any)[col.field!] }
+                                            : (row as any)[col.field!]
+                                        }
                                     </MantineTable.Td>
                                 )) }
 
                                 { actions && actions.length > 0 && (
-                                    <MantineTable.Td className="pl-0! pr-0! text-sm" onClick={ (e) => e.stopPropagation() }>
+                                    <MantineTable.Td className="pl-0! pr-0! text-sm"
+                                                     onClick={ (e) => e.stopPropagation() }>
                                         <Menu position="bottom-end" withinPortal onClose={ handleMenuClose }>
                                             <Menu.Target>
                                                 <ActionIcon
