@@ -32,7 +32,7 @@ export function HistoryList() {
 
     const [history, setHistory] = useState<any[]>([]);
     const [totalHistory, setTotalHistory] = useState(0);
-    const [loadingHistory, setLoadingHistory] = useState(false);
+    const [loadingHistory, setLoadingHistory] = useState(true);
     const [displayFilters, setDisplayFilters] = useState(false);
     const [filtersChanged, setFiltersChanged] = useState(false);
 
@@ -67,8 +67,7 @@ export function HistoryList() {
         page: 0,
         sortField: null,
         sortOrder: null
-    }
-    );
+    });
 
     const columns: any = [
         {
@@ -78,7 +77,13 @@ export function HistoryList() {
             sortable: true,
             className: `w-1/12 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
         },
-        { id: 'history_submodule', field: 'history_submodule', header: t('HISTORY.submodule'), sortable: true, className: 'w-3/24 pl-0!' },
+        {
+            id: 'history_submodule',
+            field: 'history_submodule',
+            header: t('HISTORY.submodule'),
+            sortable: true,
+            className: 'w-3/24 pl-0!'
+        },
         { id: 'history_date', field: 'date', header: t('HISTORY.event_date'), sortable: true, className: 'w-3/24' },
         { id: 'user_info', field: 'user_info', header: t('HISTORY.user_info'), className: 'w-2/12' },
         {
@@ -115,6 +120,8 @@ export function HistoryList() {
             if (Object.keys(res.history).length > 0) {
                 setTotalHistory(res.history[0].total || 0);
             }
+
+            setLoadingHistory(false);
         }
 
         const fetchSubModules = async () => {
@@ -148,9 +155,8 @@ export function HistoryList() {
         }
 
         fetchUsers().then();
-        fetchHistory().then();
         fetchSubModules().then();
-        setLoadingHistory(false);
+        fetchHistory().then();
     }, [lazyParams, selectedModule, selectedSubModule, selectedUser]);
 
     const handleResetFilters = () => {
@@ -169,15 +175,18 @@ export function HistoryList() {
         <div className='flex h-full bg-(--bg-secondary) w-full overflow-hidden'>
             <div className={ `h-full shrink-0 transition-all border-r-2 border-(--border-secondary)
                             ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
+                <div
+                    className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
-                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
-                          onClick={ handleResetFilters }>
+                    <span
+                        className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
+                        onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div className={ `${ open.user ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.user ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, user: !open.user }) }>
                             <div className="flex items-center gap-2">
@@ -205,7 +214,8 @@ export function HistoryList() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
@@ -229,7 +239,8 @@ export function HistoryList() {
                                                 setSelectedModule(e.target.value);
                                             } }>
                                         </Radio>
-                                        <label htmlFor={ module.id } key={ module.id } className='cursor-pointer whitespace-nowrap'>
+                                        <label htmlFor={ module.id } key={ module.id }
+                                               className='cursor-pointer whitespace-nowrap'>
                                             { module.label }
                                         </label>
                                     </div>
@@ -237,7 +248,8 @@ export function HistoryList() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.submodule ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.submodule ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }>
                             <div className="flex items-center gap-2">
@@ -274,7 +286,8 @@ export function HistoryList() {
                         variant='bg_white_rounded'
                         icon={
                             filtersChanged && !displayFilters ?
-                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' }
+                                        size={ 14 }/> :
                                 <Filter size={ 14 }/>
                         }
                         onClick={ () => setDisplayFilters(!displayFilters) }
