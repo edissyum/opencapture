@@ -37,12 +37,18 @@ export function MonitoringDetails() {
     const [loading, setLoading] = useState<boolean>(true);
     const [workflowLabel, setWorkflowLabel] = useState<string>('');
 
-    const [lazyParams, setLazyParams] = useState({
+    const [lazyParams, setLazyParams] = useState<{
+        first: number;
+        rows: number;
+        page: number;
+        sortField: string;
+        sortOrder: 1 | -1 | null;
+    }>({
         first: 0,
         rows: 8,
         page: 0,
-        sortField: 'event_date',
-        sortOrder: null,
+        sortField: 'id',
+        sortOrder: 1
     });
 
     const paginatedSteps = useMemo(() => {
