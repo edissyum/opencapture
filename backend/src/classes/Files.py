@@ -372,29 +372,63 @@ class Files:
             fileobjfix.close()
             return len(pdf_read_rewrite.pages)
 
+    # --- Détection de pages blanches (densité d'encre par grille, P95) ---
+    BLANK_DETECTION_TARGET_WIDTH = 1200
+    BLANK_DETECTION_CROP_BORDER_RATIO = 0.02
+    BLANK_DETECTION_GRID_SIZE = (4, 4)
+    BLANK_DETECTION_P95_THRESHOLD = 0.05
+    BLANK_DETECTION_MIN_DYNAMIC_RANGE = 30
     @staticmethod
-    def is_blank_page(image):
-        params = cv2.SimpleBlobDetector_Params()
-        params.minThreshold = 10
-        params.maxThreshold = 200
-        params.filterByArea = True
-        params.minArea = 20
-        params.filterByCircularity = True
-        params.minCircularity = 0.1
-        params.filterByConvexity = True
-        params.minConvexity = 0.50 # Lower if you have a false blank page. Increase if you have an unwanted blank page.
-        params.filterByInertia = True
-        params.minInertiaRatio = 0.01
+    def _blank_ink_density_p95(grayscale):
+        height, width = grayscale.shape[:2]
+        target_width = Files.BLANK_DETECTION_TARGET_WIDTH
+        if width != target_width:
+            target_height = max(1, round(height * target_width / width))
+            grayscale = cv2.resize(grayscale, (target_width, target_height), interpolation=cv2.INTER_AREA)
 
-        detector = cv2.SimpleBlobDetector_create(params)
-        image = cv2.imread(image)
-        keypoints = detector.detect(image)
-        rows, cols, _ = image.shape
-        blobs_ratio = len(keypoints) / (1.0 * rows * cols)
+        ratio = Files.BLANK_DETECTION_CROP_BORDER_RATIO
+        height, width = grayscale.shape[:2]
+        crop_y, crop_x = int(height * ratio), int(width * ratio)
+        if 0 < ratio and crop_y * 2 < height and crop_x * 2 < width:
+            grayscale = grayscale[crop_y:height - crop_y, crop_x:width - crop_x]
+        blurred_raw = cv2.GaussianBlur(grayscale, (5, 5), 0)
+        if int(blurred_raw.max()) - int(blurred_raw.min()) < Files.BLANK_DETECTION_MIN_DYNAMIC_RANGE:
+            return 0.0
 
-        if blobs_ratio < float(1E-6):
-            return True
-        return False
+        normalized = cv2.normalize(grayscale, None, 0, 255, cv2.NORM_MINMAX)
+        blurred = cv2.GaussianBlur(normalized, (5, 5), 0)
+        _, otsu = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        adaptive = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                         cv2.THRESH_BINARY_INV, blockSize=51, C=12)
+        binary = cv2.morphologyEx(cv2.bitwise_or(otsu, adaptive), cv2.MORPH_OPEN,
+                                  np.ones((2, 2), dtype=np.uint8), iterations=1)
+
+        height, width = binary.shape[:2]
+        rows, columns = Files.BLANK_DETECTION_GRID_SIZE
+        densities = []
+        for row in range(rows):
+            y1, y2 = int(row * height / rows), int((row + 1) * height / rows)
+            for column in range(columns):
+                x1, x2 = int(column * width / columns), int((column + 1) * width / columns)
+                cell = binary[y1:y2, x1:x2]
+                densities.append(float(np.count_nonzero(cell)) / cell.size if cell.size else 0.0)
+
+        return float(np.percentile(densities, 95)) if densities else 0.0
+
+    @staticmethod
+    def is_blank_page(image, log=None):
+        grayscale = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
+        if grayscale is None:
+            if log:
+                log.error(f"Blank page check : unreadable image {image}")
+            return False
+
+        density_p95 = Files._blank_ink_density_p95(grayscale)
+        is_blank = density_p95 <= Files.BLANK_DETECTION_P95_THRESHOLD
+        if log:
+            log.debug(f"Blank page check {os.path.basename(image)} : "
+                      f"P95={density_p95:.5f} -> {'blank' if is_blank else 'kept'}")
+        return is_blank
 
     @staticmethod
     def sorted_file(path, extension):
