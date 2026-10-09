@@ -43,6 +43,12 @@ def get_processes(module=None, get_last_processes=False):
     where = []
     data = []
 
+    args['order_by'] = request.args['filter']
+    if 'order' in request.args and request.args['order']:
+        args['order_by'] = [request.args['filter'] + ' ' + request.args['order']]
+    else:
+        args['order_by'] = [request.args['filter'] + ' DESC']
+
     if 'module' in request.args and request.args['module']:
         where.append('module = %s')
         data.append(request.args['module'])
