@@ -153,7 +153,7 @@ def get_ldap_users_data(ldap_users_dict):
             givenname_user_ldap = list_users_ldap[i][firstname][0] if firstname in list_users_ldap[i] else ''
             lastname_user_ldap = list_users_ldap[i][lastname][0] if lastname in list_users_ldap[i] else ''
             if user_ldap_id and givenname_user_ldap and lastname_user_ldap:
-                user_data.append(user_ldap_id)
+                user_data.append(user_ldap_id.lower())
                 user_data.append(givenname_user_ldap)
                 user_data.append(lastname_user_ldap)
                 ldap_users_data.append(user_data)
@@ -181,7 +181,7 @@ def check_database_users(ldap_users_data, default_role):
         disabled_users = 0
         if users:
             for user in users:
-                oc_users.append([user['username'], user['firstname'], user['lastname']])
+                oc_users.append([user['username'].lower(), user['firstname'], user['lastname']])
         print_log("Users retrieved from the OpenCapture database " + str(oc_users))
         print_log("Users retrieved from the  LDAP " + str(ldap_users_data))
         print_log("Start of synchronization program")
@@ -193,8 +193,8 @@ def check_database_users(ldap_users_data, default_role):
                         user_status = database.select({
                             'select': ['enabled'],
                             'table': ['users'],
-                            'where': ['username = %s'],
-                            'data': [oc_user[0]]
+                            'where': ['LOWER(username) = %s'],
+                            'data': [oc_user[0].lower()]
                         })
                         if len(user_status) > 0 and not user_status[0]['enabled']:
                             database.update({
@@ -203,8 +203,8 @@ def check_database_users(ldap_users_data, default_role):
                                     'status': 'OK',
                                     'enabled': True
                                 },
-                                'where': ['username = %s'],
-                                'data': [oc_user[0]]
+                                'where': ['LOWER(username) = %s'],
+                                'data': [oc_user[0].lower()]
                             })
                             ldap_user[0] = 'Updated'
                             oc_user[0] = 'Updated'
@@ -222,8 +222,8 @@ def check_database_users(ldap_users_data, default_role):
                                     'lastname': ldap_user[2],
                                     'role': default_role
                                 },
-                                'where': ['username = %s'],
-                                'data': [oc_user[0]]
+                                'where': ['LOWER(username) = %s'],
+                                'data': [oc_user[0].lower()]
                             })
                             ldap_user[0] = 'Updated'
                             oc_user[0] = 'Updated'
@@ -237,16 +237,16 @@ def check_database_users(ldap_users_data, default_role):
                 user_oc_status = database.select({
                     'select': ['enabled'],
                     'table': ['users'],
-                    'where': ['username = %s', 'mode <> %s'],
-                    'data': [oc_user[0], 'webservice']
+                    'where': ['LOWER(username) = %s', 'mode <> %s'],
+                    'data': [oc_user[0].lower(), 'webservice']
                 })
                 if user_oc_status and user_oc_status[0]:
                     user_role = database.select({
                         'select': ['label_short'],
                         'table': ['users', 'roles'],
                         'left_join': ['users.role = roles.id'],
-                        'where': ['username = %s'],
-                        'data': [oc_user[0]]
+                        'where': ['LOWER(username) = %s'],
+                        'data': [oc_user[0].lower()]
                     })
 
                     if user_role[0]['label_short'] != 'superadmin':
@@ -255,8 +255,8 @@ def check_database_users(ldap_users_data, default_role):
                             'set': {
                                 'enabled': False
                             },
-                            'where': ['username = %s'],
-                            'data': [oc_user[0]]
+                            'where': ['LOWER(username) = %s'],
+                            'data': [oc_user[0].lower()]
                         })
                         disabled_users += 1
                         print_log("user status is disabled :" + str(oc_user[0]))
@@ -270,7 +270,7 @@ def check_database_users(ldap_users_data, default_role):
                 new_user = database.insert({
                     'table': 'users',
                     'columns': {
-                        'username': user_to_create[0],
+                        'username': user_to_create[0].lower(),
                         'firstname': user_to_create[1],
                         'lastname': user_to_create[2],
                         'password': hash_password,

@@ -35,8 +35,8 @@ def create_user(args):
         user = database.select({
             'select': ['id', 'status'],
             'table': ['users'],
-            'where': ['username = %s'],
-            'data': [args['username']]
+            'where': ['LOWER(username) = %s'],
+            'data': [args['username'].lower()]
         })
 
         if user:
@@ -58,7 +58,7 @@ def create_user(args):
         user_id = database.insert({
             'table': 'users',
             'columns': {
-                'username': args['username'],
+                'username': args['username'].lower(),
                 'firstname': args['firstname'],
                 'lastname': args['lastname'],
                 'email': args['email'] if 'email' in args else '',
@@ -163,8 +163,8 @@ def get_user_by_username(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users', 'roles'],
         'left_join': ['users.role = roles.id'],
-        'where': ['users.username = %s', 'users.status NOT IN (%s)'],
-        'data': [args['username'], 'DEL']
+        'where': ['LOWER(username) = %s', 'users.status NOT IN (%s)'],
+        'data': [args['username'].lower(), 'DEL']
     })
 
     if not user:
@@ -267,8 +267,8 @@ def update_user_ldap(args):
     user = database.update({
         'table': ['users'],
         'set': args['set'],
-        'where': ['username = %s', 'role <> %s'],
-        'data': [args['username'], args['role']]
+        'where': ['LOWER(username) = %s', 'role <> %s'],
+        'data': [args['username'].lower(), args['role']]
     })
 
     if user[0] is False:
