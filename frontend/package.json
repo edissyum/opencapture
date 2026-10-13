@@ -35,7 +35,7 @@
         "@mantine/hooks": "^9.7.2",
         "@monaco-editor/react": "^4.7.0",
         "@tailwindcss/vite": "^4.3.3",
-        "@tanstack/react-virtual": "^3.14.17",
+        "@tanstack/react-virtual": "^3.14.18",
         "@tinymce/tinymce-react": "^6.3.1",
         "axios": "^1.20.0",
         "dayjs": "^1.11.23",
@@ -55,7 +55,7 @@
         "recharts": "^3.10.1",
         "tailwindcss": "^4.3.3",
         "tinymce": "^8.9.3",
-        "zod": "^4.6.6"
+        "zod": "^4.6.7"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
@@ -69,9 +69,9 @@
         "eslint-plugin-react-refresh": "^0.5.7",
         "globals": "^17.13.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.55.0",
+        "lucide-react": "^1.56.0",
         "typescript": "~6.0.3",
-        "typescript-eslint": "^8.71.1",
+        "typescript-eslint": "^8.71.2",
         "vite": "^8.3.4"
     }
 }
