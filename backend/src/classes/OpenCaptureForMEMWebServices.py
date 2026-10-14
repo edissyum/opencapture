@@ -24,9 +24,9 @@ from flask_babel import gettext
 class OpenCaptureForMEMWebServices:
     def __init__(self, host, secret_key, custom_id, log):
         self.log = log
-        self.timeout = 10
-        self.secret_key = secret_key
+        self.timeout = 60
         self.custom_id = custom_id
+        self.secret_key = secret_key
         self.base_url = re.sub("^/|/$", "", host)
         self.headers = {'Content-Type': 'application/json'}
         self.access_token = self.get_access_token()
