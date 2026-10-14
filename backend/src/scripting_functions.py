@@ -258,6 +258,7 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
                     scripting = importlib.import_module(script_name, 'custom')
 
                 data = {}
+                original_filename = None
                 if 'batches_id' in args:
                     batch = database.select({
                         'select': ['*'],
@@ -265,7 +266,7 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
                         'where': ['id = %s'],
                         'data': [args['batches_id'][0]]
                     })
-                    data = batch[0]['data']
+                    original_filename = batch[0]['file_name']
                     file_path = docservers['SPLITTER_ORIGINAL_DOC'] + "/" + batch[0]['file_path']
                 else:
                     file_path = args['file']
@@ -275,6 +276,7 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
                     'data': data,
                     'file': file_path,
                     'custom_id': args['custom_id'],
+                    'original_filename': original_filename,
                     'opencapture_path': config['GLOBAL']['applicationpath']
                 }
 
