@@ -281,6 +281,7 @@
         "no_results_for": "No results for ",
         "select": "Select",
         "next": "Next",
+        "previous": "Previous",
         "save": "Save",
         "unauthorized": "Access denied",
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",

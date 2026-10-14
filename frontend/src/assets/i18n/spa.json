@@ -301,6 +301,7 @@
         "no_results_for": "Ningún resultado para ",
         "select": "Seleccionar",
         "next": "Siguiente",
+        "previous": "Anterior",
         "save": "Guardar",
         "unauthorized": "Acceso denegado",
         "unauthorized_details": "No tiene los permisos necesarios para acceder a este recurso. Por favor, contacte a su administrador si cree que se trata de un error.",
