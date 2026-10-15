@@ -137,9 +137,9 @@ export function Login() {
                 const stepModules = import.meta.glob("./onboarding/step*.tsx", { eager: true });
                 const totalSteps = Object.keys(stepModules).length;
 
-                const cachedUrl = localStorage.getItem(`${custom}_cachedUrl`);
+                const cachedUrl = localStorage.getItem(`${ custom }_cachedUrl`);
                 if (cachedUrl) {
-                    localStorage.removeItem(`${custom}_cachedUrl`);
+                    localStorage.removeItem(`${ custom }_cachedUrl`);
                     navigate(cachedUrl);
                     return;
                 }
@@ -250,7 +250,7 @@ export function Login() {
                     </div>
                     <div className='flex flex-1 flex-col pr-2'>
                         <div className="sm:mx-auto w-3/5 mt-2">
-                            <LoginImage className="mx-auto"></LoginImage>
+                            <LoginImage useCache={ false } className="mx-auto"></LoginImage>
                         </div>
 
                         <form onSubmit={ handleSubmit(handleLogin) }

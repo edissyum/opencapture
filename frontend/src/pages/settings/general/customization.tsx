@@ -161,7 +161,7 @@ export function SettingsGeneralCustomization() {
             localStorage.setItem(`${custom}_appImage`, b64Data);
 
             put('config/updateLoginImage', { image_content: b64Data }).then();
-            window.dispatchEvent(new Event('appImageChanged'))
+            window.dispatchEvent(new Event('appImageChanged'));
         };
         reader.readAsDataURL(file);
     }
