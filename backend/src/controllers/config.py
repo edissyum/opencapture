@@ -20,7 +20,6 @@ import json
 import base64
 import os.path
 import requests
-import subprocess
 from flask import request
 from flask_babel import gettext
 
@@ -323,14 +322,15 @@ def update_docserver(args, docserver_id):
 def get_last_git_version():
     try:
         requests.get('https://github.com/edissyum/opencapture', timeout=5)
+        latest_git_version = requests.get('https://api.github.com/repos/edissyum/opencapture/releases/latest', timeout=5)
+        if 'message' in latest_git_version.json():
+            return None
+
+        latest_git_version = latest_git_version.json()['name']
     except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         return None
 
-    latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' "
-                                          "https://github.com/edissyum/opencapture.git | "
-                                          r"tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '3.+([0-9])$'", shell=True,
-                                          stdout=subprocess.PIPE).stdout.read()
-    return str(latest_git_version.decode('utf-8').strip())
+    return str(latest_git_version)
 
 
 def get_login_image():
