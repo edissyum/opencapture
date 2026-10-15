@@ -886,7 +886,8 @@
         "no_outputs": "No output chains are configured for this document",
         "facturx_level": "Factur-X level",
         "datas_updated": "Document data updated successfully",
-        "associated_customer_changed_success": "Associated customer successfully modified"
+        "associated_customer_changed_success": "Associated customer successfully modified",
+        "data_found_auto": "Data found automatically"
     },
     "SECURITY": {
         "default_auth": "Default authentication",

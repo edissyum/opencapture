@@ -948,7 +948,8 @@
         "no_outputs": "Aucune chaîne sortante paramétrée pour ce document",
         "facturx_level": "Profil Factur-X",
         "datas_updated": "Données du document mises à jour avec succès",
-        "associated_customer_changed_success": "Compte client associé modifié avec succès"
+        "associated_customer_changed_success": "Compte client associé modifié avec succès",
+        "data_found_auto": "Donnée trouvée automatiquement"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",

@@ -948,7 +948,8 @@
         "no_outputs": "No se ha configurado ninguna cadena de salida para este documento",
         "facturx_level": "Nivel Factur-X",
         "datas_updated": "Datos actualizados con éxito",
-        "associated_customer_changed_success": "Cliente asociado modificado con éxito"
+        "associated_customer_changed_success": "Cliente asociado modificado con éxito",
+        "data_found_auto": "Datos encontrados automáticamente"
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
