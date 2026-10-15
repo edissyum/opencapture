@@ -430,6 +430,7 @@ export function SplitterListPage() {
         setSelectedTime('');
         setSelectedForm('');
         setSelectedStatus('NEW');
+        setLazyParams({ ...lazyParams, sortField: null, sortOrder: null });
     }
 
     // Check if filters have changed

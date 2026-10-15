@@ -458,11 +458,12 @@ export function VerifierListPage() {
     }
 
     const handleResetFilters = () => {
+        setSelectedSuppliers([]);
         setSelectedTime('');
         setSelectedForm('');
         setSelectedStatus('NEW');
         setSelectedCustomers(null);
-        setSelectedSuppliers([]);
+        setLazyParams({ ...lazyParams, sortField: null, sortOrder: null });
     }
 
     // Check if filters have changed
@@ -700,8 +701,8 @@ export function VerifierListPage() {
                         actions={ actions }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
-                        actionsLine={ getActionsLine }
                         loading={ loadingDocuments }
+                        actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedDocuments }
