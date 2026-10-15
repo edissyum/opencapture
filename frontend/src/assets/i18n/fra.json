@@ -1436,7 +1436,9 @@
         "technical_infos": "Informations techniques",
         "database": "Base de données",
         "ocr": "OCR",
-        "docker": "Déploiement Docker"
+        "docker": "Déploiement Docker",
+        "AI": "Intelligence Artificielle",
+        "AI_desc": "Modèles développés par Edissyum pour la rotation des documents, la recherche de contact et la séparation des documents intelligente"
     },
     "UPDATE-STATUS": {
         "new_status": "Nouveau statut",
