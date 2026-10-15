@@ -714,7 +714,8 @@ export function OutputEditor({ module }: { module: string }) {
                             <Tabs.Panel key='custom_fields' value='custom_fields'>
                                 <div className="p-4 flex flex-col gap-2">
                                     { customFields.map((field: any) => (
-                                        <div key={ field.id } data-tooltip-id='tooltip'
+                                        <div key={ field.id }
+                                             data-tooltip-id='tooltip'
                                              data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
                                              onClick={ async () => {
                                                  await copyToClipboard(`custom_${ field.id }`);
@@ -727,7 +728,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                 { field.label }
                                             </div>
                                             <div className='text-(--text-secondary)'>
-                                                custom_{ field.id }
+                                                { module === 'verifier' ? `custom_${ field.id }` : field.label_short }
                                             </div>
                                         </div>
                                     )) }
