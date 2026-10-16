@@ -204,23 +204,24 @@ class Splitter:
         }
 
         if 'batch_metadata' in fields['fields'] and fields['fields']['batch_metadata']:
-            for field in fields['fields']['batch_metadata']:
-                if 'defaultValue' in field:
-                    mask = {
-                        'mask': field['defaultValue'],
-                        'separator': ' '
-                    }
-                    default_values['batch'][field['label_short']] = get_value_from_mask(None, data, mask)
+            for line in fields['fields']['batch_metadata']:
+                for field in line:
+                    if 'default_value' in field and 'label_short' in field:
+                        mask = {
+                            'mask': field['default_value'],
+                            'separator': ' '
+                        }
+                        default_values['batch'][field['label_short']] = get_value_from_mask(None, data, mask)
 
         if 'document_metadata' in fields['fields'] and fields['fields']['document_metadata']:
-            for field in fields['fields']['document_metadata']:
-                if 'defaultValue' in field:
-                    mask = {
-                        'mask': field['defaultValue'],
-                        'separator': ' '
-                    }
-                    default_values['document'][field['label_short']] = get_value_from_mask(None, data, mask)
-
+            for line in fields['fields']['document_metadata']:
+                for field in line:
+                    if 'default_value' in field and 'label_short' in field:
+                        mask = {
+                            'mask': field['default_value'],
+                            'separator': ' '
+                        }
+                        default_values['document'][field['label_short']] = get_value_from_mask(None, data, mask)
         return default_values
 
     def create_batches(self, upload_args, file, original_filename):
@@ -305,6 +306,7 @@ class Splitter:
             document_id = 0
             page_display_order = 1
             previous_split_document = 0
+
             for page in batch_pages:
                 custom_fields_data = {}
                 if page['split_document'] != previous_split_document:
@@ -320,7 +322,8 @@ class Splitter:
                         'columns': {
                             'batch_id': str(batch_id),
                             'split_index': page['split_document'],
-                            'display_order': page['split_document']
+                            'display_order': page['split_document'],
+                            'data': json.dumps({'custom_fields': default_values['document']})
                         }
                     }
 
@@ -377,6 +380,8 @@ class Splitter:
                                 custom_fields_data[custom_field['label_short']] = entity
 
                     if custom_fields:
+                        print('a', default_values['document'])
+                        print('b', custom_fields_data)
                         args['columns']['data'] = json.dumps({'custom_fields': custom_fields_data})
                     document_id = self.db.insert(args)
                     page_display_order = 1

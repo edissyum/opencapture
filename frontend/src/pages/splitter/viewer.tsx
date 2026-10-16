@@ -279,7 +279,7 @@ export function SplitterViewerPage() {
                                         const fieldId = parseInt(field.id.replace('custom_', ''));
                                         const customField = customFields.find((f: any) => f.id === fieldId);
 
-                                        if (field.default_value) {
+                                        if (field.default_value && !field.value) {
                                             field.value = field.default_value;
                                         }
 
