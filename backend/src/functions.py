@@ -297,7 +297,9 @@ def is_custom_exists_from_url(url):
     if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name in customs_config.cfg:
-            if url == customs_config.cfg[custom_name].get('url', None):
+            custom_url = customs_config.cfg[custom_name].get('domain', None)
+            custom_url_no_scheme = urllib.parse.urlparse(custom_url).hostname
+            if url == custom_url or url == custom_url_no_scheme:
                 found_custom = True
                 break
     return found_custom
@@ -309,7 +311,9 @@ def retrieve_custom_id_from_url(url):
     if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name in customs_config.cfg:
-            if url == customs_config.cfg[custom_name].get('url', None):
+            custom_url = customs_config.cfg[custom_name].get('domain', None)
+            custom_url_no_scheme = urllib.parse.urlparse(custom_url).hostname
+            if url == custom_url or url == custom_url_no_scheme:
                 custom_id = custom_name
                 break
     return custom_id

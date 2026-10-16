@@ -166,7 +166,7 @@ cp "$DEFAULT_PATH"/backend/src/assets/imgs/logo_company.png "$NEW_CUSTOM_PATH/as
 # Write custom configuration in custom.ini file
 echo "[$custom_id]" >> $custom_ini_file
 echo "path = $CUSTOM_PATH/$custom_id" >> $custom_ini_file
-echo "url = $custom_url" >> $custom_ini_file
+echo "domain = $custom_url" >> $custom_ini_file
 echo -e "" >> $custom_ini_file
 
 ####################

@@ -1195,8 +1195,6 @@ export function VerifierViewerPage() {
         return !!(documentData.positions[field.id] && !documentData.positions[field.id].ocr_from_user);
     }
 
-    console.log(unSavedChanges)
-
     return (
         <div className='flex h-full overflow-hidden'>
             { showSupplierEditor && (
