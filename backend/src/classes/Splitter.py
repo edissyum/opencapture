@@ -308,8 +308,8 @@ class Splitter:
             previous_split_document = 0
 
             for page in batch_pages:
-                custom_fields_data = {}
                 if page['split_document'] != previous_split_document:
+                    custom_fields_data = dict(default_values['document'])
                     for custom_field in custom_fields:
                         if page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
                             custom_fields_data[custom_field['label_short']] = page['metadata_1']
@@ -322,8 +322,7 @@ class Splitter:
                         'columns': {
                             'batch_id': str(batch_id),
                             'split_index': page['split_document'],
-                            'display_order': page['split_document'],
-                            'data': json.dumps({'custom_fields': default_values['document']})
+                            'display_order': page['split_document']
                         }
                     }
 
@@ -380,8 +379,6 @@ class Splitter:
                                 custom_fields_data[custom_field['label_short']] = entity
 
                     if custom_fields:
-                        print('a', default_values['document'])
-                        print('b', custom_fields_data)
                         args['columns']['data'] = json.dumps({'custom_fields': custom_fields_data})
                     document_id = self.db.insert(args)
                     page_display_order = 1
