@@ -19,8 +19,9 @@
 
 group=www-data
 
-parameters="path venv_path user custom_id database_name database_hostname database_port database_user database_password docservers_path share_path dns"
-opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
+parameters="path venv_path user custom_id database_name database_hostname database_port database_user database_password docservers_path share_path"
+optional_parameters="dns"
+opts=$(getopt --longoptions "$(printf "%s:," $parameters)$(printf "%s::," $optional_parameters)" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in
