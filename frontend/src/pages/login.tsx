@@ -249,8 +249,8 @@ export function Login() {
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col'>
-                        <div className="sm:mx-auto w-3/5">
-                            <LoginImage useCache={ false } className="mx-auto w-full"></LoginImage>
+                        <div className="sm:mx-auto justify-center flex w-4/5 relative top-4">
+                            <LoginImage useCache={ false } className="h-auto w-auto max-h-42"/>
                         </div>
 
                         <form onSubmit={ handleSubmit(handleLogin) }
