@@ -76,6 +76,19 @@ const createAuthFunctionsMap: any = ({ post }: any) => ({
     }
 });
 
+const createOC4MEMFunctionsMap: any = ({ post }: any) => ({
+    getProcessFromOCForMEM: async (args: any) => {
+        const res = await post('/opencaptureformem/getProcesses', args);
+        if (res && res.processes) {
+            const processesOptions: any = [];
+            for (const process of res.processes) {
+                processesOptions.push({ value: process, label: process });
+            }
+            return { success: true, data: processesOptions };
+        }
+    }
+});
+
 const createMEMFunctionsMap: any = ({ post }: any) => ({
     getDoctypesFromMem: async (args: any) => {
         const res = await post('/mem/getDoctypes', args);
@@ -175,6 +188,21 @@ export const executeAuthFunction = async (functionName: string, functionArgs: an
     }
 };
 
+export const executeOC4MEMFunction = async (functionName: string, functionArgs: any, api: any) => {
+    const functionsMap: any = createOC4MEMFunctionsMap(api);
+    const func = functionsMap[functionName];
+
+    if (func) {
+        try {
+            return await func(functionArgs);
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        return { success: false, message: "OC4MEM function not found." };
+    }
+};
+
 export const executeMEMFunction = async (functionName: string, functionArgs: any, api: any) => {
     const functionsMap: any = createMEMFunctionsMap(api);
     const func = functionsMap[functionName];
@@ -186,6 +214,6 @@ export const executeMEMFunction = async (functionName: string, functionArgs: any
             console.error(error);
         }
     } else {
-        return { success: false, message: "Function not found." };
+        return { success: false, message: "MEM function not found." };
     }
 };

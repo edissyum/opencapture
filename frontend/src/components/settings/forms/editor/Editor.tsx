@@ -231,6 +231,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 type: activeData.type,
                 color: activeData.color || null,
                 label: activeData.label || activeData.typeLabel || activeData.type,
+                label_short: activeData.label_short,
                 required: activeData.required ?? false,
                 format: activeData.format ?? "",
             };
@@ -464,6 +465,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 disabled: field.disabled || false,
                 result_mask: field.result_mask || '',
                 search_mask: field.search_mask || '',
+                label_short: field.label_short || '',
                 validation_mask: field.validation_mask || '',
                 field_metadata: field.field_metadata || false,
             };

@@ -32,9 +32,12 @@ from tnefparse import TNEF
 from weasyprint import HTML
 from socket import gaierror
 from imaplib import IMAP4_SSL
+from reportlab import rl_config
 from flask_babel import gettext
 from imap_tools import MailBox, MailBoxUnencrypted, UnexpectedCommandStatusError
 
+# Ignore reportlab table bounds errors (cell too wide / negative cell width) raised by complex HTML layouts
+rl_config.allowTableBoundsErrors = 3
 
 class Mail:
     def __init__(self, config):
@@ -160,11 +163,12 @@ class Mail:
 
         return folders
 
-    def check_if_folder_exist(self, folder):
+    def check_if_folder_exist(self, folder, save_folder_id=False):
         """
         Check if a folder exist into the IMAP mailbox
 
         :param folder: Folder to check
+        :param save_folder_id: Boolean to save the folder id if the folder exist
         :return: Boolean
         """
         if self.method == 'graphql':
@@ -173,8 +177,9 @@ class Mail:
 
             for fol in folders:
                 if folder == fol['displayName']:
-                    self.folder_id = fol['id']
-                    return True
+                    if save_folder_id:
+                        self.folder_id = fol['id']
+                    return fol['id']
             return False
         else:
             folders = self.conn.folder.list()
@@ -207,6 +212,20 @@ class Mail:
             messages = self.graphql_request(url, 'GET', None, self.graphql_headers)
             for msg in messages.json()['value']:
                 emails.append(msg)
+
+                msg['attachments'] = []
+                url = self.users_url + '/' + self.graphql_user['id'] + '/messages/' + msg['id'] + '/attachments'
+                attachments = self.graphql_request(url, 'GET', None, self.graphql_headers)
+                for att in attachments.json()['value']:
+                    if 'contentBytes' in att:
+                        msg['attachments'].append({
+                            'size': att['size'],
+                            'filename': att['name'],
+                            'content_id': att['contentId'],
+                            'content_type': att['contentType'],
+                            'format': att['name'].split('.')[-1],
+                            'payload': base64.b64decode(att['contentBytes'])
+                        })
         else:
             for mail in self.conn.fetch():
                 emails.append(mail)
@@ -231,16 +250,15 @@ class Mail:
             html_body = msg['body']['content']
             msg_id = str(msg['id'])
             from_val = msg['from']['emailAddress']['address']
-            cc_values = msg['ccRecipients']
-            to_values = msg['toRecipients']
             document_date = msg['receivedDateTime']
         else:
             html_body = msg['html']
             msg_id = str(msg['uid'])
             document_date = msg['date']
-            cc_values = msg['cc_values']
-            to_values = msg['to_values']
             from_val = msg['from_values'].full
+
+        cc_values = msg['ccRecipients']
+        to_values = msg['toRecipients']
 
         primary_mail_path = backup_path + '/mail_' + msg_id + '/mail_origin/'
         if not os.path.exists(primary_mail_path):
@@ -273,7 +291,7 @@ class Mail:
         mail_data += gettext('TO') + ': ' + to_str.rstrip(';') + '<br>'
         if cc_str:
             mail_data += gettext('COPIES') + ': ' + cc_str.rstrip(';') + '<br>'
-        mail_data += gettext('SUBJECT') + ': ' + msg['subject'] + '<br><br>'
+        mail_data += gettext('SUBJECT') + ': ' + (msg.get('subject') or gettext('NO_SUBJECT')) + '<br><br>'
 
         if len(html_body) == 0 and len(msg['text']) >= 0:
             for line in msg['text'].split('\n'):
@@ -293,13 +311,16 @@ class Mail:
                     file.write('Erreur lors de la remontée de cette pièce jointe')
                 file.close()
 
-            attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
-            if attachment_content_id_in_html:
-                html_body = re.sub(r'src="cid:\s*' + re.escape(attachment['content_id']),
-                                   f"src='data:image/{attachment['format'].replace('.', '')};"
-                                   f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
-                                   html_body)
-            else:
+            attachment_content_id_in_html = None
+            if 'content_id' in attachment and attachment['content_id']:
+                attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
+                if attachment_content_id_in_html:
+                    html_body = re.sub(r'src="cid:\s*' + re.escape(attachment['content_id']),
+                                       f"src='data:image/{attachment['format'].replace('.', '')};"
+                                       f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
+                                       html_body)
+
+            if attachment_content_id_in_html is None:
                 data['attachments'].append({
                     'file': path,
                     'format': attachment['format'],
@@ -307,16 +328,18 @@ class Mail:
                 })
 
         if insert_body_as_doc:
-            with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
-                HTML(string=clean_outlook_html_for_weasyprint(html_body)).write_pdf(target=fp)
+            try:
+                with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
+                    HTML(string=clean_outlook_html(html_body)).write_pdf(target=fp)
 
-            data['file'] = {
-                'filename': sanitize_filename('body' + msg_id + '.pdf'),
-                'format': 'pdf',
-                'path': primary_mail_path + 'body.pdf'
-            }
-
-        return data
+                data['file'] = {
+                    'filename': sanitize_filename('body' + msg_id + '.pdf'),
+                    'format': 'pdf',
+                    'path': primary_mail_path + 'body.pdf'
+                }
+            except Exception as e:
+                return False, f"Error while converting HTML to PDF: {e}"
+        return True, data
 
     def backup_email(self, msg, backup_path, log, ocr_attachments):
         """
@@ -353,7 +376,7 @@ class Mail:
         # Then body
         if self.method == 'graphql' and len(html_body) == 0:
             with open(primary_mail_path + 'body.txt', 'w', encoding='UTF-8') as fp:
-                if len(msg['text']) != 0:
+                if len(msg.get('text', '')) != 0:
                     fp.write(msg['text'])
                 else:
                     fp.write(' ')
@@ -373,19 +396,6 @@ class Mail:
             orig_file.close()
 
         # Backup attachments
-        if self.method == 'graphql':
-            msg['attachments'] = []
-            url = self.users_url + '/' + self.graphql_user['id'] + '/messages/' + msg_id + '/attachments'
-            attachments = self.graphql_request(url, 'GET', None, self.graphql_headers)
-            for att in attachments.json()['value']:
-                if 'contentBytes' in att:
-                    msg['attachments'].append({
-                        'filename': att['name'],
-                        'content_id': att['contentId'],
-                        'content_type': att['contentType'],
-                        'format': att['name'].split('.')[-1],
-                        'payload': base64.b64decode(att['contentBytes'])
-                    })
         attachments = self.retrieve_attachment(msg)
 
         if len(attachments) > 0:
@@ -413,10 +423,12 @@ class Mail:
         :return: Boolean
         """
         if self.method.lower() == 'graphql':
+            folder_id = self.check_if_folder_exist(destination)
+
             url = self.users_url + '/' + self.graphql_user['id'] + '/mailFolders/' + self.folder_id
             url = url + '/messages/' + msg['id'] + '/move'
             body = {
-                'destinationId': destination
+                'destinationId': folder_id
             }
             res = self.graphql_request(url, 'POST', json.dumps(body), self.graphql_headers)
             if res.status_code != 200 and res.status_code != 201:
@@ -453,13 +465,13 @@ class Mail:
         for att in msg['attachments']:
             if att['filename'] == 'winmail.dat':
                 mime_type = ''
-                winmail = TNEF(att.payload, do_checksum=True)
+                winmail = TNEF(att['payload'], do_checksum=True)
                 for att_wm in winmail.attachments:
                     for attr in att_wm.mapi_attrs:
                         if attr.attr_type == 30 and attr.name == 14094:
                             mime_type = attr.raw_data[0]
 
-                    filename = att_wm.name()
+                    filename = att_wm.long_filename()
                     file_format = os.path.splitext(filename)[1]
                     args.append({
                         'filename': os.path.splitext(filename)[0].replace(' ', '_'),
@@ -529,7 +541,7 @@ def sanitize_filename(s):
     return "".join(safe_char(c) for c in s).rstrip("_")
 
 
-def clean_outlook_html_for_weasyprint(html_body: str) -> str:
+def clean_outlook_html(html_body: str) -> str:
     if not html_body:
         return ""
 
@@ -589,6 +601,24 @@ def clean_outlook_html_for_weasyprint(html_body: str) -> str:
 
         # nettoyage ;
         css = re.sub(r';+', ';', css)
+
+        # commentaires CSS et balises HTML de commentaire
+        css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+        css = css.replace('<!--', '').replace('-->', '')
+
+        # @media / @supports / @keyframes… (blocs imbriqués)
+        css = re.sub(r'@[a-z-]+[^{;]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}', '', css, flags=re.I | re.S)
+        css = re.sub(r'@[a-z-]+[^{;]*;', '', css, flags=re.I)
+
+        # Règles avec sélecteurs non supportés par le parser CSS (~, +, >, [attr], :not(), ::before…)
+        def clean_rule(_rule):
+            selectors = [s.strip() for s in _rule.group(1).split(',')]
+            selectors = [s for s in selectors if s and not re.search(r'[~+>\[\]()]|::|\*', s)]
+            if not selectors:
+                return ''
+            return f"{', '.join(selectors)} {{{_rule.group(2)}}}\n"
+
+        css = re.sub(r'([^{}]+)\{([^{}]*)\}', clean_rule, css)
 
         return f"<style>{css}</style>"
 

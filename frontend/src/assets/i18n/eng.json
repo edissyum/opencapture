@@ -123,7 +123,6 @@
         "login_message": "Welcome message",
         "login_message_description": "Short message displayed on the login page",
         "login_message_updated": "Welcome message updated successfully",
-        "save_login_message_and_url": "Save welcome message and login URL",
         "login_guide_url": "User guide URL",
         "login_guide_url_description": "URL of the login help page displayed on the login screen",
         "login_guide_url_error": "The user guide URL is invalid",
@@ -137,7 +136,8 @@
         "unknown_error": "Unknown error",
         "too_many_requests": "Too many requests. Please try again in a few moments.",
         "too_many_requests_details": "It seems you have made too many requests in a short period of time. For security reasons, we have temporarily limited the number of requests you can make. Please wait a moment before trying again.",
-        "backend_not_reachable": "The backend is inaccessible; please check your internet connection or contact your administrator."
+        "backend_not_reachable": "The backend is inaccessible; please check your internet connection or contact your administrator.",
+        "permission_error": "You do not have the necessary rights to access this page"
     },
     "FORMATS": {
         "alphanum": "Alphanumeric characters [0-9aA-zZ']",
@@ -281,6 +281,7 @@
         "no_results_for": "No results for ",
         "select": "Select",
         "next": "Next",
+        "previous": "Previous",
         "save": "Save",
         "unauthorized": "Access denied",
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
@@ -885,7 +886,8 @@
         "no_outputs": "No output chains are configured for this document",
         "facturx_level": "Factur-X level",
         "datas_updated": "Document data updated successfully",
-        "associated_customer_changed_success": "Associated customer successfully modified"
+        "associated_customer_changed_success": "Associated customer successfully modified",
+        "data_found_auto": "Data found automatically"
     },
     "SECURITY": {
         "default_auth": "Default authentication",
@@ -1160,7 +1162,8 @@
         "copy_error_message": "Copy error content to clipboard",
         "error_message_copied": "Error message copied to clipboard",
         "list": "Process monitoring",
-        "details": "Process details"
+        "details": "Process details",
+        "warning_small": "Warning"
     },
     "AI-LLM": {
         "provider": "Provider",
@@ -1344,7 +1347,9 @@
         "technical_infos": "Technical information",
         "database": "Database",
         "ocr": "OCR",
-        "docker": "Docker deployment"
+        "docker": "Docker deployment",
+        "AI": "Artificial Intelligence",
+        "AI_desc": "Models developed by Edissyum for document rotation, contact searching, and intelligent document separation"
     },
     "UPDATE-STATUS": {
         "new_status": "New status",

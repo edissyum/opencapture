@@ -38,7 +38,7 @@ export default function SettingsLayout() {
     return (
         <div className="flex h-screen">
             <Sidebar />
-            <div className='flex flex-col w-full h-full'>
+            <div className='flex flex-col w-full min-w-0 h-full'>
                 <PageTitle />
                 <BreadCrumbTopbar />
                 <span className='overflow-y-auto h-full'>

@@ -315,9 +315,13 @@ export function AboutPage() {
                                 <p className='w-1/3 font-medium'>{ t('ABOUT.database') }</p>
                                 <p className='text-(--text-primary)'>PostgreSQL</p>
                             </div>
-                            <div className={ `${ classes }` }>
+                            <div className={ classesWithBorder }>
                                 <p className='w-1/3 font-medium'>{ t('ABOUT.ocr') }</p>
                                 <p className='text-(--text-primary)'>Tesseract &gt;= 5 + OpenCV</p>
+                            </div>
+                            <div className={ classes }>
+                                <p className='w-1/3 font-medium'>{ t('ABOUT.AI') }</p>
+                                <p className='w-2/3 text-(--text-primary)'>{ t('ABOUT.AI_desc') }</p>
                             </div>
                         </Panel>
 

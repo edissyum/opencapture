@@ -751,7 +751,7 @@ export const router = createBrowserRouter(
                         },
                         {
                             path: 'separator',
-                            loader: protectedLoader(['settings', 'certified_copy']),
+                            loader: protectedLoader(['settings', 'separator_splitter']),
                             element: <SettingsSplitterSeparator/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'FORMS.qr_code' }

@@ -18,14 +18,14 @@ import { z } from "zod";
 import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
 import { Editor } from "@monaco-editor/react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Scroller, Tabs, Stepper } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
 import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFieldsOptionsVerifier } from "./helpers";
+import { executeAuthFunction, executeMEMFunction, executeOC4MEMFunction, getTestConnectionMapping } from "./functions";
 
 import Hint from "../../Hint";
 import Input from "../../Input";
@@ -297,11 +297,16 @@ export function OutputEditor({ module }: { module: string }) {
         let errorInWs = false;
 
         if (res && res.success) {
-            if (outputType.output_type_id === 'export_mem') {
+            if (outputType.output_type_id === 'export_mem' || outputType.output_type_id === 'export_opencaptureformem') {
                 for (const data of Object.keys(output.data.options)) {
                     for (const option of output.data.options[data]) {
                         if (option.webservice) {
-                            const res = await executeMEMFunction(option.webservice, authOptions, { post });
+                            let res = null;
+                            if (outputType.output_type_id === 'export_mem') {
+                                res = await executeMEMFunction(option.webservice, authOptions, { post });
+                            } else if (outputType.output_type_id === 'export_opencaptureformem') {
+                                res = await executeOC4MEMFunction(option.webservice, authOptions, { post });
+                            }
 
                             if (res && res.success && res.data) {
                                 setOutput((prev: any) => {
@@ -530,9 +535,23 @@ export function OutputEditor({ module }: { module: string }) {
                                                     ) }
                                                 </>
                                             ) }
+
+                                            { option.type === 'select' && (
+                                                <Select
+                                                    id={ option.id }
+                                                    label={ option.label }
+                                                    value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
+                                                    onChange={ (value) => {
+                                                        handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                    } }
+                                                    options={ option.values || [] }
+                                                />
+                                            ) }
+
                                             { option.type === 'text' && option.webservice && (
                                                 <Select
-                                                    id={ option.id } label={ option.label }
+                                                    id={ option.id }
+                                                    label={ option.label }
                                                     options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (value) => {
@@ -695,7 +714,8 @@ export function OutputEditor({ module }: { module: string }) {
                             <Tabs.Panel key='custom_fields' value='custom_fields'>
                                 <div className="p-4 flex flex-col gap-2">
                                     { customFields.map((field: any) => (
-                                        <div key={ field.id } data-tooltip-id='tooltip'
+                                        <div key={ field.id }
+                                             data-tooltip-id='tooltip'
                                              data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
                                              onClick={ async () => {
                                                  await copyToClipboard(`custom_${ field.id }`);
@@ -708,7 +728,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                 { field.label }
                                             </div>
                                             <div className='text-(--text-secondary)'>
-                                                custom_{ field.id }
+                                                { module === 'verifier' ? `custom_${ field.id }` : field.label_short }
                                             </div>
                                         </div>
                                     )) }

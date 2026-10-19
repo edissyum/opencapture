@@ -61,7 +61,7 @@ def create_user(args):
             })
             total_active_users = active_users[0]['total']
             for _user in active_users:
-                if _user['username'] in user_filtered:
+                if _user['username'].lower() in user_filtered:
                     total_active_users -= 1
 
             if quota <= total_active_users:

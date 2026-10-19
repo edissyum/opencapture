@@ -37,12 +37,18 @@ export function MonitoringDetails() {
     const [loading, setLoading] = useState<boolean>(true);
     const [workflowLabel, setWorkflowLabel] = useState<string>('');
 
-    const [lazyParams, setLazyParams] = useState({
+    const [lazyParams, setLazyParams] = useState<{
+        first: number;
+        rows: number;
+        page: number;
+        sortField: string;
+        sortOrder: 1 | -1 | null;
+    }>({
         first: 0,
         rows: 8,
         page: 0,
-        sortField: 'event_date',
-        sortOrder: null,
+        sortField: 'id',
+        sortOrder: 1
     });
 
     const paginatedSteps = useMemo(() => {
@@ -76,13 +82,14 @@ export function MonitoringDetails() {
             header: t('MONITORING.event_details'),
             body: (row: any) => (
                 <span className={ `${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
+                                   ${ row.status === 'warning' && 'cursor-pointer text-[#E67E23]' }
                                    ${ (row.status === 'error' || row.error) && 'cursor-pointer text-(--text-error)' }` }
-                      { ...((row.status === 'error' || row.error) && {
+                      { ...((row.status === 'error' || row.status === 'warning' || row.error) && {
                           "data-tooltip-id": "tooltip",
                           "data-tooltip-content": t('MONITORING.copy_error_message')
                       }) }
                       onClick={ async () => {
-                          if (row.status === 'error' || row.error) {
+                          if (row.status === 'error' || row.status === 'warning' || row.error) {
                               await copyToClipboard(row.message);
                               showToast(t('MONITORING.error_message_copied'), 'success');
                           }
@@ -99,15 +106,24 @@ export function MonitoringDetails() {
             body:
                 (row: any) => (
                     <span>
-                        { row.status === 'error' || row.error ? (
+                        { (row.status === 'error' || row.error) && (
                             <div className='flex items-center gap-2 text-(--text-error) w-fit'>
                                 <div className='bg-(--bg-error) rounded-sm px-3 py-1 border-0'>
                                     { t('MONITORING.error_small') }
                                 </div>
                             </div>
-                        ) : (
-                            <div
-                                className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0 w-fit'>
+                        ) }
+
+                        { (row.status === 'warning') && (
+                            <div className='bg-[#E67E23]/10 text-[#E67E23] rounded-sm px-2 py-1
+                                            border-0 w-fit'>
+                                { t('MONITORING.warning_small') }
+                            </div>
+                        ) }
+
+                        { (row.status !== 'error' && row.status !== 'warning' && !row.error) && (
+                            <div className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1
+                                            border-0 w-fit'>
                                 { t('MONITORING.done_small') }
                             </div>
                         ) }

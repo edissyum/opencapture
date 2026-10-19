@@ -21,7 +21,7 @@ import { AxiosApiCall } from "../services/hooks/AxiosApiCall";
 
 import { b64ToFile } from "../pages/settings/general/customization";
 
-export function LoginImage({ className }: { className?: string }) {
+export function LoginImage({ className, useCache = true }: { className?: string, useCache?: boolean }) {
     const { get } = AxiosApiCall();
     const custom = useCustom();
     const [image, setImage] = useState<string | undefined>(undefined);
@@ -41,7 +41,7 @@ export function LoginImage({ className }: { className?: string }) {
 
         try {
             const stored = localStorage.getItem(`${ custom }_appImage`);
-            if (stored) {
+            if (stored && useCache) {
                 setImage(stored);
                 return;
             }

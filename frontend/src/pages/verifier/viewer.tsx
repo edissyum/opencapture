@@ -33,7 +33,7 @@ import {
     EyeOff,
     Paperclip,
     PenOff, Save,
-    SquarePlus
+    SquarePlus, Zap
 } from "lucide-react";
 
 import { SupplierEditor } from "../suppliers/editor";
@@ -147,7 +147,7 @@ export function VerifierViewerPage() {
             module: 'verifier',
             submodule: 'viewer',
             desc: t('HISTORY.viewer', { documentId: documentId })
-        });
+        }).then();
 
         const fetchDocumentData = async () => {
             try {
@@ -451,7 +451,7 @@ export function VerifierViewerPage() {
                                 const maxCpt = matchingFields.length;
                                 for (let i = 1; i <= maxCpt; i++) {
                                     newLineAdded = true;
-                                    handleDuplicateLine(line, zone, lineIndex);
+                                    handleDuplicateLine(line, zone, lineIndex, true);
                                 }
                             }
                         });
@@ -643,7 +643,7 @@ export function VerifierViewerPage() {
         }
     }
 
-    const handleDuplicateLine = (line: any, zone: any, lineIndex: number) => {
+    const handleDuplicateLine = (line: any, zone: any, lineIndex: number, fromInit: boolean = false) => {
         if (disableFields) return;
 
         const fields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
@@ -693,7 +693,9 @@ export function VerifierViewerPage() {
             return newZones;
         });
 
-        setUnSavedChanges(true);
+        if (!fromInit) {
+            setUnSavedChanges(true);
+        }
     }
 
     // Function to update document data (only array, not on database) and validate fields
@@ -1189,6 +1191,10 @@ export function VerifierViewerPage() {
         showToast(t('VERIFIER.datas_updated'), 'success');
     }
 
+    function showAutoLogo(field: any) {
+        return !!(documentData.positions[field.id] && !documentData.positions[field.id].ocr_from_user);
+    }
+
     return (
         <div className='flex h-full overflow-hidden'>
             { showSupplierEditor && (
@@ -1357,7 +1363,8 @@ export function VerifierViewerPage() {
                                 </div>
                             </div>
                         ) }
-                        <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ ['supplier', 'facturation'] }>
+                        <Accordion chevronPosition="left" variant="separated" multiple
+                                   defaultValue={ ['supplier', 'facturation'] }>
                             { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
                                 <Accordion.Item key={ zone.id } value={ zone.id }>
                                     <div className='flex items-center'>
@@ -1400,7 +1407,17 @@ export function VerifierViewerPage() {
                                                 <div key={ index } className={ `flex gap-4` }>
                                                     { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
                                                         <div key={ field.id }
-                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                             className={ `relative min-w-1/6 ${ getWidthLine(line) }` }>
+
+                                                            { showAutoLogo(field) && (
+                                                                <div data-tooltip-id="tooltip"
+                                                                     data-tooltip-content={ t("VERIFIER.data_found_auto") }
+                                                                     className='absolute z-1 -top-1 -right-1 text-(--text-secondary) bg-(--bg-primary)'
+                                                                >
+                                                                    <Zap className='size-4'/>
+                                                                </div>
+                                                            ) }
+
                                                             { field.type === 'date' && (
                                                                 <ISOCalendar
                                                                     id={ field.id }
@@ -1412,6 +1429,7 @@ export function VerifierViewerPage() {
                                                                     onChange={ (e) => updateDocumentData(field, e) }
                                                                     onClick={ () => handleFocusField(field.id, field.label, field.color) }
                                                                 />
+
                                                             ) }
 
                                                             { field.type === 'select' && field.settings?.options && (
@@ -1453,7 +1471,8 @@ export function VerifierViewerPage() {
                                                                     suggestions={ field.values || [] }
                                                                     value={ tmpDocumentData?.datas?.[field.id] ?? "" }
                                                                     onChange={ (value) => updateDocumentData(field, value) }
-                                                                    search={ () => {} }
+                                                                    search={ () => {
+                                                                    } }
                                                                 />
                                                             ) }
 

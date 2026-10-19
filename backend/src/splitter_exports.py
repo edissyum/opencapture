@@ -18,19 +18,18 @@
 import os
 import re
 from zipfile import ZipFile
+from flask_babel import gettext
+from flask import request, has_request_context
 
 from . import shared
-from flask import request
 from .classes.CMIS import CMIS
-from flask_babel import gettext
-
-from .classes.NFZ42020 import hash_file_content
 from .controllers import history
 from .classes.Files import Files
+from .helpers import get_context_var
 from .classes.OpenADS import OpenADS
 from .classes.Splitter import Splitter
+from .classes.NFZ42020 import hash_file_content
 from .classes.Splitter import get_value_from_mask
-from .helpers import get_context_var
 from .scripting_functions import launch_script_splitter
 from .models import splitter, workflow, forms, outputs, attachments
 
@@ -117,7 +116,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
                 return res_export_pdf, status
             batch = res_export_pdf['result_batch']
         elif output['output_type_id'] == 'export_verifier':
-            res_export_verifier, status = handle_verifier_output(batch, output['parameters'], docservers, regex)
+            res_export_verifier, status = handle_verifier_output(batch, output['parameters'], docservers, regex, log)
             if status != 200:
                 return res_export_verifier, status
             batch = res_export_verifier['result_batch']
@@ -148,9 +147,9 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
 
         history.add_history({
             'module': 'splitter',
-            'ip': request.remote_addr,
             'submodule': 'output_executed',
-            'user_info': request.environ['user_info'],
+            'ip': request.remote_addr if has_request_context() else '0.0.0.0',
+            'user_info': request.environ['user_info'] if has_request_context() else 'system',
             'desc': gettext('BATCH_OUTPUT_EXECUTED', label=output['output_label'], batch=batch['id'])
         })
 
@@ -248,6 +247,8 @@ def export_pdf_files(batch, parameters, log, docservers, nfz42020):
 
 
 def handle_pdf_output(batch, output, log, docservers, nfz42020):
+    log.info('Output execution : PDF export')
+
     compress_pdfs = []
     parameters = {
         'compress_type': output['compress_type'],
@@ -295,7 +296,9 @@ def handle_pdf_output(batch, output, log, docservers, nfz42020):
     return {'result_batch': batch}, 200
 
 
-def handle_verifier_output(batch, parameters, docservers, regex):
+def handle_verifier_output(batch, parameters, docservers, regex, log):
+    log.info('Output execution : Verifier export')
+
     metadata = {
         'export_date': batch['export_date'],
         'custom_fields': batch['data']['custom_fields'],
@@ -312,6 +315,8 @@ def handle_verifier_output(batch, parameters, docservers, regex):
 
 
 def handle_opencaptureformem_output(batch, output, docservers, log):
+    log.info('Output execution : Open-Capture For MEM export')
+
     export_ok, export_result = Splitter.export_opencaptureformem(batch, output, docservers, log)
     if not export_ok:
         response = {
@@ -322,7 +327,9 @@ def handle_opencaptureformem_output(batch, output, docservers, log):
     return {'result_batch': batch}, 200
 
 
-def handle_xml_output(batch, parameters, regex):
+def handle_xml_output(batch, parameters, regex, log):
+    log.info('Output execution : XML export')
+
     mask_args = {
         'mask': parameters['filename'],
         'separator': parameters['separator'],
@@ -352,6 +359,8 @@ def handle_xml_output(batch, parameters, regex):
 
 
 def handle_cmis_output(output, batch, log, docservers, regex, nfz42020):
+    log.info('Output execution : CMIS export')
+
     cmis_auth = get_output_parameters(output['data']['options']['auth'])
     cmis_params = get_output_parameters(output['data']['options']['parameters'])
     cmis = CMIS(cmis_auth['cmis_ws'], cmis_auth['login'], cmis_auth['password'], cmis_auth['folder'])
@@ -423,6 +432,8 @@ def handle_cmis_output(output, batch, log, docservers, regex, nfz42020):
 
 
 def handle_openads_output(output, batch, log, docservers, nfz42020):
+    log.info('Output execution : OpenADS export')
+
     openads_auth = get_output_parameters(output['data']['options']['auth'])
     openads_params = get_output_parameters(output['data']['options']['parameters'])
     _openads = OpenADS(openads_auth['openads_api'], openads_auth['login'], openads_auth['password'])

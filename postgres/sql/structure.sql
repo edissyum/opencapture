@@ -52,10 +52,10 @@ CREATE TABLE "positions_masks" (
 );
 
 CREATE TABLE "form_models_field" (
-    "id"      SERIAL    UNIQUE PRIMARY KEY,
+    "id"      SERIAL        UNIQUE PRIMARY KEY,
     "form_id" INTEGER,
-    "fields"  JSONB     DEFAULT '{}',
-    FOREIGN KEY (form_id) REFERENCES form_models(id) ON DELETE CASCADE
+    "fields"  JSONB         DEFAULT '{}',
+    FOREIGN KEY (form_id)   REFERENCES form_models(id) ON DELETE CASCADE
 );
 
 CREATE TABLE "outputs" (

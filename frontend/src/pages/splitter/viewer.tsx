@@ -28,6 +28,8 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import {
     ArrowLeft,
     ChevronDown,
+    ChevronLeft,
+    ChevronRight,
     CircleAlert,
     Combine,
     Download,
@@ -85,8 +87,8 @@ import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 import { b64ToFile } from "../settings/general/customization";
 
 export function SplitterViewerPage() {
-    const { get, post, del, put } = AxiosApiCall();
     const navigate = useNavigate();
+    const { get, post, del, put } = AxiosApiCall();
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
@@ -188,13 +190,42 @@ export function SplitterViewerPage() {
         );
     }
 
+    const [previewPageId, setPreviewPageId] = useState<number | null>(null);
+    const previewRequestRef = useRef(0);
+
     const handlePreview = useCallback(async (page: any) => {
+        const requestId = ++previewRequestRef.current;
+        setPreviewPageId(page.id);
         const response = await get(`/splitter/pages/${ page.id }/fullThumbnail`);
+        // Ignore outdated responses when the user navigates quickly between pages
+        if (requestId !== previewRequestRef.current) return;
         if (response.fullThumbnail) {
             const blob = b64ToFile('data:image/jpg;base64,' + response.fullThumbnail);
             setThumbnailSafe(URL.createObjectURL(blob));
         }
     }, []);
+
+    const closePreview = useCallback(() => {
+        previewRequestRef.current++;
+        setPreviewPageId(null);
+        setThumbnailSafe(null);
+    }, [setThumbnailSafe]);
+
+    // Previous / next pages of the previewed page, within its document
+    const previewNavigation = useMemo(() => {
+        const previewDocument = previewPageId === null ? null :
+            documents.find((doc: any) => doc.pages.some((p: any) => p.id === previewPageId));
+        if (!previewDocument) return null;
+
+        const pages = previewDocument.pages;
+        const index = pages.findIndex((p: any) => p.id === previewPageId);
+        return {
+            index,
+            total: pages.length,
+            previous: pages[index - 1] ?? null,
+            next: pages[index + 1] ?? null
+        };
+    }, [documents, previewPageId]);
 
     const [activeDragItem, setActiveDragItem] = useState<any>(null);
 
@@ -247,6 +278,10 @@ export function SplitterViewerPage() {
                                     if (field) {
                                         const fieldId = parseInt(field.id.replace('custom_', ''));
                                         const customField = customFields.find((f: any) => f.id === fieldId);
+
+                                        if (field.default_value && !field.value) {
+                                            field.value = field.default_value;
+                                        }
 
                                         if (customField) {
                                             field = { ...field, ...customField };
@@ -421,6 +456,10 @@ export function SplitterViewerPage() {
                     if (field) {
                         const fieldId = parseInt(field.id.replace('custom_', ''));
                         const customField = customFields.find((f: any) => f.id === fieldId);
+
+                        if (field.default_value) {
+                            field.value = field.default_value;
+                        }
 
                         if (customField) {
                             field = { ...field, ...customField };
@@ -1233,15 +1272,32 @@ export function SplitterViewerPage() {
                 { thumbnail && (
                     <>
                         <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                             onClick={ () => setThumbnailSafe(null) }/>
-                        <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                    max-w-[32vw] border border-(--border-secondary)
-                                    rounded-lg overflow-hidden">
+                             onClick={ closePreview }/>
+                        <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg
+                                        max-w-[32vw] border border-(--border-secondary) overflow-hidden">
                             <img src={ thumbnail } alt="Thumbnail"/>
                             <Button variant="secondary" size="sm" className="absolute top-2 right-2"
-                                    onClick={ () => setThumbnailSafe(null) }>
+                                    onClick={ closePreview }>
                                 <X size={ 16 }/>
                             </Button>
+                            { previewNavigation && previewNavigation.total > 1 && (
+                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                                    <Button variant="secondary" size="sm" title={ t('GLOBAL.previous') }
+                                            disabled={ !previewNavigation.previous }
+                                            onClick={ () => handlePreview(previewNavigation.previous) }>
+                                        <ChevronLeft size={ 16 }/>
+                                    </Button>
+                                    <span className="px-2 py-1 rounded-md text-sm bg-(--bg-primary) border
+                                                     border-(--border-secondary)">
+                                        { previewNavigation.index + 1 } / { previewNavigation.total }
+                                    </span>
+                                    <Button variant="secondary" size="sm" title={ t('GLOBAL.next') }
+                                            disabled={ !previewNavigation.next }
+                                            onClick={ () => handlePreview(previewNavigation.next) }>
+                                        <ChevronRight size={ 16 }/>
+                                    </Button>
+                                </div>
+                            ) }
                         </div>
                     </>
                 ) }
@@ -1388,7 +1444,7 @@ export function SplitterViewerPage() {
 
                 { !showAttachments && (
                     <div ref={ listRef } className='pb-24 px-8 h-full overflow-y-auto'>
-                        <Accordion className='mb-6' chevronPosition="left" defaultValue={ 'batch_metadata' }>
+                        <Accordion className='mb-6' chevronPosition="left" defaultValue='batch_metadata'>
                             <Accordion.Item key={ 'zone.id' } value='batch_metadata'>
                                 <Accordion.Control>
                                     { t('SPLITTER.batch_content') }

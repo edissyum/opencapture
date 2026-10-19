@@ -35,7 +35,7 @@ class Config:
             for info in parser[section]:
                 config_data = parser[section][info]
                 if any(map(info.__contains__, ['path', 'url', 'config', 'file'])):
-                    config_data = re.sub('/{2,}', '/', config_data)
+                    config_data = re.sub('(?<!:)/{2,}', '/', config_data)
                 self.cfg[section][info] = config_data
 
     @staticmethod

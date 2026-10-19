@@ -56,7 +56,7 @@ if __name__ == '__main__':
             for row in reader:
                 log.info("User: " + row[0])
                 user = {
-                    'username': row[0],
+                    'username': row[0].lower(),
                     'lastname': row[1],
                     'firstname': row[2],
                     'password': 'NOT_SET',
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                 users_res = database.select({
                     'select': ['id'],
                     'table': ['users'],
-                    'where': ['username = %s'],
+                    'where': ['LOWER(username) = %s'],
                     'data': [user['username']]
                 })
                 if users_res:

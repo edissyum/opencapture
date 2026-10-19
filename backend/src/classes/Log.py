@@ -76,6 +76,16 @@ class Log:
         self.current_step += 1
         self.logger.info(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
+    def warning(self, msg):
+        if self.prefix:
+            msg = self.prefix + ' ' + msg
+
+        if self.database and self.task_id_monitor:
+            self.update_task_monitor(msg, 'warning')
+
+        self.current_step += 1
+        self.logger.warning(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
+
     def error(self, msg, send_notif=True):
         if self.prefix:
             msg = self.prefix + ' ' + msg

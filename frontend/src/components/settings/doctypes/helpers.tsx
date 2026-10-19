@@ -99,7 +99,7 @@ export function makeNodeTemplate(searchText: string, expandedKeys: ExpandedKeysT
         };
 
         return (
-            <div className="flex items-center ml-1 gap-1">
+            <div className="flex items-center min-w-0 ml-1 gap-1" title={ doctype.label }>
                 <span className="shrink-0 icons">
                     { isFolder ? (
                         isExpanded ? <FolderOpen stroke={ 'white' } fill={ 'var(--color-primary)' } size={ 16 }/> :

@@ -32,8 +32,8 @@ from ldap3.core.exceptions import LDAPException
 from ldap3.utils.conv import escape_filter_chars
 from datetime import datetime, timezone, timedelta
 from ..models import auth, user, roles, monitoring, history
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import request, g as current_context, jsonify, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def handle_login(data):
@@ -384,7 +384,7 @@ def login(username, password, lang, method='default'):
             }
             return response, 401
     elif method == 'ldap':
-        user_info, error = user.get_user_by_username({"select": ['users.id', 'users.username'], "username": username})
+        user_info, error = user.get_user_by_username({"select": ['users.id', 'username'], "username": username})
 
     if error is None:
         encoded_token = encode_auth_token(user_info['id'])
@@ -476,7 +476,7 @@ def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if 'Authorization' in request.headers:
-            where = ['username = %s']
+            where = ['LOWER(username) = %s']
             user_ws = password = False
             token = {}
             if 'Bearer' in request.headers['Authorization']:
@@ -493,7 +493,9 @@ def token_required(view):
                     if 'sub' in token:
                         if token['sub'].isnumeric():
                             where = ['id = %s']
-                        data = [token['sub']]
+                            data = [token['sub']]
+                        else:
+                            data = [token['sub'].lower()]
                     elif 'process_token' in token:
                         data = [token['process_token']]
                 except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
@@ -510,7 +512,7 @@ def token_required(view):
                 where.append('mode = %s')
                 basic_auth = request.headers['Authorization'].split('Basic')[1].lstrip()
                 username, password = base64.b64decode(basic_auth).decode('utf-8').split(':')
-                data = [username, 'webservice']
+                data = [username.lower(), 'webservice']
                 request.environ['fromBasicAuth'] = True
             else:
                 return (jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('AUTHORIZATION_HEADER_INCORRECT')}),
@@ -858,8 +860,8 @@ def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
             return {'status_search': True, 'ldap_users': connection.entries}
         else:
             return {'status_search': False, 'ldap_users': ""}
-    except LDAPException:
-        return False
+    except LDAPException as _e:
+        return {'status_search': False, 'error': str(_e)}
 
 
 def ldap_users_synchro(ldap_synchronization_data):
@@ -902,6 +904,11 @@ def ldap_users_synchro(ldap_synchronization_data):
                             "errors": gettext('LDAP_SYNCHRO_ERROR'),
                             "message": gettext('LDAP_SYNCHRO_INFOS_ERROR')
                         }
+                        if list_ldap_users['error']:
+                            error = {
+                                "errors": gettext('LDAP_SYNCHRO_ERROR'),
+                                "message": gettext('LDAP_SYNCHRO_INFOS_ERROR') + f" : {list_ldap_users['error']}"
+                            }
                 else:
                     error = {
                         "errors": gettext('LDAP_SYNCHRO_ERROR'),
@@ -931,7 +938,7 @@ def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, l
                 givenname = list_users_ldap[i][firstname_attribut][0] if firstname_attribut in list_users_ldap[i] else ''
                 lastname = list_users_ldap[i][lastname_attribut][0] if lastname_attribut in list_users_ldap[i] else ''
                 if user_id and givenname and lastname:
-                    user_data.append(user_id)
+                    user_data.append(user_id.lower())
                     user_data.append(givenname)
                     user_data.append(lastname)
                     ldap_users_data.append(user_data)
@@ -1010,15 +1017,15 @@ def check_database_users(ldap_users_data, default_role):
     })[0]
     if users_list:
         for user_info in users_list:
-            oc_users.append([user_info['username'], user_info['firstname'], user_info['lastname'], user_info['id']])
+            oc_users.append([user_info['username'].lower(), user_info['firstname'], user_info['lastname'], user_info['id']])
     for ldap_user in ldap_users_data:
         for oc_user in oc_users:
             if ldap_user[0] == oc_user[0]:
                 if ldap_user[1] == oc_user[1] and ldap_user[2] == oc_user[2]:
                     user_status = user.get_users({
                         'select': ['enabled'],
-                        'where': ['username = %s'],
-                        'data': [oc_user[0]]
+                        'where': ['LOWER(username) = %s'],
+                        'data': [oc_user[0].lower()]
                     })[0]
                     if user_status and len(user_status) >= 1 and not user_status[0]['enabled']:
                         user_id = user.get_user_by_username({
@@ -1053,8 +1060,8 @@ def check_database_users(ldap_users_data, default_role):
         if oc_user[0] != 'Same' and oc_user[0] != 'Updated':
             user_oc_status = user.get_users({
                 'select': ['enabled'],
-                'where': ['username = %s'],
-                'data': [oc_user[0]]
+                'where': ['LOWER(username) = %s'],
+                'data': [oc_user[0].lower()]
             })[0]
             if user_oc_status != '' and user_oc_status:
                 is_user_superadmin = auth.get_user_role_by_username(oc_user[0])

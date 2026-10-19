@@ -19,8 +19,9 @@
 
 group=www-data
 
-parameters="path venv_path user custom_id database_name database_hostname database_port database_user database_password docservers_path share_path dns"
-opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
+parameters="path venv_path user custom_id database_name database_hostname database_port database_user database_password docservers_path share_path"
+optional_parameters="dns"
+opts=$(getopt --longoptions "$(printf "%s:," $parameters)$(printf "%s::," $optional_parameters)" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -35,7 +36,13 @@ while [ $# -gt 0 ]; do
         --database_password) database_password="$2"; shift 2;;
         --docservers_path) docservers_path="$2"; shift 2;;
         --share_path) share_path="$2"; shift 2;;
-        --dns) custom_url="$2"; shift 2;;
+        --dns)
+            # --dns is optional and can be empty (--dns "", --dns alone or followed by another option)
+            if [ $# -ge 2 ] && [[ "$2" != --* ]]; then
+                custom_url="$2"; shift 2
+            else
+                custom_url=""; shift 1
+            fi;;
         *) echo "Invalid option: $1" >&2; exit 1;;
     esac
 done
@@ -166,7 +173,7 @@ cp "$DEFAULT_PATH"/backend/src/assets/imgs/logo_company.png "$NEW_CUSTOM_PATH/as
 # Write custom configuration in custom.ini file
 echo "[$custom_id]" >> $custom_ini_file
 echo "path = $CUSTOM_PATH/$custom_id" >> $custom_ini_file
-echo "url = $custom_url" >> $custom_ini_file
+echo "domain = $custom_url" >> $custom_ini_file
 echo -e "" >> $custom_ini_file
 
 ####################
