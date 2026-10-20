@@ -73,8 +73,10 @@ export const Select: React.FC<SelectProps> = ({
         [options]
     );
 
-    // If editable is true, allow picking a value outside of the predefined options (usefull for splitter metadata in custom fields choices)
-    // It add a new option to the list of options if the currently typed text (search) is not already in the list, and if it's not empty
+    // If editable is true, allow picking a value outside of the predefined options
+    // (usefull for splitter metadata in custom fields choices)
+    // It add a new option to the list of options if the currently typed text (search) is not already in the list,
+    // and if it's not empty
     const [search, setSearch] = useState('');
     const selectData = useMemo(() => {
         if (!editable) return uniqueOptions;
@@ -117,7 +119,7 @@ export const Select: React.FC<SelectProps> = ({
 
     return (
         <div className='w-full relative'>
-            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex 
+            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex
                               justify-items-stretch ${ disabled ? 'cursor-not-allowed opacity-70' : '' }` }
             >
                 <span className='w-full'>

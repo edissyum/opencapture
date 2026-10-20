@@ -531,7 +531,10 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                     { watchTest && (
                                         <div className='mt-2 p-4 rounded-md w-fit'>
                                             <div
-                                                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(highlightedResult) } }/>
+                                                dangerouslySetInnerHTML={
+                                                    { __html: DOMPurify.sanitize(highlightedResult) }
+                                                }
+                                            />
                                         </div>
                                     ) }
 

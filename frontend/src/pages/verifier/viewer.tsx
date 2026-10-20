@@ -1440,7 +1440,9 @@ export function VerifierViewerPage() {
                                                                     disabled={ disableFields }
                                                                     value={ tmpDocumentData?.datas?.[field.id] }
                                                                     options={ getFilteredConditionalOptions(field) }
-                                                                    onChange={ (value) => updateDocumentData(field, value) }
+                                                                    onChange={ (value) => {
+                                                                        updateDocumentData(field, value)
+                                                                    } }
                                                                 />
                                                             ) }
 
@@ -1456,7 +1458,9 @@ export function VerifierViewerPage() {
                                                                         value: plan.compte_num,
                                                                         label: plan.compte_lib
                                                                     })) }
-                                                                    onChange={ (value) => updateDocumentData(field, value) }
+                                                                    onChange={ (value) => {
+                                                                        updateDocumentData(field, value)
+                                                                    } }
                                                                 />
                                                             ) }
 
@@ -1470,7 +1474,9 @@ export function VerifierViewerPage() {
                                                                     required={ field.required }
                                                                     suggestions={ field.values || [] }
                                                                     value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                    onChange={ (value) => updateDocumentData(field, value) }
+                                                                    onChange={ (value) => {
+                                                                        updateDocumentData(field, value)
+                                                                    } }
                                                                     search={ () => {
                                                                     } }
                                                                 />

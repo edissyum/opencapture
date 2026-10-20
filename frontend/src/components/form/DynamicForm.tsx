@@ -161,7 +161,10 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
 
                                 { errors[field.name]?.message && (
                                     <p className="text-(--text-error) text-xs ml-1 mt-1"
-                                       dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(errors[field.name]?.message) } }/>
+                                       dangerouslySetInnerHTML={
+                                           { __html: DOMPurify.sanitize(errors[field.name]?.message) }
+                                       }
+                                    />
                                 ) }
                             </div>
                         ) }

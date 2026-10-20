@@ -452,7 +452,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         });
     }
 
-    const processSchema = processSchemaStartSwitchs.extend(processSchemaInputFields.shape).extend(processSchemaEndSwitchs.shape);
+    let processSchema = processSchemaStartSwitchs.extend(processSchemaInputFields.shape);
+    processSchema = processSchema.extend(processSchemaEndSwitchs.shape);
 
     const outputSchema = z.object({
         outputs_id: z.array(z.number()).describe(JSON.stringify({

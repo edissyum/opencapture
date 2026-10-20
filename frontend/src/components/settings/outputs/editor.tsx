@@ -286,7 +286,8 @@ export function OutputEditor({ module }: { module: string }) {
 
         setLoadingStep(true);
 
-        const authFunctionName: any = getTestConnectionMapping().find((m: any) => m.id === outputType.output_type_id)?.function;
+        const mapping = getTestConnectionMapping();
+        const authFunctionName: any = mapping.find((m: any) => m.id === outputType.output_type_id)?.function;
         const authOptions: any = {};
         outputType?.data?.options?.auth.forEach((option: any) => {
             authOptions[option.id] = output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '';

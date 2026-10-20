@@ -1131,7 +1131,8 @@ export function SplitterViewerPage() {
             if (conditionalCustomField) {
                 let conditionalFieldValue = documentMetadataValues[documentId]?.[conditionalCustomField.label_short];
                 if (conditionalCustomField.type === 'select' && conditionalFieldValue) {
-                    const conditionalOption = conditionalCustomField.settings.options.find((o: any) => o.id === conditionalFieldValue.id);
+                    const options = conditionalCustomField.settings.options;
+                    const conditionalOption = options.find((o: any) => o.id === conditionalFieldValue.id);
                     if (conditionalOption) {
                         conditionalFieldValue = conditionalOption.id;
                     }

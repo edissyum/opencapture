@@ -306,7 +306,7 @@ export function Table<T extends { id: string }>({
                                         <Checkbox
                                             id={ row.id }
                                             checked={ selectedRows.some(r => r.id === row.id) }
-                                            onChange={ (checked: boolean, id: string | undefined) => onSelect(checked, id) }
+                                            onChange={ (checked: boolean, id: any) => onSelect(checked, id) }
                                         />
                                     </MantineTable.Td>
                                 ) }
