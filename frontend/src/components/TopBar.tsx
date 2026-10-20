@@ -17,6 +17,7 @@
 
 import { t } from "i18next";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { CloudUpload, Package } from "lucide-react";
 
 import { Select } from "./Select";
@@ -28,6 +29,8 @@ import { useCustom } from "../services/custom/customContext";
 
 export default function TopBar() {
     const custom = useCustom();
+    const location = useLocation();
+
     const options = [
         {
             id: 'verifier',
@@ -48,11 +51,11 @@ export default function TopBar() {
 
     const handleSelect = (option: string) => {
         setSelected(option);
-        localStorage.setItem(`${custom}_selectedModule`, option);
+        localStorage.setItem(`${ custom }_selectedModule`, option);
         window.dispatchEvent(new Event("updateModule"));
     };
 
-    const storedModule = localStorage.getItem(`${custom}_selectedModule`);
+    const storedModule = localStorage.getItem(`${ custom }_selectedModule`);
     if (storedModule && !selected) {
         handleSelect(storedModule)
     }
@@ -88,12 +91,24 @@ export default function TopBar() {
                         </div>
                     ) }
                 />
-                <Button to="/home" icon={ <Package size={ 24 }/> } className="font-semibold p-2.5!" size='md'>
+
+                <Button
+                    size='md'
+                    icon={ <Package size={ 24 }/> }
+                    className="font-semibold p-2.5!"
+                    to={ location.pathname !== '/home' ? '/home' : undefined }
+                    onClick={ () => {
+                        if (location.pathname == '/home') {
+                            window.dispatchEvent(new Event('refreshHome'))
+                        }
+                    } }
+                >
                     { storedModule === 'verifier' ? t('VERIFIER.documents') : t('GLOBAL.batches') }
                 </Button>
 
                 { hasRequiredPermissions(user, ['upload']) && (
-                    <Button to="/upload" icon={ <CloudUpload size={ 24 }/> } className="font-semibold p-2.5!" size='md' variant='no_bg'>
+                    <Button to="/upload" icon={ <CloudUpload size={ 24 }/> } className="font-semibold p-2.5!" size='md'
+                            variant='no_bg'>
                         { t('GLOBAL.upload') }
                     </Button>
                 ) }

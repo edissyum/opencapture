@@ -150,9 +150,14 @@ export default function Sidebar() {
             </div>
 
             <nav className={ `${ collapsed ? 'items-center' : '' } flex flex-col gap-1.5` }>
-                <Link to="/home" className={ `${ standardClasses } ${
-                    ['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : ""
-                }` }>
+                <Link
+                    to="/home"
+                    onClick={ () => {
+                        if (location.pathname == '/home') {
+                            window.dispatchEvent(new Event('refreshHome'))
+                        }
+                    } }
+                    className={ `${ standardClasses } ${['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : "" }` }>
                     <House className='shrink-0' size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('GLOBAL.home')

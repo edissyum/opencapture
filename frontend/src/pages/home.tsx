@@ -32,6 +32,7 @@ export function HomePage() {
         splitter: SplitterListPage
     }
     const [module, setModule] = useState("");
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const { user, loadingUser } = useUser();
 
@@ -54,12 +55,21 @@ export function HomePage() {
         return () => window.removeEventListener("updateModule", handler);
     }, []);
 
+    useEffect(() => {
+        // Remount the module list to reload its data without reloading the whole page
+        const handler = () => setRefreshKey((key) => key + 1);
+
+        window.addEventListener("refreshHome", handler);
+        console.log('here')
+        return () => window.removeEventListener("refreshHome", handler);
+    }, []);
+
     if (loadingUser) return;
 
     if (selectedModule) {
         if (hasRequiredPermissions(user, selectedModule === 'verifier' ? ['access_verifier'] : ['access_splitter'])) {
             return (
-                <ModuleComponent />
+                <ModuleComponent key={ refreshKey }/>
             );
         } else {
             return (
@@ -72,6 +82,6 @@ export function HomePage() {
     }
 
     return (
-        <ModuleComponent />
+        <ModuleComponent key={ refreshKey }/>
     );
 }
