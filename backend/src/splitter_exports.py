@@ -126,7 +126,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
                 return res_export_opencaptureformem, status
             batch = res_export_opencaptureformem['result_batch']
         elif output['output_type_id'] == 'export_xml':
-            res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
+            res_export_xml, status = handle_xml_output(batch, output['parameters'], regex, log)
             if status != 200:
                 return res_export_xml, status
             batch = res_export_xml['result_batch']
@@ -401,7 +401,7 @@ def handle_cmis_output(output, batch, log, docservers, regex, nfz42020):
             'empty_line_regex': regex['splitter_empty_line'],
             'xml_comment_regex': regex['splitter_xml_comment']
         }
-        res_export_xml, status = handle_xml_output(batch, parameters, regex)
+        res_export_xml, status = handle_xml_output(batch, parameters, regex, log)
         if status != 200:
             for document in res_pdf_export['result_batch']['documents']:
                 if os.path.isfile(document['export_path']):
