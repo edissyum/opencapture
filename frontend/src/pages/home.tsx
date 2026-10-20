@@ -60,7 +60,6 @@ export function HomePage() {
         const handler = () => setRefreshKey((key) => key + 1);
 
         window.addEventListener("refreshHome", handler);
-        console.log('here')
         return () => window.removeEventListener("refreshHome", handler);
     }, []);
 
