@@ -1,9 +1,10 @@
 [MESSAGES CONTROL]
-disable=broad-except,too-many-return-statements,wrong-import-order,too-many-boolean-expressions,inconsistent-return-statements,too-many-nested-blocks,import-error,no-else-return,missing-function-docstring,missing-class-docstring,missing-module-docstring,line-too-long,consider-using-sys-exit,too-few-public-methods,too-many-instance-attributes,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
+# line-too-long (COD-09) and broad-exception-caught (ERR-02) are enabled
+disable=cyclic-import,duplicate-code,too-many-return-statements,wrong-import-order,too-many-boolean-expressions,inconsistent-return-statements,too-many-nested-blocks,import-error,no-else-return,missing-function-docstring,missing-class-docstring,missing-module-docstring,consider-using-sys-exit,too-few-public-methods,too-many-instance-attributes,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
 
 [BASIC]
-good-names=i,j,k,e,df,_,id
-bad-names=foo,bar,baz,toto,tmp
+good-names=i,j,k,e,d,df,_,id
+bad-names=foo,bar,baz,toto,tmp,do_stuff,l
 include-naming-hint=yes
 
 variable-naming-style=snake_case
@@ -11,8 +12,18 @@ function-naming-style=snake_case
 method-naming-style=snake_case
 argument-naming-style=snake_case
 attr-naming-style=snake_case
+module-naming-style=snake_case
 class-naming-style=PascalCase
 const-naming-style=UPPER_CASE
+class-const-naming-style=UPPER_CASE
+
+[FORMAT]
+indent-string='    '
+max-line-length=120
+
+[DEPRECATED_BUILTINS]
+bad-functions=print
 
 [MASTER]
 ignore=tests
+load-plugins=pylint.extensions.bad_builtin

@@ -21,8 +21,8 @@ import pypdf
 import magic
 import base64
 
+from flask import request
 from flask_babel import gettext
-from flask import current_app, request
 from pdf2image import convert_from_path
 from werkzeug.datastructures import FileStorage
 
@@ -39,7 +39,7 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False, c
         custom_id = retrieve_custom_from_url(request)
 
     docservers = get_context_var('docservers', 9)
-    message, code = check_extensions_mime(files, custom_id, 'attachments')
+    message, code = check_extensions_mime(files, 'attachments')
     if code != 200:
         return message, code
 
@@ -193,7 +193,7 @@ def delete_attachment(attachment_id, module):
     return _attachment, 200
 
 
-def download_attachment(attachment_id, module):
+def download_attachment(attachment_id):
     _attachment = attachments.get_attachment_by_id(attachment_id)
 
     if _attachment:

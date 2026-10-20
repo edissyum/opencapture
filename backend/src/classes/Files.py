@@ -80,7 +80,6 @@ def rotate_img(img):
                     src.save(img)
         except RuntimeError:
             ai_rotate_error = True
-            pass
 
     if not current_app.config['ROTATE_MODEL'] or ai_rotate_error:
         try:
@@ -438,7 +437,7 @@ class Files:
                 filename = os.path.splitext(file)[0]
                 is_countable = filename.split('-')
                 if len(is_countable) > 1:
-                    cpt = ('%03d' % int(is_countable[1]))
+                    cpt = '%03d' % int(is_countable[1])
                     file_json.append((cpt, path + '/' + file))
                 else:
                     file_json.append(('000', path + '/' + file))
@@ -806,7 +805,7 @@ class Files:
         is_ocr = False
         if file_path.lower().endswith('.pdf'):
             pdf_reader = pypdf.PdfReader(file_path, strict=False)
-            for index in range(pdf_reader.pages.__len__()):
+            for index in range(len(pdf_reader.pages)):
                 page_content = pdf_reader.pages[index].extract_text()
                 if page_content:
                     is_ocr = True

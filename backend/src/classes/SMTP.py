@@ -104,7 +104,7 @@ class SMTP:
 
             now = datetime.strptime(datetime.now().strftime('%d/%m/%Y %H:%M'), '%d/%m/%Y %H:%M')
             diff = now - last_mail_send
-            diff_minutes = (diff.days * 1440 + diff.seconds / 60)
+            diff_minutes = diff.days * 1440 + diff.seconds / 60
 
         if not self.dest_mail:
             return
@@ -154,7 +154,7 @@ class SMTP:
 
             now = datetime.strptime(datetime.now().strftime('%d/%m/%Y %H:%M'), '%d/%m/%Y %H:%M')
             diff = now - last_mail_send
-            diff_minutes = (diff.days * 1440 + diff.seconds / 60)
+            diff_minutes = diff.days * 1440 + diff.seconds / 60
 
         msg = MIMEMultipart()
         msg['To'] = self.dest_mail
@@ -193,7 +193,7 @@ class SMTP:
 
             now = datetime.strptime(datetime.now().strftime('%d/%m/%Y %H:%M'), '%d/%m/%Y %H:%M')
             diff = now - last_mail_send
-            diff_minutes = (diff.days * 1440 + diff.seconds / 60)
+            diff_minutes = diff.days * 1440 + diff.seconds / 60
 
         msg = MIMEMultipart()
         msg['To'] = dest

@@ -512,7 +512,8 @@ def get_totals_by_status(args):
 
     if 'time' in args and args['time']:
         if args['time'] in ['today', 'yesterday']:
-            where.append("to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+            where.append("to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "',"
+                                                                                                       " 'YYYY-MM-DD')")
         elif args['time'] == 'older':
             where.append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 

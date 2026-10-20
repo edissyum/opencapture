@@ -1479,7 +1479,6 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (63, 'workflows_list_s
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (64, 'add_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'update_login_bottom_message', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'custom_fields_advanced', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'attachments_list_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (70, 'attachments_list_verifier', 'verifier');

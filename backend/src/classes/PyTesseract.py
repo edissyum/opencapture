@@ -22,9 +22,6 @@ import xml.etree.ElementTree as Et
 
 from flask import current_app
 
-from .. import shared
-
-
 class PyTesseract:
     def __init__(self, locale, log, config):
         self.log = log

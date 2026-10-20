@@ -29,9 +29,9 @@ import tempfile
 from .. import shared
 from xml.dom import minidom
 from datetime import datetime
+from ..models import workflow
 from flask_babel import gettext
 from unidecode import unidecode
-from ..models import workflow, custom_fields
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
 from ..scripting_functions import launch_script_splitter
@@ -499,8 +499,8 @@ class Splitter:
         date = f"{day}-{month}-{year} {hour}:{minute}:{second}"
 
         user_lastname = metadata['custom_fields']['userLastName'] if 'userLastName' in metadata['custom_fields'] else ''
-        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata[
-            'custom_fields'] else ''
+        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] \
+            else ''
 
         xml_as_string = parameters['xml_template']
 

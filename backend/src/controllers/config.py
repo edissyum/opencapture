@@ -437,7 +437,7 @@ def get_packages():
     if not os.path.isfile('../install/pip-requirements.txt'):
         return []
 
-    with open('../install/pip-requirements.txt', 'r') as f:
+    with open('../install/pip-requirements.txt', 'r', encoding='utf-8') as f:
         packages = [line.strip() for line in f if line.strip() and not line.startswith('#') and not line.startswith('--')]
 
     return packages
@@ -446,7 +446,7 @@ def get_packages():
 def get_certified_copy():
     path = shared.custom_path + '/journal/config/config.json'
     if os.path.isfile(path):
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             config_data = f.read()
             return config_data, 200
     else:
@@ -459,7 +459,7 @@ def get_certified_copy():
 def update_certified_copy(args):
     path = shared.custom_path + '/journal/config/config.json'
     if os.path.isfile(path):
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
         data['enabled'] = args['enabled']
@@ -470,7 +470,7 @@ def update_certified_copy(args):
                 data[args['provider']]['key'] = args['key']
                 data[args['provider']]['cert'] = args['cert']
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding='utf-8') as f:
             json.dump(data, f, indent=4)
 
         history.add_history({

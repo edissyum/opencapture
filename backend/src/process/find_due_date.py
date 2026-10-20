@@ -105,7 +105,7 @@ class FindDueDate:
                     try:
                         tmp_date = doc_date.strftime('%Y-%m-%d')
                         return tmp_date, position
-                    except Exception as e:
+                    except (Exception, ) as e:
                         self.log.info("Error while converting due date : " + str(e))
                 return date, position
             except (ValueError, IndexError) as _e:
@@ -150,7 +150,7 @@ class FindDueDate:
                 if position and position[0]['document_due_date_position'] not in [False, 'NULL', '', None]:
                     position = position[0]
                     data = {'position': position['document_due_date_position'], 'regex': None, 'target': 'full', 'page': position['document_due_date_page']}
-                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
                     if text:
                         res = self.format_date(text, position, True)
                         if res:

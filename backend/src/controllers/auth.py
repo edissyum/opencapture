@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
-import os
 import jwt
 import uuid
 import ldap3

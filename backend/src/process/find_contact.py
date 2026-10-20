@@ -113,7 +113,7 @@ def run_inference(img_path, log):
     # Check all sub-folders for .gguf files
     out = ""
     workdir = None
-    for root, dirs, files in os.walk(current_app.config['CONTACT_MODEL']):
+    for root, _, files in os.walk(current_app.config['CONTACT_MODEL']):
         for filename in files:
             if filename.lower().endswith(".gguf"):
                 workdir = root
@@ -288,17 +288,19 @@ class FindContact:
                 return [contact['vat_number'], {}, contact, '']
 
         # Create contact if not exists
-        if ('company' in found_contact and found_contact['company']) or ('lastname' in found_contact and found_contact['lastname']):
+        if (('company' in found_contact and found_contact['company']) or
+            ('lastname' in found_contact and found_contact['lastname'])):
             address = ''
-            if 'address' in found_contact and found_contact['address'] and 'num_address' in found_contact and found_contact[
-                'num_address']:
+            if ('address' in found_contact and found_contact['address'] and 'num_address' in found_contact
+                and found_contact['num_address']):
                 address = found_contact['num_address'] + ' ' + found_contact['address']
             elif 'address' in found_contact and found_contact['address']:
                 address = found_contact['address']
 
             address_data = {
                 'address1': address,
-                'address2': found_contact['additional_address'].title() if 'additional_address' in found_contact else '',
+                'address2': found_contact['additional_address'].title() if 'additional_address' in found_contact
+                            else '',
                 'city': found_contact['city'] if 'city' in found_contact else '',
                 'postal_code': found_contact['postal_code'] if 'postal_code' in found_contact else ''
             }

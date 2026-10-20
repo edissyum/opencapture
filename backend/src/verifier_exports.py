@@ -404,14 +404,14 @@ def export_facturx(data, log, document_info):
 
         supplier = {}
         if 'supplier_id' in document_info:
-             supplier = database.select({
-                 'select': ['*'],
-                 'table': ['accounts_supplier', 'addresses'],
-                 'left_join': ['accounts_supplier.address_id = addresses.id'],
-                 'where': ['accounts_supplier.id = %s', 'accounts_supplier.status <> %s'],
-                 'data': [document_info['supplier_id'], 'DEL']
-             })
-             if supplier:
+            supplier = database.select({
+                'select': ['*'],
+                'table': ['accounts_supplier', 'addresses'],
+                'left_join': ['accounts_supplier.address_id = addresses.id'],
+                'where': ['accounts_supplier.id = %s', 'accounts_supplier.status <> %s'],
+                'data': [document_info['supplier_id'], 'DEL']
+            })
+            if supplier:
                 supplier = supplier[0]
 
         seller_address = Et.SubElement(facturx_seller, 'ram:PostalTradeAddress')
@@ -496,7 +496,7 @@ def export_facturx(data, log, document_info):
         docservers = get_context_var('docservers', 9)
         file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info['path'] + '/' + document_info['filename']
         facturx.generate_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
-        
+
         log.debug('FacturX PDF export success')
         return folder_out + '/' + filename, 200
     else:
@@ -584,7 +584,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
         if 'id' in document_info and document_info['id']:
             attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
             if attachments_list:
-                pdf_filename, pdf_extension = os.path.splitext(filename)
+                pdf_filename, _ = os.path.splitext(filename)
                 zip_filename =  pdf_filename + '_attachments.zip'
                 with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
                     for attachment in attachments_list:

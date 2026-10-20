@@ -68,10 +68,10 @@ class FindFooterRaw:
                 if regex == self.regex['vat_amount']:
                     data = re.sub(r"" + self.regex['vat_amount'][:-2], '', res.group())  # Delete the vat amount number keyword
 
-                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
+                tmp_data = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
-                for _t in tmp:
+                for _t in tmp_data:
                     if ('.' in _t.group() or ',' in _t.group()) and i > 1:
                         # If two amounts are found, separate them
                         continue
@@ -129,7 +129,7 @@ class FindFooterRaw:
                 page = self.nb_pages
 
             data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-            text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+            text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
             if text:
                 try:
                     # Try if the return string could be convert to float

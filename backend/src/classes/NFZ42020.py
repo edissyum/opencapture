@@ -196,7 +196,8 @@ class NFZ42020:
             headers={
                 "Content-Type": "application/timestamp-query",
                 "Accept": "application/timestamp-reply"
-            }
+            },
+            timeout=60
         )
 
         if response.status_code == 200:

@@ -19,8 +19,6 @@ import os
 import sys
 import json
 
-import psycopg
-
 from . import shared
 from .classes.Log import Log
 from .classes.SMTP import SMTP
@@ -195,7 +193,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     nfz42020 = NFZ42020(log, nfz42020_path, False)
     nfz42020_config = nfz42020_path + '/config/config.json'
     if os.path.isfile(nfz42020_config):
-        nfz42020_config = json.load(open(nfz42020_config))
+        nfz42020_config = json.load(open(nfz42020_config, encoding='utf-8'))
         if not nfz42020_config:
             log.error('NF Z42-020 journal config file is empty or invalid, journal won\'t be initialized')
         else:

@@ -406,7 +406,7 @@ def delete_custom_field_from_forms(args):
                     cpt = 0
                     for line in fields[0]['fields'][tmp_field]:
                         if isinstance(line, dict):
-                            for key, field in line.items():
+                            for _, field in line.items():
                                 if not isinstance(field, bool) and field['id'].startswith('custom_'):
                                     custom_id = field['id'].split('_')[1]
                                     if int(custom_id) == int(args['custom_field_id']):
@@ -473,7 +473,7 @@ def custom_present_in_form(args):
                 for tmp_field in fields[0]['fields']:
                     for line in fields[0]['fields'][tmp_field]:
                         if isinstance(line, dict):
-                            for key, field in line.items():
+                            for _, field in line.items():
                                 if not isinstance(field, bool) and field['id'].startswith('custom_'):
                                     custom_id = field['id'].split('_')[1]
                                     if int(custom_id) == int(args['custom_field_id']):

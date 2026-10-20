@@ -79,7 +79,7 @@ class OpenCaptureForMEMWebServices:
 
         res = requests.post(self.base_url + '/upload', data=args,
                             headers=self.headers, timeout=self.timeout, verify=False)
-        if res.status_code != 200 and res.status_code != 201:
+        if res.status_code not in (200, 201):
             self.log.error('(' + str(res.status_code) + ') uploadError : ' + str(res.text))
             return res.text, res.status_code
         return json.loads(res.text), 200

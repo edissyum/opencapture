@@ -206,7 +206,7 @@ def export_pdf_files(batch, parameters, log, docservers, nfz42020):
 
         attachments_list = attachments.get_attachments_by_batch_id(batch['id'])
         if attachments_list:
-            pdf_filename, pdf_extension = os.path.splitext(document['filename'])
+            pdf_filename, _ = os.path.splitext(document['filename'])
             zip_filename = pdf_filename + '_attachments.zip'
             with ZipFile(document['folder_out'] + '/' + zip_filename, 'w') as zip_file:
                 for attachment in attachments_list:

@@ -125,7 +125,7 @@ def rest_validator(data, required_fields, only_data=False):
     return True, ''
 
 
-def check_extensions_mime(files, custom_id, document_type='document'):
+def check_extensions_mime(files, document_type='document'):
     formats_file = current_app.config['INSTANCE_PATH'] + '/config/extensions.json'
     if document_type == 'attachments':
         formats_file = current_app.config['INSTANCE_PATH'] + '/config/attachment_extensions.json'
@@ -324,7 +324,7 @@ def retrieve_custom_list():
     custom_list = []
     if custom_ini_file:
         customs_config = _Config(custom_ini_file)
-        for custom_name, custom_param in customs_config.cfg.items():
+        for custom_name, _ in customs_config.cfg.items():
             custom_list.append(custom_name)
     return custom_list
 
@@ -352,7 +352,7 @@ def check_python_customized_files(path):
     return array_of_import
 
 
-def search_custom_positions(data, ocr, files, regex, file, docservers):
+def search_custom_positions(data, ocr, files, regex, file):
     extension = os.path.splitext(file)[1]
     if 'pdf' in extension.lower():
         if 'page' not in data or not data['page'] or data['page'] > files.get_pages(file):
@@ -388,7 +388,7 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
                     target_file = files.jpg_name_last
             else:
                 custom_file_ok = False
-                for i in range(1, int(data['page']) + 1):
+                for _ in range(1, int(data['page']) + 1):
                     files.pdf_to_jpg(file, int(data['page']), False, False, False, False, True)
                     target_file = files.custom_file_name
                     if os.path.isfile(target_file):

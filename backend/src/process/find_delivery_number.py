@@ -70,7 +70,7 @@ class FindDeliveryNumber:
                 if position and position[0]['delivery_number_position'] not in [False, 'NULL', '', None]:
                     position = position[0]
                     data = {'position': position['delivery_number_position'], 'regex': None, 'target': 'full', 'page': position['delivery_number_page']}
-                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
 
                     try:
                         position = json.loads(position)

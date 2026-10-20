@@ -119,7 +119,8 @@ class FindWithAI:
         ai_llm_res = requests.post(
             self.llm_model['url'],
             headers=headers,
-            json=self.llm_model['json_content']
+            json=self.llm_model['json_content'],
+            timeout=60
         )
 
         if ai_llm_res.status_code != 200:
