@@ -77,7 +77,7 @@ export default tseslint.config([
             'react-hooks/set-state-in-effect': 'off',
             'react-hooks/incompatible-library': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
-            'react-refresh/only-export-components': 'off',
+            'react-refresh/only-export-components': 'off'
         }
     }
 ])

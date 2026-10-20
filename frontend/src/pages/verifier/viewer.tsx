@@ -1412,7 +1412,7 @@ export function VerifierViewerPage() {
                                                             { showAutoLogo(field) && (
                                                                 <div data-tooltip-id="tooltip"
                                                                      data-tooltip-content={ t("VERIFIER.data_found_auto") }
-                                                                     className='absolute z-1 -top-1 -right-1 text-(--text-secondary) bg-(--bg-primary)'
+                                                                     className='absolute z-1 -top-1 -right-1 text-(--text-secondary)/60 bg-(--bg-primary)'
                                                                 >
                                                                     <Zap className='size-4'/>
                                                                 </div>
