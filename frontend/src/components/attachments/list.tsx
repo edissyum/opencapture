@@ -372,4 +372,3 @@ export function AttachmentsList({
         </div>
     );
 }
-

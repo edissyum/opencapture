@@ -20,7 +20,6 @@ import { useEffect, useState } from "react";
 
 import { CheckOverlay } from "../../components/CheckOverlay";
 
-
 export function Step4() {
     const [selectedView, setSelectedView] = useState<string>(() => {
         return localStorage.getItem('selectedView') || 'list';
@@ -41,7 +40,7 @@ export function Step4() {
                 </p>
             </div>
             <div className="flex gap-4">
-                <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border 
+                <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border
                         border-(--border-primary) rounded-lg transition-colors
                         ${ selectedView === 'grid' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('grid') }>
@@ -56,7 +55,7 @@ export function Step4() {
                         </div>
                     </div>
                 </div>
-                <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border 
+                <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border
                         border-(--border-primary) rounded-lg transition-colors
                         ${ selectedView === 'list' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('list') }>

@@ -83,7 +83,9 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
                                         { err.response.data?.errors }
                                     </strong>
                                 </h4>
-                                <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(err.response.data?.message) }}/>
+                                <p
+                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(err.response.data?.message) }}
+                                />
                             </div>, "error"
                         )
                     } else {

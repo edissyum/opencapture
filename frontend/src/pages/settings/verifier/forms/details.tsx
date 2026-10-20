@@ -24,7 +24,6 @@ import { InputSwitch } from "../../../../components/InputSwitch";
 import MultiSelectInput from "../../../../components/MultiSelect";
 import { AxiosApiCall } from "../../../../services/hooks/AxiosApiCall";
 
-
 export function SettingsVerifierFormsDetails({
     submit,
     submitLabel,

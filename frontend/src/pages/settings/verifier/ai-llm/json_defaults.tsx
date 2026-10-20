@@ -39,7 +39,7 @@ export const defaultPrompts: any = [
     }
 ];
 
-export const defaultResponseFormat   : any           = {
+export const defaultResponseFormat : any = {
     "type": "json_schema",
     "json_schema": {
         "name": "invoice_info",

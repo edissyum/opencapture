@@ -291,7 +291,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         }
     }, [watchWorkflowId]);
 
-
     let inputSchemaFields = z.object({
         input_folder: z.string().optional().describe(JSON.stringify({
             component: "input",
@@ -746,8 +745,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                     onChange={ (value) => setInputScript(value || '') }
                                     theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                                 />
-                                <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                    duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                <label className={ `absolute left-3 select-none pointer-events-none transition-all
+                                                    duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary)
                                                     text-(--text-secondary)` }
                                 >
                                     { t("WORKFLOWS.script_content") }
@@ -830,8 +829,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 onChange={ (value) => setProcessScript(value || '') }
                                 theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                             />
-                            <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                            <label className={ `absolute left-3 select-none pointer-events-none transition-all
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary)
                                                         text-(--text-secondary)` }
                             >
                                 { t("WORKFLOWS.script_content") }

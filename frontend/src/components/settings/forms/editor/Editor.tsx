@@ -110,7 +110,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const [formSettingsLoading, setFormSettingsLoading] = useState(true);
     const [formSettings, setFormSettings] = useState<any>({ "label": '', default_form: false, "settings": {} });
 
-
     const getUniqueId = () => {
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let result = "";
