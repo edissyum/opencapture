@@ -98,6 +98,7 @@ class DoctypeTest(unittest.TestCase):
 
         response = self.app.post(f'/{CUSTOM_ID}/ws/doctypes/generateSeparator', json=payload,
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        print(response.json)
         try:
             base64.b64decode(response.json['encoded_file'].replace('data:application/pdf;base64,', ''))
             base64.b64decode(response.json['encoded_thumbnails'][0])
