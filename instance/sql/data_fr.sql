@@ -390,7 +390,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
-INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "data") VALUES ('export_opencrm', 'Export vers OpenCRM', 'verifier', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (6, 'export_opencrm', 'Export vers OpenCRM', 'verifier', '{
     "options": {
         "auth": [
             {
