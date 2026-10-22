@@ -92,7 +92,7 @@ export function VerifierViewerPage() {
 
     const [accountingPlan, setAccountingPlan] = useState<any[]>([]);
     const { customFields, loading: loadingCustom } = useCustomFields("verifier");
-    const { formFields, loading: loadingFormFields } = useFormFields(documentData ? documentData.form_id : 0);
+    const { formFields, civilities, loading: loadingFormFields } = useFormFields(documentData ? documentData.form_id : 0);
 
     const [fieldsZone, setFieldsZone] = useState(() => ([
         { id: "supplier", name: t('FORMS.supplier'), lines: [] as any[] },
@@ -162,15 +162,15 @@ export function VerifierViewerPage() {
                     updateDocument({ locked: true, locked_by: user.id }).then();
                 }
             } catch (error) {
-                console.error("Error fetching document data:", error);
+                console.error("Error fetching document data :", error);
             }
         };
         fetchDocumentData().then();
     }, [documentId, loadingUser]);
 
     // Fetch form settings
-    // Fetch enable attachments config
     // Fetch accounting plan
+    // Fetch enable attachments config
     useEffect(() => {
         if (!documentData) return;
 
@@ -181,7 +181,7 @@ export function VerifierViewerPage() {
                     setEnableAttachments(res.configuration[0].data.value);
                 }
             } catch (error) {
-                console.error("Error fetching enable attachments config:", error);
+                console.error("Error fetching enable attachments config :", error);
             }
         }
 
@@ -198,7 +198,7 @@ export function VerifierViewerPage() {
                     setLoadingOutputs(false);
                 }
             } catch (error) {
-                console.error("Error fetching form settings:", error);
+                console.error("Error fetching form settings :", error);
             } finally {
                 setLoadingLinksMEM(false);
             }
@@ -216,7 +216,7 @@ export function VerifierViewerPage() {
                     setAccountingPlan(res);
                 }
             } catch (error) {
-                console.error("Error fetching accounting plan:", error);
+                console.error("Error fetching accounting plan :", error);
             }
         }
 
@@ -229,7 +229,7 @@ export function VerifierViewerPage() {
                     }
                 }
             } catch (error) {
-                console.error('Error fetching workflow details:', error);
+                console.error('Error fetching workflow details :', error);
             }
         };
 
@@ -248,7 +248,7 @@ export function VerifierViewerPage() {
                     setSuggestionsSuppliers(response.suppliers.slice(0, 100) || []);
                 });
             } catch (error) {
-                console.error("Error fetching all third parties:", error);
+                console.error("Error fetching all third parties :", error);
             }
         }
 
@@ -281,7 +281,7 @@ export function VerifierViewerPage() {
             setSupplierExists(true);
         } catch (error) {
             setSupplierExists(false);
-            console.error("Error fetching third party:", error);
+            console.error("Error fetching third party :", error);
         }
     }
 
@@ -319,7 +319,7 @@ export function VerifierViewerPage() {
                     setPagesImageB64(prev => ({ ...prev, [page]: 'data:image/jpeg;base64,' + response.file }));
                 });
             } catch (error) {
-                console.error(`Error fetching page ${ page } data:`, error);
+                console.error(`Error fetching page ${ page } data :`, error);
             }
         };
         fetchDocumentPages(currentPage).then();
@@ -408,6 +408,10 @@ export function VerifierViewerPage() {
                                     }
                                     field.settings = customField.settings;
                                 }
+                            }
+
+                            if (field.id === 'civility') {
+                                field.settings = { options: civilities };
                             }
 
                             if (field.default_value && (!tmpDocumentData?.datas?.[field.id] || tmpDocumentData?.datas?.[field.id] === '')) {
@@ -1436,8 +1440,8 @@ export function VerifierViewerPage() {
                                                                 <Select
                                                                     id={ field.id }
                                                                     label={ t(field.label) }
-                                                                    required={ field.required }
                                                                     disabled={ disableFields }
+                                                                    required={ field.required }
                                                                     value={ tmpDocumentData?.datas?.[field.id] }
                                                                     options={ getFilteredConditionalOptions(field) }
                                                                     onChange={ (value) => {
@@ -1494,8 +1498,12 @@ export function VerifierViewerPage() {
                                                                             required={ field.required }
                                                                             suggestions={ suggestionsSuppliers }
                                                                             value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                            onChange={ (value) => handleSupplierChange(field, value) }
-                                                                            search={ (value: string) => handleSupplierSearch(value, field.id) }
+                                                                            onChange={ (value) => {
+                                                                                handleSupplierChange(field, value);
+                                                                            } }
+                                                                            search={ (value: string) => {
+                                                                                handleSupplierSearch(value, field.id)
+                                                                            } }
                                                                         />
                                                                     ) : (
                                                                         <Input

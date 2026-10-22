@@ -121,7 +121,7 @@ export function SupplierEditor({
                     setCivilities(response.civilities);
                 }
             } catch (error) {
-                console.error('Error fetching civilities:', error);
+                console.error('Error fetching civilities :', error);
             }
         }
 
@@ -137,7 +137,7 @@ export function SupplierEditor({
                     });
                 }
             } catch (error) {
-                console.error('Error fetching accounting plans:', error);
+                console.error('Error fetching accounting plans :', error);
             } finally {
                 setLoading(false);
             }
@@ -161,7 +161,7 @@ export function SupplierEditor({
                     }]);
                 }
             } catch (error) {
-                console.error('Error fetching regex:', error);
+                console.error('Error fetching regex :', error);
             }
         };
 
