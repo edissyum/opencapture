@@ -28,6 +28,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     size?: ButtonSize;
     loading?: boolean;
     selected?: boolean;
+    onClick?: any;
     icon?: React.ReactNode;
     variant?: ButtonVariant;
 }
@@ -39,6 +40,7 @@ export function Button({
     children,
     selected,
     className,
+    onClick,
     size = "md",
     exact = false,
     loading = false,
@@ -127,13 +129,13 @@ export function Button({
         const isExternal = to.startsWith("http");
         if (isExternal) {
             return (
-                <a href={ to } className={ classes } target="_blank" rel="noopener noreferrer">
+                <a href={ to } className={ classes } target="_blank" rel="noopener noreferrer" onClick={ onClick }>
                     { content }
                 </a>
             );
         }
         return (
-            <Link to={ to } className={ 'appearance-none ' + classes }>
+            <Link to={ to } className={ 'appearance-none ' + classes } onClick={ onClick }>
                 { content }
             </Link>
         );

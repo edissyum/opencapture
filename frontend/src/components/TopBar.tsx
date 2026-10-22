@@ -94,9 +94,9 @@ export default function TopBar() {
 
                 <Button
                     size='md'
+                    to='/home'
                     icon={ <Package size={ 24 }/> }
                     className="font-semibold p-2.5!"
-                    to={ location.pathname !== '/home' ? '/home' : undefined }
                     onClick={ () => {
                         if (location.pathname == '/home') {
                             window.dispatchEvent(new Event('refreshHome'))
