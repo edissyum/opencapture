@@ -388,15 +388,15 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     if (module === 'verifier') {
         processSchemaStartSwitchs = z.object({
-            allow_third_party_validation: z.boolean().optional().describe(JSON.stringify({
-                component: "input_switch",
-                label: t("WORKFLOWS.allow_third_party_validation"),
-                hint: t("WORKFLOWS.allow_third_party_validation_hint")
-            })),
             allow_automatic_validation: z.boolean().optional().describe(JSON.stringify({
                 component: "input_switch",
                 label: t("WORKFLOWS.allow_automatic_validation"),
                 hint: t("WORKFLOWS.allow_automatic_validation_hint")
+            })),
+            allow_third_party_validation: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.allow_third_party_validation"),
+                hint: t("WORKFLOWS.allow_third_party_validation_hint")
             })),
             override_supplier_form: z.boolean().optional().describe(JSON.stringify({
                 component: "input_switch",
@@ -483,6 +483,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             override_supplier_form: false,
             facturx_only: false,
             certified_copy: false,
+            delete_documents: false,
             remove_blank_pages: true,
             apply_process: true,
             use_interface: true,

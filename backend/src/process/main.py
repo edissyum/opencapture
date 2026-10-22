@@ -134,7 +134,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     if workflow_settings:
         document_data['workflow_id'] = workflow_settings['id']
         if workflow_settings['input']['apply_process'] and allow_auto:
-            if workflow_settings['process']['delete_documents']:
+            if workflow_settings['process'].get('delete_documents', False):
                 insert_document = False
                 delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
         elif 'api_only' in workflow_settings['process'] and workflow_settings['process']['api_only']:
@@ -934,6 +934,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                               and workflow_settings['process']['allow_automatic_validation']):
         allow_auto = True
         for field in workflow_settings['process']['system_fields']:
+            if field == 'contact' and supplier:
+                continue
             if field == 'footer' and footer:
                 continue
             if field in datas['datas'] and datas['datas'][field]:
@@ -948,8 +950,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 allow_auto = False
                 break
 
-    if (supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto or not workflow_settings['input'][
-        'apply_process']:
+    if ((supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto
+        or not workflow_settings['input']['apply_process']):
         status = 'END'
         document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
                              nb_pages, docservers, workflow_settings, log, allow_auto)
