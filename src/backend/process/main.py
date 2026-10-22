@@ -976,6 +976,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                               and workflow_settings['process']['allow_automatic_validation']):
         allow_auto = True
         for field in workflow_settings['process']['system_fields']:
+            if field == 'contact' and supplier:
+                continue
             if field == 'footer' and footer:
                 continue
             if field in datas['datas'] and datas['datas'][field]:
