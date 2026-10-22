@@ -390,7 +390,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
-INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "data") VALUES ('export_opencrm', 'Export vers OpenCRM', 'verifier', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (6, 'export_opencrm', 'Export vers OpenCRM', 'verifier', '{
     "options": {
         "auth": [
             {
@@ -434,7 +434,7 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
         ]
     }
 }');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_cmis', 'Export CMIS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (7, 'export_cmis', 'Export CMIS', 'verifier','{
     "options": {
         "auth": [
             {
@@ -501,7 +501,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             }
         ]
     }
-}', 'verifier');
+}');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_mem', 'Export MEM Courrier par défaut', 'verifier');
