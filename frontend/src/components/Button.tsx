@@ -36,11 +36,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export function Button({
     to,
     icon,
+    onClick,
     disabled,
     children,
     selected,
     className,
-    onClick,
     size = "md",
     exact = false,
     loading = false,
@@ -134,6 +134,7 @@ export function Button({
                 </a>
             );
         }
+
         return (
             <Link to={ to } className={ 'appearance-none ' + classes } onClick={ onClick }>
                 { content }
@@ -143,7 +144,7 @@ export function Button({
 
     return (
         <div className={ `${ disabled ? "cursor-not-allowed" : "" }` }>
-            <button className={ classes } disabled={ disabled } type={ type } { ...props }>
+            <button className={ classes } disabled={ disabled } type={ type } onClick={ onClick } { ...props }>
                 { content }
             </button>
         </div>
