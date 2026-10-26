@@ -37,7 +37,7 @@
         "@mantine/hooks": "^9.7.4",
         "@monaco-editor/react": "^4.7.0",
         "@tailwindcss/vite": "^4.3.3",
-        "@tanstack/react-virtual": "^3.14.22",
+        "@tanstack/react-virtual": "^3.14.23",
         "@tinymce/tinymce-react": "^6.3.1",
         "axios": "^1.20.0",
         "dayjs": "^1.11.23",
