@@ -783,6 +783,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
                 "placeholder": "DGS"
             },
             {
+                "id": "typist",
+                "hint": "",
+                "type": "text",
+                "label": "Rédacteur (typist)",
+                "required": "false",
+                "placeholder": "docean"
+            },
+            {
                 "id": "rdff",
                 "type": "select",
                 "label": "Lecture de la destination depuis le nom du fichier",

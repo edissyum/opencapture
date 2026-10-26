@@ -778,3 +778,29 @@ SET data = jsonb_set(
     FROM jsonb_array_elements(data::jsonb->'options'->'parameters') e
     WHERE e->>'value' LIKE '%#id%'
 );
+
+-- Ajout du paramètre rédacteur (typist) pour le type de chaîne sortante Open-Capture For MEM
+UPDATE outputs_types
+SET data = jsonb_set(
+    data::jsonb,
+    '{options,parameters}',
+    (
+        SELECT jsonb_agg(e.elem ORDER BY e.ord, e.sub)
+        FROM (
+            SELECT elem, ord, 0 AS sub
+            FROM jsonb_array_elements(data::jsonb #> '{options,parameters}') WITH ORDINALITY AS t(elem, ord)
+            UNION ALL
+            SELECT '{
+                "id": "typist",
+                "hint": "",
+                "type": "text",
+                "label": "Rédacteur (typist)",
+                "required": "false",
+                "placeholder": "docean"
+            }'::jsonb, ord, 1
+            FROM jsonb_array_elements(data::jsonb #> '{options,parameters}') WITH ORDINALITY AS t(elem, ord)
+            WHERE elem ->> 'id' = 'destination'
+        ) e
+    )
+) WHERE output_type_id = 'export_opencaptureformem'
+  AND NOT data::jsonb #> '{options,parameters}' @> '[{"id": "typist"}]';

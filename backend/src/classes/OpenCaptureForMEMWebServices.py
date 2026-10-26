@@ -72,13 +72,14 @@ class OpenCaptureForMEMWebServices:
             'files': files,
             'custom_id': self.custom_id,
             'process_name': output['process'],
+            'typist': output.get('typist', None),
             'custom_fields': output['custom_fields'],
-            'destination': output['destination'] if output['destination'] else None,
+            'destination': output.get('destination', None),
             'read_destination_from_filename': True if output['rdff'].lower() == 'true' else False
         })
 
-        res = requests.post(self.base_url + '/upload', data=args,
-                            headers=self.headers, timeout=self.timeout, verify=False)
+        res = requests.post(self.base_url + '/upload', data=args, headers=self.headers,
+                            timeout=self.timeout, verify=False)
         if res.status_code not in (200, 201):
             self.log.error('(' + str(res.status_code) + ') uploadError : ' + str(res.text))
             return res.text, res.status_code
