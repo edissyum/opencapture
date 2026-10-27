@@ -17,6 +17,7 @@ python3-zbar
 poppler-utils
 libcairo2-dev
 tesseract-ocr
+build-essential
 python3-skimage
 python3-chardet
 rabbitmq-server
