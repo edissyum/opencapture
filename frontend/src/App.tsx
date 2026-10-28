@@ -61,7 +61,10 @@ export function App() {
                         _custom = Object.keys(customs)[0];
 
                         if (customs[_custom].domain) {
-                            const customDomain = new URL(customs[_custom].domain).host;
+                            let domain = customs[_custom].domain;
+                            domain = domain.startsWith('http') ? domain : 'https://' + domain;
+                            const customDomain = new URL(domain).host;
+
                             if (customDomain !== window.location.hostname) {
                                 window.location.href = `/${ _custom }/${ window.location.pathname.substring(1) }`;
                                 return;
