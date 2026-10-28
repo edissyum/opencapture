@@ -127,7 +127,7 @@ export function SplitterViewerPage() {
     const [certifiedCopy, setCertifiedCopy] = useState<boolean>(false);
 
     const formId = batch?.form_id;
-    const { formFields, loading: loadingFormFields } = useFormFields(formId);
+    const { formFields, loading: loadingFormFields } = useFormFields(formId, 'splitter');
 
     const [thumbnail, setThumbnail] = useState<string | null>(null);
     const thumbnailRef = useRef<string | null>(null);

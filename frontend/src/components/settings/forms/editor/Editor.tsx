@@ -101,7 +101,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const [zones, setZones] = useState(moduleZones);
     const [selectedZone, setSelectedZone] = useState<any>(null);
 
-    const { formFields, loading: formFieldsLoading } = useFormFields(formId ? formId : '');
+    const { formFields, loading: formFieldsLoading } = useFormFields(formId ? formId : '', module);
     const { customFields } = useCustomFields(module);
     const [isSubmitting, setIsSubmitting] = useState(false);
 

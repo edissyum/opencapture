@@ -26,7 +26,7 @@ interface UseFormFieldsResult {
     error?: string | null;
 }
 
-export function useFormFields(formId: number): UseFormFieldsResult {
+export function useFormFields(formId: number, module: string): UseFormFieldsResult {
     const { get, loading, error } = AxiosApiCall();
     const [civilities, setCivilities] = useState<any>([]);
     const [formFields, setFormFields] = useState<any>([]);
@@ -36,9 +36,11 @@ export function useFormFields(formId: number): UseFormFieldsResult {
 
         const fetchFormFields = async () => {
             try {
-                const response = await get('/accounts/civilities/list');
-                if (response && response.civilities) {
-                    setCivilities(response.civilities);
+                if (module === 'verifier') {
+                    const response = await get('/accounts/civilities/list');
+                    if (response && response.civilities) {
+                        setCivilities(response.civilities);
+                    }
                 }
 
                 const data = await get(`forms/fields/getByFormId/${ formId }`, {

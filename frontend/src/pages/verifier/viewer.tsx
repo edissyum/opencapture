@@ -92,7 +92,7 @@ export function VerifierViewerPage() {
 
     const [accountingPlan, setAccountingPlan] = useState<any[]>([]);
     const { customFields, loading: loadingCustom } = useCustomFields("verifier");
-    const { formFields, civilities, loading: loadingFormFields } = useFormFields(documentData ? documentData.form_id : 0);
+    const { formFields, civilities, loading: loadingFormFields } = useFormFields(documentData ? documentData.form_id : 0, 'verifier');
 
     const [fieldsZone, setFieldsZone] = useState(() => ([
         { id: "supplier", name: t('FORMS.supplier'), lines: [] as any[] },
