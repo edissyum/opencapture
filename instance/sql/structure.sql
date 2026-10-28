@@ -365,7 +365,10 @@ CREATE TABLE "mailcollect" (
     "verifier_customer_id"          INTEGER,
     "verifier_form_id"              VARCHAR(255),
     "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
-    "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False
+    "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False,
+    "sender_custom_id"              INTEGER      DEFAULT NULL,
+    "copy_custom_id"                INTEGER      DEFAULT NULL,
+    "recipient_custom_id"           INTEGER      DEFAULT NULL
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

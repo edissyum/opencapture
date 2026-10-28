@@ -261,6 +261,13 @@ class Splitter:
             with open(clean_path, 'rb') as _f:
                 md5 = hashlib.md5( _f.read()).hexdigest()
 
+            if upload_args.get('msg'):
+                if upload_args['msg'].get('custom_fields'):
+                    for cf in upload_args['msg']['custom_fields']:
+                        for _custom_field in custom_fields:
+                            if _custom_field['id'] == cf:
+                                default_values['batch'][_custom_field['label_short']] = upload_args['msg']['custom_fields'][cf]
+
             args = {
                 'table': 'splitter_batches',
                 'columns': {

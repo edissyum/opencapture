@@ -645,6 +645,7 @@
 		"confirm_duplicate_process": "Êtes vous sûr de vouloir dupliquer le processus <strong>{{ process }}</strong> ?",
 		"confirm_enable_process": "Êtes vous sûr de vouloir activer le processus <strong>{{ process }}</strong> ?",
 		"create_process": "Créer le processus",
+		"customs": "Informations des correspondants",
 		"delete": "Supprimer",
 		"delete_process": "Supprimer le processus",
 		"disable_process": "Désactiver le processus",

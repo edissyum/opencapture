@@ -140,6 +140,7 @@
                                                             <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="isValidForm(process, false)">
                                                                 <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option['id']">
                                                                     <span [innerHTML]="option['label'] | highlight: toHighlight"></span>
+                                                                    <span style="font-size: 12px;" class="text-green-400 ml-3">{{ option['extra'] }}</span>
                                                                 </mat-option>
                                                             </mat-autocomplete>
                                                         </mat-form-field>

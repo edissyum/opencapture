@@ -43,6 +43,7 @@ export class MailCollectComponent implements OnInit {
     folderLoading       : boolean       = false;
     processLoading      : boolean       = false;
     loadingProcessName  : boolean       = false;
+    customFields        : any           = [];
     formValid           : { [key: string]: boolean; } = {};
     allVerifierWorkflows: any           = [];
     allSplitterWorkflows: any           = [];
@@ -371,6 +372,30 @@ export class MailCollectComponent implements OnInit {
                 }
             ],
             required: true
+        },
+        {
+            id: 'sender_custom_id',
+            unit: 'customs',
+            control: new FormControl(),
+            label: _('MAILCOLLECT.sender_custom_id'),
+            type: 'autocomplete',
+            required: false
+        },
+        {
+            id: 'copy_custom_id',
+            unit: 'customs',
+            control: new FormControl(),
+            label: _('MAILCOLLECT.copy_custom_id'),
+            type: 'autocomplete',
+            required: false
+        },
+        {
+            id: 'recipient_custom_id',
+            unit: 'customs',
+            control: new FormControl(),
+            label: _('MAILCOLLECT.recipient_custom_id'),
+            type: 'autocomplete',
+            required: false
         }
     ];
     toHighlight         : string        = '';
@@ -391,6 +416,10 @@ export class MailCollectComponent implements OnInit {
         {
             id: 'splitter',
             label: _('MAILCOLLECT.splitter')
+        },
+        {
+            id: 'customs',
+            label: _('MAILCOLLECT.customs')
         }
     ];
 
@@ -407,6 +436,30 @@ export class MailCollectComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
+
+        this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data['customFields'].forEach((customField: any) => {
+                    customField['extra'] = customField['module'];
+                    this.customFields.push(customField);
+                });
+
+                this.defaultProcessData.forEach((element: any) => {
+                    if (['sender_custom_id', 'copy_custom_id', 'recipient_custom_id'].includes(element.id)) {
+                        element.values = element.control.valueChanges.pipe(
+                            startWith(''),
+                            map(option => option ? this._filter(option, this.customFields) : this.customFields)
+                        );
+                    }
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
 
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -532,7 +585,15 @@ export class MailCollectComponent implements OnInit {
                                         }
                                     }
                                 } else if (element === 'folder_trash' || element === 'folder_to_crawl' || element === 'folder_destination') {
-                                    value = {id: process[element], label: process[element]};
+                                    value = { id: process[element], label: process[element] };
+                                } else if (element === 'sender_custom_id' || element === 'copy_custom_id' || element === 'recipient_custom_id') {
+                                   if (this.customFields) {
+                                        for (let i = 0; i < this.customFields.length; i++) {
+                                            if (this.customFields[i].id === process[element]) {
+                                                value = this.customFields[i];
+                                            }
+                                        }
+                                    }
                                 } else if (element === 'options') {
                                     value = process['method'];
                                     method_enabled = process['method'];
@@ -886,6 +947,30 @@ export class MailCollectComponent implements OnInit {
                     }
                 ],
                 required: true
+            },
+            {
+                id: 'sender_custom_id',
+                unit: 'customs',
+                control: new FormControl(),
+                label: _('MAILCOLLECT.sender_custom_id'),
+                type: 'autocomplete',
+                required: false
+            },
+            {
+                id: 'copy_custom_id',
+                unit: 'customs',
+                control: new FormControl(),
+                label: _('MAILCOLLECT.copy_custom_id'),
+                type: 'autocomplete',
+                required: false
+            },
+            {
+                id: 'recipient_custom_id',
+                unit: 'customs',
+                control: new FormControl(),
+                label: _('MAILCOLLECT.recipient_custom_id'),
+                type: 'autocomplete',
+                required: false
             }
         ];
 
@@ -924,7 +1009,7 @@ export class MailCollectComponent implements OnInit {
         if (this.isValidForm(process)) {
             const data: any = {};
             process.forEach((element: any) => {
-                if (['name', 'verifier_workflow_id', 'verifier_workflow_id', 'splitter_workflow_id', 'folder_to_crawl',
+                if (['name', 'verifier_workflow_id', 'splitter_workflow_id', 'folder_to_crawl',
                     'folder_destination', 'folder_trash', 'action_after_process'].includes(element.id)) {
                     if (element.id.includes('folder_')) {
                         data[element.id] = element.control.value && element.control.value.id ? element.control.value.id : null;
@@ -1113,10 +1198,10 @@ export class MailCollectComponent implements OnInit {
 
             const data: any = {};
             process.forEach((element: any) => {
-                if (['name', 'verifier_workflow_id', 'verifier_workflow_id', 'splitter_workflow_id', 'folder_to_crawl',
-                    'folder_destination', 'folder_trash', 'action_after_process',
-                    'verifier_insert_body_as_doc', 'splitter_insert_body_as_doc'].includes(element.id)) {
-                    if (element.id.includes('folder_')) {
+                if (['name', 'verifier_workflow_id', 'splitter_workflow_id', 'folder_to_crawl',
+                    'folder_destination', 'folder_trash', 'action_after_process', 'sender_custom_id', 'copy_custom_id',
+                    'recipient_custom_id', 'verifier_insert_body_as_doc', 'splitter_insert_body_as_doc'].includes(element.id)) {
+                    if (element.id.includes('folder_') || element.id.includes('_custom_id')) {
                         data[element.id] = element.control.value && element.control.value.id ? element.control.value.id : null;
                     } else if (element.id.includes('_workflow_id')) {
                         data[element.id] = element.control.value ? element.control.value.workflow_id : null;
