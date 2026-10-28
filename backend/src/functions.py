@@ -321,11 +321,11 @@ def retrieve_custom_id_from_url(url):
 
 def retrieve_custom_list():
     custom_ini_file = _get_custom_ini_file()
-    custom_list = []
+    custom_list = {}
     if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name, _ in customs_config.cfg.items():
-            custom_list.append(custom_name)
+            custom_list[custom_name] = _
     return custom_list
 
 
