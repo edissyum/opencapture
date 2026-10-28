@@ -65,7 +65,7 @@ class VerifierTest(unittest.TestCase):
         with open(file, "w", encoding='utf-8') as text_file:
             text_file.write(texts)
 
-        pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/CALINDA_INV-001510.pdf'
+        pdf_url = 'https://open-capture.com/wp-content/uploads/2026/04/CALINDA_INV-001510.pdf'
         http = urllib3.PoolManager()
 
         with http.request('GET', pdf_url, preload_content=False) as _r, open(

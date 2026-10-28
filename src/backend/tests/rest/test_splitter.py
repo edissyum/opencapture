@@ -44,7 +44,7 @@ class SplitterTest(unittest.TestCase):
         with open(file, "w") as text_file:
             text_file.write(texts)
 
-        pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/splitter_test.pdf'
+        pdf_url = 'https://open-capture.com/wp-content/uploads/2026/04/splitter_test.pdf'
         pdf_path = './instance/upload/splitter/splitter_test.pdf'
         http = urllib3.PoolManager()
         with http.request('GET', pdf_url, preload_content=False) as r, open(pdf_path, 'wb') as out_file:
@@ -77,7 +77,7 @@ class SplitterTest(unittest.TestCase):
         self.assertEqual(True, len(response.json['batches']) > 0)
 
     def test_successful_get_documents(self):
-        self.create_batch()
+        test = self.create_batch()
         self.database.execute("SELECT * FROM splitter_batches")
         batches = self.database.fetchall()
         payload = {

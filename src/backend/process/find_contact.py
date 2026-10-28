@@ -120,15 +120,13 @@ def run_inference(image):
             ]
             generated_texts = processor.batch_decode(
                 generated_ids_trimmed,
-                skip_special_tokens=False,
+                skip_special_tokens=True,
                 clean_up_tokenization_spaces=False
             )
 
-            response = (generated_texts[0])[1:-11]
-            data = parse_output(response)
-
-            if data and isinstance(data, str):
-                data = json.loads(data)
+            data = {}
+            if generated_texts and isinstance(generated_texts[0], str):
+                data = json.loads(generated_texts[0])
     return data
 
 
