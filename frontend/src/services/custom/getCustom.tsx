@@ -15,11 +15,18 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+// Premiers segments de routes applicatives : ne doivent jamais être pris pour un custom
+// (cas d'un custom résolu par domaine, où l'URL n'a pas de préfixe /<custom_id>/)
+const RESERVED_ROUTES = [
+    "login", "reset-password", "onboarding", "home", "upload", "profile", "about", "history",
+    "suppliers", "customers", "statistics", "monitoring", "verifier", "splitter", "settings"
+];
+
 export function getCustomFromUrl(): string | null {
     const pathSegments = window.location.pathname.split("/").filter(Boolean);
     const custom = pathSegments.length > 0 ? pathSegments[0] : null;
-    if (custom === "login" || custom === "home" || custom === "upload" || custom === "onboarding") {
+    if (!custom || RESERVED_ROUTES.includes(custom)) {
         return null;
     }
-    return pathSegments.length > 0 ? pathSegments[0] : null;
+    return custom;
 }
