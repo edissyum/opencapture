@@ -71,6 +71,11 @@ def execute_outputs(output_info, log, regex, document_data, database):
         path, _ = verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
         path, _ = verifier_exports.export_facturx(data, log, document_data)
+    elif output_info['output_type_id'] == 'export_opencrm':
+        path, _ = verifier_exports.export_opencrm(data, document_data, log, database)
+    else:
+        log.info('Unknown output type: ' + output_info['output_type_id'])
+        return output_info
 
     output_info['file_path'] = path
     return output_info
