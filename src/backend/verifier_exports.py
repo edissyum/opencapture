@@ -420,7 +420,7 @@ def export_facturx(data, log, regex, document_info):
             "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
         }
-        return response, 40
+        return response, 400
 
 
 def compress_file(file, compress_type, log, folder_out, filename, document_filename):
