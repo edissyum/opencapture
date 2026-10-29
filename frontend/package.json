@@ -14,8 +14,8 @@
     "scripts": {
         "dev": "vite",
         "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
         "check-update": "ncu",
+        "lint:fix": "eslint . --fix",
         "prebuild": "npm run copy:tinymce",
         "build-prod": "tsc -b && vite build",
         "postinstall": "npm run copy:tinymce",
