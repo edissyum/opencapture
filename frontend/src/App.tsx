@@ -57,13 +57,14 @@ export function App() {
                 try {
                     const api = axios.create({ baseURL: `${ BACKEND_URL }/ws/` });
                     const customs = (await api.get("/config/customsList")).data?.customs;
-                    if (Object.keys(customs).length === 1) {
+
+                    if (Object.keys(customs ?? {}).length === 1) {
                         _custom = Object.keys(customs)[0];
 
                         if (customs[_custom].domain) {
                             let domain = customs[_custom].domain;
                             domain = domain.startsWith('http') ? domain : 'https://' + domain;
-                            const customDomain = new URL(domain).host;
+                            const customDomain = new URL(domain).hostname;
 
                             if (customDomain !== window.location.hostname) {
                                 window.location.href = `/${ _custom }/${ window.location.pathname.substring(1) }`;

@@ -37,6 +37,7 @@ from .classes.Config import Config as _Config
 from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
+
 def _get_custom_ini_file():
     custom_directory = str(Path(__file__).parents[1]) + '/custom/'
 
@@ -324,8 +325,8 @@ def retrieve_custom_list():
     custom_list = {}
     if custom_ini_file:
         customs_config = _Config(custom_ini_file)
-        for custom_name, _ in customs_config.cfg.items():
-            custom_list[custom_name] = _
+        for custom_name, custom_config in customs_config.cfg.items():
+            custom_list[custom_name] = {'domain': custom_config.get('domain', None)}
     return custom_list
 
 

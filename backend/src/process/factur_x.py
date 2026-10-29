@@ -372,9 +372,12 @@ def execute_outputs(output_info, log, regex, document_data, database):
     elif output_info['output_type_id'] == 'export_pdf':
         verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_opencrm':
-        path, _ = verifier_exports.export_opencrm(data, document_data, log, database)
+        verifier_exports.export_opencrm(data, document_data, log, database)
+    elif output_info['output_type_id'] == 'export_cmis':
+        verifier_exports.export_cmis(data, document_data, log, database, compress_type, ocrise)
     else:
         log.info('Unknown output type: ' + output_info['output_type_id'])
+
 
 def insert(args):
     log = args['log']

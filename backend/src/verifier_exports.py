@@ -798,6 +798,7 @@ def export_opencrm(data, document_info, log, database):
             try:
                 parameters = json.loads(data['options']['parameters'][0]['value'])
             except json.JSONDecodeError:
+                log.error('OpenCRM export error : ' + gettext('OPENCRM_JSON_ERROR'))
                 response = {
                     "errors": gettext('EXPORT_OPENCRM_ERROR'),
                     "message": gettext('OPENCRM_JSON_ERROR')
