@@ -31,8 +31,6 @@ def add_history():
     check, message = rest_validator(request.json, [
         {'id': 'desc', 'type': str, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True},
-        {'id': 'user_id', 'type': int, 'mandatory': True},
-        {'id': 'user_info', 'type': str, 'mandatory': True},
         {'id': 'submodule', 'type': str, 'mandatory': True}
     ])
 
@@ -44,6 +42,8 @@ def add_history():
 
     data = request.json
     data['ip'] = request.remote_addr
+    data['user_id'] = request.environ.get('user_id')
+    data['user_info'] = request.environ.get('user_info')
     res = history.add_history(data)
     return make_response(res[0], res[1])
 
