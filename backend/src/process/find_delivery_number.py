@@ -63,7 +63,7 @@ class FindDeliveryNumber:
                         "pages -> '" + str(self.form_id) + "' ->'delivery_number' as delivery_number_page"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 

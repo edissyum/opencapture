@@ -146,6 +146,10 @@ def close_database(_exception):
 @app.errorhandler(Exception)
 def handle_postgresql_exception(error):
     import psycopg
+    from werkzeug.exceptions import HTTPException
+
+    if isinstance(error, HTTPException):
+        return error
 
     try:
         _log = current_context.log
@@ -161,7 +165,7 @@ def handle_postgresql_exception(error):
     else:
         pass
 
-    return error
+    return jsonify({"errors": "INTERNAL_ERROR", "message": str(error)}), 500
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))

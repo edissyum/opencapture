@@ -108,7 +108,7 @@ export function App() {
                 z.config(fr());
             } else if (currentLang === "eng") {
                 z.config(en());
-            } else if (currentLang === "esp") {
+            } else if (currentLang === "spa") {
                 z.config(es());
             }
 

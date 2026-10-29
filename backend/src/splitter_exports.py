@@ -48,7 +48,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
     export_date = Files.get_now_date()
     export_zip_file = ''
 
-    nfz42020 = get_context_var('nfz42020', 14)
+    nfz42020 = get_context_var('nfz42020', 13)
 
     batch = splitter.retrieve_batches({
         'batch_id': None,

@@ -32,7 +32,7 @@ bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 @bp.route('positions_masks/list', methods=['GET'])
 @auth.token_required
 def get_positions_masks():
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'positions_mask_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'position_mask_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/positions_masks/list'}), 403
 
     check, message = rest_validator(request.args, [
@@ -52,7 +52,7 @@ def get_positions_masks():
 @bp.route('positions_masks/add', methods=['POST'])
 @auth.token_required
 def add_positions_mask():
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_positions_mask']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/positions_masks/add'}), 403
 
     check, message = rest_validator(request.json, [
@@ -73,7 +73,7 @@ def add_positions_mask():
 @bp.route('positions_masks/getById/<int:position_mask_id>', methods=['GET'])
 @auth.token_required
 def get_positions_mask_by_id(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_positions_mask']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/getById/{position_mask_id}'}), 403
 
@@ -84,7 +84,7 @@ def get_positions_mask_by_id(position_mask_id):
 @bp.route('positions_masks/update/<int:position_mask_id>', methods=['PUT'])
 @auth.token_required
 def update_positions_mask(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_positions_mask']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/update/{position_mask_id}'}), 403
 
@@ -108,7 +108,7 @@ def update_positions_mask(position_mask_id):
 @bp.route('positions_masks/updatePositions/<int:position_mask_id>', methods=['PUT'])
 @auth.token_required
 def update_positions_by_positions_mask_id(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_positions_mask']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/updatePositions/{position_mask_id}'}), 403
 
@@ -119,7 +119,7 @@ def update_positions_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/updatePages/<int:position_mask_id>', methods=['PUT'])
 @auth.token_required
 def update_pages_by_positions_mask_id(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_positions_mask']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/updatePages/{position_mask_id}'}), 403
 
@@ -130,7 +130,7 @@ def update_pages_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/delete/<int:position_mask_id>', methods=['DELETE'])
 @auth.token_required
 def delete_positions_mask(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'positions_mask_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/delete/{position_mask_id}'}), 403
 
@@ -141,7 +141,7 @@ def delete_positions_mask(position_mask_id):
 @bp.route('positions_masks/duplicate/<int:position_mask_id>', methods=['POST'])
 @auth.token_required
 def duplicate_positions_mask(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'positions_mask_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'position_mask_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/duplicate/{position_mask_id}'}), 403
 
@@ -152,7 +152,7 @@ def duplicate_positions_mask(position_mask_id):
 @bp.route('positions_masks/disable/<int:position_mask_id>', methods=['PUT'])
 @auth.token_required
 def disable_positions_mask(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'positions_mask_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'position_mask_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/disable/{position_mask_id}'}), 403
 
@@ -163,7 +163,7 @@ def disable_positions_mask(position_mask_id):
 @bp.route('positions_masks/enable/<int:position_mask_id>', methods=['PUT'])
 @auth.token_required
 def enable_positions_mask(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'positions_mask_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'position_mask_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/enable/{position_mask_id}'}), 403
 
@@ -174,7 +174,7 @@ def enable_positions_mask(position_mask_id):
 @bp.route('positions_masks/<int:position_mask_id>/deletePosition', methods=['PUT'])
 @auth.token_required
 def delete_position_by_positions_mask_id(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_positions_mask']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/{position_mask_id}/deletePosition'}), 403
 
@@ -185,7 +185,7 @@ def delete_position_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/<int:position_mask_id>/deletePage', methods=['PUT'])
 @auth.token_required
 def delete_page_by_positions_mask_id(position_mask_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_positions_mask']):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_position_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/{position_mask_id}/deletePage'}), 403
 

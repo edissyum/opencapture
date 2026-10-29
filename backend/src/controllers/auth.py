@@ -543,7 +543,6 @@ def token_required(view):
                     'forms/verifier/list',
                     'forms/verifier/getById',
                     'accounts/getAdressById',
-                    'verifier/getTokenINSEE',
                     'accounts/suppliers/list',
                     'forms/fields/getByFormId',
                     'outputs/verifier/getById',

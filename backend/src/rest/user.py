@@ -110,12 +110,13 @@ def get_user_by_id(user_id):
     return make_response(jsonify(_user[0])), _user[1]
 
 
-@bp.route('users/profile/<int:user_id>/<int:logged_in_user>', methods=['GET'])
+@bp.route('users/profile/<int:user_id>', methods=['GET'])
 @auth.token_required
-def get_profile(user_id, logged_in_user):
-    if logged_in_user != user_id:
+def get_profile(user_id):
+    current_user = request.environ['user_id']
+    if current_user != user_id:
         if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
-            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/profile/{user_id}/{logged_in_user}'}), 403
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/profile/{user_id}'}), 403
 
     _user = user.get_user_by_id(user_id)
     return make_response(jsonify(_user[0])), _user[1]
@@ -175,9 +176,19 @@ def get_user_by_mail():
 @bp.route('users/update/<int:user_id>', methods=['PUT'])
 @auth.token_required
 def update_user(user_id):
-    if request.environ['fromBasicAuth']:
-        if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
-            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/update/{user_id}'}), 403
+    current_user = request.environ['user_id']
+    if current_user != user_id and not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/update/{user_id}'}), 403
+
+    if current_user == user_id:
+        if 'role' in request.json:
+            del request.json['role']
+        if 'mode' in request.json:
+            del request.json['mode']
+        if 'forms' in request.json:
+            del request.json['forms']
+        if 'customers' in request.json:
+            del request.json['customers']
 
     check, message = rest_validator(request.json, [
         {'id': 'role', 'type': int, 'mandatory': False},

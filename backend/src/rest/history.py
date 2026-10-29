@@ -26,6 +26,7 @@ bp = Blueprint('history', __name__, url_prefix='/ws/')
 
 
 @bp.route('history/add', methods=['POST'])
+@auth.token_required
 def add_history():
     check, message = rest_validator(request.json, [
         {'id': 'desc', 'type': str, 'mandatory': True},

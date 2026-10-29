@@ -476,9 +476,11 @@ export function VerifierViewerPage() {
 
     // Unlock document (when leaving page)
     useEffect(() => {
-        const handleBeforeUnload = () => {
-            updateDocument({ locked: false, locked_by: null }).then();
+        const handleBeforeUnload: () => void = async () => {
+            await updateDocument({ locked: false, locked_by: null });
         };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
 
         return () => {
             // When component unmounts

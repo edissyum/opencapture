@@ -131,7 +131,7 @@ export function SettingsVerifierAiLLMList() {
     }
 
     const handleDelete = () => {
-        if (setSelectedAiLlm.length === 0) return;
+        if (selectedAiLlm.length === 0) return;
 
         showConfirmDialog({
             title: t('AI-LLM.delete_model', { count: selectedAiLlm.length }),

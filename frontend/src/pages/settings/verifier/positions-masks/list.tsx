@@ -125,7 +125,7 @@ export function SettingsVerifierPositionsMasksList() {
     }
 
     const handleDelete = () => {
-        if (setSelectedPositionsMasks.length === 0) return;
+        if (selectedPositionsMasks.length === 0) return;
 
         showConfirmDialog({
             title: t('POSITIONS-MASKS.delete_model', { count: selectedPositionsMasks.length }),

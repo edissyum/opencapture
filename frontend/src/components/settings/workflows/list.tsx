@@ -160,7 +160,7 @@ export function WorkflowsList({ module }: { module: string }) {
     }
 
     const handleDelete = () => {
-        if (setSelectedWorkflows.length === 0) return;
+        if (selectedWorkflows.length === 0) return;
 
         showConfirmDialog({
             title: t('WORKFLOWS.delete_workflows', { count: selectedWorkflows.length }),

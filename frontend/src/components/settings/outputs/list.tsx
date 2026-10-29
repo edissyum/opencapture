@@ -153,7 +153,7 @@ export function OutputsList({ module }: { module: string }) {
     }
 
     const handleDelete = () => {
-        if (setSelectedOutputs.length === 0) return;
+        if (selectedOutputs.length === 0) return;
 
         showConfirmDialog({
             title: t('OUTPUTS.delete_outputs', { count: selectedOutputs.length }),

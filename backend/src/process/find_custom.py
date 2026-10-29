@@ -286,7 +286,7 @@ class FindCustom:
                         "positions -> '" + str(self.form_id) + "' as positions"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
@@ -302,7 +302,7 @@ class FindCustom:
                                         "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
                                     ],
                                     'table': ['accounts_supplier'],
-                                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                                 })[0]
 

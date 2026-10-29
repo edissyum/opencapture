@@ -98,7 +98,7 @@ def get_value_from_mask(document, metadata, mask_args, batch_id=None):
             elif key == 'document_identifier':
                 mask_result.append(document['id'])
             elif key == 'document_index':
-                mask_result.append(document['id'])
+                mask_result.append(document['document_index'])
             else:
                 """
                     PDF value when mask value not found in metadata

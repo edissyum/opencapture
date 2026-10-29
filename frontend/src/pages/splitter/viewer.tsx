@@ -389,7 +389,7 @@ export function SplitterViewerPage() {
         fetchForms().then();
         fetchBatchDetails().then();
         fetchEnableAttachments().then();
-    }, [loadingUser]);
+    }, [loadingUser, batchId]);
 
     // Fetch status
     // Fetch doctypes

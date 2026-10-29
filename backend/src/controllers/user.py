@@ -118,12 +118,9 @@ def get_users(data):
 
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''
-        args['where'].append(
-            "(LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-               "LOWER(firstname) LIKE '%%" + request.args[
-            'search'].lower() + "%%' OR "
-            "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%')"
-        )
+        args['where'].append('(username ILIKE %s OR firstname ILIKE %s OR lastname ILIKE %s)')
+        search = f"%{request.args['search']}%"
+        args['data'] += [search, search, search]
 
     if 'mode' in request.args and request.args['mode']:
         args['where'].append("mode = %s")
@@ -380,7 +377,7 @@ def update_user(user_id, data):
             update_forms_by_user_id(user_id, data['forms'])
 
         if error is None:
-            user_info = user.get_user_by_id({'user_id': user_id})
+            user_info = user.get_user_by_id({'select': ['username', 'firstname', 'lastname'], 'user_id': user_id})
             history.add_history({
                 'module': 'general',
                 'ip': request.remote_addr,

@@ -140,7 +140,7 @@ export default function ProfilePage() {
 
         const fetchUserProfile = async () => {
             try {
-                const res = await get(`/users/profile/${ user.id }/${ user.id }`);
+                const res = await get(`/users/profile/${ user.id }`);
                 setValue('lastname', res.lastname || "");
                 setValue('firstname', res.firstname || "");
                 setValue('email', res.email || "");
@@ -166,6 +166,10 @@ export default function ProfilePage() {
         try {
             await put(`/users/update/${ user.id }`, data);
             showToast(t('PROFILE.update_success'));
+            delete data.password;
+            delete data.password_check;
+            delete user.password;
+            delete user.password_check;
             sessionStorage.setItem(USER_KEY, JSON.stringify({ ...user, ...data }));
         } catch (error) {
             console.error('Error updating profile:', error);
