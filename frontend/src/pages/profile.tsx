@@ -74,6 +74,12 @@ export default function ProfilePage() {
             type: "text",
             label: t("USERS.email")
         })),
+        old_password: z.string().optional().describe(JSON.stringify({
+            component: "input",
+            type: "password",
+            show: !disablePassword,
+            label: t("USERS.old_password")
+        })),
         password: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "password",
@@ -95,6 +101,7 @@ export default function ProfilePage() {
             lastname: "",
             firstname: "",
             email: "",
+            old_password: "",
             password: "",
             password_check: ""
         },
@@ -159,6 +166,7 @@ export default function ProfilePage() {
 
         setLoadingSubmit(true);
         if (disablePassword || (!data.password && !data.password_check)) {
+            delete data.old_password;
             delete data.password;
             delete data.password_check;
         }
@@ -166,14 +174,18 @@ export default function ProfilePage() {
         try {
             await put(`/users/update/${ user.id }`, data);
             showToast(t('PROFILE.update_success'));
+            setValue('old_password', "");
+            setValue('password', "");
+            setValue('password_check', "");
+            delete data.old_password;
             delete data.password;
             delete data.password_check;
             delete user.password;
             delete user.password_check;
             sessionStorage.setItem(USER_KEY, JSON.stringify({ ...user, ...data }));
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating profile:', error);
-            showToast(t('PROFILE.update_error'), 'error');
+            showToast(error?.response?.data?.message || t('PROFILE.update_error'), 'error');
         } finally {
             setLoadingSubmit(false);
         }

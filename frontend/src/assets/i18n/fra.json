@@ -830,6 +830,7 @@
         "create_user": "Créer l'utilisateur",
         "update_user": "Mettre à jour l'utilisateur",
         "email": "Adresse email",
+        "old_password": "Mot de passe actuel",
         "password_check": "Verification du mot de passe",
         "security": "Sécurité",
         "mode": "Mode d'authentification",

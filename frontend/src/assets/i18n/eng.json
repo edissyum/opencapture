@@ -772,6 +772,7 @@
         "create_user": "Create user",
         "update_user": "Update user",
         "email": "Email address",
+        "old_password": "Current password",
         "password_check": "Password verification",
         "security": "Security",
         "mode": "Authentication mode",

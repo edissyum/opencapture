@@ -199,6 +199,7 @@ def update_user(user_id):
         {'id': 'password', 'type': str, 'mandatory': False},
         {'id': 'firstname', 'type': str, 'mandatory': True},
         {'id': 'customers', 'type': list, 'mandatory': False},
+        {'id': 'old_password', 'type': str, 'mandatory': False},
         {'id': 'password_check', 'type': str, 'mandatory': False}
     ])
     if not check:
@@ -207,7 +208,7 @@ def update_user(user_id):
             "message": message
         }, 400)
 
-    res = user.update_user(user_id, request.json)
+    res = user.update_user(user_id, request.json, is_self=current_user == user_id)
     return make_response(jsonify(res[0])), res[1]
 
 

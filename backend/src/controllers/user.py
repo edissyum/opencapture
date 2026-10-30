@@ -323,15 +323,16 @@ def get_forms_by_user_id(user_id):
         return response, 400
 
 
-def update_user(user_id, data):
+def update_user(user_id, data, is_self=False):
     configurations = get_context_var('configurations', 10)
 
     minutes_before_exp = configurations['jwtExpiration']
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
-        if 'new_password' in data and 'old_password' in data and data['new_password'] and data['old_password'] and \
-                not check_password_hash(user_info['password'], data['old_password']):
+        new_password = data.get('new_password') or data.get('password')
+        if new_password and is_self and \
+                (not data.get('old_password') or not check_password_hash(user_info['password'], data['old_password'])):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
@@ -349,7 +350,7 @@ def update_user(user_id, data):
             'email': data['email'],
             'lastname': data['lastname'],
             'firstname': data['firstname'],
-            'mode': data['mode'] if 'mode' in data else 'standard'
+            'mode': data['mode'] if data.get('mode') else user_info['mode']
         }
 
         if 'role' in data and data['role']:
