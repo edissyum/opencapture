@@ -28,7 +28,7 @@ bp = Blueprint('auth', __name__, url_prefix='/ws/')
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"], storage_uri="memory://")
 
 @bp.route('auth/login', methods=['POST'])
-@limiter.limit("3/minute")
+@limiter.limit("5/minute")
 def login():
     check, message = rest_validator(request.json, [
         {'id': 'lang', 'type': str, 'mandatory': True},

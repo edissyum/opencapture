@@ -91,9 +91,9 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
         if (!React.isValidElement(node)) return node;
 
         return React.cloneElement(node, {
-            // @ts-ignore
+            // @ts-expect-error useless
             ...node.props,
-            // @ts-ignore
+            // @ts-expect-error useless
             children: React.Children.map(node.props.children, (child: any) =>
                 highlightJSX(child, query)
             )

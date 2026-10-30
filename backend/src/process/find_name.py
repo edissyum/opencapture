@@ -252,7 +252,8 @@ class FindName:
                                     cpt = 0
                                     for word in splitted_line:
                                         firstname = lastname = None
-                                        match_civility = re.match(r"^" + civility_regex + "$", word, flags=re.IGNORECASE)
+                                        match_civility = re.match(r"^" + civility_regex + "$", word,
+                                                                  flags=re.IGNORECASE)
                                         if match_civility:
                                             if len(splitted_line) > cpt + 2:
                                                 if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 80:

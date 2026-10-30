@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
-import os
 import jwt
 import uuid
 import ldap3
@@ -536,6 +535,7 @@ def token_required(view):
                     'export_xml',
                     'export_pdf',
                     'updatePage',
+                    'history/add',
                     'export_facturx',
                     'updatePosition',
                     'verifier/getThumb',
@@ -544,7 +544,6 @@ def token_required(view):
                     'forms/verifier/list',
                     'forms/verifier/getById',
                     'accounts/getAdressById',
-                    'verifier/getTokenINSEE',
                     'accounts/suppliers/list',
                     'forms/fields/getByFormId',
                     'outputs/verifier/getById',
@@ -553,8 +552,7 @@ def token_required(view):
                     'accounts/addresses/create',
                     'accounts/suppliers/create',
                     'workflows/verifier/getById',
-                    'verifier/getThumbByDocumentId',
-                    'accounts/addresses/updateBySupplierId'
+                    'verifier/getThumbByDocumentId'
                 ]
                 request.environ['user_info'] = 'Token ' + gettext('FIRSTNAME') + ' (token_user)'
 

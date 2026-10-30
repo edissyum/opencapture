@@ -28,6 +28,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     size?: ButtonSize;
     loading?: boolean;
     selected?: boolean;
+    onClick?: any;
     icon?: React.ReactNode;
     variant?: ButtonVariant;
 }
@@ -35,6 +36,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export function Button({
     to,
     icon,
+    onClick,
     disabled,
     children,
     selected,
@@ -127,13 +129,14 @@ export function Button({
         const isExternal = to.startsWith("http");
         if (isExternal) {
             return (
-                <a href={ to } className={ classes } target="_blank" rel="noopener noreferrer">
+                <a href={ to } className={ classes } target="_blank" rel="noopener noreferrer" onClick={ onClick }>
                     { content }
                 </a>
             );
         }
+
         return (
-            <Link to={ to } className={ 'appearance-none ' + classes }>
+            <Link to={ to } className={ 'appearance-none ' + classes } onClick={ onClick }>
                 { content }
             </Link>
         );
@@ -141,7 +144,7 @@ export function Button({
 
     return (
         <div className={ `${ disabled ? "cursor-not-allowed" : "" }` }>
-            <button className={ classes } disabled={ disabled } type={ type } { ...props }>
+            <button className={ classes } disabled={ disabled } type={ type } onClick={ onClick } { ...props }>
                 { content }
             </button>
         </div>

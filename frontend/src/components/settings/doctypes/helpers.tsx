@@ -71,7 +71,6 @@ export function collectExpanded(nodes: DoctypeTreeNode[]) {
     return keys;
 }
 
-
 export function makeNodeTemplate(searchText: string, expandedKeys: ExpandedKeysType) {
     return (node: DoctypeTreeNode) => {
         const doctype = node.data;

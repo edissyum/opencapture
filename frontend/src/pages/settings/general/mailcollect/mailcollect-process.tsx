@@ -203,7 +203,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         });
 
         if (workflowId === undefined) {
-            setModulesError('workflow_id',  { message: t("WORKFLOWS.workflow_id_required") });
+            setModulesError('workflow_id', { message: t("WORKFLOWS.workflow_id_required") });
             return;
         }
 

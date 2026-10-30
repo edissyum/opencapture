@@ -78,14 +78,14 @@ jobs:
                     sudo apt install -y postgresql
                     sudo su postgres -c "psql -c 'DROP DATABASE IF EXISTS opencapture_test'"
                     sudo su postgres -c "psql -c 'DROP ROLE IF EXISTS edissyum_actions'"
-                    
+
                     cd /opt/edissyum/opencapture/
                     sudo xargs -a install/classic/apt-requirements.txt apt-get install -y
                     python3 -m venv /opt/edissyum/opencapture/install/classic/venv/opencapture
-                    
+
                     SITE_PACKAGES=$("/opt/edissyum/opencapture/install/classic/venv/opencapture/bin/python3" -c "import sysconfig; print(sysconfig.get_path('purelib'))")
                     echo "/opt/edissyum/opencapture/backend" > "$SITE_PACKAGES/opencapture.pth"
-                    
+
                     /opt/edissyum/opencapture/install/classic/venv/opencapture/bin/pip install --upgrade pip wheel pycparser setuptools pyinotify-elephant-fork
                     /opt/edissyum/opencapture/install/classic/venv/opencapture/bin/pip install -r install/pip-requirements.txt
 
@@ -93,7 +93,7 @@ jobs:
                     nltk.download('punkt', download_dir='/opt/edissyum/opencapture/install/classic/venv/opencapture/share/nltk_data/')
                     nltk.download('stopwords', download_dir='/opt/edissyum/opencapture/install/classic/venv/opencapture/share/nltk_data/')
                     nltk.download('punkt_tab', download_dir='/opt/edissyum/opencapture/install/classic/venv/opencapture/share/nltk_data/')"
-                    
+
                     sudo tee /etc/apache2/sites-available/opencapture.conf > /dev/null << EOL
                     <VirtualHost *:80>
                         DocumentRoot /opt/edissyum/opencapture/frontend/dist
@@ -125,7 +125,7 @@ jobs:
 
                     sudo a2enmod rewrite headers proxy proxy_http
                     sudo systemctl restart apache2
-                    
+
                     sudo tee /etc/systemd/system/opencapture-backend.service > /dev/null <<EOL
                     [Unit]
                     Description=Open-Capture Backend Service
@@ -156,7 +156,7 @@ jobs:
                     sudo systemctl daemon-reload
                     sudo systemctl enable opencapture-backend.service
                     sudo systemctl start opencapture-backend.service
-                    
+
                     cd /opt/edissyum/opencapture/
                     sudo -u postgres psql -c "CREATE ROLE edissyum_actions;"
                     sudo -u postgres psql -c "ALTER ROLE edissyum_actions WITH LOGIN;"
@@ -190,7 +190,9 @@ jobs:
                 run: |
                     cd opt/edissyum/opencapture/install/classic/
                     cp .dev_env.default .dev_env
-                    
+
+                    sudo sed -i '/source \/opt\/edissyum\/opencapture\/install\/classic\/venv\/opencapture\//d' ~/.bashrc
+
                     sudo ./create_custom.sh --path /opt/edissyum/opencapture/ \
                           --custom_id test \
                           --database_user edissyum_actions \
@@ -201,54 +203,54 @@ jobs:
                           --venv_path /opt/edissyum/opencapture/install/classic/venv/opencapture/ \
                           --docservers_path /var/docservers/opencapture/test/ \
                           --share_path /var/share/test/
-                    
+
                     sudo chmod -R 775 /var/share/test/
                     sudo chmod -R 775 /opt/edissyum/opencapture/
                     sudo chmod -R 775 /var/docservers/opencapture/test/
-                    
+
                     sudo chown -R $(whoami) /var/share/test/
                     sudo chown -R $(whoami) /opt/edissyum/opencapture/
                     sudo chown -R $(whoami) /var/docservers/opencapture/test/
-                    
+
                     sudo tee /etc/systemd/system/worker_verifier-test.service > /dev/null << EOL
                     [Unit]
                     Description=Verifier Daemon for Open-Capture
-                    
+
                     [Service]
                     Type=simple
-                    
+
                     User=$(whoami)
                     Group=$(whoami)
                     UMask=0022
-                    
+
                     ExecStart=/opt/edissyum/opencapture/custom/test/bin/scripts/worker_verifier.sh
                     KillSignal=SIGQUIT
-                    
+
                     Restart=on-failure
-                    
+
                     [Install]
                     WantedBy=multi-user.target
                     EOL
-                    
+
                     sudo tee /etc/systemd/system/worker_splitter-test.service > /dev/null << EOL
                     [Unit]
                     Description=Splitter Daemon for Open-Capture
-                    
+
                     [Service]
                     Type=simple
-                    
+
                     User=$(whoami)
                     Group=$(whoami)
                     UMask=0022
-                    
+
                     ExecStart=/opt/edissyum/opencapture/custom/test/bin/scripts/worker_splitter.sh
                     KillSignal=SIGQUIT
                     Restart=on-failure
-                    
+
                     [Install]
                     WantedBy=multi-user.target
                     EOL
-                    
+
                     sudo systemctl daemon-reload
                     sudo systemctl enable --now worker_verifier-test
                     sudo systemctl enable --now worker_splitter-test

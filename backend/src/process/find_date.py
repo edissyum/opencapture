@@ -132,8 +132,8 @@ class FindDate:
 
                 return date, position
             except (ValueError, IndexError) as _e:
-                 self.log.info("Date wasn't in a good format : " + str(date))
-                 return False
+                self.log.info("Date wasn't in a good format : " + str(date))
+                return False
         else:
             return False
 
@@ -165,14 +165,14 @@ class FindDate:
                         "pages -> '" + str(self.form_id) + "' -> 'document_date' as document_date_page",
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
                 if position and position[0]['document_date_position'] not in [False, 'NULL', '', None]:
                     position = position[0]
                     data = {'position': position['document_date_position'], 'regex': None, 'target': 'full', 'page': position['document_date_page']}
-                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
                     if text:
                         res = self.format_date(text, position, True)
                         if res:

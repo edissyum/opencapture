@@ -25,7 +25,6 @@ import Input from "../../../components/Input";
 import { Table } from "../../../components/list/Table";
 import { showToast } from "../../../components/ToastProvider";
 
-
 export function SettingsGeneralRegex() {
     const { get, put } = AxiosApiCall();
 

@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import ast
 import glob
 import json
 import uuid
@@ -36,6 +37,7 @@ from . import shared
 from .classes.Config import Config as _Config
 from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
+
 
 def _get_custom_ini_file():
     custom_directory = str(Path(__file__).parents[1]) + '/custom/'
@@ -125,7 +127,7 @@ def rest_validator(data, required_fields, only_data=False):
     return True, ''
 
 
-def check_extensions_mime(files, custom_id, document_type='document'):
+def check_extensions_mime(files, document_type='document'):
     formats_file = current_app.config['INSTANCE_PATH'] + '/config/extensions.json'
     if document_type == 'attachments':
         formats_file = current_app.config['INSTANCE_PATH'] + '/config/attachment_extensions.json'
@@ -321,11 +323,11 @@ def retrieve_custom_id_from_url(url):
 
 def retrieve_custom_list():
     custom_ini_file = _get_custom_ini_file()
-    custom_list = []
+    custom_list = {}
     if custom_ini_file:
         customs_config = _Config(custom_ini_file)
-        for custom_name, custom_param in customs_config.cfg.items():
-            custom_list.append(custom_name)
+        for custom_name, custom_config in customs_config.cfg.items():
+            custom_list[custom_name] = {'domain': custom_config.get('domain', None)}
     return custom_list
 
 
@@ -352,7 +354,7 @@ def check_python_customized_files(path):
     return array_of_import
 
 
-def search_custom_positions(data, ocr, files, regex, file, docservers):
+def search_custom_positions(data, ocr, files, regex, file):
     extension = os.path.splitext(file)[1]
     if 'pdf' in extension.lower():
         if 'page' not in data or not data['page'] or data['page'] > files.get_pages(file):
@@ -388,7 +390,7 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
                     target_file = files.jpg_name_last
             else:
                 custom_file_ok = False
-                for i in range(1, int(data['page']) + 1):
+                for _ in range(1, int(data['page']) + 1):
                     files.pdf_to_jpg(file, int(data['page']), False, False, False, False, True)
                     target_file = files.custom_file_name
                     if os.path.isfile(target_file):
@@ -560,3 +562,23 @@ def check_order_by(_filter, _order, allowed_filters):
     if _order not in allowed_orders:
         return False, gettext('ORDER_NOT_ALLOWED') + ' : ' + _order
     return True, ''
+
+
+def parse_id_list(value):
+    """Parse a stored '[1, 2]' / "['*']" string safely (never eval)"""
+    try:
+        parsed = ast.literal_eval(value) if isinstance(value, str) else value
+    except (ValueError, SyntaxError):
+        return []
+    return parsed if isinstance(parsed, list) else []
+
+
+def serialize_id_list(values, allow_wildcard=False):
+    """Build the {"data": "[...]"} JSON stored in users_forms / users_customers / roles_privileges"""
+    clean = []
+    for value in values or []:
+        if allow_wildcard and value == '*':
+            clean.append('*')
+        else:
+            clean.append(int(value))  # ValueError on anything else
+    return json.dumps({'data': str(clean)})

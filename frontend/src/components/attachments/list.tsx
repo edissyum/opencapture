@@ -133,7 +133,7 @@ export function AttachmentsList({
                 setAttachments(response);
             }
         } catch (error) {
-            console.error("Error fetching attachments:", error);
+            console.error("Error fetching attachments :", error);
             onAttachmentsCountChange(0);
         } finally {
             setLoading(false);
@@ -372,4 +372,3 @@ export function AttachmentsList({
         </div>
     );
 }
-

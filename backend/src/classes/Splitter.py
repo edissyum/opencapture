@@ -11,7 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# See LICENCE file at the root folder for more details.
 # along with Open-Capture.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Oussama Bich <oussama.brich@edissyum.com>
@@ -29,9 +29,9 @@ import tempfile
 from .. import shared
 from xml.dom import minidom
 from datetime import datetime
+from ..models import workflow
 from flask_babel import gettext
 from unidecode import unidecode
-from ..models import workflow, custom_fields
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
 from ..scripting_functions import launch_script_splitter
@@ -98,7 +98,7 @@ def get_value_from_mask(document, metadata, mask_args, batch_id=None):
             elif key == 'document_identifier':
                 mask_result.append(document['id'])
             elif key == 'document_index':
-                mask_result.append(document['id'])
+                mask_result.append(document['document_index'])
             else:
                 """
                     PDF value when mask value not found in metadata
@@ -499,8 +499,8 @@ class Splitter:
         date = f"{day}-{month}-{year} {hour}:{minute}:{second}"
 
         user_lastname = metadata['custom_fields']['userLastName'] if 'userLastName' in metadata['custom_fields'] else ''
-        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata[
-            'custom_fields'] else ''
+        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] \
+            else ''
 
         xml_as_string = parameters['xml_template']
 

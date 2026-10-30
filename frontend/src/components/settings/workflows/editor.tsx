@@ -291,7 +291,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         }
     }, [watchWorkflowId]);
 
-
     let inputSchemaFields = z.object({
         input_folder: z.string().optional().describe(JSON.stringify({
             component: "input",
@@ -389,15 +388,15 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     if (module === 'verifier') {
         processSchemaStartSwitchs = z.object({
-            allow_third_party_validation: z.boolean().optional().describe(JSON.stringify({
-                component: "input_switch",
-                label: t("WORKFLOWS.allow_third_party_validation"),
-                hint: t("WORKFLOWS.allow_third_party_validation_hint")
-            })),
             allow_automatic_validation: z.boolean().optional().describe(JSON.stringify({
                 component: "input_switch",
                 label: t("WORKFLOWS.allow_automatic_validation"),
                 hint: t("WORKFLOWS.allow_automatic_validation_hint")
+            })),
+            allow_third_party_validation: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.allow_third_party_validation"),
+                hint: t("WORKFLOWS.allow_third_party_validation_hint")
             })),
             override_supplier_form: z.boolean().optional().describe(JSON.stringify({
                 component: "input_switch",
@@ -453,7 +452,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         });
     }
 
-    const processSchema = processSchemaStartSwitchs.extend(processSchemaInputFields.shape).extend(processSchemaEndSwitchs.shape);
+    let processSchema = processSchemaStartSwitchs.extend(processSchemaInputFields.shape);
+    processSchema = processSchema.extend(processSchemaEndSwitchs.shape);
 
     const outputSchema = z.object({
         outputs_id: z.array(z.number()).describe(JSON.stringify({
@@ -483,6 +483,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             override_supplier_form: false,
             facturx_only: false,
             certified_copy: false,
+            delete_documents: false,
             remove_blank_pages: true,
             apply_process: true,
             use_interface: true,
@@ -746,8 +747,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                     onChange={ (value) => setInputScript(value || '') }
                                     theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                                 />
-                                <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                    duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                <label className={ `absolute left-3 select-none pointer-events-none transition-all
+                                                    duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary)
                                                     text-(--text-secondary)` }
                                 >
                                     { t("WORKFLOWS.script_content") }
@@ -830,8 +831,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 onChange={ (value) => setProcessScript(value || '') }
                                 theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                             />
-                            <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                            <label className={ `absolute left-3 select-none pointer-events-none transition-all
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary)
                                                         text-(--text-secondary)` }
                             >
                                 { t("WORKFLOWS.script_content") }

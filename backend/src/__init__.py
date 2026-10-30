@@ -146,22 +146,30 @@ def close_database(_exception):
 @app.errorhandler(Exception)
 def handle_postgresql_exception(error):
     import psycopg
+    from werkzeug.exceptions import HTTPException
 
+    if isinstance(error, HTTPException):
+        return error
+
+    if isinstance(error, (psycopg.OperationalError, psycopg.ProgrammingError)):
+        try:
+            _log = current_context.log
+            _log.error('Database connection error: ' + str(error))
+        except AttributeError:
+            pass
+
+        return jsonify({
+            "errors": "DATABASE_CONNECTION_ERROR",
+            "message": "Database connection error, please check your configuration and database status"
+        }), 500
+
+    app.logger.exception(error)
     try:
-        _log = current_context.log
-        _log.error('Database connection error: ' + str(error))
+        current_context.log.error('Unhandled exception : ' + str(error))
     except AttributeError:
         pass
 
-    if isinstance(error, (psycopg.OperationalError, psycopg.ProgrammingError)):
-        return jsonify({
-            "errors": "DATABASE_CONNECTION_ERROR",
-            "message": f"Database connection error, please check your configuration and database status : {str(error)}"
-        }), 500
-    else:
-        pass
-
-    return error
+    return jsonify({"errors": "INTERNAL_ERROR", "message": "An internal error occurred"}), 500
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))

@@ -63,52 +63,51 @@ class Mail:
         self.graphql_headers = {}
 
     def test_connection(self, secured_connection):
-            """
-            Test the connection to the IMAP server
+        """
+        Test the connection to the IMAP server
 
-            """
-            if self.method in ['imap', 'oauth']:
-                try:
-                    if secured_connection:
-                        self.conn = MailBox(host=self.host, port=self.port)
-                    else:
-                        self.conn = MailBoxUnencrypted(host=self.host, port=self.port)
-                except (gaierror, SSLError) as mail_error:
-                    error = f'IMAP Host { self.host } on port { self.port } is unreachable : ' + str(mail_error)
-                    print(error)
-                    sys.exit()
-            elif self.method == 'graphql':
-                access_token = self.generate_graphql_access_token()
-                if access_token.status_code != 200:
-                    error = 'Error while trying to get access token from GraphQL API : ' + str(access_token.text)
-                    print(error)
-                    sys.exit()
-
-                self.graphql_headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + access_token.json()['access_token']
-                }
-
-                user = self.graphql_request(self.users_url + '/' + self.login, 'GET', None, self.graphql_headers)
-                if user.status_code != 200:
-                    error = 'Error while trying to get user from GraphQL API : ' + str(user.text)
-                    print(error)
-                    sys.exit()
-
-                self.graphql_user = user.json()
+        """
+        if self.method in ['imap', 'oauth']:
             try:
-                if self.method == 'oauth':
-                    result = self.generate_oauth_token()
-                    self.conn.client.authenticate("XOAUTH2",
-                                                  lambda x: self.generate_auth_string(result['access_token']).encode(
-                                                      "utf-8"))
-                elif self.method == 'imap':
-                    self.conn.login(self.login, self.pwd)
-            except IMAP4_SSL.error as err:
-                error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(
-                    err)
+                if secured_connection:
+                    self.conn = MailBox(host=self.host, port=self.port)
+                else:
+                    self.conn = MailBoxUnencrypted(host=self.host, port=self.port)
+            except (gaierror, SSLError) as mail_error:
+                error = f'IMAP Host { self.host } on port { self.port } is unreachable : ' + str(mail_error)
                 print(error)
                 sys.exit()
+        elif self.method == 'graphql':
+            access_token = self.generate_graphql_access_token()
+            if access_token.status_code != 200:
+                error = 'Error while trying to get access token from GraphQL API : ' + str(access_token.text)
+                print(error)
+                sys.exit()
+
+            self.graphql_headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access_token.json()['access_token']
+            }
+
+            user = self.graphql_request(self.users_url + '/' + self.login, 'GET', None, self.graphql_headers)
+            if user.status_code != 200:
+                error = 'Error while trying to get user from GraphQL API : ' + str(user.text)
+                print(error)
+                sys.exit()
+
+            self.graphql_user = user.json()
+        try:
+            if self.method == 'oauth':
+                result = self.generate_oauth_token()
+                self.conn.client.authenticate("XOAUTH2",
+                                              lambda x: self.generate_auth_string(result['access_token']).encode(
+                                                  "utf-8"))
+            elif self.method == 'imap':
+                self.conn.login(self.login, self.pwd)
+        except IMAP4_SSL.error as err:
+            error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(err)
+            print(error)
+            sys.exit()
 
     def generate_auth_string(self, token):
         return f"user={self.login}\x01auth=Bearer {token}\x01\x01"
@@ -431,7 +430,7 @@ class Mail:
                 'destinationId': folder_id
             }
             res = self.graphql_request(url, 'POST', json.dumps(body), self.graphql_headers)
-            if res.status_code != 200 and res.status_code != 201:
+            if res.status_code not in (200, 201):
                 log.error('Error while moving mail to ' + destination + ' folder : ' + str(res.text))
                 return None
             return None

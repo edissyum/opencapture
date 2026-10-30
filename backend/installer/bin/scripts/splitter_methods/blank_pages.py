@@ -11,8 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 

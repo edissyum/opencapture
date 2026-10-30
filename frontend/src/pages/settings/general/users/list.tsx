@@ -122,7 +122,7 @@ export function SettingsGeneralUsers() {
             header: t('GLOBAL.status'),
             body: (row: any) => (
                 <span
-                    className={ `px-2 py-1 rounded-lg text-xs font-normal 
+                    className={ `px-2 py-1 rounded-lg text-xs font-normal
                         ${ row.enabled ? 'bg-(--bg-success) text-(--text-success)' : 'bg-(--bg-error) text-(--text-error)' }` }>
                     { row.enabled ? t('USERS.active') : t('USERS.inactive') }
                 </span>
@@ -412,9 +412,11 @@ export function SettingsGeneralUsers() {
                                             <div
                                                 className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
                                                 { selectedFields.map(field => (
-                                                    <SortableFieldItem key={ field.id } field={ field }
-                                                                       lastField={ field.id === selectedFields[selectedFields.length - 1].id }
-                                                                       onRemove={ () => handleRemoveField(field) }/>
+                                                    <SortableFieldItem
+                                                        key={ field.id } field={ field }
+                                                        lastField={ field.id === selectedFields[selectedFields.length - 1].id }
+                                                        onRemove={ () => handleRemoveField(field) }
+                                                    />
                                                 )) }
                                             </div>
                                         </SortableContext>

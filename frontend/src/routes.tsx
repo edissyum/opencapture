@@ -546,20 +546,20 @@ export const router = createBrowserRouter(
                             children: [
                                 {
                                     index: true,
-                                    loader: protectedLoader(['settings', 'positions_mask_list']),
+                                    loader: protectedLoader(['settings', 'position_mask_list']),
                                     element: <SettingsVerifierPositionsMasksList/>,
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
                                     path: 'edit/:positionMaskId',
-                                    loader: protectedLoader(['settings', 'update_positions_mask']),
+                                    loader: protectedLoader(['settings', 'update_position_mask']),
                                     element: <SettingsVerifierPositionMaskEditor/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_ai_doctype' }
                                 },
                                 {
                                     path: 'create',
-                                    loader: protectedLoader(['settings', 'add_positions_mask']),
+                                    loader: protectedLoader(['settings', 'add_position_mask']),
                                     element: <SettingsVerifierPositionMaskEditor/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }

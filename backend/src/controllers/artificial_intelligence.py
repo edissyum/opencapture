@@ -335,7 +335,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
         if dir_name in chosen_files:
             count += len([file_name for file_name in os.listdir(file_path + "/" + dir_name) if
                           file_name.lower().endswith(tuple(image_format))])
-    percent = (100 / count)
+    percent = 100 / count
 
     for dir_name in os.listdir(file_path):
         if dir_name in chosen_files:

@@ -40,8 +40,7 @@ def upload():
 
     files = request.files
 
-    custom_id = retrieve_custom_from_url(request)
-    message, code = check_extensions_mime(files, custom_id)
+    message, code = check_extensions_mime(files)
     if code != 200:
         return make_response(message, code)
 

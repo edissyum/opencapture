@@ -48,7 +48,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
     export_date = Files.get_now_date()
     export_zip_file = ''
 
-    nfz42020 = get_context_var('nfz42020', 14)
+    nfz42020 = get_context_var('nfz42020', 13)
 
     batch = splitter.retrieve_batches({
         'batch_id': None,
@@ -126,7 +126,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
                 return res_export_opencaptureformem, status
             batch = res_export_opencaptureformem['result_batch']
         elif output['output_type_id'] == 'export_xml':
-            res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
+            res_export_xml, status = handle_xml_output(batch, output['parameters'], regex, log)
             if status != 200:
                 return res_export_xml, status
             batch = res_export_xml['result_batch']
@@ -206,7 +206,7 @@ def export_pdf_files(batch, parameters, log, docservers, nfz42020):
 
         attachments_list = attachments.get_attachments_by_batch_id(batch['id'])
         if attachments_list:
-            pdf_filename, pdf_extension = os.path.splitext(document['filename'])
+            pdf_filename, _ = os.path.splitext(document['filename'])
             zip_filename = pdf_filename + '_attachments.zip'
             with ZipFile(document['folder_out'] + '/' + zip_filename, 'w') as zip_file:
                 for attachment in attachments_list:
@@ -401,7 +401,7 @@ def handle_cmis_output(output, batch, log, docservers, regex, nfz42020):
             'empty_line_regex': regex['splitter_empty_line'],
             'xml_comment_regex': regex['splitter_xml_comment']
         }
-        res_export_xml, status = handle_xml_output(batch, parameters, regex)
+        res_export_xml, status = handle_xml_output(batch, parameters, regex, log)
         if status != 200:
             for document in res_pdf_export['result_batch']['documents']:
                 if os.path.isfile(document['export_path']):

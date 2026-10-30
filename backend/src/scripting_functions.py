@@ -154,7 +154,8 @@ def update_document_data(args):
 
 
 def execute_output_splitter(args):
-    database, config, regex, _, _, _, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args['custom_id'], True)
+    database, config, regex, _, _, _, _, _, _, docservers, _, _, _, _ = create_classes_from_custom_id(args['custom_id'], True)
+
     if 'batches_id' in args and args['batches_id']:
         from .splitter_exports import export_batch
         for batch_id in args['batches_id']:

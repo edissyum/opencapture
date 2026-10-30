@@ -80,7 +80,7 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                 attachmentCache.set(attachment.id, cached);
                 setCurrentAttachmentData(cached);
             } catch (error) {
-                console.error("Error fetching attachment:", error);
+                console.error("Error fetching attachment :", error);
             } finally {
                 setLoading(false);
             }

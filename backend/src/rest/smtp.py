@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask_babel import gettext
-from ..controllers import smtp
+from ..controllers import smtp, auth
 from ..functions import rest_validator
 from flask import Blueprint, make_response, request
 
@@ -30,6 +30,7 @@ def check_smtp_status():
 
 
 @bp.route('smtp/test', methods=['POST'])
+@auth.token_required
 def test_smtp_send():
     check, message = rest_validator(request.json, [
         {'id': 'email', 'type': str, 'mandatory': True}

@@ -792,7 +792,7 @@ def import_suppliers(args):
                 default_currency = None
 
             get_only_raw_footer = True
-            if footer_coherence == 'True' or footer_coherence == 'true':
+            if footer_coherence in ('True', 'true'):
                 get_only_raw_footer = False
 
             duns = row[args['selected_columns'].index('duns')] if not row[args['selected_columns'].index(

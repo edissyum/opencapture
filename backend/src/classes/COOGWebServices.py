@@ -64,7 +64,7 @@ class COOGWebServices:
         }
         res = requests.post(self.base_url + '/api/v2/tasks/actions/create', data=json.dumps(task), headers=headers,
                             timeout=self.timeout, verify=self.cert_path)
-        if res.status_code != 200 and res.status_code != 201:
+        if res.status_code not in (200, 201):
             self.log.error('(' + str(res.status_code) + ') createTaskError : ' + str(res.text))
             return_message = res.text
             if 'error' in res.json():
@@ -88,7 +88,7 @@ class COOGWebServices:
         }
         res = requests.post(self.base_url + '/api/v2/tasks/actions/create-attachments',
                             data=json.dumps(args), headers=headers, timeout=self.timeout, verify=self.cert_path)
-        if res.status_code != 200 and res.status_code != 201:
+        if res.status_code not in (200, 201):
             self.log.error('(' + str(res.status_code) + ') createAttachmentError : ' + str(res.text))
             return False, res.text
         return True, json.loads(res.text)

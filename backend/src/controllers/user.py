@@ -29,7 +29,7 @@ from .. import shared
 from ..controllers import auth
 from ..helpers import get_context_var
 from ..models import user, accounts, forms, history, roles
-from ..functions import retrieve_custom_from_url, get_custom_path, check_order_by
+from ..functions import retrieve_custom_from_url, get_custom_path, check_order_by, parse_id_list, serialize_id_list
 
 
 def create_user(args):
@@ -118,12 +118,9 @@ def get_users(data):
 
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''
-        args['where'].append(
-            "(LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-               "LOWER(firstname) LIKE '%%" + request.args[
-            'search'].lower() + "%%' OR "
-            "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%')"
-        )
+        args['where'].append('(username ILIKE %s OR firstname ILIKE %s OR lastname ILIKE %s)')
+        search = f"%{request.args['search']}%"
+        args['data'] += [search, search, search]
 
     if 'mode' in request.args and request.args['mode']:
         args['where'].append("mode = %s")
@@ -287,8 +284,7 @@ def get_customers_by_user_id(user_id):
                     _customers.append(_c['id'])
                 customers = _customers
             else:
-                if isinstance(eval(customers['customers_id']['data']), list):
-                    customers = eval(customers['customers_id']['data'])
+                customers = parse_id_list(customers['customers_id']['data'])
         return customers, 200
     else:
         response = {
@@ -317,8 +313,7 @@ def get_forms_by_user_id(user_id):
                     _user_forms.append(form['id'])
                 user_forms = _user_forms
             else:
-                if isinstance(eval(user_forms['forms_id']['data']), list):
-                    user_forms = eval(user_forms['forms_id']['data'])
+                user_forms = parse_id_list(user_forms['forms_id']['data'])
         return user_forms, 200
     else:
         response = {
@@ -328,15 +323,16 @@ def get_forms_by_user_id(user_id):
         return response, 400
 
 
-def update_user(user_id, data):
+def update_user(user_id, data, is_self=False):
     configurations = get_context_var('configurations', 10)
 
     minutes_before_exp = configurations['jwtExpiration']
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
-        if 'new_password' in data and 'old_password' in data and data['new_password'] and data['old_password'] and \
-                not check_password_hash(user_info['password'], data['old_password']):
+        new_password = data.get('new_password') or data.get('password')
+        if new_password and is_self and \
+                (not data.get('old_password') or not check_password_hash(user_info['password'], data['old_password'])):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
@@ -354,7 +350,7 @@ def update_user(user_id, data):
             'email': data['email'],
             'lastname': data['lastname'],
             'firstname': data['firstname'],
-            'mode': data['mode'] if 'mode' in data else 'standard'
+            'mode': data['mode'] if data.get('mode') else user_info['mode']
         }
 
         if 'role' in data and data['role']:
@@ -380,7 +376,7 @@ def update_user(user_id, data):
             update_forms_by_user_id(user_id, data['forms'])
 
         if error is None:
-            user_info = user.get_user_by_id({'user_id': user_id})
+            user_info = user.get_user_by_id({'select': ['username', 'firstname', 'lastname'], 'user_id': user_id})
             history.add_history({
                 'module': 'general',
                 'ip': request.remote_addr,
@@ -497,9 +493,7 @@ def enable_user(user_id):
 def update_customers_by_user_id(user_id, customers):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
-        _set = {
-            'customers_id': '{"data": "' + str(customers) + '"}'
-        }
+        _set = {'customers_id': serialize_id_list(customers)}
         _, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
         if error is None:
             return '', 200
@@ -520,9 +514,7 @@ def update_customers_by_user_id(user_id, customers):
 def update_forms_by_user_id(user_id, list_forms):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
-        _set = {
-            'forms_id': '{"data": "' + str(list_forms) + '"}'
-        }
+        _set = {'forms_id': serialize_id_list(list_forms)}
         _, error = user.update_forms_by_user_id({'set': _set, 'user_id': user_id})
         if error:
             response = {

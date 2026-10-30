@@ -109,7 +109,7 @@ def download_attachment(module, attachment_id):
     if not privileges.has_privileges(request.environ['user_id'], [f'access_{module}', f'attachments_list_{module}']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/{module}/download/{attachment_id}'}), 403
 
-    file_content, mime = attachments.download_attachment(attachment_id, module)
+    file_content, mime = attachments.download_attachment(attachment_id)
     if file_content is None:
         return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
     return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200

@@ -270,8 +270,7 @@ class FindCustom:
                                 'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
                             }
 
-                            data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file,
-                                                                     self.docservers)
+                            data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file)
                             if not data and index in list_of_fields['regex'] and \
                                     list_of_fields[index]['regex'] is not False:
                                 data_to_return[index] = [self.process(list_of_fields[index]), position,
@@ -287,7 +286,7 @@ class FindCustom:
                         "positions -> '" + str(self.form_id) + "' as positions"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
@@ -303,7 +302,7 @@ class FindCustom:
                                         "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
                                     ],
                                     'table': ['accounts_supplier'],
-                                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                                 })[0]
 
@@ -311,7 +310,7 @@ class FindCustom:
                                     data = {'position': position['custom_position'], 'regex': None, 'target': 'full',
                                             'page': position['custom_page']}
                                     text, position = search_custom_positions(data, self.ocr, self.files, self.regex,
-                                                                             self.file, self.docservers)
+                                                                             self.file)
                                     try:
                                         position = json.loads(position)
                                     except TypeError:

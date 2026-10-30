@@ -71,6 +71,14 @@ def execute_outputs(output_info, log, regex, document_data, database):
         path, _ = verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
         path, _ = verifier_exports.export_facturx(data, log, document_data)
+    elif output_info['output_type_id'] == 'export_opencrm':
+        verifier_exports.export_opencrm(data, document_data, log, database)
+    elif output_info['output_type_id'] == 'export_cmis':
+        verifier_exports.export_cmis(data, document_data, log, database, compress_type, ocrise)
+    else:
+        output_info['file_path'] = None
+        log.info('Unknown output type: ' + output_info['output_type_id'])
+        return output_info
 
     output_info['file_path'] = path
     return output_info
@@ -134,7 +142,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     if workflow_settings:
         document_data['workflow_id'] = workflow_settings['id']
         if workflow_settings['input']['apply_process'] and allow_auto:
-            if workflow_settings['process']['delete_documents']:
+            if workflow_settings['process'].get('delete_documents', False):
                 insert_document = False
                 delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
         elif 'api_only' in workflow_settings['process'] and workflow_settings['process']['api_only']:
@@ -934,6 +942,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                               and workflow_settings['process']['allow_automatic_validation']):
         allow_auto = True
         for field in workflow_settings['process']['system_fields']:
+            if field == 'contact' and supplier:
+                continue
             if field == 'footer' and footer:
                 continue
             if field in datas['datas'] and datas['datas'][field]:
@@ -948,8 +958,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 allow_auto = False
                 break
 
-    if (supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto or not workflow_settings['input'][
-        'apply_process']:
+    if ((supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto
+        or not workflow_settings['input']['apply_process']):
         status = 'END'
         document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
                              nb_pages, docservers, workflow_settings, log, allow_auto)

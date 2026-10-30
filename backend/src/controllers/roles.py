@@ -20,7 +20,7 @@ import json
 from flask import request
 from flask_babel import gettext
 
-from ..functions import check_order_by
+from ..functions import check_order_by, serialize_id_list
 from ..models import roles, history, user
 
 
@@ -156,10 +156,7 @@ def update_role_privilege(role_id, privileges):
     _, error = roles.get_role_by_id({'role_id': role_id})
 
     if error is None:
-        _set = {
-            'privileges_id': '{"data": "' + str(privileges) + '"}'
-        }
-
+        _set = {'privileges_id': serialize_id_list(privileges, allow_wildcard=True)}
         _, error = roles.update_role_privileges({'set': _set, 'role_id': role_id})
 
         if error is None:

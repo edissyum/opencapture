@@ -36,7 +36,7 @@ class FindCurrency:
         self.header_text = ocr.header_text
         self.footer_text = ocr.footer_text
 
-        self.CURRENCY_CODES = {}
+        self.currency_codes = {}
         file_path = self.docservers['REFERENTIALS_PATH'] + '/CURRENCY_CODE.csv'
         if os.path.isfile(file_path):
             with open(file_path, encoding='UTF-8') as currency_file:
@@ -44,7 +44,7 @@ class FindCurrency:
                 currency_file.seek(0)
                 csv_reader = csv.reader(currency_file, delimiter=sep)
                 for row in csv_reader:
-                    self.CURRENCY_CODES[row[0]] = row[1]
+                    self.currency_codes[row[0]] = row[1]
 
     def process(self, line):
         for _currency in re.finditer(r"" + self.regex['currency'], line):
@@ -54,11 +54,11 @@ class FindCurrency:
                     continue
 
                 currency = re.sub(r'\s*\d*[.,|)(\'"]?', '', curr)
-                if currency in self.CURRENCY_CODES:
-                    return self.CURRENCY_CODES[currency]
+                if currency in self.currency_codes:
+                    return self.currency_codes[currency]
 
-                for _c in self.CURRENCY_CODES:
-                    if currency == self.CURRENCY_CODES[_c]:
+                for _c in self.currency_codes:
+                    if currency == self.currency_codes[_c]:
                         return currency
 
 

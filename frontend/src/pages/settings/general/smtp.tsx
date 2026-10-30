@@ -29,7 +29,6 @@ import { InputSwitch } from "../../../components/InputSwitch";
 import { emptyToUndefined } from "../../../services/zod";
 import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
-
 export function SettingsGeneralSMTP() {
     const { get, post, put } = AxiosApiCall();
 

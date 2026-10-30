@@ -83,13 +83,16 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
                                         { err.response.data?.errors }
                                     </strong>
                                 </h4>
-                                <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(err.response.data?.message) }}/>
+                                <p
+                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(err.response.data?.message) }}
+                                />
                             </div>, "error"
                         )
                     } else {
                         showToast(t('AUTH.session_expired'), "error");
                     }
                     sessionStorage.clear();
+                    setIsRefreshing(false);
                     return Promise.reject(err);
                 }
 
@@ -120,6 +123,8 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
                     return Promise.reject(refreshErr);
                 }
             }
+
+            setIsRefreshing(false);
             return Promise.reject(err);
         }
     );

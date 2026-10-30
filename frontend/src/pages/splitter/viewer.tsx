@@ -127,7 +127,7 @@ export function SplitterViewerPage() {
     const [certifiedCopy, setCertifiedCopy] = useState<boolean>(false);
 
     const formId = batch?.form_id;
-    const { formFields, loading: loadingFormFields } = useFormFields(formId);
+    const { formFields, loading: loadingFormFields } = useFormFields(formId, 'splitter');
 
     const [thumbnail, setThumbnail] = useState<string | null>(null);
     const thumbnailRef = useRef<string | null>(null);
@@ -389,7 +389,7 @@ export function SplitterViewerPage() {
         fetchForms().then();
         fetchBatchDetails().then();
         fetchEnableAttachments().then();
-    }, [loadingUser]);
+    }, [loadingUser, batchId]);
 
     // Fetch status
     // Fetch doctypes
@@ -1131,7 +1131,8 @@ export function SplitterViewerPage() {
             if (conditionalCustomField) {
                 let conditionalFieldValue = documentMetadataValues[documentId]?.[conditionalCustomField.label_short];
                 if (conditionalCustomField.type === 'select' && conditionalFieldValue) {
-                    const conditionalOption = conditionalCustomField.settings.options.find((o: any) => o.id === conditionalFieldValue.id);
+                    const options = conditionalCustomField.settings.options;
+                    const conditionalOption = options.find((o: any) => o.id === conditionalFieldValue.id);
                     if (conditionalOption) {
                         conditionalFieldValue = conditionalOption.id;
                     }
@@ -1200,7 +1201,7 @@ export function SplitterViewerPage() {
                                 </div>
                             </div>
                             <div onClick={ handleDeletePage }
-                                 className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
+                                 className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold
                                         hover:bg-(--bg-error) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <Trash size={ 16 }/>
@@ -1208,7 +1209,7 @@ export function SplitterViewerPage() {
                             </div>
 
                             <div onClick={ handleRotation }
-                                 className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
+                                 className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold
                                         hover:bg-(--bg-secondary) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <RotateCw size={ 14 }/>
@@ -1219,7 +1220,7 @@ export function SplitterViewerPage() {
 
                             <div
                                 className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1  rounded-xl p-3
-                                             hover:bg-(--bg-secondary) transition-colors ${ certifiedCopy && 'hidden' } 
+                                             hover:bg-(--bg-secondary) transition-colors ${ certifiedCopy && 'hidden' }
                                              ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }
                                 { ...(attachmentsCount > 0 && {
                                     "data-tooltip-id": "tooltip",
@@ -1228,7 +1229,8 @@ export function SplitterViewerPage() {
                             >
                                 <div
                                     onClick={ () => attachmentsCount === 0 && !disabledBatch && !certifiedCopy && addDocument() }
-                                    className='flex items-center gap-1'>
+                                    className='flex items-center gap-1'
+                                >
                                     <Plus size={ 16 }/>
                                     { t('SPLITTER.add_document') }
                                 </div>

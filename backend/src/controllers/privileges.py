@@ -1,7 +1,6 @@
 # This file is part of Open-Capture.
 # Copyright Edissyum Consulting since 2020 under licence GPLv3
 
-
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -17,6 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask_babel import gettext
+
+from ..functions import parse_id_list
 from ..models import privileges
 
 
@@ -47,20 +48,18 @@ def get_privileges_by_role_id(args):
     })
 
     if error is None:
-        role_privileges = privilege_info['privileges_id']['data']
-        if isinstance(eval(role_privileges), list):
-            role_privileges = eval(role_privileges)
-            if role_privileges and role_privileges[0] == '*':
-                return '*', 200
-            else:
-                all_privileges, error = privileges.get_privileges()
-                list_role_privileges = []
-                for role_privilege_id in role_privileges:
-                    for privilege_id in all_privileges:
-                        if privilege_id['id'] == role_privilege_id:
-                            list_role_privileges.append(privilege_id['label'])
+        role_privileges = parse_id_list(privilege_info['privileges_id']['data'])
+        if role_privileges and role_privileges[0] == '*':
+            return '*', 200
+        else:
+            all_privileges, error = privileges.get_privileges()
+            list_role_privileges = []
+            for role_privilege_id in role_privileges:
+                for privilege_id in all_privileges:
+                    if privilege_id['id'] == role_privilege_id:
+                        list_role_privileges.append(privilege_id['label'])
 
-                return list_role_privileges, 200
+            return list_role_privileges, 200
     else:
         response = {
             "errors": gettext('GET_PRIVILEGES_ERROR'),
@@ -75,20 +74,18 @@ def get_privileges_by_user_id(args):
     })
 
     if error is None:
-        role_privileges = privilege_info['privileges_id']['data']
-        if isinstance(eval(role_privileges), list):
-            role_privileges = eval(role_privileges)
-            if role_privileges and role_privileges[0] == '*':
-                return '*', 200
-            else:
-                all_privileges, error = privileges.get_privileges()
-                list_role_privileges = []
-                for role_privilege_id in role_privileges:
-                    for privilege_id in all_privileges:
-                        if privilege_id['id'] == role_privilege_id:
-                            list_role_privileges.append(privilege_id['label'])
+        role_privileges = parse_id_list(privilege_info['privileges_id']['data'])
+        if role_privileges and role_privileges[0] == '*':
+            return '*', 200
+        else:
+            all_privileges, error = privileges.get_privileges()
+            list_role_privileges = []
+            for role_privilege_id in role_privileges:
+                for privilege_id in all_privileges:
+                    if privilege_id['id'] == role_privilege_id:
+                        list_role_privileges.append(privilege_id['label'])
 
-                return list_role_privileges, 200
+            return list_role_privileges, 200
     else:
         response = {
             "errors": gettext('GET_PRIVILEGES_ERROR'),

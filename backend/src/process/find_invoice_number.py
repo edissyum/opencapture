@@ -48,7 +48,7 @@ class FindInvoiceNumber:
             date = date.replace('/', ' ')  # Replace some possible inconvenient char
             date = date.replace('-', ' ')  # Replace some possible inconvenient char
             date = date.replace('.', ' ')  # Replace some possible inconvenient char
-    
+
             regex = self.regex
             language = self.configurations['locale']
             if self.supplier and 'document_lang' in self.supplier[2] and self.supplier[2]['document_lang']:
@@ -64,7 +64,7 @@ class FindInvoiceNumber:
                         regex = {}
                         for _r in _regex:
                             regex[_r['regex_id']] = _r['content']
-    
+
             if convert:
                 date_file = './src/assets/locale/' + language + '.json'
                 with open(date_file, encoding='utf-8') as file:
@@ -80,14 +80,14 @@ class FindInvoiceNumber:
                 date = date.replace('  ', ' ')
                 length_of_year = len(date.split(' ')[2])
                 date_format = "%d %m %Y"
-    
+
                 for _l in self.languages:
                     if language == self.languages[_l]['lang_code']:
                         date_format = self.languages[_l]['date_format']
-    
+
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
-    
+
                 date = datetime.strptime(date, date_format).strftime(regex['format_date'])
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
@@ -129,14 +129,14 @@ class FindInvoiceNumber:
                         "pages -> '" + str(self.form_id) + "' ->'invoice_number' as invoice_number_page"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
                 if position and position[0]['invoice_number_position'] not in [False, 'NULL', '', None]:
                     position = position[0]
                     data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
-                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
 
                     try:
                         position = json.loads(position)

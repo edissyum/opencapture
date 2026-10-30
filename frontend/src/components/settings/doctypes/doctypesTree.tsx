@@ -36,7 +36,13 @@ import {
 
 import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 
-import { buildDoctypesTree, collectExpanded, type DoctypeTreeNode, type ExpandedKeysType, makeNodeTemplate } from "./helpers";
+import {
+    buildDoctypesTree,
+    collectExpanded,
+    type DoctypeTreeNode,
+    type ExpandedKeysType,
+    makeNodeTemplate
+} from "./helpers";
 
 import Hint from "../../Hint";
 import Input from "../../Input";
@@ -473,9 +479,13 @@ export function DoctypesTree({
                                             <div
                                                 className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
                                                 { selectedFields.map(field => (
-                                                    <SortableFieldItem key={ field.id } field={ field }
-                                                                       lastField={ field.id === selectedFields[selectedFields.length - 1].id }
-                                                                       onRemove={ () => handleRemoveField(field) }/>
+                                                    <SortableFieldItem
+                                                        key={ field.id }
+                                                        field={ field }
+                                                        lastField={
+                                                            field.id === selectedFields[selectedFields.length - 1].id
+                                                        }
+                                                        onRemove={ () => handleRemoveField(field) }/>
                                                 )) }
                                             </div>
                                         </SortableContext>

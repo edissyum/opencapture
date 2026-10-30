@@ -57,9 +57,23 @@ export function App() {
                 try {
                     const api = axios.create({ baseURL: `${ BACKEND_URL }/ws/` });
                     const customs = (await api.get("/config/customsList")).data?.customs;
-                    if (Array.isArray(customs) && customs.length === 1) {
-                        window.location.href = `/${ customs[0] }/${ window.location.pathname.substring(1) }`;
-                        return;
+
+                    if (Object.keys(customs ?? {}).length === 1) {
+                        _custom = Object.keys(customs)[0];
+
+                        if (customs[_custom].domain) {
+                            let domain = customs[_custom].domain;
+                            domain = domain.startsWith('http') ? domain : 'https://' + domain;
+                            const customDomain = new URL(domain).hostname;
+
+                            if (customDomain !== window.location.hostname) {
+                                window.location.href = `/${ _custom }/${ window.location.pathname.substring(1) }`;
+                                return;
+                            }
+                        } else {
+                            window.location.href = `/${ _custom }/${ window.location.pathname.substring(1) }`;
+                            return;
+                        }
                     }
                 } catch (err) {
                     console.error("Backend not reachable : ", err);
@@ -94,7 +108,7 @@ export function App() {
                 z.config(fr());
             } else if (currentLang === "eng") {
                 z.config(en());
-            } else if (currentLang === "esp") {
+            } else if (currentLang === "spa") {
                 z.config(es());
             }
 

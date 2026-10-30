@@ -73,10 +73,10 @@ class FindFooter:
                 if regex != self.regex['vat_rate']:
                     data = re.sub(r"" + self.regex['vat_rate'], '', data)
 
-                tmp = re.finditer(r'[-+]?\d+[.,]+\d+([.,]+\d+)?|\d+', data)
+                tmp_data = re.finditer(r'[-+]?\d+[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
-                for t in tmp:
+                for t in tmp_data:
                     if ('.' in t.group() or ',' in t.group()) and i > 1:
                         # If two amounts are found, separate them
                         continue
@@ -126,7 +126,7 @@ class FindFooter:
         position = self.database.select({
             'select': select,
             'table': ['accounts_supplier'],
-            'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+            'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
             'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
         })
 
@@ -138,7 +138,7 @@ class FindFooter:
                     page = self.nb_pages
 
                 data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
                 if text:
                     try:
                         # Try if the return string could be convert to float
@@ -261,7 +261,7 @@ class FindFooter:
                 "pages -> '" + str(self.form_id) + "' -> '" + name + "' as " + name + "_page"
             ],
             'table': ['accounts_supplier'],
-            'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+            'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
             'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
         })
 
@@ -270,7 +270,7 @@ class FindFooter:
             if position[name + '_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position[name + '_position'], 'regex': None, 'target': 'full',
                         'page': position[name + '_page']}
-                res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
                 if res[0]:
                     data = re.sub(r"[^0-9.]|\.(?!\d)", "", res[0].replace(',', '.'))
                     if data:
@@ -450,7 +450,7 @@ class FindFooter:
             if (((total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0]))) or
                     ((total_ttc and total_ttc[0] and vat_amount and vat_amount[0] and total_ht and total_ht[0])
                      and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))))):
-                message = f'Footer informations found : '
+                message = 'Footer informations found : '
                 if total_ttc:
                     message += f'[TTC : {str(total)}]'
                 if total_ht:

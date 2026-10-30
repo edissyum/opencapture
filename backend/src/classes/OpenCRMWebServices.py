@@ -74,3 +74,4 @@ class OpenCRMWebServices:
                 return False, res.json()['errors']['details']
             return False, res.text
         return True, json.loads(res.text)
+

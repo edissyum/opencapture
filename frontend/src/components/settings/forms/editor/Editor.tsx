@@ -101,7 +101,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const [zones, setZones] = useState(moduleZones);
     const [selectedZone, setSelectedZone] = useState<any>(null);
 
-    const { formFields } = useFormFields(formId ? formId : '');
+    const { formFields, loading: formFieldsLoading } = useFormFields(formId ? formId : '', module);
     const { customFields } = useCustomFields(module);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -109,7 +109,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
     const [formSettingsLoading, setFormSettingsLoading] = useState(true);
     const [formSettings, setFormSettings] = useState<any>({ "label": '', default_form: false, "settings": {} });
-
 
     const getUniqueId = () => {
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -141,7 +140,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
     // Initialize zones with existing form fields
     useEffect(() => {
-        if (!formId || !formFields || !formSettings) return;
+        if (!formId || !formFields || formFieldsLoading || !formSettings) return;
 
         const updatedZones: any = zones.map((zone: any) => {
             const key: any = zone.id.replace("zone-", "");
@@ -167,7 +166,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             return { ...zone, lines: formattedLines };
         });
         setZones(updatedZones);
-    }, [formSettings]);
+    }, [formSettings, formFieldsLoading]);
 
     if (customFields.length > 0) {
         availableFields.customFields = customFields.map((cf: any) => ({

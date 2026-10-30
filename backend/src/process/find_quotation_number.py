@@ -101,14 +101,14 @@ class FindQuotationNumber:
                         "pages -> '" + str(self.form_id) + "' ->'quotation_number' as quotation_number_page"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'where': ['(vat_number = %s OR duns = %s)', 'status <> %s'],
                     'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
                 if position and position[0]['quotation_number_position'] not in [False, 'NULL', '', None]:
                     position = position[0]
                     data = {'position': position['quotation_number_position'], 'regex': None, 'target': 'full', 'page': position['quotation_number_page']}
-                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                    text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file)
 
                     try:
                         position = json.loads(position)

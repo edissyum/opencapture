@@ -104,9 +104,9 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                         </Menu.Target>
 
                         <Menu.Dropdown>
-                            { menuModel.filter((item: any) => item.visible != false)?.map((item: any, index: number) => (
+                            { menuModel.filter((item: any) => item.visible != false)?.map((item: any, idx: number) => (
                                 <Menu.Item
-                                    key={ index }
+                                    key={ idx }
                                     leftSection={ item.icon }
                                     disabled={ item.disabled }
                                     onClick={ (e: React.MouseEvent) => {

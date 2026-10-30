@@ -64,7 +64,7 @@ def get_processes(module=None, get_last_processes=False):
             data.append(request.args['status'])
 
     if 'filename' in request.args and request.args['filename']:
-        where.append(f"filename ILIKE %s")
+        where.append("filename ILIKE %s")
         data.append(f"%{request.args['filename']}%")
 
     if where:
@@ -133,5 +133,5 @@ def create_process(args):
     return response, 200
 
 def update_retry(process_id):
-    process, _ = monitoring.update_retry(process_id)
-    return _, 200
+    _, return_ = monitoring.update_retry(process_id)
+    return return_, 200

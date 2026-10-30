@@ -21,12 +21,14 @@ import { AxiosApiCall } from "./AxiosApiCall";
 
 interface UseFormFieldsResult {
     formFields: any;
+    civilities: any;
     loading: boolean;
     error?: string | null;
 }
 
-export function useFormFields(formId: number): UseFormFieldsResult {
+export function useFormFields(formId: number, module: string): UseFormFieldsResult {
     const { get, loading, error } = AxiosApiCall();
+    const [civilities, setCivilities] = useState<any>([]);
     const [formFields, setFormFields] = useState<any>([]);
 
     useEffect(() => {
@@ -34,10 +36,19 @@ export function useFormFields(formId: number): UseFormFieldsResult {
 
         const fetchFormFields = async () => {
             try {
+                if (module === 'verifier') {
+                    const response = await get('/accounts/civilities/list');
+                    if (response && response.civilities) {
+                        setCivilities(response.civilities);
+                    }
+                }
+
                 const data = await get(`forms/fields/getByFormId/${ formId }`, {
                     showErrorToast: true,
                 });
-                if (data) setFormFields(data.fields);
+                if (data) {
+                    setFormFields(data.fields);
+                }
             } catch {
                 console.error("Failed to fetch form fields");
             }
@@ -46,5 +57,5 @@ export function useFormFields(formId: number): UseFormFieldsResult {
         fetchFormFields().then();
     }, [formId]);
 
-    return { formFields, loading, error };
+    return { formFields, civilities, loading, error };
 }

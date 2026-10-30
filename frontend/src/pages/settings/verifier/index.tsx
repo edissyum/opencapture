@@ -23,7 +23,6 @@ import { Loader } from "../../../components/loader/Loader";
 import { hasRequiredPermissions } from "../../../components/auth/auth";
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
-
 export const getSettingsVerifierOptions = () => [
     {
         name: t('SETTINGS.forms'),

@@ -26,7 +26,6 @@ import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 import UploadDropzone from "../../upload/Dropzone";
 
-
 import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../services/hooks/usePersistentState";
@@ -161,7 +160,7 @@ export function AiDoctypesList({ module }: { module: string }) {
     }
 
     const handleDelete = () => {
-        if (setSelectedAiDoctypes.length === 0) return;
+        if (selectedAiDoctypes.length === 0) return;
 
         showConfirmDialog({
             title: t('AI-DOCTYPES.delete_ai_doctypes', { count: selectedAiDoctypes.length }),
@@ -192,7 +191,7 @@ export function AiDoctypesList({ module }: { module: string }) {
     }
 
     const handleTestModel = async (file: File) => {
-        if (setSelectedAiDoctypes.length !== 1) return;
+        if (selectedAiDoctypes.length !== 1) return;
 
         setTestingModelFile(file);
         setTestingModelLoading(true);

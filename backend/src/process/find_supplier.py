@@ -73,7 +73,8 @@ class FindSupplier:
                 return False
 
             if column.lower() == 'bic':
-                where = ["TRIM(REPLACE(" + column + ", ' ', '')) = %s OR TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)']
+                where = ["(TRIM(REPLACE(" + column + ", ' ', '')) = %s OR TRIM(REPLACE(" + column + ", ' ', '')) = %s)",
+                         'accounts_supplier.status NOT IN (%s)']
                 _data = [data, data[:-3], 'DEL']
 
             args = {
