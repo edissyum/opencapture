@@ -89,7 +89,7 @@ export const defaultResponseFormat : any = {
     }
 };
 
-export const defaultJsonContent: any = {
+const defaultJsonContent: any = {
     "mistral": {
         "temperature": 0.2,
         "max_tokens": 1000,
@@ -286,5 +286,79 @@ export const defaultJsonContent: any = {
                 },
             }
         }
+    },
+    "claude": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "output_config": {
+            "effort": "low",
+            "format": {
+                "type": "json_schema",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "order_number": { "type": "string" },
+                        "invoice_number": { "type": "string" },
+                        "delivery_number": { "type": "string" },
+                        "quotation_number": { "type": "string" },
+                        "document_date": { "type": "string", "format": "date" },
+                        "document_due_date": { "type": "string", "format": "date" },
+                        "line_items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "description": { "type": "string" },
+                                    "quantity": { "type": "number" },
+                                    "reference": { "type": "string" },
+                                    "unit_price": { "type": "number" },
+                                    "total_price": { "type": "number" }
+                                },
+                                "required": ["description", "quantity", "unit_price", "total_price"],
+                                "additionalProperties": false
+                            }
+                        },
+                        "vat_rate": { "type": "number" },
+                        "total_ht": { "type": "number" },
+                        "total_ttc": { "type": "number" },
+                        "total_vat": { "type": "number" },
+                        "currency": { "type": "string" },
+                        "supplier": {
+                            "type": "object",
+                            "properties": {
+                                "name": { "type": "string" },
+                                "address_1": { "type": "string" },
+                                "postal_code": { "type": "string" },
+                                "city": { "type": "string" },
+                                "country": { "type": "string" },
+                                "vat_number": { "type": "string" },
+                                "email": { "type": "string" },
+                                "iban": { "type": "string" }
+                            },
+                            "required": ["name", "address_1", "postal_code", "city", "country", "vat_number", "email"],
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        },
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "document",
+                        "source": {
+                            "type": "base64",
+                            "media_type": "application/pdf",
+                            "data": "##FILE_NAME##"
+                        }
+                    },
+                    { "type": "text", "text": defaultPromptText }
+                ]
+            }
+        ]
     }
 }
+export default defaultJsonContent

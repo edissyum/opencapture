@@ -23,7 +23,7 @@ import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { defaultJsonContent } from "./json_defaults";
+import defaultJsonContent from "./json_defaults";
 
 import Hint from "../../../../components/Hint";
 import { Button } from "../../../../components/Button";
@@ -94,6 +94,17 @@ export function SettingsVerifierAiLLMEditor() {
                 { type: "output", price: 0.024 }
             ],
             ocr_placeholder: "##OCR_CONTENT##"
+        },
+        {
+            name: "claude",
+            label: "Anthropic Claude",
+            url: "https://api.anthropic.com/v1/messages",
+            logo: "/imgs/ai-llm/claude.svg",
+            costs: [
+                { type: "input", price: 0.004 },
+                { type: "output", price: 0.020 }
+            ],
+            ocr_placeholder: "##FILE_NAME##"
         }
     ];
 
