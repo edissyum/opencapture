@@ -13,7 +13,7 @@ sudo mkdir -p /opt/edissyum/opencapture/
 sudo chmod -R 775 /opt/edissyum/opencapture/
 sudo chown -R $(whoami) /opt/edissyum/opencapture/
 cd /opt/edissyum/opencapture/
-git clone -b dev https://github.com/edissyum/opencapture/ .
+git clone -b dev --depth 1 --no-single-branch https://github.com/edissyum/opencapture/ .
 ```
 
 2. **Install APT Dependencies**:

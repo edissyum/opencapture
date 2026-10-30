@@ -37,7 +37,8 @@ class HistoryTest(unittest.TestCase):
             'user_id': 1
         }
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/history/add', headers={"Content-Type": "application/json"}, json=payload)
+        return self.app.post(f'/{CUSTOM_ID}/ws/history/add', json=payload,
+                             headers={"Content-Type": "application/json", "Authorization": "Bearer " + self.token})
 
     def test_successful_add_history(self):
         history = self.create_history()
