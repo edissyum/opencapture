@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import ast
 import glob
 import json
 import uuid
@@ -561,3 +562,23 @@ def check_order_by(_filter, _order, allowed_filters):
     if _order not in allowed_orders:
         return False, gettext('ORDER_NOT_ALLOWED') + ' : ' + _order
     return True, ''
+
+
+def parse_id_list(value):
+    """Parse a stored '[1, 2]' / "['*']" string safely (never eval)"""
+    try:
+        parsed = ast.literal_eval(value) if isinstance(value, str) else value
+    except (ValueError, SyntaxError):
+        return []
+    return parsed if isinstance(parsed, list) else []
+
+
+def serialize_id_list(values, allow_wildcard=False):
+    """Build the {"data": "[...]"} JSON stored in users_forms / users_customers / roles_privileges"""
+    clean = []
+    for value in values or []:
+        if allow_wildcard and value == '*':
+            clean.append('*')
+        else:
+            clean.append(int(value))  # ValueError on anything else
+    return json.dumps({'data': str(clean)})

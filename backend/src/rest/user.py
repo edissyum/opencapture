@@ -244,6 +244,9 @@ def enable_user(user_id):
 @bp.route('users/getCustomersByUserId/<int:user_id>', methods=['GET'])
 @auth.token_required
 def get_customers_by_user_id(user_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/getCustomersByUserId/{user_id}'}), 403
+
     res = user.get_customers_by_user_id(user_id)
     return make_response(jsonify(res[0])), res[1]
 

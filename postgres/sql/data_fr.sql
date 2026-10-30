@@ -1525,7 +1525,8 @@ INSERT INTO "users" ("id", "username", "firstname", "lastname", "mode", "passwor
 INSERT INTO "users" ("id", "username", "firstname", "lastname", "password", "role") VALUES (3, 'user', 'Utilisateur', 'STANDARD', 'scrypt:32768:8:1$kgraMfbigH8DSKqY$a0746c81603ba39883144cb3b8af8b236ad5b5e70c228a0e43989d4c5f7c78198d2aab1c24e38d458ab60ef67a28eb7a022a01a20d737b213cafa1250d86268a', 3);
 ALTER SEQUENCE "users_id_seq" RESTART WITH 4;
 
-INSERT INTO "users_forms" ("user_id", "forms_id") VALUES (3, '{"data": "[1, 5]"}');
+INSERT INTO "users_forms" ("user_id", "forms_id") VALUES (2, '{"data": "[1,2,3,4,5]"}');
+INSERT INTO "users_forms" ("user_id", "forms_id") VALUES (3, '{"data": "[1,5]"}');
 
 INSERT INTO "users_customers" ("user_id", "customers_id") VALUES (2, '{"data": "[1]"}');
 INSERT INTO "users_customers" ("user_id", "customers_id") VALUES (3, '{"data": "[1]"}');

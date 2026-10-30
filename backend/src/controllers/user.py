@@ -29,7 +29,7 @@ from .. import shared
 from ..controllers import auth
 from ..helpers import get_context_var
 from ..models import user, accounts, forms, history, roles
-from ..functions import retrieve_custom_from_url, get_custom_path, check_order_by
+from ..functions import retrieve_custom_from_url, get_custom_path, check_order_by, parse_id_list, serialize_id_list
 
 
 def create_user(args):
@@ -284,8 +284,7 @@ def get_customers_by_user_id(user_id):
                     _customers.append(_c['id'])
                 customers = _customers
             else:
-                if isinstance(eval(customers['customers_id']['data']), list):
-                    customers = eval(customers['customers_id']['data'])
+                customers = parse_id_list(customers['customers_id']['data'])
         return customers, 200
     else:
         response = {
@@ -314,8 +313,7 @@ def get_forms_by_user_id(user_id):
                     _user_forms.append(form['id'])
                 user_forms = _user_forms
             else:
-                if isinstance(eval(user_forms['forms_id']['data']), list):
-                    user_forms = eval(user_forms['forms_id']['data'])
+                user_forms = parse_id_list(user_forms['forms_id']['data'])
         return user_forms, 200
     else:
         response = {
@@ -494,9 +492,7 @@ def enable_user(user_id):
 def update_customers_by_user_id(user_id, customers):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
-        _set = {
-            'customers_id': '{"data": "' + str(customers) + '"}'
-        }
+        _set = {'customers_id': serialize_id_list(customers)}
         _, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
         if error is None:
             return '', 200
@@ -517,9 +513,7 @@ def update_customers_by_user_id(user_id, customers):
 def update_forms_by_user_id(user_id, list_forms):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
-        _set = {
-            'forms_id': '{"data": "' + str(list_forms) + '"}'
-        }
+        _set = {'forms_id': serialize_id_list(list_forms)}
         _, error = user.update_forms_by_user_id({'set': _set, 'user_id': user_id})
         if error:
             response = {

@@ -18,6 +18,8 @@
 
 import json
 from flask_babel import gettext
+
+from ..functions import serialize_id_list
 from ..helpers import get_context_var
 from werkzeug.security import generate_password_hash
 
@@ -71,14 +73,14 @@ def create_user(args):
             'table': 'users_customers',
             'columns': {
                 'user_id': user_id,
-                'customers_id': json.dumps({"data": str(args['customers'])})
+                'customers_id': serialize_id_list(args['customers'])
             }
         })
         database.insert({
             'table': 'users_forms',
             'columns': {
                 'user_id': user_id,
-                'forms_id': json.dumps({"data": str(args['forms'])})
+                'forms_id': serialize_id_list(args['forms'])
             }
         })
         return user_id, error

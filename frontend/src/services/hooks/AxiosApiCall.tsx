@@ -92,6 +92,7 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
                         showToast(t('AUTH.session_expired'), "error");
                     }
                     sessionStorage.clear();
+                    setIsRefreshing(false);
                     return Promise.reject(err);
                 }
 
@@ -122,6 +123,8 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
                     return Promise.reject(refreshErr);
                 }
             }
+
+            setIsRefreshing(false);
             return Promise.reject(err);
         }
     );
