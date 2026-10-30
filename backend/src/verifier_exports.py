@@ -578,7 +578,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
                 file = folder_out + '/' + filename
             compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])
 
-        if not ocrise and not compress_type and os.path.isfile(file):
+        if not ocrise and (not compress_type or compress_type == 'no_compress') and os.path.isfile(file):
             shutil.copy(file, folder_out + '/' + filename)
 
         if 'id' in document_info and document_info['id']:
