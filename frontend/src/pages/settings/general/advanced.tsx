@@ -118,7 +118,7 @@ export function SettingsGeneralAdvanced() {
                     } finally {
                         setLoading(false);
                     }
-                }
+                };
                 setLoading(true);
                 updateValue().then();
             }

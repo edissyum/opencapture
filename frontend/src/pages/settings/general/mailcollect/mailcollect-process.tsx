@@ -176,7 +176,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleNextStep = (data: any) => {
         Object.keys(data).forEach((key) => {
@@ -185,7 +185,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
             }
         });
         setActive(active + 1);
-    }
+    };
     const handlePreviousStep = () => setActive(active - 1);
 
     const onSubmit = async (data: any) => {
@@ -224,7 +224,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
             console.error("Erreur lors de la mise à jour du process : " + err);
         }
         setLoading(false);
-    }
+    };
 
     const [active, setActive] = useState(0);
 
@@ -245,7 +245,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     checked={ authMethod === method.value }
                                     onChange={ () => {
                                         field.onChange(method.value);
-                                        setAuthMethod(method.value as any)
+                                        setAuthMethod(method.value as any);
                                     } }/>
                             ) }
                         />

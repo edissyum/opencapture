@@ -104,7 +104,7 @@ export function WorkflowsList({ module }: { module: string }) {
             } finally {
                 setLoadingWorkflows(false);
             }
-        }
+        };
         fetchWorkflows().then();
     }, [lazyParams, debouncedSearchTerm]);
 
@@ -125,7 +125,7 @@ export function WorkflowsList({ module }: { module: string }) {
             setTotalWorkflows(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDuplicate = () => {
         if (selectedWorkflows.length === 0) return;
@@ -149,7 +149,7 @@ export function WorkflowsList({ module }: { module: string }) {
                 setSelectedWorkflows([]);
             }
         });
-    }
+    };
     const duplicateWorkflows = async (id: number, value: string) => {
         try {
             await post(`/workflows/duplicate/${ id }`, { workflow_label_short: value });
@@ -157,7 +157,7 @@ export function WorkflowsList({ module }: { module: string }) {
         } catch (err) {
             console.error("Error while duplicating workflow :", err);
         }
-    }
+    };
 
     const handleDelete = () => {
         if (selectedWorkflows.length === 0) return;
@@ -176,7 +176,7 @@ export function WorkflowsList({ module }: { module: string }) {
                 setSelectedWorkflows([]);
             }
         });
-    }
+    };
     const deleteWorkflows = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -188,7 +188,7 @@ export function WorkflowsList({ module }: { module: string }) {
                 console.error("Error while deleting workflow :", err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">

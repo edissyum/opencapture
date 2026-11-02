@@ -54,7 +54,7 @@ export function SettingsGeneralRoleEditor() {
     const routes = [
         { value: '/home', label: t('GLOBAL.home') },
         { value: '/upload', label: t('GLOBAL.upload') }
-    ]
+    ];
 
     const schema = z.object({
         label: z.string(t('ROLES.label_mandatory')).min(3, t('ROLES.label_mandatory')).describe(JSON.stringify({
@@ -204,7 +204,7 @@ export function SettingsGeneralRoleEditor() {
             setLoading(false);
             console.error('Error creating role :', error);
         }
-    }
+    };
 
     const handleUpdate: any = async (data: any) => {
         if (rolePrivileges.length === 0) {
@@ -227,7 +227,7 @@ export function SettingsGeneralRoleEditor() {
             setLoading(false);
             console.error('Error updating role :', error);
         }
-    }
+    };
 
     const updateRolePrivileges = async (roleId: number) => {
         if (rolePrivileges.length === 0) return;
@@ -238,7 +238,7 @@ export function SettingsGeneralRoleEditor() {
         }).filter((id: any) => id !== null) : [];
 
         await put(`/roles/updatePrivilege/${ roleId }`, { privileges: privilegesIds });
-    }
+    };
 
     const handleTogglePrivilege = (value: boolean, privilege: any) => {
         const isChecked = value;
@@ -249,7 +249,7 @@ export function SettingsGeneralRoleEditor() {
                 return prev.filter((p: any) => p !== privilege.label);
             }
         });
-    }
+    };
 
     return (
         <div className="p-6 h-full flex flex-col gap-4 overflow-y-auto">

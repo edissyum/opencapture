@@ -44,7 +44,7 @@ export function CustomerEditor() {
     useEffect(() => {
         if (!customerId) {
             setLoading(false);
-            return
+            return;
         }
 
         const fetchCustomer = async () => {
@@ -211,9 +211,9 @@ export function CustomerEditor() {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
-    if (loading) return <Loader/>
+    if (loading) return <Loader/>;
 
     return (
         <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">

@@ -80,7 +80,7 @@ export function SettingsGeneralMailcollect() {
                     } catch (error) {
                         console.error("Error while renaming MailCollect process :", error);
                     }
-                }
+                };
                 renameProcess().then();
             }
         });
@@ -105,8 +105,8 @@ export function SettingsGeneralMailcollect() {
                     console.error("Erreur lors de la suppression du processus MailCollect :", error);
                 }
             }
-        })
-    }
+        });
+    };
 
     const handleDuplicate = () => {
         if (!selectedProcess) return;
@@ -134,7 +134,7 @@ export function SettingsGeneralMailcollect() {
                     } catch (error) {
                         console.error("Erreur lors de la duplication du processus MailCollect :", error);
                     }
-                }
+                };
                 duplicateProcess().then();
             }
         });
@@ -171,7 +171,7 @@ export function SettingsGeneralMailcollect() {
             } catch (error) {
                 console.error("Erreur de récupération des workflows du Splitter :", error);
             }
-        }
+        };
 
         fetchProcesses().then();
         fetchVerifierWorkflows().then();
@@ -212,7 +212,7 @@ export function SettingsGeneralMailcollect() {
                     } catch (error) {
                         console.error("Erreur lors de la duplication du processus MailCollect :", error);
                     }
-                }
+                };
                 addProcess().then();
             }
         });
@@ -254,8 +254,8 @@ export function SettingsGeneralMailcollect() {
                 process.enabled = !process.enabled;
                 setProcessList([...processList]);
             }
-        })
-    }
+        });
+    };
 
     if (loading) return <Loader/>;
 

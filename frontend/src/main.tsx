@@ -16,10 +16,10 @@
 
 import { pdfjs } from 'react-pdf';
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client'
+import { createRoot } from 'react-dom/client';
 import { MantineProvider } from "@mantine/core";
 
-import './index.css'
+import './index.css';
 import { App } from "./App";
 import { ToastProvider } from "./components/ToastProvider";
 import { mantineCssVariablesResolver, mantineTheme } from "./services/mantineTheme";

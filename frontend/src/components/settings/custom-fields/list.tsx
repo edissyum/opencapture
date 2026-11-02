@@ -111,7 +111,7 @@ export function CustomFieldsList({ module }: { module: string }) {
             } finally {
                 setLoadingCustomFields(false);
             }
-        }
+        };
         fetchCustomFields().then();
     }, [lazyParams, debouncedSearchTerm]);
 
@@ -132,7 +132,7 @@ export function CustomFieldsList({ module }: { module: string }) {
             setTotalCustomFields(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedCustomFields.length === 0) return;
@@ -151,7 +151,7 @@ export function CustomFieldsList({ module }: { module: string }) {
                 setSelectedCustomFields([]);
             }
         });
-    }
+    };
     const deleteForms = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -163,7 +163,7 @@ export function CustomFieldsList({ module }: { module: string }) {
                 console.error("Error while deleting custom field :", err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">

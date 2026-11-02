@@ -114,7 +114,7 @@ export function SettingsGeneralRegex() {
                     } finally {
                         setLoading(false);
                     }
-                }
+                };
                 setLoading(true);
                 updateValue().then();
             }

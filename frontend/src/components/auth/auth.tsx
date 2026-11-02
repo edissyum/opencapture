@@ -32,7 +32,7 @@ export const hasRequiredPermissions = (user: any, requiredPermissions: string[] 
     return requiredPermissions.every((perm) => {
         return userPrivileges.includes(perm) || userPrivileges === "*";
     });
-}
+};
 
 export function protectedLoader(requiredPermissions: string[] = []) {
     return async () => {

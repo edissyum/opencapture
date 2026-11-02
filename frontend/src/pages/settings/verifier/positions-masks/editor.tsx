@@ -131,7 +131,7 @@ export function SettingsVerifierPositionMaskEditor() {
                             color: field?.color || '#000000',
                             width: response.positions[key].width,
                             height: response.positions[key].height
-                        }
+                        };
                         if (regions.find((r: any) => r.id === region.id)) return;
 
                         regions.push(region);
@@ -142,7 +142,7 @@ export function SettingsVerifierPositionMaskEditor() {
             } catch (error) {
                 console.error("Error fetching position mask details:", error);
             }
-        }
+        };
 
         fetchPositionMaskDetails().then();
     }, [positionMaskId, customFields]);
@@ -157,7 +157,7 @@ export function SettingsVerifierPositionMaskEditor() {
             } catch (error) {
                 console.error("Error fetching forms:", error);
             }
-        }
+        };
 
         const fetchThirdPartyAccounts = async () => {
             try {
@@ -168,7 +168,7 @@ export function SettingsVerifierPositionMaskEditor() {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         fetchForms().then();
         fetchThirdPartyAccounts().then();
@@ -184,7 +184,7 @@ export function SettingsVerifierPositionMaskEditor() {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
     const handleUpdate = async (data: any) => {
         setLoadingSubmit(true);
@@ -196,7 +196,7 @@ export function SettingsVerifierPositionMaskEditor() {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
     const handleUpload = async (files: File[]) => {
         if (files.length === 0) return;
@@ -223,7 +223,7 @@ export function SettingsVerifierPositionMaskEditor() {
         } catch (error) {
             console.error("Error uploading position mask zones:", error);
         }
-    }
+    };
 
     const handleEnd = async (activeRegion: string, regions: Region[]) => {
         if (regions.length === 0 || !activeRegion) return;
@@ -234,7 +234,7 @@ export function SettingsVerifierPositionMaskEditor() {
             x: activeRegionData.x,
             width: activeRegionData.width,
             height: activeRegionData.height
-        }
+        };
 
         try {
             await put(`/positions_masks/updatePositions/${ positionMaskId }`, { [activeRegion]: payload });
@@ -246,7 +246,7 @@ export function SettingsVerifierPositionMaskEditor() {
         }
 
         return;
-    }
+    };
 
     const handlePrev = async () => {
         if (currentPage > 1) {
@@ -267,7 +267,7 @@ export function SettingsVerifierPositionMaskEditor() {
         const newFilename = positionMask.filename.replace(`-${ oldCpt }.${ extension }`, `-${ newCpt }.${ extension }`);
         await getThumbnail(newFilename);
         setCurrentPage(page);
-    }
+    };
 
     const getThumbnail = async (filename: any) => {
         try {
@@ -280,7 +280,7 @@ export function SettingsVerifierPositionMaskEditor() {
         } catch (error) {
             console.error("Error fetching position mask thumbnail:", error);
         }
-    }
+    };
 
     const updateRegex = async (fieldId: string, regex: string) => {
         if (!fieldId || !regex) return;
@@ -292,7 +292,7 @@ export function SettingsVerifierPositionMaskEditor() {
         } catch (error) {
             console.error("Error updating regex:", error);
         }
-    }
+    };
 
     if (loading) return <Loader/>;
 
@@ -405,7 +405,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
                                            type="text" name={ field.id } value={ positionMask.regex[field.id] || '' }
                                            onBlur={ (e: any) => {
-                                               updateRegex(field.id, e.target.value).then()
+                                               updateRegex(field.id, e.target.value).then();
                                            } }
                                     />
                                 </div>
@@ -418,7 +418,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                          if (!field.id.toString().startsWith('custom_')) {
                                              field.id = `custom_${ field.id }`;
                                          }
-                                         setFocusedField(field)
+                                         setFocusedField(field);
                                      } }
                                      className="p-3 flex flex-col gap-4 hover:bg-(--bg-secondary) cursor-pointer rounded border-b
                                                 border-(--border-secondary)">
@@ -426,7 +426,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
                                            type="text" name={ `custom_${ field.id }` }
                                            onBlur={ (e: any) => {
-                                               updateRegex(field.id, e.target.value).then()
+                                               updateRegex(field.id, e.target.value).then();
                                            } }
                                            value={ positionMask.regex[`custom_${ field.id }`] }/>
                                 </div>

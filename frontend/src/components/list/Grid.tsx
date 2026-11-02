@@ -105,7 +105,7 @@ export function Grid<T extends { id: string }>({
         }
 
         if (onSelectionChange) onSelectionChange(newSelectedRows);
-    }
+    };
 
     const selectAll = () => {
         let newSelectedRows: T[];
@@ -120,7 +120,7 @@ export function Grid<T extends { id: string }>({
 
     const handleMenuClose = () => {
         if (onSelectionChange) onSelectionChange([]);
-    }
+    };
 
     const paginatorLeftData = useMemo(() => {
         return (

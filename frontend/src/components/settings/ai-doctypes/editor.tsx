@@ -91,7 +91,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             } catch (error) {
                 console.error("Failed to fetch documents:", error);
             }
-        }
+        };
 
         fetchDocuments().then();
     }, []);
@@ -107,7 +107,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             } catch (error) {
                 console.error("Failed to fetch workflows:", error);
             }
-        }
+        };
 
         fetchWorkflows().then();
     }, []);
@@ -123,7 +123,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             } catch (error) {
                 console.error("Failed to fetch forms:", error);
             }
-        }
+        };
 
         const fetchDoctypes = async () => {
             try {
@@ -132,7 +132,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             } catch (error) {
                 console.error("Failed to fetch doctypes:", error);
             }
-        }
+        };
 
         fetchForms().then();
         fetchDoctypes().then();
@@ -193,7 +193,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
         } finally {
             setLoadingUpdate(false);
         }
-    }
+    };
 
     const handleModelCreate = async (data: any) => {
         if (Object.keys(errors).length > 0) return;
@@ -213,7 +213,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
         } finally {
             setLoadingUpdate(false);
         }
-    }
+    };
 
     const handleWorkflowChange = (e: any, doc: any) => {
         const updatedDocuments = documents.map((d: any) => {
@@ -224,7 +224,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
         });
 
         setDocuments(updatedDocuments);
-    }
+    };
 
     const handleDoctypeChange = (node: any) => {
         const updatedDocuments = documents.map((d: any) => {
@@ -236,7 +236,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
 
         setDocuments(updatedDocuments);
         setShowDoctypeSelection(false);
-    }
+    };
 
     const handleFormChange = (e: any, doc: any) => {
         const updatedDocuments = documents.map((d: any) => {
@@ -247,7 +247,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
         });
 
         setDocuments(updatedDocuments);
-    }
+    };
 
     const handleEnableDocument = (e: any, doc: any) => {
         const updatedDocuments = documents.map((d: any) => {
@@ -258,7 +258,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
         });
 
         setDocuments(updatedDocuments);
-    }
+    };
 
     if (loading) return <Loader/>;
 

@@ -20,7 +20,7 @@
     @apply z-40!;
     @apply overflow-auto;
     @apply bg-(--bg-primary);
-    @apply border-(--border-secondary);
+    @apply border-(--color-primary);
 }
 
 .mantine-Autocomplete-option:hover {

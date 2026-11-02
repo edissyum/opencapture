@@ -93,7 +93,7 @@ export function App() {
 
                 const res = await api.get("/config/customExists");
                 if (res.data.custom_id) {
-                    _custom = res.data.custom_id
+                    _custom = res.data.custom_id;
                 }
             } catch (err) {
                 if (axios.isAxiosError(err) && (err.code === "ECONNABORTED" || err.code === "ERR_NETWORK")) {

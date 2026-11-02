@@ -192,7 +192,7 @@ export function SettingsGeneralUsers() {
             } finally {
                 setLoadingUsers(false);
             }
-        }
+        };
         fetchUsers().then();
     }, [lazyParams, searchTerm]);
 
@@ -202,7 +202,7 @@ export function SettingsGeneralUsers() {
             setTotalUsers(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDisable = () => {
         if (selectedUsers.length === 0) return;
@@ -220,8 +220,8 @@ export function SettingsGeneralUsers() {
             onCancel: () => {
                 setSelectedUsers([]);
             }
-        })
-    }
+        });
+    };
     const disableUsers = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
@@ -233,7 +233,7 @@ export function SettingsGeneralUsers() {
                 console.error("Erreur désactivation de l'utilisateur :", err);
             }
         });
-    }
+    };
 
     const handleEnable = () => {
         if (selectedUsers.length === 0) return;
@@ -250,8 +250,8 @@ export function SettingsGeneralUsers() {
             onCancel: () => {
                 setSelectedUsers([]);
             }
-        })
-    }
+        });
+    };
     const enableUsers = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
@@ -263,7 +263,7 @@ export function SettingsGeneralUsers() {
                 console.error("Erreur activation de l'utilisateur :", err);
             }
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedUsers.length === 0) return;
@@ -282,7 +282,7 @@ export function SettingsGeneralUsers() {
                 setSelectedUsers([]);
             }
         });
-    }
+    };
     const deleteUsers = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -294,12 +294,12 @@ export function SettingsGeneralUsers() {
                 console.error("Error deleting user :", err);
             }
         }
-    }
+    };
 
     const handleRemoveField = (field: any) => {
         setSelectedFields(prev => prev.filter(f => f.id !== field.id));
         setUnselectedFields(prev => [...prev, { ...field, selected: false }]);
-    }
+    };
 
     const exportUsers = async () => {
         setLoadingExport(true);
@@ -338,7 +338,7 @@ export function SettingsGeneralUsers() {
         } finally {
             setLoadingExport(false);
         }
-    }
+    };
 
     const importUsers = async (formData: any) => {
         if (!formData) return;
@@ -356,7 +356,7 @@ export function SettingsGeneralUsers() {
         showToast(t('USERS.import_success'), 'success');
         navigate(0);
         return;
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">

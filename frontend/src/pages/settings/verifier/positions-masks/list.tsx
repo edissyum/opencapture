@@ -100,7 +100,7 @@ export function SettingsVerifierPositionsMasksList() {
             } finally {
                 setLoadingPositionsMasks(false);
             }
-        }
+        };
 
         fetchPositionsMasks().then();
     }, [lazyParams, debouncedSearchTerm]);
@@ -122,7 +122,7 @@ export function SettingsVerifierPositionsMasksList() {
             setTotalPositionsMasks(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedPositionsMasks.length === 0) return;
@@ -141,7 +141,7 @@ export function SettingsVerifierPositionsMasksList() {
                 setSelectedPositionsMasks([]);
             }
         });
-    }
+    };
     const deletepositionsMasksModels = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -153,7 +153,7 @@ export function SettingsVerifierPositionsMasksList() {
                 console.error("Error while deleting positions masks :", err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">

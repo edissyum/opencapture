@@ -76,7 +76,7 @@ export function useFavorites() {
             showToast(t("SETTINGS.favorites_added"));
             setTimeout(() => setLoadingFavorites(false), 200);
         }
-    }
+    };
 
     return { ready, addFavorite, toggleFavorite, removeFavorite, getFavorites, loadingFavorites };
 }

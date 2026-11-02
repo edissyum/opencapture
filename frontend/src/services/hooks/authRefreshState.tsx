@@ -16,4 +16,4 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 export let isRefreshing = false;
-export const setIsRefreshing = (v: boolean) => { isRefreshing = v };
+export const setIsRefreshing = (v: boolean) => { isRefreshing = v; };

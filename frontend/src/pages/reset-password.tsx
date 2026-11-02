@@ -109,7 +109,7 @@ export function ResetPassword() {
     useEffect(() => {
         const checkSmtpServer = async () => {
             try {
-                const response = await get('/smtp/isServerUp')
+                const response = await get('/smtp/isServerUp');
                 setSmtpStatus(response.status);
                 setLoading(false);
             } catch (err) {
@@ -133,7 +133,7 @@ export function ResetPassword() {
         } else {
             setEmailError('');
         }
-    }
+    };
 
     const handleReset = async (e: any) => {
         e.preventDefault();
@@ -152,7 +152,7 @@ export function ResetPassword() {
             setSending(false);
             console.error('Error while resetting password', err);
         }
-    }
+    };
 
     const handleSendEmail = async (e: any) => {
         e.preventDefault();
@@ -164,7 +164,7 @@ export function ResetPassword() {
         setSending(true);
 
         try {
-            const response = await post('/users/getByMail', { 'email': email })
+            const response = await post('/users/getByMail', { 'email': email });
             if (response && response.id) {
                 const currentUrl = window.location.href.replace('/reset-password', '');
                 await post('/users/sendEmailForgotPassword', { 'userId': response.id, 'currentUrl': currentUrl });
@@ -231,5 +231,5 @@ export function ResetPassword() {
                       className="cursor-pointer text-(--color-primary)">{ t('AUTH.login_here') } </span>
             </p>
         </div>
-    )
+    );
 }

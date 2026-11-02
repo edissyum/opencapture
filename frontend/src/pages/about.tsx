@@ -29,7 +29,7 @@ export function AboutPage() {
     const { get } = AxiosApiCall();
     const [loading, setLoading] = useState(true);
 
-    const logo = "/imgs/login_image.svg"
+    const logo = "/imgs/login_image.svg";
 
     const [backendPackages, setBackendPackages] = useState<any>([]);
     const [frontendPackages, setFrontendPackages] = useState<any>([]);
@@ -352,7 +352,7 @@ export function AboutPage() {
                                                 { frontendPackages[key] }
                                             </div>
                                         </div>
-                                    )
+                                    );
                                 }) }
                             </div>
                         </Panel>
@@ -384,7 +384,7 @@ export function AboutPage() {
                                                 { backendPackages[key].split('==')[1] }
                                             </div>
                                         </div>
-                                    )
+                                    );
                                 }) }
                             </div>
                         </Panel>

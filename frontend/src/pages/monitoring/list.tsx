@@ -49,12 +49,12 @@ export function MonitoringList() {
     const listModules = [
         { id: 'verifier', label: t('SETTINGS.verifier') },
         { id: 'splitter', label: t('SETTINGS.splitter') }
-    ]
+    ];
     const listStatuses = [
         { id: 'running', label: t('MONITORING.running') },
         { id: 'done', label: t('MONITORING.done') },
         { id: 'error', label: t('MONITORING.error') }
-    ]
+    ];
     const [selectedModule, setSelectedModule] = usePersistentState<string>('selectedModuleMonitoring', '');
     const [selectedStatus, setSelectedStatus] = usePersistentState<string>('selectedStatusMonitoring', '');
 
@@ -198,7 +198,7 @@ export function MonitoringList() {
         }
 
         setLoadingProcesses(false);
-    }
+    };
 
     // Fetch processes list
     useEffect(() => {
@@ -216,7 +216,7 @@ export function MonitoringList() {
     const handleResetFilters = () => {
         setSelectedModule('');
         setSelectedStatus('');
-    }
+    };
 
     // Check if filters have changed
     useEffect(() => {
@@ -238,7 +238,7 @@ export function MonitoringList() {
                 showToast(t('MONITORING.process_relaunched'), 'success');
             }
         });
-    }
+    };
 
     return (
         <div className='flex h-full w-full overflow-hidden bg-(--bg-secondary)'>

@@ -100,7 +100,7 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
         } finally {
             setUpdating(false);
         }
-    }
+    };
 
     if (loading) return <Loader/>;
 
@@ -127,7 +127,7 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                        value={ identifier }
                        onChange={ (e) => {
                            if (/^\d*$/.test(e.target.value)) {
-                               setIdentifier(e.target.value)
+                               setIdentifier(e.target.value);
                            }
                        } }
                        placeholder={ t('UPDATE-STATUS.id_placeholder') }

@@ -96,7 +96,7 @@ export function SupplierEditor({
                             label: response[currency],
                             value: response[currency]
                         }]);
-                    }))
+                    }));
                 }
             } catch (error) {
                 console.error('Error fetching currencies:', error);
@@ -123,7 +123,7 @@ export function SupplierEditor({
             } catch (error) {
                 console.error('Error fetching civilities :', error);
             }
-        }
+        };
 
         const fetchAccountingPlans = async () => {
             try {
@@ -482,9 +482,9 @@ export function SupplierEditor({
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
-    if (loading) return <Loader/>
+    if (loading) return <Loader/>;
 
     return (
         <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">

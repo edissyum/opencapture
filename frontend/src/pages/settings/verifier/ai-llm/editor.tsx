@@ -121,7 +121,7 @@ export function SettingsVerifierAiLLMEditor() {
             }
         };
 
-        fetchAiLLMDetails().then()
+        fetchAiLLMDetails().then();
     }, [aiLLMId]);
 
     const detailsSchema: any = z.object({
@@ -232,7 +232,7 @@ export function SettingsVerifierAiLLMEditor() {
             payload['settings']['output_price'] = data.output_price;
         }
         return payload;
-    }
+    };
 
     const handleCreate = async (data: any) => {
         setLoading(true);
@@ -259,13 +259,13 @@ export function SettingsVerifierAiLLMEditor() {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleCopy = async () => {
         await copyToClipboard(ocrPlaceholder);
         setDataCopied(true);
         setTimeout(() => setDataCopied(false), 2000);
-    }
+    };
 
     const saveActionRef = useRef<() => void>(() => {});
     useEffect(() => {

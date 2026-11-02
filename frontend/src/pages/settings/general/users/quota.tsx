@@ -74,7 +74,7 @@ export function SettingsGeneralUserQuota() {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
     if (loading) return <Loader/>;
 

@@ -244,7 +244,7 @@ export function SplitterListPage() {
         const fetchForms = async () => {
             const res = await get(`/forms/splitter/list`) || [];
             setListForms(res.forms || []);
-        }
+        };
         fetchForms().then();
     }, [user, loadingUser]);
 
@@ -255,7 +255,7 @@ export function SplitterListPage() {
         const fetchCustomers = async () => {
             const res = await get(`/accounts/customers/list/splitter/${ user.id }`);
             setListCustomers(res.customers || []);
-        }
+        };
 
         fetchCustomers().then();
     }, [listForms]);
@@ -342,7 +342,7 @@ export function SplitterListPage() {
             setTotalBatches(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleChangeCustomer = async (customerId: string) => {
         if (selectedBatches.length === 0) return;
@@ -366,7 +366,7 @@ export function SplitterListPage() {
             setTotalBatches(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleDelete = async () => {
         if (selectedBatches.length === 0) return;
@@ -386,8 +386,8 @@ export function SplitterListPage() {
             onCancel: () => {
                 setSelectedBatches([]);
             }
-        })
-    }
+        });
+    };
 
     const deleteDocuments = async (ids: string[]) => {
         try {
@@ -395,7 +395,7 @@ export function SplitterListPage() {
         } catch (err) {
             console.error("Erreur suppression des lots :", err);
         }
-    }
+    };
 
     const handleMerge = async () => {
         if (selectedBatches.length < 2) return;
@@ -411,7 +411,7 @@ export function SplitterListPage() {
         } catch (err) {
             console.error("Erreur lors de la fusion des lots :", err);
         }
-    }
+    };
 
     const handleDisplayFilters = () => {
         setDisplayFilters(!displayFilters);
@@ -423,7 +423,7 @@ export function SplitterListPage() {
                 setOpen({ ...open, customers: true });
             }
         }
-    }
+    };
 
     const handleResetFilters = () => {
         setSelectedCustomers([]);
@@ -431,7 +431,7 @@ export function SplitterListPage() {
         setSelectedForm('');
         setSelectedStatus('NEW');
         setLazyParams({ ...lazyParams, sortField: null, sortOrder: null });
-    }
+    };
 
     // Check if filters have changed
     useEffect(() => {

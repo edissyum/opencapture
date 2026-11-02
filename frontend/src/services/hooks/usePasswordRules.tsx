@@ -54,7 +54,7 @@ export function usePasswordRules() {
         }
 
         return errorMessage;
-    }
+    };
 
     return { verifyPassword, loading, error };
 }

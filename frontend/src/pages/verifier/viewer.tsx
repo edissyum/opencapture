@@ -186,7 +186,7 @@ export function VerifierViewerPage() {
             } catch (error) {
                 console.error("Error fetching enable attachments config :", error);
             }
-        }
+        };
 
         const fetchForm = async () => {
             try {
@@ -221,7 +221,7 @@ export function VerifierViewerPage() {
             } catch (error) {
                 console.error("Error fetching accounting plan :", error);
             }
-        }
+        };
 
         const fetchWorkflowDetails = async () => {
             try {
@@ -253,7 +253,7 @@ export function VerifierViewerPage() {
             } catch (error) {
                 console.error("Error fetching all third parties :", error);
             }
-        }
+        };
 
         fetchAllSuppliers().then();
     }, []);
@@ -270,7 +270,7 @@ export function VerifierViewerPage() {
             const supplierFull = {
                 ...response,
                 ...addressResponse
-            }
+            };
 
             setCurrentSupplier(supplierFull);
             setOriginalCurrentSupplier(supplierFull);
@@ -296,7 +296,7 @@ export function VerifierViewerPage() {
                 setSupplierExists(false);
             }
             setLoadingLinksMEM(false);
-            return
+            return;
         }
 
         fetchThirdParty().then();
@@ -317,7 +317,7 @@ export function VerifierViewerPage() {
                     "documentId": documentId,
                     "filename": currentFilename,
                     "registerDate": documentData.register_date
-                }
+                };
                 post('verifier/getThumb', data).then((response) => {
                     setPagesImageB64(prev => ({ ...prev, [page]: 'data:image/jpeg;base64,' + response.file }));
                 });
@@ -523,7 +523,7 @@ export function VerifierViewerPage() {
 
                         o.data.options?.links.forEach((elem: any) => {
                             if (elem.id && elem.value) {
-                                data[elem.id] = elem.value
+                                data[elem.id] = elem.value;
                             }
                         });
 
@@ -549,7 +549,7 @@ export function VerifierViewerPage() {
                 }
             }
             setLoadingLinksMEM(false);
-        }
+        };
 
         setupLinksMEM().then();
     }, [outputs, currentSupplier]);
@@ -573,7 +573,7 @@ export function VerifierViewerPage() {
         const newFilename = currentFilename.replace(`-${ oldCpt }.${ extension }`, `-${ newCpt }.${ extension }`);
         setCurrentPage(page);
         setCurrentFilename(newFilename);
-    }
+    };
 
     const handleDownloadOriginalFile = () => {
         if (!documentData) return;
@@ -605,11 +605,11 @@ export function VerifierViewerPage() {
                 annotation.classList.remove('hidden!');
             }
         });
-    }
+    };
 
     const handleFocusField = (id: string, label: string, color: string) => {
         setFocusedField({ 'id': id, 'label': label, 'color': color });
-    }
+    };
 
     const handleEnd = async (activeRegion: string, regions: Region[]) => {
         setFocusedField(null);
@@ -633,7 +633,7 @@ export function VerifierViewerPage() {
 
             await ocrOnFly(activeRegion, region);
         }
-    }
+    };
 
     const handleDelete = async (activeRegion: string) => {
         if (!activeRegion) return;
@@ -650,7 +650,7 @@ export function VerifierViewerPage() {
         } catch (error) {
             console.error("Error deleting page data:", error);
         }
-    }
+    };
 
     const handleDuplicateLine = (line: any, zone: any, lineIndex: number, fromInit: boolean = false) => {
         if (disableFields) return;
@@ -705,7 +705,7 @@ export function VerifierViewerPage() {
         if (!fromInit) {
             setUnSavedChanges(true);
         }
-    }
+    };
 
     // Function to update document data (only array, not on database) and validate fields
     const updateDocumentData = (field: any, value: any, checkSupplier: boolean = true, fromInit: boolean = false) => {
@@ -765,7 +765,7 @@ export function VerifierViewerPage() {
 
         setSupplierChanged(supplierChange);
         prepareDocumentData(field, value);
-    }
+    };
 
     function errorCheck(field: any, value: any) {
         let error: string | null = null;
@@ -834,7 +834,7 @@ export function VerifierViewerPage() {
                 [field.id]: value
             }
         }));
-    }
+    };
 
     const saveDocumentData = async (data: any) => {
         try {
@@ -842,7 +842,7 @@ export function VerifierViewerPage() {
         } catch (error) {
             console.error("Error saving document data:", error);
         }
-    }
+    };
 
     async function updateDocument(data: any) {
         setLoadingUpdateDocumentData(true);
@@ -868,7 +868,7 @@ export function VerifierViewerPage() {
         } catch (error) {
             console.error("Error saving document position:", error);
         }
-    }
+    };
 
     const saveDocumentPage = async (data: any) => {
         if (!data || Object.keys(data).length === 0) return;
@@ -883,7 +883,7 @@ export function VerifierViewerPage() {
         } catch (error) {
             console.error("Error saving document page:", error);
         }
-    }
+    };
 
     const getWidthLine = useCallback((line: any) => {
         const fields = Object.values(line).filter((f: any) => typeof f !== 'boolean');
@@ -929,7 +929,7 @@ export function VerifierViewerPage() {
         setSuggestionsSuppliers(filtered.slice(0, 100));
 
         updateDocumentData({ id: fieldId }, value);
-    }
+    };
 
     const handleSupplierChange = async (field: any, value: any) => {
         if (typeof value === 'object' && value !== null) {
@@ -944,7 +944,7 @@ export function VerifierViewerPage() {
             });
         }
         updateDocumentData({ id: field.id }, value);
-    }
+    };
 
     async function ocrOnFly(fieldId: string, region: Region) {
         try {
@@ -1110,7 +1110,7 @@ export function VerifierViewerPage() {
             }
         }
         setLoadingUpdateValidate(false);
-    }
+    };
 
     const refuseDocument = async () => {
         if (unSavedChanges) {
@@ -1129,7 +1129,7 @@ export function VerifierViewerPage() {
             setLoadingUpdateRefuse(false);
             navigate('/home');
         });
-    }
+    };
 
     const getFilteredConditionalOptions = (field: any) => {
         if (!field.settings?.options) return [];
@@ -1198,7 +1198,7 @@ export function VerifierViewerPage() {
         setLoadingUpdateDocumentData(false);
 
         showToast(t('VERIFIER.datas_updated'), 'success');
-    }
+    };
 
     function showAutoLogo(field: any) {
         return !!(documentData.positions[field.id] && !documentData.positions[field.id].ocr_from_user);
@@ -1450,7 +1450,7 @@ export function VerifierViewerPage() {
                                                                     value={ tmpDocumentData?.datas?.[field.id] }
                                                                     options={ getFilteredConditionalOptions(field) }
                                                                     onChange={ (value) => {
-                                                                        updateDocumentData(field, value)
+                                                                        updateDocumentData(field, value);
                                                                     } }
                                                                 />
                                                             ) }
@@ -1468,7 +1468,7 @@ export function VerifierViewerPage() {
                                                                         label: plan.compte_lib
                                                                     })) }
                                                                     onChange={ (value) => {
-                                                                        updateDocumentData(field, value)
+                                                                        updateDocumentData(field, value);
                                                                     } }
                                                                 />
                                                             ) }
@@ -1484,7 +1484,7 @@ export function VerifierViewerPage() {
                                                                     suggestions={ field.values || [] }
                                                                     value={ tmpDocumentData?.datas?.[field.id] ?? "" }
                                                                     onChange={ (value) => {
-                                                                        updateDocumentData(field, value)
+                                                                        updateDocumentData(field, value);
                                                                     } }
                                                                     search={ () => {
                                                                     } }
@@ -1507,7 +1507,7 @@ export function VerifierViewerPage() {
                                                                                 handleSupplierChange(field, value);
                                                                             } }
                                                                             search={ (value: string) => {
-                                                                                handleSupplierSearch(value, field.id)
+                                                                                handleSupplierSearch(value, field.id);
                                                                             } }
                                                                         />
                                                                     ) : (
@@ -1534,7 +1534,7 @@ export function VerifierViewerPage() {
                                                              className={ `flex items-center justify-center
                                                                 ${ disableFields ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
                                                              onClick={ () => {
-                                                                 handleDuplicateLine(line, zone, index)
+                                                                 handleDuplicateLine(line, zone, index);
                                                              } }>
                                                             <Copy size={ 18 }/>
                                                         </div>

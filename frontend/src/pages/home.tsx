@@ -30,7 +30,7 @@ export function HomePage() {
     const modules: any = {
         verifier: VerifierListPage,
         splitter: SplitterListPage
-    }
+    };
     const [module, setModule] = useState("");
     const [refreshKey, setRefreshKey] = useState(0);
 

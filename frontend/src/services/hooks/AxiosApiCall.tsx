@@ -87,7 +87,7 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
                                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(err.response.data?.message) }}
                                 />
                             </div>, "error"
-                        )
+                        );
                     } else {
                         showToast(t('AUTH.session_expired'), "error");
                     }
@@ -200,7 +200,7 @@ export function AxiosApiCall() {
                             </h4>
                             <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(details) }}/>
                         </div>, "error", toastId
-                    )
+                    );
                 } else {
                     if (err.response?.status === 429) {
                         showToast(t('ERROR.too_many_requests'), "error");

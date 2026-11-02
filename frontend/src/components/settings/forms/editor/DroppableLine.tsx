@@ -17,7 +17,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 
-import { SortableField } from "./SortableField"
+import { SortableField } from "./SortableField";
 
 export function DroppableLine({ line, onUpdateField, onDeleteField, module }: any) {
     const { setNodeRef } = useDroppable({ id: line.id });

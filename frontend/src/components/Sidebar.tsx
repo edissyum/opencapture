@@ -97,7 +97,7 @@ export default function Sidebar() {
     const handleCollapse = () => {
         setCollapsed(!collapsed);
         setManuallyCollapsed(!collapsed);
-    }
+    };
 
     // Merge collapsed state with manuallyCollapsed to determine final collapsed state
     useEffect(() => {
@@ -154,7 +154,7 @@ export default function Sidebar() {
                     to="/home"
                     onClick={ () => {
                         if (location.pathname == '/home') {
-                            window.dispatchEvent(new Event('refreshHome'))
+                            window.dispatchEvent(new Event('refreshHome'));
                         }
                     } }
                     className={ `${ standardClasses } ${['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : "" }` }>

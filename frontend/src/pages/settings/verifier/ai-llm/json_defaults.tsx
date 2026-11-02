@@ -26,7 +26,7 @@ export const defaultPromptText: string = "Extract the following from the provide
     "If the invoice has no VAT, set vat_amount and vat_rate to 0.\n" +
     "If the invoice has no line items, set line_items to an empty array.\n" +
     "Do not add commentary.\n" +
-    "If it's not an invoice, respond with an empty JSON object."
+    "If it's not an invoice, respond with an empty JSON object.";
 
 export const defaultPrompts: any = [
     {

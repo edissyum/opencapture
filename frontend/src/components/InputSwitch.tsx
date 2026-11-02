@@ -29,7 +29,7 @@ export function InputSwitch({ id, label, checked, disabled, onChange, truncate }
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange(event.target.checked);
-    }
+    };
 
     return (
         <Switch
@@ -47,5 +47,5 @@ export function InputSwitch({ id, label, checked, disabled, onChange, truncate }
                 labelWrapper: 'min-w-0 flex-1 overflow-hidden'
             } : undefined }
         />
-    )
+    );
 }

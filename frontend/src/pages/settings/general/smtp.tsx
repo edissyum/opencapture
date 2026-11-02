@@ -126,7 +126,7 @@ export function SettingsGeneralSMTP() {
             setSelectedEncryption(provider.secure as string);
             setValue('smtpProtocoleSecure', provider.secure as any);
         }
-    }
+    };
 
     const onSubmit = async (data: FormData) => {
         const completeData = {
@@ -165,7 +165,7 @@ export function SettingsGeneralSMTP() {
             setStatusLoadingTestEmail(false);
             console.error("Erreur envoi email de test :", err);
         }
-    }
+    };
 
     return (
         <div className='flex h-full overflow-hidden'>
@@ -290,7 +290,7 @@ export function SettingsGeneralSMTP() {
                                                 checked={ selectedEncryption === option }
                                                 onChange={ () => {
                                                     field.onChange(option);
-                                                    setSelectedEncryption(option)
+                                                    setSelectedEncryption(option);
                                                 } }
                                             />
                                         ) }

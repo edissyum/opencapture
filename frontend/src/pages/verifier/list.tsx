@@ -159,7 +159,7 @@ export function VerifierListPage() {
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
-    ]
+    ];
 
     const columns: any = [
         {
@@ -268,7 +268,7 @@ export function VerifierListPage() {
         const fetchForms = async () => {
             const res = await get(`/forms/verifier/list`) || [];
             setListForms(res.forms || []);
-        }
+        };
         fetchForms().then();
     }, [user, loadingUser]);
 
@@ -281,11 +281,11 @@ export function VerifierListPage() {
             let customers = [{ id: 0, name: t('ACCOUNTS.no_customer_associated') }];
             customers = customers.concat(res.customers || []);
             setListCustomers(customers);
-        }
+        };
         const fetchSuppliers = async () => {
             const res = await get(`/accounts/suppliers/list`);
             setListSuppliers(res.suppliers || []);
-        }
+        };
 
         fetchSuppliers().then();
         fetchCustomers().then();
@@ -386,7 +386,7 @@ export function VerifierListPage() {
             setTotalDocuments(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleChangeCustomer = async (customerId: string) => {
         if (selectedDocuments.length === 0) return;
@@ -409,7 +409,7 @@ export function VerifierListPage() {
             setTotalDocuments(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleDelete = async () => {
         if (selectedDocuments.length === 0) return;
@@ -429,8 +429,8 @@ export function VerifierListPage() {
             onCancel: () => {
                 setSelectedDocuments([]);
             }
-        })
-    }
+        });
+    };
 
     const deleteDocuments = async (ids: string[]) => {
         ids.forEach((id) => {
@@ -440,7 +440,7 @@ export function VerifierListPage() {
                 console.error("Erreur suppression document :", err);
             }
         });
-    }
+    };
 
     const handleDisplayFilters = () => {
         setDisplayFilters(!displayFilters);
@@ -455,7 +455,7 @@ export function VerifierListPage() {
                 setOpen({ ...open, suppliers: true });
             }
         }
-    }
+    };
 
     const handleResetFilters = () => {
         setSelectedSuppliers([]);
@@ -464,7 +464,7 @@ export function VerifierListPage() {
         setSelectedStatus('NEW');
         setSelectedCustomers(null);
         setLazyParams({ ...lazyParams, sortField: null, sortOrder: null });
-    }
+    };
 
     // Check if filters have changed
     useEffect(() => {

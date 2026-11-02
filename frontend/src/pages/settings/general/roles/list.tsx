@@ -90,7 +90,7 @@ export function SettingsGeneralRoles() {
             } finally {
                 setLoadingRoles(false);
             }
-        }
+        };
         fetchRoles().then();
     }, [lazyParams, searchTerm, user, loadingUser]);
 
@@ -100,7 +100,7 @@ export function SettingsGeneralRoles() {
             setTotalRoles(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedRoles.length === 0) return;
@@ -119,7 +119,7 @@ export function SettingsGeneralRoles() {
                 setSelectedRoles([]);
             }
         });
-    }
+    };
     const deleteRoles = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -131,7 +131,7 @@ export function SettingsGeneralRoles() {
                 console.error("Erreur suppression du rôle :", err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">

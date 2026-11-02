@@ -135,12 +135,12 @@ export const Select: React.FC<SelectProps> = ({
                         searchable={ searchable }
                         placeholder={ placeholder }
                         leftSection={ leftSection }
-                        comboboxProps={ { withinPortal } }
+                        comboboxProps={ { withinPortal, shadow: 'md' } }
                         searchValue={ !hasValue ? '' : (editable ? search : undefined) }
                         renderOption={ renderOption ? renderOption : mantineRenderOption }
                         onSearchChange={ editable ? setSearch : undefined }
                         onChange={ (value) => {
-                            onChange(value)
+                            onChange(value);
                         } }
                         nothingFoundMessage={ t('GLOBAL.no_result_found') }
                     />
@@ -162,4 +162,4 @@ export const Select: React.FC<SelectProps> = ({
             ) }
         </div>
     );
-}
+};

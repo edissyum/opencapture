@@ -66,7 +66,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
         } finally {
             setParsing(false);
         }
-    }
+    };
 
     const loadDatas = (data: string[][]) => {
         const formatted = data.map((row) => row.map((cell) => (
@@ -80,7 +80,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
         } else {
             setRows(formatted as string[][]);
         }
-    }
+    };
 
     const handleValidate = () => {
         if (!file) return;
@@ -91,7 +91,7 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
         formData.set('selectedColumns', String(columns));
 
         if (onValidate) onValidate(formData);
-    }
+    };
 
     return (
         <>
@@ -180,5 +180,5 @@ export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading
                 </div>
             </div>
         </>
-    )
+    );
 }

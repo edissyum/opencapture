@@ -23,7 +23,7 @@ export const getTestConnectionMapping = () => [
     { id: 'export_openads', function: "testOpenadsConnection" },
     { id: 'export_opencrm', function: "testOpenCRMConnection" },
     { id: 'export_opencaptureformem', function: "testOpenCaptureForMemConnection" }
-]
+];
 
 const createAuthFunctionsMap: any = ({ post }: any) => ({
     testMEMConnection: async (args: any) => {
