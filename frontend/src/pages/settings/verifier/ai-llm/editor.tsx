@@ -27,6 +27,7 @@ import { defaultJsonContent } from "./json_defaults";
 
 import Hint from "../../../../components/Hint";
 import { Button } from "../../../../components/Button";
+import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
@@ -271,6 +272,8 @@ export function SettingsVerifierAiLLMEditor() {
     useEffect(() => {
         saveActionRef.current = handleSubmit(handleUpdate);
     });
+
+    if (loading) return <Loader/>;
 
     return (
         <div className="h-full overflow-y-auto">
