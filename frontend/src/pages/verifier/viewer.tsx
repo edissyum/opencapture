@@ -63,6 +63,8 @@ export function VerifierViewerPage() {
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
 
+    const [readOnly, setReadOnly] = useState<boolean>(false);
+
     const [documentData, setDocumentData] = useState<any>(null);
     const [documentDataLoading, setDocumentDataLoading] = useState<boolean>(true);
 
@@ -157,6 +159,7 @@ export function VerifierViewerPage() {
                     setCurrentFilename(response.full_jpg_filename);
                     setPagesList([...Array(response.nb_pages).keys()].map(i => i + 1));
                     setDocumentDataLoading(false);
+                    setReadOnly(!['WAIT_THIRD_PARTY', 'NEW'].includes(response.status));
                 });
                 if (user && user.id) {
                     updateDocument({ locked: true, locked_by: user.id }).then();
@@ -493,7 +496,7 @@ export function VerifierViewerPage() {
     useEffect(() => {
         if (!documentData) return;
 
-        if (loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END') {
+        if (loadingUpdateValidate || loadingUpdateRefuse || readOnly) {
             setDisableFields(true);
         } else {
             setDisableFields(false);
@@ -732,7 +735,7 @@ export function VerifierViewerPage() {
             }
         }));
 
-        if (field.type === 'autocomplete' && documentData.status !== 'END') {
+        if (field.type === 'autocomplete' && !readOnly) {
             setDocumentData((prevData: any) => ({
                 ...prevData,
                 datas: {
@@ -803,7 +806,7 @@ export function VerifierViewerPage() {
     // Function to save document data to database
     // supplierId is used when updating supplier to force database update
     const prepareDocumentData = (field: any, value: any, supplierId?: number | undefined) => {
-        if (documentData.status === 'END') {
+        if (readOnly) {
             return;
         }
 
@@ -1351,7 +1354,7 @@ export function VerifierViewerPage() {
                     <Loader/>
                 ) : (
                     <>
-                        { disableFields && documentData.status === 'END' && (
+                        { disableFields && readOnly && (
                             <div className='mb-6 w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border
                                             border-(--text-error)'>
                                 <div className='flex items-center gap-3'>
@@ -1378,7 +1381,7 @@ export function VerifierViewerPage() {
                                             { zone.name }
                                         </Accordion.Control>
                                         <ActionIcon variant="transparent">
-                                            { supplierChanged && zone.id === 'supplier' && (
+                                            { supplierChanged && zone.id === 'supplier' && !readOnly && (
                                                 <Edit
                                                     size={ 20 }
                                                     className='text-(--text-primary) hover:text-(--color-primary)'
@@ -1392,7 +1395,7 @@ export function VerifierViewerPage() {
                                                 />
                                             ) }
 
-                                            { !supplierExists && zone.id === 'supplier' && (
+                                            { !supplierExists && zone.id === 'supplier' && !readOnly && (
                                                 <SquarePlus
                                                     size={ 20 }
                                                     className='text-(--text-primary) hover:text-(--color-primary)'

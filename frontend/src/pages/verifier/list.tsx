@@ -692,17 +692,18 @@ export function VerifierListPage() {
                         </span>
                     </span>
                 </div>
+
                 { view === 'list' && (
                     <Table
                         baseLink="/verifier/viewer/"
                         data={ documents }
                         pagination={ true }
                         columns={ columns }
-                        actions={ actions }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
                         loading={ loadingDocuments }
-                        actionsLine={ getActionsLine }
+                        actions={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? actions : undefined }
+                        actionsLine={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? getActionsLine : undefined }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedDocuments }
@@ -726,10 +727,10 @@ export function VerifierListPage() {
                         data={ documents }
                         pagination={ true }
                         columns={ columns }
-                        actions={ actions }
                         lazyParams={ lazyParams }
                         loading={ loadingDocuments }
-                        actionsLine={ getActionsLine }
+                        actions={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? actions : undefined }
+                        actionsLine={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? getActionsLine : undefined }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         filtersChanged={ filtersChanged }
