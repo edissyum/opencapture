@@ -883,7 +883,7 @@
         "accounting_plan": "Expense accounts",
         "delete_field_success": "Field successfully removed",
         "document_non_modifiable": "Document non-modifiable",
-        "document_non_modifiable_details": "You cannot modify this document because it has already been processed",
+        "document_non_modifiable_details": "You cannot modify this document because it has already been processed or deleted",
         "no_outputs": "No output chains are configured for this document",
         "facturx_level": "Factur-X level",
         "datas_updated": "Document data updated successfully",

@@ -679,17 +679,17 @@ export function SplitterListPage() {
                     <Table
                         baseLink="/splitter/viewer/"
                         data={ batches }
-                        actions={ actions }
                         pagination={ true }
                         columns={ columns }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
                         loading={ loadingBatches }
-                        actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedBatches }
                         totalRecords={ totalBatches || 0 }
+                        actions={ ['NEW'].includes(selectedStatus) ? actions : undefined }
+                        actionsLine={ ['NEW'].includes(selectedStatus) ? getActionsLine : undefined }
                         rowsPerPageOptions={ [
                             { "value": 4, "label": "4" },
                             { "value": 8, "label": "8" },

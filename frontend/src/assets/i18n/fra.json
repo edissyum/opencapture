@@ -945,7 +945,7 @@
         "accounting_plan": "Comptes de charge",
         "delete_field_success": "Champ suprimé avec succès",
         "document_non_modifiable": "Document non modifiable",
-        "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité",
+        "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité ou supprimé",
         "no_outputs": "Aucune chaîne sortante paramétrée pour ce document",
         "facturx_level": "Profil Factur-X",
         "datas_updated": "Données du document mises à jour avec succès",
