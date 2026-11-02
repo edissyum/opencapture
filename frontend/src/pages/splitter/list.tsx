@@ -657,7 +657,7 @@ export function SplitterListPage() {
                     </Button>
 
                     { loadingBatches ? (
-                        <Skeleton width='10%' className='dark:bg-(--bg-secondary)! h-3!'/>
+                        <Skeleton width='4%' className='dark:bg-(--bg-secondary)! h-3!'/>
                     ) : (
                         <span className='flex items-center gap-1'>
                             <FileText size={ 16 }/>
