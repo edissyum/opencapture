@@ -33,7 +33,7 @@ import {
     X
 } from "lucide-react";
 import DOMPurify from "dompurify";
-import { Radio } from "@mantine/core";
+import { Radio, Skeleton } from "@mantine/core";
 
 import { useUser } from "../../services/hooks/useUser";
 import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
@@ -401,7 +401,9 @@ export function SplitterListPage() {
         if (selectedBatches.length < 2) return;
 
         try {
-            const batchesToMerge = selectedBatches.filter(batch => batch.id !== selectedPrincipalBatchId).map(batch => batch.id);
+            const batchesToMerge = selectedBatches.filter(batch => batch.id !== selectedPrincipalBatchId)
+                .map(batch => batch.id);
+
             await post(`/splitter/merge/${ selectedPrincipalBatchId }`, { batches: batchesToMerge });
             showToast(t('SPLITTER.batches_merged'), 'success');
             setShowMerge(false);
@@ -653,12 +655,18 @@ export function SplitterListPage() {
                             onClick={ handleDisplayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
-                    <span className='flex items-center gap-1'>
-                        <FileText size={ 16 }/>
-                        <span>
-                            { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
+
+                    { loadingBatches ? (
+                        <Skeleton width='10%' className='dark:bg-(--bg-secondary)! h-3!'/>
+                    ) : (
+                        <span className='flex items-center gap-1'>
+                            <FileText size={ 16 }/>
+                            <span>
+                                { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
+                            </span>
                         </span>
-                    </span>
+                    ) }
+
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
                            autoFocus value={ searchTerm } placeholder={ t('GLOBAL.search') }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>

@@ -16,7 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Radio } from "@mantine/core";
+import { Radio, Skeleton } from "@mantine/core";
 import { useEffect, useState } from "react";
 import {
     Briefcase,
@@ -109,8 +109,7 @@ export function VerifierListPage() {
         page: 0,
         sortField: null,
         sortOrder: null
-    }
-    );
+    });
 
     const [hovered, setHovered] = useState<string | null>(null);
 
@@ -663,19 +662,26 @@ export function VerifierListPage() {
                         variant='bg_white_rounded'
                         icon={
                             filtersChanged && !displayFilters ?
-                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' }
+                                        size={ 14 }/> :
                                 <Filter size={ 14 }/>
                         }
                         onClick={ handleDisplayFilters }
                         selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
-                    <span className='flex items-center gap-1'>
-                        <FileText size={ 16 }/>
-                        <span>
-                            { t('VERIFIER.documents', { count: totalDocuments }) } ({ totalDocuments || 0 })
+
+                    { loadingDocuments ? (
+                        <Skeleton width='10%' className='dark:bg-(--bg-secondary)! h-3!'/>
+                    ) : (
+                        <span className='flex items-center gap-1'>
+                            <FileText size={ 16 }/>
+                            <span>
+                                { t('VERIFIER.documents', { count: totalDocuments }) } ({ totalDocuments || 0 })
+                            </span>
                         </span>
-                    </span>
+                    ) }
+
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
                            value={ searchTerm } placeholder={ t('GLOBAL.search') }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
