@@ -47,7 +47,7 @@ export function MonitoringDetails() {
         first: 0,
         rows: 8,
         page: 0,
-        sortField: 'id',
+        sortField: 'step',
         sortOrder: 1
     });
 
