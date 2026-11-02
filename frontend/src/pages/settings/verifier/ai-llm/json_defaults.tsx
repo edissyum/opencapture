@@ -55,6 +55,8 @@ export const defaultResponseFormat : any = {
                         "city": { "type": "string" },
                         "country": { "type": "string" },
                         "vat_number": { "type": "string" },
+                        "siret": { "type": "string" },
+                        "siren": { "type": "string" },
                         "email": { "type": "string" },
                         "iban": { "type": "string" }
                     },
@@ -89,7 +91,7 @@ export const defaultResponseFormat : any = {
     }
 };
 
-const defaultJsonContent: any = {
+export const defaultJsonContent: any = {
     "mistral": {
         "temperature": 0.2,
         "max_tokens": 1000,
@@ -107,44 +109,24 @@ const defaultJsonContent: any = {
                 "name": "invoice_info",
                 "schema": {
                     "properties": {
-                        "currency": {
-                            "type": "string"
-                        },
-                        "delivery_number": {
-                            "type": "string"
-                        },
-                        "document_date": {
-                            "format": "date",
-                            "type": "string"
-                        },
-                        "document_due_date": {
-                            "format": "date",
-                            "type": "string"
-                        },
-                        "invoice_number": {
-                            "type": "string"
-                        },
+                        "currency": { "type": "string" },
+                        "delivery_number": { "type": "string" },
+                        "document_date": { "format": "date", "type": "string" },
+                        "document_due_date": { "format": "date", "type": "string" },
+                        "invoice_number": { "type": "string" },
                         "line_items": {
                             "items": {
                                 "properties": {
-                                    "description": {
-                                        "type": "string"
-                                    },
+                                    "description": { "type": "string" },
                                     "quantity": {
                                         "type": [
                                             "integer",
                                             "number"
                                         ]
                                     },
-                                    "reference": {
-                                        "type": "string"
-                                    },
-                                    "total_price": {
-                                        "type": "number"
-                                    },
-                                    "unit_price": {
-                                        "type": "number"
-                                    }
+                                    "reference": { "type": "string" },
+                                    "total_price": { "type": "number" },
+                                    "unit_price": { "type": "number" }
                                 },
                                 "required": [
                                     "description",
@@ -156,38 +138,20 @@ const defaultJsonContent: any = {
                             },
                             "type": "array"
                         },
-                        "order_number": {
-                            "type": "string"
-                        },
-                        "quotation_number": {
-                            "type": "string"
-                        },
+                        "order_number": { "type": "string" },
+                        "quotation_number": { "type": "string" },
                         "supplier": {
                             "properties": {
-                                "address_1": {
-                                    "type": "string"
-                                },
-                                "city": {
-                                    "type": "string"
-                                },
-                                "country": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "iban": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "postal_code": {
-                                    "type": "string"
-                                },
-                                "vat_number": {
-                                    "type": "string"
-                                }
+                                "address_1": { "type": "string" },
+                                "city": { "type": "string" },
+                                "country": { "type": "string" },
+                                "email": { "type": "string" },
+                                "iban": { "type": "string" },
+                                "name": { "type": "string" },
+                                "postal_code": { "type": "string" },
+                                "vat_number": { "type": "string" },
+                                "siret": { "type": "string" },
+                                "siren": { "type": "string" },
                             },
                             "required": [
                                 "name",
@@ -200,18 +164,10 @@ const defaultJsonContent: any = {
                             ],
                             "type": "object"
                         },
-                        "total_ht": {
-                            "type": "number"
-                        },
-                        "total_ttc": {
-                            "type": "number"
-                        },
-                        "total_vat": {
-                            "type": "number"
-                        },
-                        "vat_rate": {
-                            "type": "number"
-                        }
+                        "total_ht": { "type": "number" },
+                        "total_ttc": { "type": "number" },
+                        "total_vat": { "type": "number" },
+                        "vat_rate": { "type": "number" }
                     },
                     "type": "object"
                 }
@@ -278,6 +234,8 @@ const defaultJsonContent: any = {
                             "city": { "type": "string" },
                             "country": { "type": "string" },
                             "vat_number": { "type": "string" },
+                            "siret": { "type": "string" },
+                            "siren": { "type": "string" },
                             "email": { "type": "string" },
                             "iban": { "type": "string" }
                         },
@@ -314,7 +272,7 @@ const defaultJsonContent: any = {
                                     "unit_price": { "type": "number" },
                                     "total_price": { "type": "number" }
                                 },
-                                "required": ["description", "quantity", "unit_price", "total_price"],
+                                "required": ["description", "quantity", "reference", "unit_price", "total_price"],
                                 "additionalProperties": false
                             }
                         },
@@ -332,6 +290,8 @@ const defaultJsonContent: any = {
                                 "city": { "type": "string" },
                                 "country": { "type": "string" },
                                 "vat_number": { "type": "string" },
+                                "siret": { "type": "string" },
+                                "siren": { "type": "string" },
                                 "email": { "type": "string" },
                                 "iban": { "type": "string" }
                             },
@@ -360,5 +320,4 @@ const defaultJsonContent: any = {
             }
         ]
     }
-}
-export default defaultJsonContent
+};

@@ -23,7 +23,7 @@ import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
-import defaultJsonContent from "./json_defaults";
+import { defaultJsonContent } from "./json_defaults";
 
 import Hint from "../../../../components/Hint";
 import { Button } from "../../../../components/Button";
