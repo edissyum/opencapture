@@ -40,7 +40,8 @@
     @apply bg-(--bg-secondary);
 }
 
-.mantine-Select-option:where([data-checked]) {
+.mantine-Select-option:where([data-checked]),
+.mantine-Select-option:where([data-combobox-selected]) {
     @apply bg-(--bg-selected)!;
     @apply text-(--color-primary);
 
