@@ -34,7 +34,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                     id={ 'duplicate-' + line.id }
                     checked={ line.duplicable }
                     onChange={ (value) => {
-                        onUpdateLine({ id: line.id, duplicable: value })
+                        onUpdateLine({ id: line.id, duplicable: value });
                     } }
                 />
             </span>,
@@ -45,7 +45,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
             label: <span className='critical'>{ t('FORMS.delete') } </span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => {
-                onDeleteLine(line.id)
+                onDeleteLine(line.id);
             }
         }
     ];

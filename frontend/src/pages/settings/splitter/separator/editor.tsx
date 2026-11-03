@@ -52,7 +52,7 @@ export function SettingsSplitterSeparator() {
         };
 
         fetchForms().then();
-    }, [])
+    }, []);
 
     if (loading) return <Loader/>;
 

@@ -105,7 +105,7 @@ export function SettingsGeneralCustomization() {
 
                     if (cancelled) return;
 
-                    const imageFile = b64ToFile('data:image/svg-xml;base64,' + response)
+                    const imageFile = b64ToFile('data:image/svg-xml;base64,' + response);
                     setFiles(() => [imageFile, ...files]);
                 } catch (e) {
                     setLoading(false);
@@ -119,7 +119,7 @@ export function SettingsGeneralCustomization() {
 
         if (files.length <= 1) {
             fetchImage().then(() => {
-                setLoading(false)
+                setLoading(false);
             });
         }
 
@@ -164,7 +164,7 @@ export function SettingsGeneralCustomization() {
             window.dispatchEvent(new Event('appImageChanged'));
         };
         reader.readAsDataURL(file);
-    }
+    };
 
     const handleSelectedIndex = (index: number) => {
         setSelectedIndex(index);
@@ -176,13 +176,13 @@ export function SettingsGeneralCustomization() {
         if (theme) {
             setEditorKey(prevKey => prevKey + 1);
         }
-    }
+    };
 
     const handleNewAppImage = (file: File) => {
         if (!file) return;
         setFiles([file, ...files]);
         storeAndUpdateAppImage(file);
-    }
+    };
 
     const handleUpdateLoginMessageAndUrl = () => {
         put('config/updateConfiguration/loginMessage', { value: loginMessage }).then(() => {
@@ -192,7 +192,7 @@ export function SettingsGeneralCustomization() {
         put('config/updateConfiguration/loginGuideUrl', { value: loginGuideUrl }).then(() => {
             showToast(t('CUSTOMIZATION.login_guide_url_updated'));
         });
-    }
+    };
 
     const handleUpdateLoginGuideUrl = (value: string) => {
         setLoginGuideUrl(value);
@@ -203,7 +203,7 @@ export function SettingsGeneralCustomization() {
             setLoginGuideUrlError(t('CUSTOMIZATION.login_guide_url_error'));
         }
 
-    }
+    };
 
     return (
         <div className='p-6 flex flex-col gap-6'>
@@ -268,7 +268,7 @@ export function SettingsGeneralCustomization() {
                     value={ loginMessage }
                     tinymceScriptSrc='/tinymce/tinymce.min.js'
                     onEditorChange={ (newContent) => {
-                        setLoginMessage(newContent)
+                        setLoginMessage(newContent);
                     } }
                     init={ {
                         height: 300,

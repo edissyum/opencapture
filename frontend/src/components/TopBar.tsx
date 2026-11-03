@@ -57,7 +57,11 @@ export default function TopBar() {
 
     const storedModule = localStorage.getItem(`${ custom }_selectedModule`);
     if (storedModule && !selected) {
-        handleSelect(storedModule)
+        handleSelect(storedModule);
+    }
+
+    if (!storedModule) {
+        handleSelect('verifier');
     }
 
     if (loadingUser) return;
@@ -99,7 +103,7 @@ export default function TopBar() {
                     className="font-semibold p-2.5!"
                     onClick={ () => {
                         if (location.pathname == '/home') {
-                            window.dispatchEvent(new Event('refreshHome'))
+                            window.dispatchEvent(new Event('refreshHome'));
                         }
                     } }
                 >

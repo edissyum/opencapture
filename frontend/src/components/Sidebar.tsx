@@ -97,7 +97,7 @@ export default function Sidebar() {
     const handleCollapse = () => {
         setCollapsed(!collapsed);
         setManuallyCollapsed(!collapsed);
-    }
+    };
 
     // Merge collapsed state with manuallyCollapsed to determine final collapsed state
     useEffect(() => {
@@ -136,13 +136,21 @@ export default function Sidebar() {
         setUserPanelOpen(false);
     }, [location.pathname]);
 
+    const refreshHome = () => {
+        if (location.pathname == '/home') {
+            window.dispatchEvent(new Event('refreshHome'));
+        }
+    };
+
     if (!user || loadingUser) return;
     return (
         <aside
             className={ `min-h-screen px-3 py-2 flex flex-col border-r border-r-(--border-secondary) shrink-0 transition-all ${ collapsed ? "w-18" : "w-65" }` }>
             <div className={ `flex w-full gap-2 items-center min-h-18 max-h-30 ${ collapsed ? "p-3" : "p-4" }` }>
                 { !collapsed && (
-                    <LoginImage className="mx-auto h-full w-11/12 object-contain"></LoginImage>
+                    <Link to="/home" className="h-full w-full" onClick={ refreshHome }>
+                        <LoginImage className="mx-auto h-full w-11/12 object-contain"/>
+                    </Link>
                 ) }
                 <span onClick={ handleCollapse } className="ml-auto font-xl cursor-pointer">
                     { collapsed ? <ChevronsRight/> : <ChevronsLeft/> }
@@ -152,12 +160,8 @@ export default function Sidebar() {
             <nav className={ `${ collapsed ? 'items-center' : '' } flex flex-col gap-1.5` }>
                 <Link
                     to="/home"
-                    onClick={ () => {
-                        if (location.pathname == '/home') {
-                            window.dispatchEvent(new Event('refreshHome'))
-                        }
-                    } }
-                    className={ `${ standardClasses } ${['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : "" }` }>
+                    onClick={ refreshHome }
+                    className={ `${ standardClasses } ${ ['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : "" }` }>
                     <House className='shrink-0' size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('GLOBAL.home')
@@ -278,9 +282,9 @@ export default function Sidebar() {
                     onClick={ () => setUserPanelOpen((prev) => !prev) }>
                     <img src='/imgs/user.svg' alt='user profile'
                          className='shrink-0 size-8' { ...(collapsed && {
-                             "data-tooltip-id": "tooltip",
-                             "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
-                         }) }/>
+                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
+                    }) }/>
 
                     { !collapsed &&
                         <>

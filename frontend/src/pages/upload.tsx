@@ -95,7 +95,7 @@ export function UploadPage() {
             } catch (error) {
                 console.error("Error retrieving workflows :", error);
             }
-        }
+        };
 
         retrieveWorkflows().then();
     }, [loadingUser, selectedModule]);

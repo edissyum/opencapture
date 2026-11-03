@@ -70,7 +70,7 @@ export function AiDoctypesList({ module }: { module: string }) {
             label: t('AI-DOCTYPES.test_model'),
             icon: <Sparkles size={ 16 }/>,
             command: () => {
-                setTestingModel(true)
+                setTestingModel(true);
                 setTestingModelFile(null);
             }
         }
@@ -136,7 +136,7 @@ export function AiDoctypesList({ module }: { module: string }) {
             } finally {
                 setLoadingAiDoctypes(false);
             }
-        }
+        };
         fetchAiDoctypes().then();
     }, [lazyParams, debouncedSearchTerm]);
 
@@ -157,7 +157,7 @@ export function AiDoctypesList({ module }: { module: string }) {
             setTotalAiDoctypes(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedAiDoctypes.length === 0) return;
@@ -176,7 +176,7 @@ export function AiDoctypesList({ module }: { module: string }) {
                 setSelectedAiDoctypes([]);
             }
         });
-    }
+    };
     const deleteAiDoctypes = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -188,7 +188,7 @@ export function AiDoctypesList({ module }: { module: string }) {
                 console.error("Error while deleting ai doctypes :", err);
             }
         }
-    }
+    };
 
     const handleTestModel = async (file: File) => {
         if (selectedAiDoctypes.length !== 1) return;
@@ -214,7 +214,7 @@ export function AiDoctypesList({ module }: { module: string }) {
         } finally {
             setTestingModelLoading(false);
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">

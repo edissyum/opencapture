@@ -156,7 +156,7 @@ export default function ProfilePage() {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         fetchUserProfile().then();
     }, [loadingUser, user]);
@@ -189,7 +189,7 @@ export default function ProfilePage() {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
     if (!user) return;
 

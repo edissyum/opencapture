@@ -26,7 +26,7 @@ export const defaultPromptText: string = "Extract the following from the provide
     "If the invoice has no VAT, set vat_amount and vat_rate to 0.\n" +
     "If the invoice has no line items, set line_items to an empty array.\n" +
     "Do not add commentary.\n" +
-    "If it's not an invoice, respond with an empty JSON object."
+    "If it's not an invoice, respond with an empty JSON object.";
 
 export const defaultPrompts: any = [
     {
@@ -55,6 +55,8 @@ export const defaultResponseFormat : any = {
                         "city": { "type": "string" },
                         "country": { "type": "string" },
                         "vat_number": { "type": "string" },
+                        "siret": { "type": "string" },
+                        "siren": { "type": "string" },
                         "email": { "type": "string" },
                         "iban": { "type": "string" }
                     },
@@ -107,44 +109,24 @@ export const defaultJsonContent: any = {
                 "name": "invoice_info",
                 "schema": {
                     "properties": {
-                        "currency": {
-                            "type": "string"
-                        },
-                        "delivery_number": {
-                            "type": "string"
-                        },
-                        "document_date": {
-                            "format": "date",
-                            "type": "string"
-                        },
-                        "document_due_date": {
-                            "format": "date",
-                            "type": "string"
-                        },
-                        "invoice_number": {
-                            "type": "string"
-                        },
+                        "currency": { "type": "string" },
+                        "delivery_number": { "type": "string" },
+                        "document_date": { "format": "date", "type": "string" },
+                        "document_due_date": { "format": "date", "type": "string" },
+                        "invoice_number": { "type": "string" },
                         "line_items": {
                             "items": {
                                 "properties": {
-                                    "description": {
-                                        "type": "string"
-                                    },
+                                    "description": { "type": "string" },
                                     "quantity": {
                                         "type": [
                                             "integer",
                                             "number"
                                         ]
                                     },
-                                    "reference": {
-                                        "type": "string"
-                                    },
-                                    "total_price": {
-                                        "type": "number"
-                                    },
-                                    "unit_price": {
-                                        "type": "number"
-                                    }
+                                    "reference": { "type": "string" },
+                                    "total_price": { "type": "number" },
+                                    "unit_price": { "type": "number" }
                                 },
                                 "required": [
                                     "description",
@@ -156,38 +138,20 @@ export const defaultJsonContent: any = {
                             },
                             "type": "array"
                         },
-                        "order_number": {
-                            "type": "string"
-                        },
-                        "quotation_number": {
-                            "type": "string"
-                        },
+                        "order_number": { "type": "string" },
+                        "quotation_number": { "type": "string" },
                         "supplier": {
                             "properties": {
-                                "address_1": {
-                                    "type": "string"
-                                },
-                                "city": {
-                                    "type": "string"
-                                },
-                                "country": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "iban": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "postal_code": {
-                                    "type": "string"
-                                },
-                                "vat_number": {
-                                    "type": "string"
-                                }
+                                "address_1": { "type": "string" },
+                                "city": { "type": "string" },
+                                "country": { "type": "string" },
+                                "email": { "type": "string" },
+                                "iban": { "type": "string" },
+                                "name": { "type": "string" },
+                                "postal_code": { "type": "string" },
+                                "vat_number": { "type": "string" },
+                                "siret": { "type": "string" },
+                                "siren": { "type": "string" },
                             },
                             "required": [
                                 "name",
@@ -200,18 +164,10 @@ export const defaultJsonContent: any = {
                             ],
                             "type": "object"
                         },
-                        "total_ht": {
-                            "type": "number"
-                        },
-                        "total_ttc": {
-                            "type": "number"
-                        },
-                        "total_vat": {
-                            "type": "number"
-                        },
-                        "vat_rate": {
-                            "type": "number"
-                        }
+                        "total_ht": { "type": "number" },
+                        "total_ttc": { "type": "number" },
+                        "total_vat": { "type": "number" },
+                        "vat_rate": { "type": "number" }
                     },
                     "type": "object"
                 }
@@ -278,6 +234,8 @@ export const defaultJsonContent: any = {
                             "city": { "type": "string" },
                             "country": { "type": "string" },
                             "vat_number": { "type": "string" },
+                            "siret": { "type": "string" },
+                            "siren": { "type": "string" },
                             "email": { "type": "string" },
                             "iban": { "type": "string" }
                         },
@@ -286,5 +244,80 @@ export const defaultJsonContent: any = {
                 },
             }
         }
+    },
+    "claude": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "output_config": {
+            "effort": "low",
+            "format": {
+                "type": "json_schema",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "order_number": { "type": "string" },
+                        "invoice_number": { "type": "string" },
+                        "delivery_number": { "type": "string" },
+                        "quotation_number": { "type": "string" },
+                        "document_date": { "type": "string", "format": "date" },
+                        "document_due_date": { "type": "string", "format": "date" },
+                        "line_items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "description": { "type": "string" },
+                                    "quantity": { "type": "number" },
+                                    "reference": { "type": "string" },
+                                    "unit_price": { "type": "number" },
+                                    "total_price": { "type": "number" }
+                                },
+                                "required": ["description", "quantity", "reference", "unit_price", "total_price"],
+                                "additionalProperties": false
+                            }
+                        },
+                        "vat_rate": { "type": "number" },
+                        "total_ht": { "type": "number" },
+                        "total_ttc": { "type": "number" },
+                        "total_vat": { "type": "number" },
+                        "currency": { "type": "string" },
+                        "supplier": {
+                            "type": "object",
+                            "properties": {
+                                "name": { "type": "string" },
+                                "address_1": { "type": "string" },
+                                "postal_code": { "type": "string" },
+                                "city": { "type": "string" },
+                                "country": { "type": "string" },
+                                "vat_number": { "type": "string" },
+                                "siret": { "type": "string" },
+                                "siren": { "type": "string" },
+                                "email": { "type": "string" },
+                                "iban": { "type": "string" }
+                            },
+                            "required": ["name", "address_1", "postal_code", "city", "country", "vat_number", "email"],
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        },
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "document",
+                        "source": {
+                            "type": "base64",
+                            "media_type": "application/pdf",
+                            "data": "##FILE_NAME##"
+                        }
+                    },
+                    { "type": "text", "text": defaultPromptText }
+                ]
+            }
+        ]
     }
-}
+};

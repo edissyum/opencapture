@@ -119,7 +119,7 @@ export function SuppliersList() {
         } finally {
             setLoadingSuppliers(false);
         }
-    }
+    };
 
     const refresh = () => {
         setTimeout(() => {
@@ -127,7 +127,7 @@ export function SuppliersList() {
             setTotalSuppliers(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedSuppliers.length === 0) return;
@@ -146,7 +146,7 @@ export function SuppliersList() {
                 setSelectedSuppliers([]);
             }
         });
-    }
+    };
     const deleteSuppliers = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -158,7 +158,7 @@ export function SuppliersList() {
                 console.error("Error deleting supplier with id " + id, err);
             }
         }
-    }
+    };
 
     const handleReinitPositions = () => {
         if (selectedSuppliers.length === 0) return;
@@ -178,7 +178,7 @@ export function SuppliersList() {
                 setSelectedSuppliers([]);
             }
         });
-    }
+    };
     const reinitPositionsSuppliers = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -190,7 +190,7 @@ export function SuppliersList() {
                 console.error("Error deleting supplier position with id " + id, err);
             }
         }
-    }
+    };
 
     const handleExportSuppliers = async () => {
         try {
@@ -207,7 +207,7 @@ export function SuppliersList() {
         } catch (error) {
             console.error('Error while exporting suppliers :', error);
         }
-    }
+    };
 
     const handleImportSuppliers = async (formData: any) => {
         if (!formData) return;
@@ -226,7 +226,7 @@ export function SuppliersList() {
         setLoadingImport(false);
 
         showToast(t('ACCOUNTS.import_suppliers_success'), 'success');
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">

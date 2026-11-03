@@ -56,7 +56,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
         { id: 'bundleSeparator', name: t("SPLITTER.bundle_separator") },
         { id: 'documentSeparator', name: t("SPLITTER.document_separator") },
         { id: 'doctypeSeparator', name: t("SPLITTER.doc_type_separator") }
-    ]
+    ];
 
     useEffect(() => {
         setAllowDownload(false);

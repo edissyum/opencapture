@@ -47,7 +47,7 @@ export function HistoryList() {
         { id: 'accounts', label: t('HISTORY.accounts') },
         { id: 'verifier', label: t('HISTORY.verifier') },
         { id: 'splitter', label: t('HISTORY.splitter') }
-    ]
+    ];
 
     const [listUsers, setListUsers] = useState<any[]>([]);
     const [listSubModules, setListSubModules] = useState<any[]>([]);
@@ -122,7 +122,7 @@ export function HistoryList() {
             }
 
             setLoadingHistory(false);
-        }
+        };
 
         const fetchSubModules = async () => {
             const res = await get('/history/submodules');
@@ -134,10 +134,10 @@ export function HistoryList() {
                     }]);
                 });
             }
-        }
+        };
 
         const fetchUsers = async () => {
-            const users = await get('/users/list_full')
+            const users = await get('/users/list_full');
             const res = await get('/history/users');
             if (!res.history) return;
 
@@ -152,7 +152,7 @@ export function HistoryList() {
             });
 
             setListUsers(Array.from(usersMap.values()));
-        }
+        };
 
         fetchUsers().then();
         fetchSubModules().then();
@@ -163,7 +163,7 @@ export function HistoryList() {
         setSelectedUser('');
         setSelectedModule('');
         setSelectedSubModule('');
-    }
+    };
 
     // Check if filters have changed
     useEffect(() => {

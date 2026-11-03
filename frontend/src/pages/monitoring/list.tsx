@@ -49,12 +49,12 @@ export function MonitoringList() {
     const listModules = [
         { id: 'verifier', label: t('SETTINGS.verifier') },
         { id: 'splitter', label: t('SETTINGS.splitter') }
-    ]
+    ];
     const listStatuses = [
         { id: 'running', label: t('MONITORING.running') },
         { id: 'done', label: t('MONITORING.done') },
         { id: 'error', label: t('MONITORING.error') }
-    ]
+    ];
     const [selectedModule, setSelectedModule] = usePersistentState<string>('selectedModuleMonitoring', '');
     const [selectedStatus, setSelectedStatus] = usePersistentState<string>('selectedStatusMonitoring', '');
 
@@ -70,8 +70,7 @@ export function MonitoringList() {
         page: 0,
         sortField: null,
         sortOrder: null
-    }
-    );
+    });
 
     const columns: any = [
         {
@@ -136,7 +135,8 @@ export function MonitoringList() {
                         <Loader2 className="animate-spin "/>
                     ) }
                     { row.status === 'done' && !row.error && (
-                        <div className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0 w-fit'>
+                        <div
+                            className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0 w-fit'>
                             { t('MONITORING.done_small') }
                         </div>
                     ) }
@@ -198,7 +198,7 @@ export function MonitoringList() {
         }
 
         setLoadingProcesses(false);
-    }
+    };
 
     // Fetch processes list
     useEffect(() => {
@@ -216,7 +216,7 @@ export function MonitoringList() {
     const handleResetFilters = () => {
         setSelectedModule('');
         setSelectedStatus('');
-    }
+    };
 
     // Check if filters have changed
     useEffect(() => {
@@ -238,21 +238,24 @@ export function MonitoringList() {
                 showToast(t('MONITORING.process_relaunched'), 'success');
             }
         });
-    }
+    };
 
     return (
         <div className='flex h-full w-full overflow-hidden bg-(--bg-secondary)'>
             <div className={ `h-full shrink-0 transition-all border-r border-(--border-secondary) pb-16
                             ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
+                <div
+                    className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2 select-none'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
-                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
-                          onClick={ handleResetFilters }>
+                    <span
+                        className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
+                        onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
@@ -276,7 +279,8 @@ export function MonitoringList() {
                                                 setSelectedModule(e.target.value);
                                             } }>
                                         </Radio>
-                                        <label htmlFor={ module.id } key={ module.id } className='cursor-pointer whitespace-nowrap'>
+                                        <label htmlFor={ module.id } key={ module.id }
+                                               className='cursor-pointer whitespace-nowrap'>
                                             { module.label }
                                         </label>
                                     </div>
@@ -284,7 +288,8 @@ export function MonitoringList() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
@@ -308,7 +313,8 @@ export function MonitoringList() {
                                                 setSelectedStatus(e.target.value);
                                             } }>
                                         </Radio>
-                                        <label htmlFor={ status.id } key={ status.id } className='cursor-pointer whitespace-nowrap'>
+                                        <label htmlFor={ status.id } key={ status.id }
+                                               className='cursor-pointer whitespace-nowrap'>
                                             { status.label }
                                         </label>
                                     </div>
@@ -325,7 +331,8 @@ export function MonitoringList() {
                         variant='bg_white_rounded'
                         icon={
                             filtersChanged && !displayFilters ?
-                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' }
+                                        size={ 14 }/> :
                                 <Filter size={ 14 }/>
                         }
                         onClick={ () => setDisplayFilters(!displayFilters) }
@@ -338,9 +345,15 @@ export function MonitoringList() {
                             { t('MONITORING.processes') } ({ totalProcesses || 0 })
                         </span>
                     </span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-96' height='h-10' autoFocus
-                           value={ searchFilename } placeholder={ t('MONITORING.search_filename') }
-                           onChange={ (e) => setSearchFilename(e.target.value) }/>
+                    <Input
+                        autoFocus
+                        id='search'
+                        name='search'
+                        height='h-10'
+                        value={ searchFilename }
+                        className='bg-(--bg-primary) w-96'
+                        placeholder={ t('MONITORING.search_filename') }
+                        onChange={ (e) => setSearchFilename(e.target.value) }/>
                 </div>
                 <Table
                     baseLink="/monitoring/"

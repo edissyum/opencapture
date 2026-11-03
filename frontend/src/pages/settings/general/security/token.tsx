@@ -47,7 +47,7 @@ export const SettingsGeneralTokenAuth = () => {
             } catch (error) {
                 console.error('Error fetching webservice users:', error);
             }
-        }
+        };
 
         fetchWebserviceUsers().then();
     }, []);
@@ -71,7 +71,7 @@ export const SettingsGeneralTokenAuth = () => {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
     return (
         <div className="p-6 h-full flex flex-col gap-4">
@@ -82,14 +82,14 @@ export const SettingsGeneralTokenAuth = () => {
                         options={ users.map((user) => ({ value: user.username, label: `${user.firstname} ${user.lastname}` })) }
                         label={ t('SECURITY.token_user') } required
                         onChange={ (value) => {
-                            setSelectedUser(value)
+                            setSelectedUser(value);
                         } }
                 />
 
                 <Input label={ t('SECURITY.token_expiration') }
                        value={ tokenExpiration } required
                        onChange={ (e: any) => {
-                           setTokenExpiration(e.target.value)
+                           setTokenExpiration(e.target.value);
                        } }/>
 
                 <Button onClick={ handleGenerateAuthToken } disabled={ loadingSubmit || !selectedUser }>
@@ -130,4 +130,4 @@ export const SettingsGeneralTokenAuth = () => {
             ) }
         </div>
     );
-}
+};

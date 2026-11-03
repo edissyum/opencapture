@@ -114,7 +114,7 @@ export function SettingsGeneralDocservers() {
                         setLoading(false);
                         console.error("Error updating docserver : ", error);
                     }
-                }
+                };
                 setLoading(true);
                 updateValue().then();
             },

@@ -123,7 +123,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
         } catch (err) {
             console.error("Error updating doctype:", err);
         }
-    }
+    };
 
     const deleteDoctype = async () => {
         showConfirmDialog({
@@ -154,8 +154,8 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                     console.error("Error deleting doctype:", err);
                 }
             }
-        })
-    }
+        });
+    };
 
     const addDoctype = async () => {
         if (!newDoctypeKey || !newDoctypeLabel) return;
@@ -185,7 +185,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
         } catch (err) {
             console.error("Error adding doctype:", err);
         }
-    }
+    };
 
     if (!selectedDoctype) {
         return (
@@ -288,8 +288,8 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                         { selectedDoctype.type !== 'document' && (
                             <>
                                 <Button variant='secondary' className='px-4!' onClick={ () => {
-                                    setNewDoctypeType('folder')
-                                    setShowAddDoctype(true)
+                                    setNewDoctypeType('folder');
+                                    setShowAddDoctype(true);
                                 } }>
                                     <FolderPlus size={ 18 }/>&nbsp;
                                     { t('DOCTYPES.folder') }

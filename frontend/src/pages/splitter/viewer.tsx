@@ -188,7 +188,7 @@ export function SplitterViewerPage() {
         setSelectedPages(prev =>
             checked ? [...prev, page] : prev.filter((p: any) => p.id !== page.id)
         );
-    }
+    };
 
     const [previewPageId, setPreviewPageId] = useState<number | null>(null);
     const previewRequestRef = useRef(0);
@@ -418,7 +418,7 @@ export function SplitterViewerPage() {
             } catch (error) {
                 console.error("Error fetching statuses:", error);
             }
-        }
+        };
 
         const fetchForm = async () => {
             try {
@@ -528,7 +528,7 @@ export function SplitterViewerPage() {
             } catch (error) {
                 console.error('Error fetching referential:', error);
             }
-        }
+        };
 
         const fetchWorkflowDetails = async () => {
             try {
@@ -546,7 +546,7 @@ export function SplitterViewerPage() {
 
         fetchReferential().then();
         fetchWorkflowDetails().then();
-    }, [batchMetadata])
+    }, [batchMetadata]);
 
     // Disable loading when batch and documents are loaded
     useEffect(() => {
@@ -679,7 +679,7 @@ export function SplitterViewerPage() {
                 setSelectedDocument([]);
             }
         });
-    }
+    };
 
     const handleRotation = () => {
         if (selectedPages.length === 0) return;
@@ -746,7 +746,7 @@ export function SplitterViewerPage() {
                 setSelectedPages([]);
             }
         });
-    }
+    };
 
     const handleDocumentPrincipal = async () => {
         if (unSavedChanges) {
@@ -791,7 +791,7 @@ export function SplitterViewerPage() {
                 setSelectedDocument([]);
             }
         });
-    }
+    };
 
     const buildDocumentMetadataForSave = () => {
         const documentsWithoutTnl = documents.map((doc: any) => ({
@@ -812,11 +812,11 @@ export function SplitterViewerPage() {
                 doc.document_metadata = {
                     ...doc.document_metadata,
                     ...documentMetadataValues[documentId]
-                }
+                };
             }
         });
         return documentsWithoutTnl;
-    }
+    };
 
     const handleSaveChanges = async (notif = true, extraDeletedDocuments = [], _setLoading = true) => {
         if (_setLoading) setLoading(true);
@@ -842,7 +842,7 @@ export function SplitterViewerPage() {
         } catch (error) {
             console.error("Error saving changes:", error);
         }
-    }
+    };
 
     const getWidthLine = (line: any) => {
         return line.length === 1 ? 'w-full' :
@@ -850,7 +850,7 @@ export function SplitterViewerPage() {
                 line.length === 3 ? 'w-1/3' :
                     line.length === 4 ? 'w-1/4' :
                         'w-1/5';
-    }
+    };
 
     const handleUpdateBatchMetadataValues = (field: any, value: any) => {
         const selectedMetadata = metadata.find((m: any) => m[field.metadata_key] === value);
@@ -870,7 +870,7 @@ export function SplitterViewerPage() {
             setBatchMetadataValues((prev: any) => ({ ...prev, ['metadataId']: selectedMetadata.metadataId }));
         }
         setUnSavedChanges(true);
-    }
+    };
 
     const handleUpdateDocumentMetadataValues = (documentId: number, field: any, value: any) => {
         setDocumentMetadataValues((prev: any) => ({
@@ -880,7 +880,7 @@ export function SplitterViewerPage() {
             }
         }));
         setUnSavedChanges(true);
-    }
+    };
 
     const handleUnbinding = () => {
         showConfirmDialog({
@@ -914,7 +914,7 @@ export function SplitterViewerPage() {
                 setShowAttachments(false);
             }
         });
-    }
+    };
 
     const addDocument = async (defaultDoctype: any = {}) => {
         if (disabledBatch || certifiedCopy) return;
@@ -950,7 +950,7 @@ export function SplitterViewerPage() {
         } catch (error) {
             console.error("Error adding document:", error);
         }
-    }
+    };
 
     const getMetadaValuesForField = (field: any) => {
         const result: any = [];
@@ -968,7 +968,7 @@ export function SplitterViewerPage() {
             value: m[field.metadata_key],
             extras: result.map((key: any) => m[key]).filter(Boolean)
         }));
-    }
+    };
 
     const selectAll = () => {
         if (disabledBatch) return;
@@ -979,7 +979,7 @@ export function SplitterViewerPage() {
         } else {
             setSelectedPages([]);
         }
-    }
+    };
 
     const handleChangeForm = async (value: any) => {
         showConfirmDialog({
@@ -1000,7 +1000,7 @@ export function SplitterViewerPage() {
                 }
             },
         });
-    }
+    };
 
     const handleValidateBatch = async () => {
         const emptyDocs = documents.filter((doc: any) => doc.pages.length === 0);
@@ -1066,7 +1066,7 @@ export function SplitterViewerPage() {
         setUnSavedChanges(true);
         setSelectedDocument(null);
         setShowDoctypeSelection(false);
-    }
+    };
 
     const handleBatchDrop = (batchId: number) => {
         showConfirmDialog({
@@ -1115,7 +1115,7 @@ export function SplitterViewerPage() {
                 console.error("Error fetching batches:", error);
             }
         }
-    }
+    };
 
     const getFilteredConditionalOptions = (documentId: number, field: any) => {
         if (!field.settings?.options) return [];
@@ -1507,7 +1507,7 @@ export function SplitterViewerPage() {
                                                                                 required={ field.required }
                                                                                 value={ batchMetadataValues[field.label_short] }
                                                                                 onChange={ (e) => {
-                                                                                    handleUpdateBatchMetadataValues(field, e)
+                                                                                    handleUpdateBatchMetadataValues(field, e);
                                                                                 } }
                                                                             />
                                                                         }
@@ -1521,7 +1521,7 @@ export function SplitterViewerPage() {
                                                                                 required={ field.required }
                                                                                 value={ batchMetadataValues[field.label_short] }
                                                                                 onChange={ (e) => {
-                                                                                    handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                                    handleUpdateBatchMetadataValues(field, e.target.value);
                                                                                 } }
                                                                             />
                                                                         }
@@ -1537,7 +1537,7 @@ export function SplitterViewerPage() {
                                                                                 })) }
                                                                                 value={ batchMetadataValues[field.label_short] }
                                                                                 onChange={ (value) => {
-                                                                                    handleUpdateBatchMetadataValues(field, value)
+                                                                                    handleUpdateBatchMetadataValues(field, value);
                                                                                 } }
                                                                             />
                                                                         }
@@ -1662,7 +1662,7 @@ export function SplitterViewerPage() {
                                                                                     required={ field.required }
                                                                                     value={ documentMetadataValues[document.id]?.[field.label_short] }
                                                                                     onChange={ (e) => {
-                                                                                        handleUpdateDocumentMetadataValues(document.id, field, e)
+                                                                                        handleUpdateDocumentMetadataValues(document.id, field, e);
                                                                                     } }
                                                                                 />
                                                                             ) }
@@ -1676,7 +1676,7 @@ export function SplitterViewerPage() {
                                                                                     required={ field.required }
                                                                                     value={ documentMetadataValues[document.id]?.[field.label_short] }
                                                                                     onChange={ (e) => {
-                                                                                        handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
+                                                                                        handleUpdateDocumentMetadataValues(document.id, field, e.target.value);
                                                                                     } }
                                                                                 />
                                                                             ) }
@@ -1690,7 +1690,7 @@ export function SplitterViewerPage() {
                                                                                     value={ documentMetadataValues[document.id]?.[field.label_short] }
                                                                                     options={ getFilteredConditionalOptions(document.id, field) }
                                                                                     onChange={ (value) => {
-                                                                                        handleUpdateDocumentMetadataValues(document.id, field, value)
+                                                                                        handleUpdateDocumentMetadataValues(document.id, field, value);
                                                                                     } }
                                                                                 />
                                                                             ) }

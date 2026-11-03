@@ -103,7 +103,7 @@ export function OutputsList({ module }: { module: string }) {
             } finally {
                 setLoadingOutputs(false);
             }
-        }
+        };
         fetchOutputs().then();
     }, [lazyParams, debouncedSearchTerm]);
 
@@ -124,7 +124,7 @@ export function OutputsList({ module }: { module: string }) {
             setTotalOutputs(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDuplicate = () => {
         if (selectedOutputs.length === 0) return;
@@ -142,7 +142,7 @@ export function OutputsList({ module }: { module: string }) {
                 setSelectedOutputs([]);
             }
         });
-    }
+    };
     const duplicateOutputs = async (id: number) => {
         try {
             await post(`/outputs/duplicate/${ id }`);
@@ -150,7 +150,7 @@ export function OutputsList({ module }: { module: string }) {
         } catch (err) {
             console.error("Error while duplicating output :", err);
         }
-    }
+    };
 
     const handleDelete = () => {
         if (selectedOutputs.length === 0) return;
@@ -169,7 +169,7 @@ export function OutputsList({ module }: { module: string }) {
                 setSelectedOutputs([]);
             }
         });
-    }
+    };
     const deleteOutputs = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -181,7 +181,7 @@ export function OutputsList({ module }: { module: string }) {
                 console.error("Error while deleting output :", err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">

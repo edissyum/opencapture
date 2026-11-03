@@ -170,7 +170,7 @@ export function OutputEditor({ module }: { module: string }) {
                         required: option.required,
                         placeholder: option.placeholder,
                         webservice: option.webservice ?? ''
-                    }
+                    };
                 });
 
                 setOutput((prev: any) => ({
@@ -194,7 +194,7 @@ export function OutputEditor({ module }: { module: string }) {
                         required: option.required,
                         placeholder: option.placeholder,
                         webservice: option.webservice ?? ''
-                    }
+                    };
                 });
 
                 setOutput((prev: any) => ({
@@ -260,7 +260,7 @@ export function OutputEditor({ module }: { module: string }) {
             } catch (error) {
                 console.error("Error fetching allowed path:", error);
             }
-        }
+        };
 
         const fetchOutputTypes = async () => {
             try {
@@ -346,11 +346,11 @@ export function OutputEditor({ module }: { module: string }) {
         }
 
         setLoadingStep(false);
-    }
+    };
 
     const handleNextStep = () => {
         setStepperIndex(stepperIndex + 1);
-    }
+    };
 
     const handleAuthChange = (e: any, option: any) => {
         const value = e.target.value;
@@ -381,7 +381,7 @@ export function OutputEditor({ module }: { module: string }) {
                 }
             };
         });
-    }
+    };
 
     const handleSpecificLinksChange = (e: any, option: any, data: any) => {
         const value = e.target.value;
@@ -410,11 +410,11 @@ export function OutputEditor({ module }: { module: string }) {
                 }
             };
         });
-    }
+    };
 
     const handlePreviousStep = () => {
         setStepperIndex(stepperIndex - 1);
-    }
+    };
 
     const handleSubmit = async () => {
         if (Object.keys(detailsErrors).length > 0 || !outputLabel || !outputTypeId) {
@@ -455,7 +455,7 @@ export function OutputEditor({ module }: { module: string }) {
         } finally {
             setLoadingStep(false);
         }
-    }
+    };
 
     useEffect(() => {
         saveActionRef.current = outputType?.output_type_id === 'export_mem' ? handleNextStep : handleSubmit;
@@ -489,7 +489,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                    placeholder={ option?.placeholder }
                                                    value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
                                                    onChange={ (e) => {
-                                                       handleAuthChange(e, option)
+                                                       handleAuthChange(e, option);
                                                    } }/>
                                         </div>
                                     )) }
@@ -524,7 +524,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                                 }
                                                             } }
                                                             onChange={ (value) => {
-                                                                handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                                handleSpecificLinksChange({ target: { value: value } }, option, 'parameters');
                                                             } }
                                                             onMount={ (editorInstance, monaco) => {
                                                                 editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
@@ -543,7 +543,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                     label={ option.label }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (value) => {
-                                                        handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                        handleSpecificLinksChange({ target: { value: value } }, option, 'parameters');
                                                     } }
                                                     options={ option.values || [] }
                                                 />
@@ -556,7 +556,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                     options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (value) => {
-                                                        handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                        handleSpecificLinksChange({ target: { value: value } }, option, 'parameters');
                                                     } }
                                                 />
                                             ) }
@@ -569,7 +569,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                     label={ option.label }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (e) => {
-                                                        handleSpecificLinksChange(e, option, 'parameters')
+                                                        handleSpecificLinksChange(e, option, 'parameters');
                                                     } }
                                                 />
                                             ) }
@@ -622,7 +622,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                         options={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.values || [] }
                                                         value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
                                                         onChange={ (value) => {
-                                                            handleSpecificLinksChange({ target: { value: value } }, option, 'links')
+                                                            handleSpecificLinksChange({ target: { value: value } }, option, 'links');
                                                         } }
                                                     />
                                                 ) }
@@ -633,7 +633,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                             label={ option.label }
                                                             checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
                                                             onChange={ (value) => {
-                                                                handleSpecificLinksChange({ target: { value } }, option, 'links')
+                                                                handleSpecificLinksChange({ target: { value } }, option, 'links');
                                                             } }/>
                                                     </div>
                                                 ) }
@@ -642,7 +642,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                            label={ option.label } hint={ option.hint }
                                                            value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
                                                            onChange={ (e) => {
-                                                               handleSpecificLinksChange(e, option, 'links')
+                                                               handleSpecificLinksChange(e, option, 'links');
                                                            } }/>
                                                 ) }
                                             </div>
@@ -740,5 +740,5 @@ export function OutputEditor({ module }: { module: string }) {
                 </div>
             ) }
         </div>
-    )
+    );
 }

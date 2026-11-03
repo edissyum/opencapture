@@ -349,7 +349,7 @@ export function DoctypesTree({
         } catch (error) {
             console.error("Error cloning doctypes:", error);
         }
-    }
+    };
 
     const handleRemoveField = (field: any) => {
         setSelectedFields(prev => prev.filter(f => f.id !== field.id));
@@ -411,7 +411,7 @@ export function DoctypesTree({
         setShowImportDialog(false);
         setForceRelaunch(f => f + 1);
         showToast(t('DOCTYPES.import_success'), 'success');
-    }
+    };
 
     if (loading) return <Loader/>;
 

@@ -58,7 +58,7 @@ export function SettingsGeneralSecurity() {
             } catch (error) {
                 console.error('Error while fetching roles :', error);
             }
-        }
+        };
         fetchRoles().then();
     }, [user, loadingUser]);
 
@@ -228,7 +228,7 @@ export function SettingsGeneralSecurity() {
                 setEnabledAuth(res.login_method_name[0].method_name);
                 setActiveIndex(res.login_method_name[0].method_name === 'default' ? ['default'] : ['ldap']);
             }
-        }
+        };
 
         const fetchPasswordRules = async () => {
             const res = await get('/config/getConfiguration/passwordRules');
@@ -255,7 +255,7 @@ export function SettingsGeneralSecurity() {
         fetchEnabledAuth().then();
         fetchLdapSettings().then();
         fetchPasswordRules().then();
-    }, [])
+    }, []);
 
     const handleUpdate: any = async (data: FormData) => {
 
@@ -290,7 +290,7 @@ export function SettingsGeneralSecurity() {
             return;
         }
         setStepperIndex(stepperIndex + 1);
-    }
+    };
 
     const handlePreviousStep = () => setStepperIndex(stepperIndex - 1);
 
@@ -330,7 +330,7 @@ export function SettingsGeneralSecurity() {
         } finally {
             setLoadingLdap(false);
         }
-    }
+    };
 
     if (loading) return <Loader/>;
 
@@ -456,5 +456,5 @@ export function SettingsGeneralSecurity() {
                 </Button>
             </div>
         </div>
-    )
+    );
 }

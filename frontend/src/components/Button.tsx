@@ -52,7 +52,7 @@ export function Button({
     if (to) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const location = useLocation();
-        isActive = exact ? location.pathname === to : location.pathname.includes(to)
+        isActive = exact ? location.pathname === to : location.pathname.includes(to);
     }
 
     let baseStyles =
@@ -60,7 +60,7 @@ export function Button({
         "transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     if (!className?.includes('rounded-')) {
-        baseStyles += ' rounded-lg'
+        baseStyles += ' rounded-lg';
     }
 
     const variantStyles: Record<ButtonVariant, string> = {
@@ -81,7 +81,7 @@ export function Button({
         bg_white: "bg-(--bg-primary) text-(--text-secondary) border border-(--border-secondary) hover:bg-(--border-secondary)/10",
         bg_white_rounded: "bg-(--color-primary)! border border-(--border-primary)! text-white! hover:bg-(--bg-selected)! hover:text-(--color-primary)!",
         no_bg_border: "bg-transparent text-(--text-secondary) border border-(--border-secondary) hover:bg-(--text-secondary"
-    }
+    };
 
     if (className?.includes('text-')) {
         variantStyles[variant] = variantStyles[variant].replace('text-white', '');

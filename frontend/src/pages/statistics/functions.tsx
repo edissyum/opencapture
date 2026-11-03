@@ -33,7 +33,7 @@ export const getUsersHistory = async (history: any, params: any) => {
     });
     stats['data'] = data;
     return stats;
-}
+};
 
 export const statisticsFunctions = {
     verifierDocumentsValidatedPerUser: async (params: any) => {

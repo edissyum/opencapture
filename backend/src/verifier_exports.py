@@ -80,7 +80,8 @@ def export_xml(data, log, document_info, database, enable_log=True):
 
     if enable_log:
         log.info('Output execution : XML export')
-        log.debug('Document info : ' + str(document_info))
+
+    log.debug('Document info : ' + str(document_info))
 
     folder_out = separator = filename = extension = xml_template = ''
     parameters = data['options']['parameters']
@@ -106,6 +107,7 @@ def export_xml(data, log, document_info, database, enable_log=True):
 
     log.debug('XML filename : ' + filename)
     log.debug('XML path : ' + folder_out + '/' + filename)
+    log.debug('XML template : ' + str(xml_template))
     docservers = get_context_var('docservers', 9)
 
     # Fill XML with document informations
@@ -185,7 +187,6 @@ def export_xml(data, log, document_info, database, enable_log=True):
                                 new_field.text = str(vat_amount)
                                 new_field = Et.SubElement(taxs_element, 'no_rate_amount')
                                 new_field.text = str(no_rate_amount)
-
                     elif document_data == 'lines_count':
                         lines_count = document_info['datas'][document_data]
                         if lines_count:
@@ -241,6 +242,8 @@ def export_xml(data, log, document_info, database, enable_log=True):
                             new_field.text = str(document_info['datas'][document_data]) if document_info['datas'][document_data] else ''
 
                 xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
+
+            log.debug('XML Content : ' + str(xml_root))
             xml_file.write(xml_root)
             xml_file.close()
         # END Fill XML with document informations
@@ -823,6 +826,7 @@ def export_opencrm(data, document_info, log, database):
 
             ws_data = construct_json(parameters, document_info, database)
             ws_data['data']['requete']['documents'].append(attachments_files)
+            log.debug('OpenCRM WS data : ' + str(ws_data))
             res = _ws.create_entry(ws_data)
             if res[0]:
                 log.debug('OpenCRM export success')
@@ -999,6 +1003,7 @@ def export_mem(data, document_info, log, regex, database):
                     else:
                         args.update({'documentDate': None})
 
+                    log.debug('MEM Courrier WS data principal document : ' + str(args))
                     res, message = _ws.insert_with_args(args)
                     if res:
                         res_id = message['resId']
@@ -1017,6 +1022,7 @@ def export_mem(data, document_info, log, regex, database):
                                             "extension": os.path.splitext(attachment['filename'])[1].replace('.', ''),
                                             "filename": attachment['filename']
                                         }
+                                        log.debug('MEM Courrier WS attachment : ' + str(attachments_files))
                                         _ws.insert_attachment(res_id, attachments_files)
 
                         if link_resource:

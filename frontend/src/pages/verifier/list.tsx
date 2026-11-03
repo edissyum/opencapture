@@ -16,7 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Radio } from "@mantine/core";
+import { Radio, Skeleton } from "@mantine/core";
 import { useEffect, useState } from "react";
 import {
     Briefcase,
@@ -109,8 +109,7 @@ export function VerifierListPage() {
         page: 0,
         sortField: null,
         sortOrder: null
-    }
-    );
+    });
 
     const [hovered, setHovered] = useState<string | null>(null);
 
@@ -159,7 +158,7 @@ export function VerifierListPage() {
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
-    ]
+    ];
 
     const columns: any = [
         {
@@ -268,7 +267,7 @@ export function VerifierListPage() {
         const fetchForms = async () => {
             const res = await get(`/forms/verifier/list`) || [];
             setListForms(res.forms || []);
-        }
+        };
         fetchForms().then();
     }, [user, loadingUser]);
 
@@ -281,11 +280,11 @@ export function VerifierListPage() {
             let customers = [{ id: 0, name: t('ACCOUNTS.no_customer_associated') }];
             customers = customers.concat(res.customers || []);
             setListCustomers(customers);
-        }
+        };
         const fetchSuppliers = async () => {
             const res = await get(`/accounts/suppliers/list`);
             setListSuppliers(res.suppliers || []);
-        }
+        };
 
         fetchSuppliers().then();
         fetchCustomers().then();
@@ -386,7 +385,7 @@ export function VerifierListPage() {
             setTotalDocuments(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleChangeCustomer = async (customerId: string) => {
         if (selectedDocuments.length === 0) return;
@@ -409,7 +408,7 @@ export function VerifierListPage() {
             setTotalDocuments(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleDelete = async () => {
         if (selectedDocuments.length === 0) return;
@@ -429,8 +428,8 @@ export function VerifierListPage() {
             onCancel: () => {
                 setSelectedDocuments([]);
             }
-        })
-    }
+        });
+    };
 
     const deleteDocuments = async (ids: string[]) => {
         ids.forEach((id) => {
@@ -440,7 +439,7 @@ export function VerifierListPage() {
                 console.error("Erreur suppression document :", err);
             }
         });
-    }
+    };
 
     const handleDisplayFilters = () => {
         setDisplayFilters(!displayFilters);
@@ -455,7 +454,7 @@ export function VerifierListPage() {
                 setOpen({ ...open, suppliers: true });
             }
         }
-    }
+    };
 
     const handleResetFilters = () => {
         setSelectedSuppliers([]);
@@ -464,7 +463,7 @@ export function VerifierListPage() {
         setSelectedStatus('NEW');
         setSelectedCustomers(null);
         setLazyParams({ ...lazyParams, sortField: null, sortOrder: null });
-    }
+    };
 
     // Check if filters have changed
     useEffect(() => {
@@ -663,19 +662,26 @@ export function VerifierListPage() {
                         variant='bg_white_rounded'
                         icon={
                             filtersChanged && !displayFilters ?
-                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' }
+                                        size={ 14 }/> :
                                 <Filter size={ 14 }/>
                         }
                         onClick={ handleDisplayFilters }
                         selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
-                    <span className='flex items-center gap-1'>
-                        <FileText size={ 16 }/>
-                        <span>
-                            { t('VERIFIER.documents', { count: totalDocuments }) } ({ totalDocuments || 0 })
+
+                    { loadingDocuments ? (
+                        <Skeleton width='10%' className='dark:bg-(--bg-secondary)! h-3!'/>
+                    ) : (
+                        <span className='flex items-center gap-1'>
+                            <FileText size={ 16 }/>
+                            <span>
+                                { t('VERIFIER.documents', { count: totalDocuments }) } ({ totalDocuments || 0 })
+                            </span>
                         </span>
-                    </span>
+                    ) }
+
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
                            value={ searchTerm } placeholder={ t('GLOBAL.search') }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
@@ -692,17 +698,18 @@ export function VerifierListPage() {
                         </span>
                     </span>
                 </div>
+
                 { view === 'list' && (
                     <Table
                         baseLink="/verifier/viewer/"
                         data={ documents }
                         pagination={ true }
                         columns={ columns }
-                        actions={ actions }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
                         loading={ loadingDocuments }
-                        actionsLine={ getActionsLine }
+                        actions={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? actions : undefined }
+                        actionsLine={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? getActionsLine : undefined }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedDocuments }
@@ -726,10 +733,10 @@ export function VerifierListPage() {
                         data={ documents }
                         pagination={ true }
                         columns={ columns }
-                        actions={ actions }
                         lazyParams={ lazyParams }
                         loading={ loadingDocuments }
-                        actionsLine={ getActionsLine }
+                        actions={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? actions : undefined }
+                        actionsLine={ ['WAIT_THIRD_PARTY', 'NEW'].includes(selectedStatus) ? getActionsLine : undefined }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         filtersChanged={ filtersChanged }

@@ -27,6 +27,7 @@ import { defaultJsonContent } from "./json_defaults";
 
 import Hint from "../../../../components/Hint";
 import { Button } from "../../../../components/Button";
+import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
@@ -94,6 +95,17 @@ export function SettingsVerifierAiLLMEditor() {
                 { type: "output", price: 0.024 }
             ],
             ocr_placeholder: "##OCR_CONTENT##"
+        },
+        {
+            name: "claude",
+            label: "Anthropic Claude",
+            url: "https://api.anthropic.com/v1/messages",
+            logo: "/imgs/ai-llm/claude.svg",
+            costs: [
+                { type: "input", price: 0.004 },
+                { type: "output", price: 0.020 }
+            ],
+            ocr_placeholder: "##FILE_NAME##"
         }
     ];
 
@@ -110,7 +122,7 @@ export function SettingsVerifierAiLLMEditor() {
             }
         };
 
-        fetchAiLLMDetails().then()
+        fetchAiLLMDetails().then();
     }, [aiLLMId]);
 
     const detailsSchema: any = z.object({
@@ -221,7 +233,7 @@ export function SettingsVerifierAiLLMEditor() {
             payload['settings']['output_price'] = data.output_price;
         }
         return payload;
-    }
+    };
 
     const handleCreate = async (data: any) => {
         setLoading(true);
@@ -248,18 +260,20 @@ export function SettingsVerifierAiLLMEditor() {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleCopy = async () => {
         await copyToClipboard(ocrPlaceholder);
         setDataCopied(true);
         setTimeout(() => setDataCopied(false), 2000);
-    }
+    };
 
     const saveActionRef = useRef<() => void>(() => {});
     useEffect(() => {
         saveActionRef.current = handleSubmit(handleUpdate);
     });
+
+    if (loading) return <Loader/>;
 
     return (
         <div className="h-full overflow-y-auto">

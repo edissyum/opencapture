@@ -51,7 +51,7 @@ export default function LoginRequiredError() {
                     navigate('/' + route, { replace: true });
                     navigate(0);
                     return;
-                })
+                });
                 return;
             }
 

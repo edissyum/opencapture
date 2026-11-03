@@ -105,7 +105,7 @@ export function SettingsGeneralUserEditor() {
             })),
             label: t("USERS.mode")
         }))
-    })
+    });
 
     const settingsSchema = z.object({
         forms: z.array(z.number()).describe(JSON.stringify({
@@ -179,7 +179,7 @@ export function SettingsGeneralUserEditor() {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         fetchRoles().then();
         fetchVerifierForms().then();
@@ -238,7 +238,7 @@ export function SettingsGeneralUserEditor() {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
     const handleUpdate: any = async (data: FormData) => {
         if (errors && Object.keys(errors).length > 0) return;
@@ -252,7 +252,7 @@ export function SettingsGeneralUserEditor() {
         } finally {
             setLoadingSubmit(false);
         }
-    }
+    };
 
     const password: any = watch("password");
     const passwordCheck: any = watch("password_check");

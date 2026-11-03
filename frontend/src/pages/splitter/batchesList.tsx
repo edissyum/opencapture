@@ -98,5 +98,5 @@ export function BatchCard({ row, navigate, onBatchDragStart, onBatchDragEnd }: a
                 </div>
             </div>
         </div>
-    )
+    );
 }

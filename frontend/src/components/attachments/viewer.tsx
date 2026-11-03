@@ -59,7 +59,7 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
         setLoading(true);
         const fetchAttachment = async () => {
             try {
-                const res = await post(`/attachments/${ module }/download/${ attachment.id }`)
+                const res = await post(`/attachments/${ module }/download/${ attachment.id }`);
                 if (!res) return;
 
                 let url: string;

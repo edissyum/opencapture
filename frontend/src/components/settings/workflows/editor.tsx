@@ -115,7 +115,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                         response.outputs.unshift({
                             "id": 0,
                             "output_label": t("WORKFLOWS.no_output"),
-                        })
+                        });
                         setOutputs(response.outputs);
                     }
                 } catch (error) {
@@ -197,7 +197,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             await fetchSplitterMethods();
             await fetchScriptingAllowed();
             setLoading(false);
-        }
+        };
 
         init().then();
     }, []);
@@ -543,7 +543,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             return;
         }
         setStepperIndex(stepperIndex + 1);
-    }
+    };
 
     const handlePreviousStep = () => setStepperIndex(stepperIndex - 1);
 
@@ -566,7 +566,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             workflow_label: label,
                             workflow_id: workflowId,
                             input_folder: inputFolder
-                        })
+                        });
                     } catch (error) {
                         console.error('Error validating input folder :', error);
                         return;
@@ -591,7 +591,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         await handleSubmit(data);
 
         handleNextStep(data);
-    }
+    };
 
     const handleSubmit = async (data: any) => {
         if (Object.keys(detailsErrors).length > 0 || Object.keys(workflowErrors).length > 0) {
@@ -661,7 +661,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         } finally {
             setLoadingUpdate(false);
         }
-    }
+    };
 
     const handleSubmitScript = async (script: string, step: string) => {
         try {
@@ -678,7 +678,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             setLoadingScript(false);
             console.error('Error testing script :', error);
         }
-    }
+    };
 
     if (loading) return <Loader/>;
 

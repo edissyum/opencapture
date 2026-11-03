@@ -101,7 +101,12 @@ class FindWithAI:
                 import mimetypes
                 mimetype = mimetypes.guess_type(file_path)[0]
                 fileb64 = base64.b64encode(file_data).decode('utf-8')
-                file_content = 'data:' + str(mimetype) + ';base64,' + fileb64
+
+                if self.llm_model['provider'] == 'claude':
+                    file_content = fileb64
+                else:
+                    file_content = 'data:' + str(mimetype) + ';base64,' + fileb64
+
                 json_content_str = json.dumps(self.llm_model['json_content'])
                 json_content_str = json_content_str.replace('"##FILE_NAME##"', json.dumps(file_content))
                 self.llm_model['json_content'] = json.loads(json_content_str)
@@ -113,6 +118,12 @@ class FindWithAI:
         if self.llm_model['provider'] == 'gemini':
             headers = {
                 "X-goog-api-key": f"{self.llm_model['api_key']}",
+                "Content-Type": "application/json"
+            }
+        elif self.llm_model['provider'] == 'claude':
+            headers = {
+                "x-api-key": f"{self.llm_model['api_key']}",
+                "anthropic-version": "2026-10-21",
                 "Content-Type": "application/json"
             }
 
@@ -137,6 +148,8 @@ class FindWithAI:
                 content = response['choices'][0]['message']['content']
             elif 'document_annotation' in response and len(response['document_annotation']) > 0:
                 content = response['document_annotation']
+            elif 'content' in response:
+                content = response['content'][0]['text']
 
         if content:
             try:
@@ -150,6 +163,10 @@ class FindWithAI:
                 token_usage = response.get('usageMetadata', {})
                 prompt_tokens = token_usage.get('promptTokenCount', 0)
                 completion_tokens = token_usage.get('candidatesTokenCount', 0)
+            elif self.llm_model['provider'] == 'claude':
+                token_usage = response.get('usage', {})
+                prompt_tokens = token_usage.get('input_tokens', 0)
+                completion_tokens = token_usage.get('output_tokens', 0)
             else:
                 token_usage = response.get('usage', {})
                 prompt_tokens = token_usage.get('prompt_tokens', 0)
@@ -163,5 +180,5 @@ class FindWithAI:
                     self.log.info(f"Approximate costs - Input: ${ci:.6f}, Output: ${co:.6f}, Total: ${total:.6f}")
             return content
         else:
-            self.log.error("AI LLM model did not return any content")
+            self.log.warning("AI LLM model did not return any content")
             return None

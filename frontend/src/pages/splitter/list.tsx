@@ -33,7 +33,7 @@ import {
     X
 } from "lucide-react";
 import DOMPurify from "dompurify";
-import { Radio } from "@mantine/core";
+import { Radio, Skeleton } from "@mantine/core";
 
 import { useUser } from "../../services/hooks/useUser";
 import { AxiosApiCall } from "../../services/hooks/AxiosApiCall";
@@ -244,7 +244,7 @@ export function SplitterListPage() {
         const fetchForms = async () => {
             const res = await get(`/forms/splitter/list`) || [];
             setListForms(res.forms || []);
-        }
+        };
         fetchForms().then();
     }, [user, loadingUser]);
 
@@ -255,7 +255,7 @@ export function SplitterListPage() {
         const fetchCustomers = async () => {
             const res = await get(`/accounts/customers/list/splitter/${ user.id }`);
             setListCustomers(res.customers || []);
-        }
+        };
 
         fetchCustomers().then();
     }, [listForms]);
@@ -342,7 +342,7 @@ export function SplitterListPage() {
             setTotalBatches(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleChangeCustomer = async (customerId: string) => {
         if (selectedBatches.length === 0) return;
@@ -366,7 +366,7 @@ export function SplitterListPage() {
             setTotalBatches(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
-    }
+    };
 
     const handleDelete = async () => {
         if (selectedBatches.length === 0) return;
@@ -386,8 +386,8 @@ export function SplitterListPage() {
             onCancel: () => {
                 setSelectedBatches([]);
             }
-        })
-    }
+        });
+    };
 
     const deleteDocuments = async (ids: string[]) => {
         try {
@@ -395,13 +395,15 @@ export function SplitterListPage() {
         } catch (err) {
             console.error("Erreur suppression des lots :", err);
         }
-    }
+    };
 
     const handleMerge = async () => {
         if (selectedBatches.length < 2) return;
 
         try {
-            const batchesToMerge = selectedBatches.filter(batch => batch.id !== selectedPrincipalBatchId).map(batch => batch.id);
+            const batchesToMerge = selectedBatches.filter(batch => batch.id !== selectedPrincipalBatchId)
+                .map(batch => batch.id);
+
             await post(`/splitter/merge/${ selectedPrincipalBatchId }`, { batches: batchesToMerge });
             showToast(t('SPLITTER.batches_merged'), 'success');
             setShowMerge(false);
@@ -411,7 +413,7 @@ export function SplitterListPage() {
         } catch (err) {
             console.error("Erreur lors de la fusion des lots :", err);
         }
-    }
+    };
 
     const handleDisplayFilters = () => {
         setDisplayFilters(!displayFilters);
@@ -423,7 +425,7 @@ export function SplitterListPage() {
                 setOpen({ ...open, customers: true });
             }
         }
-    }
+    };
 
     const handleResetFilters = () => {
         setSelectedCustomers([]);
@@ -431,7 +433,7 @@ export function SplitterListPage() {
         setSelectedForm('');
         setSelectedStatus('NEW');
         setLazyParams({ ...lazyParams, sortField: null, sortOrder: null });
-    }
+    };
 
     // Check if filters have changed
     useEffect(() => {
@@ -653,12 +655,18 @@ export function SplitterListPage() {
                             onClick={ handleDisplayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
-                    <span className='flex items-center gap-1'>
-                        <FileText size={ 16 }/>
-                        <span>
-                            { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
+
+                    { loadingBatches ? (
+                        <Skeleton width='4%' className='dark:bg-(--bg-secondary)! h-3!'/>
+                    ) : (
+                        <span className='flex items-center gap-1'>
+                            <FileText size={ 16 }/>
+                            <span>
+                                { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
+                            </span>
                         </span>
-                    </span>
+                    ) }
+
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
                            autoFocus value={ searchTerm } placeholder={ t('GLOBAL.search') }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
@@ -679,17 +687,17 @@ export function SplitterListPage() {
                     <Table
                         baseLink="/splitter/viewer/"
                         data={ batches }
-                        actions={ actions }
                         pagination={ true }
                         columns={ columns }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
                         loading={ loadingBatches }
-                        actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedBatches }
                         totalRecords={ totalBatches || 0 }
+                        actions={ ['NEW'].includes(selectedStatus) ? actions : undefined }
+                        actionsLine={ ['NEW'].includes(selectedStatus) ? getActionsLine : undefined }
                         rowsPerPageOptions={ [
                             { "value": 4, "label": "4" },
                             { "value": 8, "label": "8" },

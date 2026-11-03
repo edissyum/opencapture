@@ -136,7 +136,7 @@ export function FormsList({ module }: { module: string }) {
             } finally {
                 setLoadingForms(false);
             }
-        }
+        };
         fetchForms().then();
     }, [lazyParams, debouncedSearchTerm]);
 
@@ -157,7 +157,7 @@ export function FormsList({ module }: { module: string }) {
             setTotalForms(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDisable = () => {
         if (selectedForms.length === 0) return;
@@ -175,8 +175,8 @@ export function FormsList({ module }: { module: string }) {
             onCancel: () => {
                 setSelectedForms([]);
             }
-        })
-    }
+        });
+    };
     const disableForms = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
@@ -188,7 +188,7 @@ export function FormsList({ module }: { module: string }) {
                 console.error("Error disabling form :", err);
             }
         });
-    }
+    };
 
     const handleEnable = () => {
         if (selectedForms.length === 0) return;
@@ -205,8 +205,8 @@ export function FormsList({ module }: { module: string }) {
             onCancel: () => {
                 setSelectedForms([]);
             }
-        })
-    }
+        });
+    };
     const enableForms = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
@@ -218,7 +218,7 @@ export function FormsList({ module }: { module: string }) {
                 console.error("Error enabling form :", err);
             }
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedForms.length === 0) return;
@@ -237,7 +237,7 @@ export function FormsList({ module }: { module: string }) {
                 setSelectedForms([]);
             }
         });
-    }
+    };
     const deleteForms = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -249,7 +249,7 @@ export function FormsList({ module }: { module: string }) {
                 console.error("Error while deleting form :", err);
             }
         }
-    }
+    };
 
     const handleDuplicate = () => {
         if (selectedForms.length === 0) return;
@@ -267,7 +267,7 @@ export function FormsList({ module }: { module: string }) {
                 setSelectedForms([]);
             }
         });
-    }
+    };
     const duplicateForms = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -279,7 +279,7 @@ export function FormsList({ module }: { module: string }) {
                 console.error("Error while duplicating form :", err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">

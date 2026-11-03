@@ -112,7 +112,7 @@ export function StatisticsPage() {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const res = await get('/users/list_full')
+            const res = await get('/users/list_full');
             setUsers(res.users);
         };
 
@@ -120,7 +120,7 @@ export function StatisticsPage() {
             const res = await get('/statistics/getAvailableYears');
             if (res.years) {
                 const uniqueYears: any = Array.from(new Set(res.years.map((data: any) => {
-                    return { 'value': data.year, 'label': data.year }
+                    return { 'value': data.year, 'label': data.year };
                 })));
                 uniqueYears.unshift({ 'value': null, 'label': t('STATISTICS.all_years') });
                 setAvailableYears(uniqueYears);
@@ -139,7 +139,7 @@ export function StatisticsPage() {
         setSelectedModule(e.target.value);
         setSelectedStatisticId(undefined);
         setFilteredStatisticsOptions(statisticsOptions.filter(option => option.id.startsWith(e.target.value)));
-    }
+    };
 
     const handleStatisticChange = async (value: any, force = false) => {
         const selectedOption = statisticsOptions.find(option => option.id === value);
@@ -165,14 +165,14 @@ export function StatisticsPage() {
                 }));
             }
         }
-    }
+    };
 
     const handleResetFilters = () => {
         setSelectedYear(null);
         setSelectedModule(undefined);
         setSelectedStatisticId(undefined);
         setFilteredStatisticsOptions(statisticsOptions);
-    }
+    };
 
     return (
         <div className="flex h-full w-full overflow-hidden bg-(--bg-secondary)">

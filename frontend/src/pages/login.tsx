@@ -162,7 +162,7 @@ export function Login() {
             setLoadingLogin(false);
             return null;
         }
-    }
+    };
 
     const handleNavigateToReset = () => {
         navigate('/reset-password');
@@ -170,7 +170,7 @@ export function Login() {
 
     const changeCard = () => {
         setActiveCard(activeCard === 'guide' ? 'capture' : 'guide');
-    }
+    };
 
     if (loading) return (
         <div className='h-screen'>

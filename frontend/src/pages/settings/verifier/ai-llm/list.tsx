@@ -107,7 +107,7 @@ export function SettingsVerifierAiLLMList() {
             } finally {
                 setLoadingAiLlm(false);
             }
-        }
+        };
         fetchAiLlm().then();
     }, [lazyParams, debouncedSearchTerm]);
 
@@ -128,7 +128,7 @@ export function SettingsVerifierAiLLMList() {
             setTotalAiLlm(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedAiLlm.length === 0) return;
@@ -147,7 +147,7 @@ export function SettingsVerifierAiLLMList() {
                 setSelectedAiLlm([]);
             }
         });
-    }
+    };
     const deleteAiLlmModels = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -159,7 +159,7 @@ export function SettingsVerifierAiLLMList() {
                 console.error("Error while deleting ai llm models :", err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">

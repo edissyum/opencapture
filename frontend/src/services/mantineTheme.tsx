@@ -59,6 +59,21 @@ export const mantineTheme: MantineThemeOverride = {
                 color: primaryColor
             }
         },
+        Select: {
+            defaultProps: {
+                comboboxProps: { shadow: 'md' }
+            }
+        },
+        MultiSelect: {
+            defaultProps: {
+                comboboxProps: { shadow: 'md' }
+            }
+        },
+        Autocomplete: {
+            defaultProps: {
+                comboboxProps: { shadow: 'md' }
+            }
+        },
         Radio: {
             defaultProps: {
                 color: primaryColor

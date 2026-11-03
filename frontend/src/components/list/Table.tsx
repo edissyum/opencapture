@@ -180,7 +180,7 @@ export function Table<T extends { id: string }>({
                     </Button>
                 )) }
             </div>
-        )
+        );
     }, [selectedRows, paginatorLeftText]);
 
     if (loading) {

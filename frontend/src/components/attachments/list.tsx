@@ -106,19 +106,19 @@ export function AttachmentsList({
                     }
 
                     if (['ods', 'csv', 'xls', 'xlsx'].includes(attachment.extension)) {
-                        attachment.extension_icon = <Sheet size={ 48 } className='text-(--text-secondary)'/>
+                        attachment.extension_icon = <Sheet size={ 48 } className='text-(--text-secondary)'/>;
                     } else if (['ppt', 'pptx', 'odp'].includes(attachment.extension)) {
-                        attachment.extension_icon = <Presentation size={ 48 } className='text-(--text-secondary)'/>
+                        attachment.extension_icon = <Presentation size={ 48 } className='text-(--text-secondary)'/>;
                     } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment.extension)) {
-                        attachment.extension_icon = <BookOpen size={ 48 } className='text-(--text-secondary)'/>
+                        attachment.extension_icon = <BookOpen size={ 48 } className='text-(--text-secondary)'/>;
                     } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment.extension)) {
-                        attachment.extension_icon = <FileArchive size={ 48 } className='text-(--text-secondary)'/>
+                        attachment.extension_icon = <FileArchive size={ 48 } className='text-(--text-secondary)'/>;
                     } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment.extension)) {
-                        attachment.extension_icon = <Video size={ 48 } className='text-(--text-secondary)'/>
+                        attachment.extension_icon = <Video size={ 48 } className='text-(--text-secondary)'/>;
                     } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment.extension)) {
-                        attachment.extension_icon = <AudioLines size={ 48 } className='text-(--text-secondary)'/>
+                        attachment.extension_icon = <AudioLines size={ 48 } className='text-(--text-secondary)'/>;
                     } else {
-                        attachment.extension_icon = <File size={ 48 } className='text-(--text-secondary)'/>
+                        attachment.extension_icon = <File size={ 48 } className='text-(--text-secondary)'/>;
                     }
 
                     attachment.creation_date = new Intl.DateTimeFormat(locale, {
@@ -128,7 +128,7 @@ export function AttachmentsList({
                         year: "numeric",
                         hour: "2-digit",
                         minute: "2-digit",
-                    }).format(new Date(attachment.creation_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '').replaceAll('/', '-')
+                    }).format(new Date(attachment.creation_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '').replaceAll('/', '-');
                 });
                 setAttachments(response);
             }
@@ -221,7 +221,7 @@ export function AttachmentsList({
                     console.error("Error deleting attachment:", error);
                 }
             }
-        })
+        });
     };
 
     const handleAttachementView = (attachment: any) => {

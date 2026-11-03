@@ -76,7 +76,7 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                                     placeholder={ field.placeholder }
                                     error={ errors[field.name]?.message }
                                     onChange={ e => {
-                                        const value = e.target.value
+                                        const value = e.target.value;
 
                                         if (field.type === 'number') {
                                             // valueAsNumber doesn't work with Controller, so we convert manually
@@ -169,7 +169,7 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                             </div>
                         ) }
                     />
-                )
+                );
             case "select":
                 return (
                     <div className={ field.className || "" } key={ field.name }>

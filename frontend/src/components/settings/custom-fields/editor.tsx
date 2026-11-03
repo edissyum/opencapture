@@ -391,7 +391,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         }
 
         return payload;
-    }
+    };
 
     const handleUpdate = async (data: any) => {
         const payload = getPayload(data);
@@ -405,7 +405,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleCreate = async (data: any) => {
         const payload = getPayload(data);
@@ -420,7 +420,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleDeleteOption = async () => {
         if (selectedOptionIndex === null) return;
@@ -435,7 +435,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                 .map((index) => (index > selectedOptionIndex ? index - 1 : index))
         );
         setSelectedOptionIndex(null);
-    }
+    };
 
     return (
         <div className="h-full overflow-y-auto">

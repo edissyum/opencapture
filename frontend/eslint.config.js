@@ -50,6 +50,7 @@ export default tseslint.config([
             '@stylistic/arrow-spacing': 'error',
             '@stylistic/block-spacing': 'error',
             '@stylistic/semi-spacing': 'error',
+            '@stylistic/semi': ['error', 'always'],
             '@stylistic/object-curly-spacing': ['error', 'always'],
             '@stylistic/no-multi-spaces': 'error',
             '@stylistic/no-trailing-spaces': 'error',

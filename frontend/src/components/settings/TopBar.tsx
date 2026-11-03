@@ -71,7 +71,7 @@ export default function BreadCrumbTopbar() {
                          className={ `ml-auto cursor-pointer ${ loadingFavorites ? 'pointer-events-none' : '' }` }
                          data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
                          onClick={ () => {
-                             toggleFavorite(location.pathname).then(() => setRefresh(true))
+                             toggleFavorite(location.pathname).then(() => setRefresh(true));
                          } }
                     >
                         { loadingFavorites ? (

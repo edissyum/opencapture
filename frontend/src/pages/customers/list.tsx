@@ -94,7 +94,7 @@ export function CustomersList() {
             } finally {
                 setLoadingCustomers(false);
             }
-        }
+        };
         fetchCustomers().then();
     }, [lazyParams, searchTerm]);
 
@@ -104,7 +104,7 @@ export function CustomersList() {
             setTotalCustomers(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
-    }
+    };
 
     const handleDelete = () => {
         if (selectedCustomers.length === 0) return;
@@ -123,7 +123,7 @@ export function CustomersList() {
                 setSelectedCustomers([]);
             }
         });
-    }
+    };
     const deleteCustomers = async (ids: string[]) => {
         for (const id of ids) {
             try {
@@ -135,7 +135,7 @@ export function CustomersList() {
                 console.error("Error deleting supplier with id " + id, err);
             }
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">

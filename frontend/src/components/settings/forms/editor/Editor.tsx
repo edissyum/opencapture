@@ -119,7 +119,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
         }
 
         return result;
-    }
+    };
 
     // Retrieve form settings
     useEffect(() => {
@@ -367,7 +367,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 lines: zone.lines.filter((line: any) => line.id !== lineId)
             }))
         );
-    }
+    };
 
     const handleUpdateLine = (data: any) => {
         setZones((prevZones: any) =>
@@ -378,7 +378,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 )
             }))
         );
-    }
+    };
 
     const handleUpdate = () => {
         if (isSubmitting) return;
@@ -409,7 +409,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
         } catch (error) {
             console.error("Error updating form fields:", error);
         }
-    }
+    };
 
     const handleUpdateSettings = () => {
         if (isSubmitting) return;
@@ -428,7 +428,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             setIsSubmitting(false);
             console.error("Error updating form settings:", error);
         }
-    }
+    };
 
     const handleChangeLabel = async () => {
         const zoneId = selectedZone.id.replace("zone-", "");
@@ -444,7 +444,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 put(`forms/updateLabel/${ formId }/${ zoneId }`, { label: value });
             }
         });
-    }
+    };
 
     function mapField(field: any, module: "verifier" | "splitter") {
         const base = {
@@ -568,7 +568,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                     doctypes={ doctypes } selectedDoctype={ selectedDoctype }
                                     doctypeUpdated={ () => setDoctypeUpdatedCpt(prev => prev + 1) }
                                     doctypeChanged={ (doctype) => {
-                                        setSelectedDoctype(doctype)
+                                        setSelectedDoctype(doctype);
                                     } }
                                 />
                             </Tabs.Panel>
