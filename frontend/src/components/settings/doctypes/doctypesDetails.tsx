@@ -31,6 +31,7 @@ import {
 
 import Input from "../../Input";
 import { Button } from "../../Button";
+import { normalizeValue } from "./helpers";
 import { showToast } from "../../ToastProvider";
 import { InputSwitch } from "../../InputSwitch";
 
@@ -220,10 +221,12 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                             <div className='w-full flex flex-col gap-4 mt-2'>
                                 <Input label={ t('GLOBAL.label') } value={ newDoctypeLabel } onChange={ (e) => {
                                     setNewDoctypeLabel(e.target.value);
-                                    setNewDoctypeKey(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "_"));
+                                    const value = normalizeValue(e.target.value);
+                                    setNewDoctypeKey(value.toUpperCase().replace(/[^A-Z0-9]/g, "_"));
                                 } }/>
                                 <Input label={ t('ROLES.label_short') } value={ newDoctypeKey } onChange={ (e) => {
-                                    setNewDoctypeKey(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "_"));
+                                    const value = normalizeValue(e.target.value);
+                                    setNewDoctypeKey(value.toUpperCase().replace(/[^A-Z0-9]/g, "_"));
                                 } }/>
                                 { newDoctypeType === 'document' && (
                                     <div className='flex items-center'>
