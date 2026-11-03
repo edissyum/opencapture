@@ -18,7 +18,7 @@ sympy==1.14.0
 kuyruk==10.2.3
 pillow==13.0.0
 imutils==0.5.4
-psycopg==3.3.6
+psycopg==3.3.7
 thefuzz==0.22.1
 werkzeug==3.1.9
 pyflakes==4.1.0
@@ -48,8 +48,8 @@ python-bidi==0.6.12
 pytesseract==0.3.13
 configparser==7.3.0
 scikit-learn==1.9.1
-pycryptodome==4.2.0
-ultralytics==8.4.198
+pycryptodome==4.3.0
+ultralytics==8.4.199
 python-magic==0.4.27
 transformers==5.22.1
 Flask-Limiter==4.1.1

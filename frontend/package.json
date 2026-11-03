@@ -36,7 +36,7 @@
         "@mantine/dates": "^9.7.4",
         "@mantine/hooks": "^9.7.4",
         "@monaco-editor/react": "^4.7.0",
-        "@tailwindcss/vite": "^4.3.3",
+        "@tailwindcss/vite": "^4.3.4",
         "@tanstack/react-virtual": "^3.14.25",
         "@tinymce/tinymce-react": "^6.3.1",
         "axios": "^1.21.0",
@@ -55,7 +55,7 @@
         "react-toastify": "^11.2.0",
         "react-tooltip": "^6.0.9",
         "recharts": "^3.10.1",
-        "tailwindcss": "^4.3.3",
+        "tailwindcss": "^4.3.4",
         "tinymce": "^8.10.1",
         "zod": "^4.6.7"
     },
@@ -71,7 +71,7 @@
         "eslint-plugin-react-refresh": "^0.5.7",
         "globals": "^17.14.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.66.0",
+        "lucide-react": "^1.67.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.72.1",
         "vite": "^8.3.5"
