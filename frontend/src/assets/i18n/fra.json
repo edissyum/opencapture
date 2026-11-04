@@ -1421,7 +1421,7 @@
         "lib_backend": "Librairies utilisées pour le backend",
         "lib_front": "Librairies utilisées pour le frontend",
         "license_desc": "License",
-        "license_status": "Logiciel libre et open source",
+        "license_status": "Logiciel libre et open source de capture et gestion documentaire",
         "status": "Statut",
         "team": "Équipe de développement",
         "address": "Adresse",

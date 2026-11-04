@@ -82,9 +82,6 @@ export function AboutPage() {
                         <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
                             <img src={ logo } className='w-full h-15' alt="Open-Capture Logo"/>
                         </div>
-                        <div className='text-(--text-secondary)'>
-                            Logiciel libre de capture et gestion documentaire
-                        </div>
                         <div className='flex items-center gap-4'>
                             <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-lg p-2 py-1
                                             flex items-center gap-2 w-fit'>
