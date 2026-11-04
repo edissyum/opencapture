@@ -218,7 +218,6 @@ export function SettingsVerifierAiLLMEditor() {
                 skipJsonUpdate.current = false;
             } else {
                 const defaultJson = defaultJsonContent[selectedProvider];
-                console.log(defaultJson)
                 setAiLLMJson(JSON.stringify(defaultJson, null, 4));
             }
         }
