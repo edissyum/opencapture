@@ -48,6 +48,7 @@ def login():
 
 
 @bp.route('auth/login/refresh', methods=['POST'])
+@limiter.limit("5/minute")
 @auth.token_required
 def refresh():
     check, message = rest_validator(request.json, [
@@ -152,6 +153,7 @@ def retrieve_ldap_configurations():
 
 
 @bp.route('auth/connectionLdap', methods=['POST'])
+@limiter.limit("5/minute")
 @auth.token_required
 def check_connection_ldap_server():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
@@ -178,6 +180,7 @@ def check_connection_ldap_server():
 
 
 @bp.route('auth/ldapSynchronization', methods=['POST'])
+@limiter.limit("5/minute")
 @auth.token_required
 def ldap_synchronization_users():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'login_methods']):
