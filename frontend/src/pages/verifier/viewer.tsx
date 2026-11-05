@@ -1250,15 +1250,13 @@ export function VerifierViewerPage() {
             </div>
 
             { !showAttachments && (
-                <div className='w-1/2'>
-                    <div className='pt-6 pl-6 pb-4'>
-                        <Button size='sm' variant="bg_white_rounded"
-                                icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
-                            { t('GLOBAL.back') }
-                        </Button>
-                    </div>
-                    <div className='bg-(--bg-secondary) px-6 pb-24 h-full flex flex-col'>
-                        <div className="border border-(--border-secondary) rounded-xl h-full overflow-auto">
+                <div className='w-1/2 flex flex-col gap-4 p-6 pb-0'>
+                    <Button size='sm' variant="bg_white_rounded"
+                            icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
+                        { t('GLOBAL.back') }
+                    </Button>
+                    <div className='bg-(--bg-secondary) pb-20 h-full flex flex-col'>
+                        <div className="border border-(--border-secondary) rounded-xl h-full overflow-hidden">
                             { !pagesImageB64[currentPage] ? (
                                 <div className='w-full h-full flex flex-col items-center justify-center'>
                                     <span className='text-(--text-secondary)'>
