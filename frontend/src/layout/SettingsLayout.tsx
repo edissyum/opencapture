@@ -36,7 +36,7 @@ export default function SettingsLayout() {
     }
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen w-screen overflow-hidden">
             <Sidebar />
             <div className='flex flex-col w-full min-w-0 h-full'>
                 <PageTitle />
