@@ -67,13 +67,13 @@ export function SuppliersList() {
 
     const actions: any = [
         {
-            label: t('ACCOUNTS.reinit_positions', { 'count': selectedSuppliers.length }),
+            label: t('ACCOUNTS.reinit_positions'),
             icon: <CirclePause size={ 16 }/>,
             command: () => handleReinitPositions()
         },
         {
             label: <span
-                className='critical'>{ t('GLOBAL.delete', { 'count': selectedSuppliers.length }) }</span>,
+                className='critical'>{ t('GLOBAL.delete') }</span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }

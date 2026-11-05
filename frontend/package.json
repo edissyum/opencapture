@@ -22,9 +22,8 @@
         "build-watch": "tsc -b && vite build --watch",
         "copy:tinymce": "node ./postinstall_tinymce.js",
         "upgrade-all-packages-ncu": "ncu -u && npm run reload-packages",
-        "extract-translations": "i18next-scanner --config i18next-scanner.config.cjs",
+        "extract-translations": "i18next-cli extract",
         "copy-pdfjs-worker": "cp -R node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/",
-        "i18n:extract:merge": "npm run extract-translations && node src/assets/i18n/merge-i18n.mjs",
         "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i && npm run copy-pdfjs-worker"
     },
     "dependencies": {
@@ -62,6 +61,7 @@
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@stylistic/eslint-plugin": "^5.10.0",
+        "@types/node": "^26.6.6",
         "@types/papaparse": "^5.5.2",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
@@ -70,7 +70,7 @@
         "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-react-refresh": "^0.5.7",
         "globals": "^17.14.0",
-        "i18next-scanner": "^4.6.0",
+        "i18next-cli": "^1.84.0",
         "lucide-react": "^1.69.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.72.1",
