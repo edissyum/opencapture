@@ -43,13 +43,13 @@ imap-tools==1.16.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 tokenizers==0.23.3
-schwifty==2026.10.1
+schwifty==2026.11.0
 python-bidi==0.6.12
 pytesseract==0.3.13
 configparser==7.3.0
 scikit-learn==1.9.1
 pycryptodome==4.3.0
-ultralytics==8.4.202
+ultralytics==8.4.203
 python-magic==0.4.27
 transformers==5.22.1
 Flask-Limiter==4.1.1

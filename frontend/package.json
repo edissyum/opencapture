@@ -70,8 +70,8 @@
         "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-react-refresh": "^0.5.7",
         "globals": "^17.14.0",
-        "i18next-cli": "^1.84.0",
-        "lucide-react": "^1.69.0",
+        "i18next-cli": "^1.85.1",
+        "lucide-react": "^1.70.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.72.1",
         "vite": "^8.3.6"
