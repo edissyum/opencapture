@@ -135,11 +135,11 @@ class FindWithAI:
                 timeout=120
             )
         except Exception as e:
-            self.log.error(f"Error calling AI model: {e}")
+            self.log.error(f"Error calling AI model : {e}")
             return None
 
         if ai_llm_res.status_code != 200:
-            self.log.error(f"Error calling AI model: {ai_llm_res.status_code} - {ai_llm_res.text}")
+            self.log.error(f"Error calling AI model : {ai_llm_res.status_code} - {ai_llm_res.text}")
             return None
 
         response = ai_llm_res.json()
