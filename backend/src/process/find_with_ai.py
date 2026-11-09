@@ -127,12 +127,16 @@ class FindWithAI:
                 "Content-Type": "application/json"
             }
 
-        ai_llm_res = requests.post(
-            self.llm_model['url'],
-            headers=headers,
-            json=self.llm_model['json_content'],
-            timeout=60
-        )
+        try:
+            ai_llm_res = requests.post(
+                self.llm_model['url'],
+                headers=headers,
+                json=self.llm_model['json_content'],
+                timeout=120
+            )
+        except Exception as e:
+            self.log.error(f"Error calling AI model: {e}")
+            return None
 
         if ai_llm_res.status_code != 200:
             self.log.error(f"Error calling AI model: {ai_llm_res.status_code} - {ai_llm_res.text}")
