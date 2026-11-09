@@ -79,6 +79,9 @@ import { SettingsSplitterCertifiedCopy } from "./pages/settings/splitter/certifi
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
 import { SettingsVerifierPositionMaskEditor } from "./pages/settings/verifier/positions-masks/editor";
 
+// Fake function used only to mark i18n keys without translation (using t() here doesn't work)
+export const i18nKey = (key: string) => key;
+
 export const router = createBrowserRouter(
     [
         {
@@ -104,14 +107,14 @@ export const router = createBrowserRouter(
                     element: <ProfilePage/>,
                     loader: protectedLoader(),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'GLOBAL.my_profile' }
+                    handle: { breadcrumb: i18nKey('GLOBAL.my_profile') }
                 },
                 {
                     path: "about",
                     element: <AboutPage/>,
                     loader: protectedLoader(),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.abouts_us' }
+                    handle: { breadcrumb: i18nKey('SETTINGS.abouts_us') }
                 },
                 {
                     path: "history",
@@ -121,7 +124,7 @@ export const router = createBrowserRouter(
                             index: true,
                             loader: protectedLoader(['history']),
                             element: <HistoryList/>,
-                            handle: { breadcrumb: 'GLOBAL.history' },
+                            handle: { breadcrumb: i18nKey('GLOBAL.history') },
                             errorElement: <LoginRequiredError/>
                         }
                     ]
@@ -130,7 +133,7 @@ export const router = createBrowserRouter(
                     path: "suppliers",
                     loader: protectedLoader(['suppliers_list']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'ACCOUNTS.suppliers_list' },
+                    handle: { breadcrumb: i18nKey('ACCOUNTS.suppliers_list') },
                     children: [
                         {
                             index: true,
@@ -143,14 +146,14 @@ export const router = createBrowserRouter(
                             loader: protectedLoader(['update_supplier']),
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'ACCOUNTS.edit_supplier' }
+                            handle: { breadcrumb: i18nKey('ACCOUNTS.edit_supplier') }
                         },
                         {
                             path: 'create',
                             loader: protectedLoader(['create_supplier']),
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'ACCOUNTS.add_supplier' }
+                            handle: { breadcrumb: i18nKey('ACCOUNTS.add_supplier') }
                         }
                     ]
                 },
@@ -158,7 +161,7 @@ export const router = createBrowserRouter(
                     path: "customers",
                     loader: protectedLoader(['customers_list']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'ACCOUNTS.customers_list' },
+                    handle: { breadcrumb: i18nKey('ACCOUNTS.customers_list') },
                     children: [
                         {
                             index: true,
@@ -171,14 +174,14 @@ export const router = createBrowserRouter(
                             loader: protectedLoader(['update_customer']),
                             element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'ACCOUNTS.edit_customer' }
+                            handle: { breadcrumb: i18nKey('ACCOUNTS.edit_customer') }
                         },
                         {
                             path: 'create',
                             loader: protectedLoader(['create_customer']),
                             element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'ACCOUNTS.add_customer' }
+                            handle: { breadcrumb: i18nKey('ACCOUNTS.add_customer') }
                         }
                     ]
                 },
@@ -187,12 +190,12 @@ export const router = createBrowserRouter(
                     element: <StatisticsPage/>,
                     loader: protectedLoader(['statistics']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'GLOBAL.statistics' }
+                    handle: { breadcrumb: i18nKey('GLOBAL.statistics') }
                 },
                 {
                     path: "monitoring",
                     loader: protectedLoader(['monitoring']),
-                    handle: { breadcrumb: 'MONITORING.list' },
+                    handle: { breadcrumb: i18nKey('MONITORING.list') },
                     errorElement: <LoginRequiredError/>,
                     children: [
                         {
@@ -206,7 +209,7 @@ export const router = createBrowserRouter(
                             loader: protectedLoader(['monitoring']),
                             element: <MonitoringDetails/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'MONITORING.details' },
+                            handle: { breadcrumb: i18nKey('MONITORING.details') },
                         },
                     ]
                 }
@@ -221,35 +224,35 @@ export const router = createBrowserRouter(
                     element: <HomePage/>,
                     loader: protectedLoader(),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'GLOBAL.home' }
+                    handle: { breadcrumb: i18nKey('GLOBAL.home') }
                 },
                 {
                     path: "verifier/viewer/:documentId",
                     element: <VerifierViewerPage/>,
                     loader: protectedLoader(['access_verifier']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.verifier' }
+                    handle: { breadcrumb: i18nKey('SETTINGS.verifier') }
                 },
                 {
                     path: "splitter/viewer/:batchId",
                     element: <SplitterViewerPage/>,
                     loader: protectedLoader(['access_splitter']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.splitter' }
+                    handle: { breadcrumb: i18nKey('SETTINGS.splitter') }
                 },
                 {
                     path: "upload",
                     element: <UploadPage/>,
                     loader: protectedLoader(['upload']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'GLOBAL.upload' }
+                    handle: { breadcrumb: i18nKey('GLOBAL.upload') }
                 }
             ]
         },
         {
             path: "/settings",
             element: <SettingsLayout/>,
-            handle: { breadcrumb: 'SETTINGS.title' },
+            handle: { breadcrumb: i18nKey('SETTINGS.title') },
             children: [
                 {
                     index: true,
@@ -260,7 +263,7 @@ export const router = createBrowserRouter(
                 {
                     path: "general",
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.general' },
+                    handle: { breadcrumb: i18nKey('SETTINGS.general') },
                     children: [
                         {
                             index: true,
@@ -273,48 +276,48 @@ export const router = createBrowserRouter(
                             loader: protectedLoader(),
                             element: <SettingsGeneralCustomization/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.customization' }
+                            handle: { breadcrumb: i18nKey('SETTINGS.customization') }
                         },
                         {
                             path: "smtp",
                             loader: protectedLoader(['settings', 'smtp']),
                             element: <SettingsGeneralSMTP/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.smtp' }
+                            handle: { breadcrumb: i18nKey('SETTINGS.smtp') }
                         },
                         {
                             path: "mailcollect",
                             loader: protectedLoader(['settings', 'mailcollect']),
                             element: <SettingsGeneralMailcollect/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.mailcollect' }
+                            handle: { breadcrumb: i18nKey('SETTINGS.mailcollect') }
                         },
                         {
                             path: "advanced",
                             loader: protectedLoader(['settings', 'advanced']),
                             element: <SettingsGeneralAdvanced/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.advanced' }
+                            handle: { breadcrumb: i18nKey('SETTINGS.advanced') }
                         },
                         {
                             path: "regex",
                             loader: protectedLoader(['settings', 'regex']),
                             element: <SettingsGeneralRegex/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.regex' }
+                            handle: { breadcrumb: i18nKey('SETTINGS.regex') }
                         },
                         {
                             path: "docservers",
                             loader: protectedLoader(['settings', 'docservers']),
                             element: <SettingsGeneralDocservers/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.docservers' }
+                            handle: { breadcrumb: i18nKey('SETTINGS.docservers') }
                         },
                         {
                             path: "security",
                             loader: protectedLoader(['settings', 'security']),
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.security' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.security') },
                             children: [
                                 {
                                     index: true,
@@ -327,13 +330,13 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(),
                                     element: <SettingsGeneralTokenAuth/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.token_auth' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.token_auth') }
                                 }
                             ]
                         },
                         {
                             path: "users",
-                            handle: { breadcrumb: 'SETTINGS.users' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.users') },
                             children: [
                                 {
                                     index: true,
@@ -346,27 +349,27 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'user_quota']),
                                     element: <SettingsGeneralUserQuota/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.user_quota' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.user_quota') }
                                 },
                                 {
                                     path: 'edit/:userId',
                                     loader: protectedLoader(['settings', 'update_user']),
                                     element: <SettingsGeneralUserEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_user' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_user') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_user']),
                                     element: <SettingsGeneralUserEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'FORMS.add_user' }
+                                    handle: { breadcrumb: i18nKey('FORMS.add_user') }
                                 }
                             ]
                         },
                         {
                             path: "roles",
-                            handle: { breadcrumb: 'SETTINGS.roles' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.roles') },
                             children: [
                                 {
                                     index: true,
@@ -379,14 +382,14 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_role']),
                                     element: <SettingsGeneralRoleEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_role' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_role') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_role']),
                                     element: <SettingsGeneralRoleEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'FORMS.add_role' }
+                                    handle: { breadcrumb: i18nKey('FORMS.add_role') }
                                 }
                             ]
                         }
@@ -395,7 +398,7 @@ export const router = createBrowserRouter(
                 {
                     path: "verifier",
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.verifier' },
+                    handle: { breadcrumb: i18nKey('SETTINGS.verifier') },
                     children: [
                         {
                             index: true,
@@ -407,12 +410,12 @@ export const router = createBrowserRouter(
                             path: 'update-status',
                             loader: protectedLoader(['settings', 'update_status']),
                             element: <UpdateStatus module='verifier'/>,
-                            handle: { breadcrumb: 'SETTINGS.update-status' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.update-status') },
                             errorElement: <LoginRequiredError/>
                         },
                         {
                             path: "forms",
-                            handle: { breadcrumb: 'SETTINGS.forms' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.forms') },
                             children: [
                                 {
                                     index: true,
@@ -425,20 +428,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_form']),
                                     element: <FormEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_form' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_form') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_form']),
                                     element: <SettingsVerifierFormsCreate/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'FORMS.add_form' }
+                                    handle: { breadcrumb: i18nKey('FORMS.add_form') }
                                 }
                             ]
                         },
                         {
                             path: "custom-fields",
-                            handle: { breadcrumb: 'VERIFIER.custom_fields' },
+                            handle: { breadcrumb: i18nKey('VERIFIER.custom_fields') },
                             children: [
                                 {
                                     index: true,
@@ -451,20 +454,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'custom_fields_advanced']),
                                     element: <CustomFieldsEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_custom_fields') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'custom_fields_advanced']),
                                     element: <CustomFieldsEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_custom_field' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_custom_field') }
                                 }
                             ]
                         },
                         {
                             path: "workflows",
-                            handle: { breadcrumb: 'SETTINGS.workflows' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.workflows') },
                             children: [
                                 {
                                     index: true,
@@ -477,20 +480,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_workflow']),
                                     element: <WorkflowEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_workflow') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_workflow']),
                                     element: <WorkflowEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_workflow') }
                                 }
                             ]
                         },
                         {
                             path: "outputs",
-                            handle: { breadcrumb: 'SETTINGS.outputs' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.outputs') },
                             children: [
                                 {
                                     index: true,
@@ -503,20 +506,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_output']),
                                     element: <OutputEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_output' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_output') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_output']),
                                     element: <OutputEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_output' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_output') }
                                 }
                             ]
                         },
                         {
                             path: "ai-llm",
-                            handle: { breadcrumb: 'SETTINGS.ai_llm' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.ai_llm') },
                             children: [
                                 {
                                     index: true,
@@ -529,20 +532,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_llm_models']),
                                     element: <SettingsVerifierAiLLMEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_ai_llm' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_ai_llm') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_llm_models']),
                                     element: <SettingsVerifierAiLLMEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_ai_llm' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_ai_llm') }
                                 }
                             ]
                         },
                         {
                             path: "positions-masks",
-                            handle: { breadcrumb: 'SETTINGS.positions-masks' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.positions-masks') },
                             children: [
                                 {
                                     index: true,
@@ -555,20 +558,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_position_mask']),
                                     element: <SettingsVerifierPositionMaskEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_ai_doctype' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_ai_doctype') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_position_mask']),
                                     element: <SettingsVerifierPositionMaskEditor/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_ai_doctype') }
                                 }
                             ]
                         },
                         {
                             path: "ai-doctypes",
-                            handle: { breadcrumb: 'SETTINGS.ai_doctypes' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.ai_doctypes') },
                             children: [
                                 {
                                     index: true,
@@ -581,14 +584,14 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_ai_model']),
                                     element: <AiDoctypesEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_ai_doctype' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_ai_doctype') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'create_ai_model']),
                                     element: <AiDoctypesEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_ai_doctype') }
                                 }
                             ]
                         }
@@ -597,7 +600,7 @@ export const router = createBrowserRouter(
                 {
                     path: "splitter",
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.splitter' },
+                    handle: { breadcrumb: i18nKey('SETTINGS.splitter') },
                     children: [
                         {
                             index: true,
@@ -609,12 +612,12 @@ export const router = createBrowserRouter(
                             path: 'update-status',
                             loader: protectedLoader(['settings', 'update_status_splitter']),
                             element: <UpdateStatus module='splitter'/>,
-                            handle: { breadcrumb: 'SETTINGS.update-status' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.update-status') },
                             errorElement: <LoginRequiredError/>
                         },
                         {
                             path: "forms",
-                            handle: { breadcrumb: 'SETTINGS.forms' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.forms') },
                             children: [
                                 {
                                     index: true,
@@ -627,20 +630,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_form_splitter']),
                                     element: <FormEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_form' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_form') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_form_splitter']),
                                     element: <SettingsSplitterFormsCreate/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'FORMS.add_form' }
+                                    handle: { breadcrumb: i18nKey('FORMS.add_form') }
                                 }
                             ]
                         },
                         {
                             path: "custom-fields",
-                            handle: { breadcrumb: 'VERIFIER.custom_fields' },
+                            handle: { breadcrumb: i18nKey('VERIFIER.custom_fields') },
                             children: [
                                 {
                                     index: true,
@@ -653,20 +656,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'custom_fields_advanced']),
                                     element: <CustomFieldsEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_custom_fields') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'custom_fields_advanced']),
                                     element: <CustomFieldsEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_custom_field' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_custom_field') }
                                 }
                             ]
                         },
                         {
                             path: "workflows",
-                            handle: { breadcrumb: 'SETTINGS.workflows' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.workflows') },
                             children: [
                                 {
                                     index: true,
@@ -679,20 +682,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_workflow_splitter']),
                                     element: <WorkflowEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_workflow') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_workflow_splitter']),
                                     element: <WorkflowEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_workflow') }
                                 }
                             ]
                         },
                         {
                             path: "outputs",
-                            handle: { breadcrumb: 'SETTINGS.outputs' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.outputs') },
                             children: [
                                 {
                                     index: true,
@@ -705,20 +708,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_output_splitter']),
                                     element: <OutputEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_output' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_output') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'add_output_splitter']),
                                     element: <OutputEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_output' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_output') }
                                 }
                             ]
                         },
                         {
                             path: "ai-doctypes",
-                            handle: { breadcrumb: 'SETTINGS.ai_doctypes' },
+                            handle: { breadcrumb: i18nKey('SETTINGS.ai_doctypes') },
                             children: [
                                 {
                                     index: true,
@@ -731,14 +734,14 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader(['settings', 'update_ai_model_splitter']),
                                     element: <AiDoctypesEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_ai_doctype' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.edit_ai_doctype') }
                                 },
                                 {
                                     path: 'create',
                                     loader: protectedLoader(['settings', 'create_ai_model']),
                                     element: <AiDoctypesEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }
+                                    handle: { breadcrumb: i18nKey('SETTINGS.add_ai_doctype') }
                                 }
                             ]
                         },
@@ -747,14 +750,14 @@ export const router = createBrowserRouter(
                             loader: protectedLoader(['settings', 'certified_copy']),
                             element: <SettingsSplitterCertifiedCopy/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.certified_copy' }
+                            handle: { breadcrumb: i18nKey('SETTINGS.certified_copy') }
                         },
                         {
                             path: 'separator',
                             loader: protectedLoader(['settings', 'separator_splitter']),
                             element: <SettingsSplitterSeparator/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'FORMS.qr_code' }
+                            handle: { breadcrumb: i18nKey('FORMS.qr_code') }
                         }
                     ]
                 }

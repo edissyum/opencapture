@@ -187,7 +187,7 @@ export function SettingsVerifierAiLLMEditor() {
             setAiLLMJson(JSON.stringify(aiLLM.json_content, null, 4));
         }
 
-        skipJsonUpdate.current = true;
+        if (aiLLM.provider !== selectedProvider) skipJsonUpdate.current = true;
         setSelectedProvider(aiLLM.provider);
     }, [aiLLM]);
 

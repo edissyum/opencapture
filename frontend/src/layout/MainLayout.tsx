@@ -38,9 +38,9 @@ export default function MainLayout() {
     }
 
     return (
-        <div className="flex h-screen w-screen">
+        <div className="flex h-screen w-screen overflow-hidden">
             <Sidebar/>
-            <main className="flex flex-col w-full h-full bg-(--bg-secondary) overflow-hidden">
+            <main className="flex flex-col w-full h-full bg-(--bg-secondary)">
                 <PageTitle />
                 { !location.pathname.includes('verifier/viewer/') && !location.pathname.includes('splitter/viewer/') && (
                     <TopBar/>

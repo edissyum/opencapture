@@ -80,10 +80,7 @@ export function AboutPage() {
                 <div className='w-full flex flex-col gap-4 pb-4 items-center'>
                     <div className='flex flex-col items-center gap-8'>
                         <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
-                            <img src={ logo } className='w-full' alt="Open-Capture Logo"/>
-                        </div>
-                        <div className='text-(--text-secondary)'>
-                            Logiciel libre de capture et gestion documentaire
+                            <img src={ logo } className='w-full h-15' alt="Open-Capture Logo"/>
                         </div>
                         <div className='flex items-center gap-4'>
                             <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-lg p-2 py-1
@@ -339,8 +336,8 @@ export function AboutPage() {
 
                                     return (
                                         <div key={ index }
-                                             className={ `w-full border-b border-(--border-secondary) 
-                                                      flex justify-between py-3 px-4 
+                                             className={ `w-full border-b border-(--border-secondary)
+                                                      flex justify-between py-3 px-4
                                                       ${ isLastRow ? 'border-b-0!' : '' }
                                                       ${ index % 2 === 0 ? 'border-r' : '' }`
                                              }>
@@ -371,8 +368,8 @@ export function AboutPage() {
 
                                     return (
                                         <div key={ index }
-                                             className={ `w-full border-b border-(--border-secondary) 
-                                                      flex justify-between py-3 px-4 
+                                             className={ `w-full border-b border-(--border-secondary)
+                                                      flex justify-between py-3 px-4
                                                       ${ isLastRow ? 'border-b-0!' : '' }
                                                       ${ index % 2 === 0 ? 'border-r' : '' }`
                                              }>

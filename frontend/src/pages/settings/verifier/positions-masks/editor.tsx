@@ -353,7 +353,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                 </div>
 
                                 <div className='h-full flex flex-col items-center rounded-xl -mt-12'>
-                                    <div className="border border-(--border-secondary) rounded-xl h-full w-1/2">
+                                    <div className="border border-(--border-secondary) rounded-xl h-full w-1/2 overflow-hidden">
                                         <Annotator
                                             currentPage={ currentPage }
                                             alt={ `Page ${ currentPage }` }

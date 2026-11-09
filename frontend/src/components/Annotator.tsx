@@ -15,8 +15,8 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React, { useEffect, useRef, useState } from "react";
 import { t } from "i18next";
+import React, { useEffect, useRef, useState } from "react";
 
 export interface Region {
     x: number;
@@ -342,7 +342,7 @@ export function Annotator({
     }
 
     return (
-        <div className="flex flex-col items-center h-full gap-4 annotator">
+        <div className="flex flex-col items-center h-full gap-4">
             <div
                 ref={ containerRef }
                 onMouseUp={ !disabled ? handleMouseUp : undefined }
@@ -356,7 +356,7 @@ export function Annotator({
                     src={ imageB64 }
                     draggable={ false }
                     style={ { width: width, maxWidth: width } }
-                    className="h-auto block pointer-events-none select-none rounded-xl"
+                    className="h-auto block pointer-events-none select-none"
                 />
 
                 { regions.map((r) => (
