@@ -961,7 +961,8 @@ export function VerifierViewerPage() {
                 const customField: any = customFields.find((field) => `custom_${ field.id }` === fieldId && field.type === 'regex');
                 if (customField) {
                     if (customField.settings && customField.settings.regex) {
-                        removeSpaces = customField.settings.regex.remove_spaces ? customField.settings.regex.remove_spaces : false;
+                        const cfSettings = customField.settings;
+                        removeSpaces = cfSettings.regex.remove_spaces ? cfSettings.regex.remove_spaces : false;
                     }
                 }
             }
@@ -1146,7 +1147,8 @@ export function VerifierViewerPage() {
                 const conditionalFieldId = 'custom_' + String(option.conditional_custom_field);
                 let conditionalFieldValue = tmpDocumentData?.datas?.[conditionalFieldId];
                 if (conditionalCustomField.type === 'select') {
-                    const conditionalOption = conditionalCustomField.settings.options.find((o: any) => o.id === conditionalFieldValue.id);
+                    const cfSettings = conditionalCustomField.settings;
+                    const conditionalOption = cfSettings.options.find((o: any) => o.id === conditionalFieldValue.id);
                     if (conditionalOption) {
                         conditionalFieldValue = conditionalOption.label;
                     }
@@ -1250,13 +1252,13 @@ export function VerifierViewerPage() {
             </div>
 
             { !showAttachments && (
-                <div className='w-1/2 flex flex-col gap-4 p-6 pb-0'>
+                <div className='w-1/2 flex flex-col gap-4 h-full min-h-0 p-6'>
                     <Button size='sm' variant="bg_white_rounded"
                             icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
                         { t('GLOBAL.back') }
                     </Button>
-                    <div className='bg-(--bg-secondary) pb-20 h-full flex flex-col'>
-                        <div className="border border-(--border-secondary) rounded-xl h-full overflow-hidden">
+                    <div className='bg-(--bg-secondary) flex-1 min-h-0 flex flex-col'>
+                        <div className="border border-(--border-secondary) rounded-xl flex-1 min-h-0 overflow-hidden">
                             { !pagesImageB64[currentPage] ? (
                                 <div className='w-full h-full flex flex-col items-center justify-center'>
                                     <span className='text-(--text-secondary)'>

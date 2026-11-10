@@ -342,7 +342,7 @@ export function Annotator({
     }
 
     return (
-        <div className="flex flex-col items-center h-full gap-4">
+        <div className="flex flex-col items-center h-full">
             <div
                 ref={ containerRef }
                 onMouseUp={ !disabled ? handleMouseUp : undefined }
