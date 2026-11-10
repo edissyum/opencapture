@@ -329,7 +329,7 @@ export function SupplierEditor({
                 value: form.id
             })),
             className: "col-span-2",
-            label: t("FORMS.form_name")
+            label: t("FORMS.default_form")
         })),
         default_accounting_plan: z.number().optional().describe(JSON.stringify({
             component: "select",
