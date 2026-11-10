@@ -628,19 +628,19 @@ def update_customer(customer_id, data):
 
     if error is None:
         _set = {}
-        if 'address_id' in data:
+        if data.get('address_id', None):
             _set.update({'address_id': data['address_id']})
-        if 'name' in data:
+        if data.get('name', None):
             _set.update({'name': data['name']})
-        if 'siret' in data:
+        if data.get('siret', None):
             _set.update({'siret': data['siret']})
-        if 'siren' in data:
+        if data.get('siren', None):
             _set.update({'siren': data['siren']})
-        if 'vat_number' in data:
+        if data.get('vat_number', None):
             _set.update({'vat_number': data['vat_number']})
-        if 'company_number' in data:
+        if data.get('company_number', None):
             _set.update({'company_number': data['company_number']})
-        if 'module' in data:
+        if data.get('module', None):
             _set.update({'module': data['module']})
 
         _, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
@@ -673,14 +673,14 @@ def create_customer(data):
         'name': data['name'],
         'siret': data['siret'],
         'siren': data['siren'],
-        'vat_number': data['vat_number'],
         'company_number': data['company_number'],
-        'module': data['module'] if 'module' in data else 'verifier',
-        'address_id': data['address_id'] if 'address_id' in data else None
+        'module': data.get('module', 'verifier'),
+        'address_id': data.get('address_id', None)
     }
 
     customer = None
     if data.get('vat_number', None):
+        _columns['vat_number'] = data['vat_number']
         customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
 
     if not customer:
