@@ -679,7 +679,9 @@ def create_customer(data):
         'address_id': data['address_id'] if 'address_id' in data else None
     }
 
-    customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
+    customer = None
+    if data.get('vat_number', None):
+        customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
 
     if not customer:
         res, error = accounts.create_customer({'columns': _columns})
