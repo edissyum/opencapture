@@ -211,6 +211,24 @@ def get_forms_by_user_id(args):
     return users_forms, error
 
 
+def get_users_customers():
+    database = get_context_var('database', 0)
+    users_customers = database.select({
+        'select': ['user_id', 'customers_id'],
+        'table': ['users_customers']
+    })
+    return users_customers if users_customers else []
+
+
+def get_users_forms():
+    database = get_context_var('database', 0)
+    users_forms = database.select({
+        'select': ['user_id', 'forms_id'],
+        'table': ['users_forms']
+    })
+    return users_forms if users_forms else []
+
+
 def update_user(args):
     database = get_context_var('database', 0)
     error = None

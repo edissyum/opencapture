@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 
+import ast
 import base64
 import shutil
 import unittest
@@ -402,6 +403,28 @@ class UserTest(unittest.TestCase):
         new_customer = self.database.fetchall()
         self.assertEqual("DEL", new_customer[0]['status'])
 
+    def test_successful_delete_customer_removes_users_link(self):
+        customer_id = self.create_customer().json['id']
+
+        user = {
+            "username": "test_customer_link", "firstname": "Test", "lastname": "Test",
+            "password": "test", "password_check": "test", "email": "test@test.fr",
+            "mode": "standard", "role": "2", "customers": [1, customer_id], "forms": [1]
+        }
+        user_response = self.app.post(f'/{CUSTOM_ID}/ws/users/create',
+                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
+                             json=user)
+        self.assertEqual(200, user_response.status_code)
+
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/accounts/customers/delete/{customer_id}',
+                                   headers={"Content-Type": "application/json",
+                                            'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+
+        self.database.execute("SELECT customers_id FROM users_customers WHERE user_id = %s", (user_response.json['id'],))
+        users_customers = self.database.fetchall()
+        self.assertEqual([1], ast.literal_eval(users_customers[0]['customers_id']['data']))
+
     def test_successful_get_default_accounting_plan(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/accounts/customers/getDefaultAccountingPlan',
                                 headers={"Content-Type": "application/json",
@@ -422,6 +445,11 @@ class UserTest(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.copy(f'{PROJECT_PATH}/instance/referencial/default_referencial_supplier.csv.default',
                     f'{PROJECT_PATH}/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv')
+        self.database.execute("DELETE FROM users_forms WHERE user_id IN "
+                              "(SELECT id FROM users WHERE username = 'test_customer_link')")
+        self.database.execute("DELETE FROM users_customers WHERE user_id IN "
+                              "(SELECT id FROM users WHERE username = 'test_customer_link')")
+        self.database.execute("DELETE FROM users WHERE username = 'test_customer_link'")
         self.database.execute("TRUNCATE TABLE addresses CASCADE")
         self.database.execute("TRUNCATE TABLE accounts_supplier CASCADE")
         self.database.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")

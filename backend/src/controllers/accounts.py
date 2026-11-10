@@ -26,8 +26,8 @@ from flask_babel import gettext
 
 from flask import request
 from ..helpers import get_context_var
-from ..models import accounts, history
-from ..functions import check_order_by
+from ..models import accounts, history, user as user_model
+from ..functions import check_order_by, parse_id_list, serialize_id_list
 
 
 def get_suppliers(_args):
@@ -712,12 +712,25 @@ def create_customer(data):
     return response, 400
 
 
+def remove_customer_from_users(customer_id):
+    for user_customers in user_model.get_users_customers():
+        customers_id = user_customers['customers_id']['data'] if user_customers['customers_id'] else '[]'
+        current_customers = parse_id_list(customers_id)
+        if int(customer_id) in current_customers:
+            remaining_customers = [_id for _id in current_customers if _id != int(customer_id)]
+            user_model.update_customers_by_user_id({
+                'set': {'customers_id': serialize_id_list(remaining_customers)},
+                'user_id': user_customers['user_id']
+            })
+
+
 def delete_customer(customer_id):
     customer, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
         _, error = accounts.delete_customer({'customer_id': customer_id})
         if error is None:
+            remove_customer_from_users(customer_id)
             history.add_history({
                 'module': 'accounts',
                 'ip': request.remote_addr,

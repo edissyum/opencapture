@@ -21,7 +21,8 @@ from flask import request
 from flask_babel import gettext
 
 from ..controllers import user, doctypes
-from ..models import forms, accounts, verifier, history
+from ..functions import parse_id_list, serialize_id_list
+from ..models import forms, accounts, verifier, history, user as user_model
 
 
 def get_forms(args):
@@ -235,11 +236,24 @@ def update_form(form_id, args, module):
     return response, 400
 
 
+def remove_form_from_users(form_id):
+    for user_forms in user_model.get_users_forms():
+        forms_id = user_forms['forms_id']['data'] if user_forms['forms_id'] else '[]'
+        current_forms = parse_id_list(forms_id)
+        if int(form_id) in current_forms:
+            remaining_forms = [_id for _id in current_forms if _id != int(form_id)]
+            user_model.update_forms_by_user_id({
+                'set': {'forms_id': serialize_id_list(remaining_forms)},
+                'user_id': user_forms['user_id']
+            })
+
+
 def delete_form(form_id, module):
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         _, error = forms.update_form({'set': {'status': 'DEL', 'enabled': False}, 'form_id': form_id})
         if error is None:
+            remove_form_from_users(form_id)
             history.add_history({
                 'module': module,
                 'ip': request.remote_addr,
