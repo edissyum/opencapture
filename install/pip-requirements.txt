@@ -49,7 +49,7 @@ pytesseract==0.3.13
 configparser==7.3.0
 scikit-learn==1.9.1
 pycryptodome==4.4.0
-ultralytics==8.4.208
+ultralytics==8.4.211
 python-magic==0.4.27
 transformers==5.22.2
 Flask-Limiter==4.1.1
