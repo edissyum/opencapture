@@ -450,10 +450,13 @@ class Splitter:
                     'process': output['parameters']['process'],
                     'pdf_filename': output['parameters']['pdf_filename'],
                     'separator': output['parameters']['separator'],
-                    'rdff': output['parameters']['rdff'],
-                    'destination': output['parameters']['destination'],
+                    'rdff': output['parameters'].get('rdff', 'False'),
                     'custom_fields': {}
                 }
+
+                if output['parameters'].get('destination'):
+                    data_to_send['destination'] = output['parameters']['destination']
+
                 if 'custom_fields' in output['parameters'] and output['parameters']['custom_fields']:
                     if isinstance(output['parameters']['custom_fields'], str):
                         data_to_send['custom_fields'] = json.loads(output['parameters']['custom_fields'])
