@@ -143,7 +143,7 @@ class SeparatorQR:
 
     def split_using_ai(self, file):
         from flask import current_app
-        model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/splitter_separation/')
+        model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/separation/')
 
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
