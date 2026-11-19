@@ -574,8 +574,9 @@ class Splitter:
                 json_body['datas'] = ''.join(construct_with_var(tmp_json_body['datas'], document['data']['custom_fields']))
             elif isinstance(json_body['datas'], dict):
                 for sub_key in json_body['datas']:
-                    json_body['datas'][sub_key] = ''.join(construct_with_var(tmp_json_body['datas'][sub_key],
-                                                                             document['data']['custom_fields'], sub_key))
+                    res = construct_with_var(tmp_json_body['datas'][sub_key], document['data']['custom_fields'], sub_key)
+                    if res:
+                        json_body['datas'][sub_key] = ''.join(res)
 
             for key in tmp_json_body['datas']:
                 if tmp_json_body['datas'][key] == 'doctype':
