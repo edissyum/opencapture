@@ -228,11 +228,14 @@ def launch(args):
                     else:
                         log.error("The workflow_id doesn't exists in database")
                         error = True
+                else :
+                    log.error("This file doesn't exists")
+                    error = True
         except (Exception,):
             _e = str(traceback.format_exc())
             log.error(_e)
             error = True
-        
+
         if error and os.path.exists(batch_folder_path) and os.path.exists(batch_thumbs_path):
             shutil.rmtree(batch_folder_path)
             shutil.rmtree(batch_thumbs_path)
