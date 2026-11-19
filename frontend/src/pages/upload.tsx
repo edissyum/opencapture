@@ -33,6 +33,7 @@ export function UploadPage() {
     const { user, loadingUser } = useUser();
 
     const [module, setModule] = useState("");
+    const [uploadMaxFilesize, setUploadMaxFilesize] = useState<number>(10);
 
     const [workflows, setWorkflows] = useState<any[]>([]);
     const [workflowLoading, setWorkflowLoading] = useState(true);
@@ -78,6 +79,7 @@ export function UploadPage() {
     }, []);
 
     // Retrieve workflows list
+    // Retrieve uploadMaxFilesize
     useEffect(() => {
         if (loadingUser || !selectedModule) return;
 
@@ -97,7 +99,16 @@ export function UploadPage() {
             }
         };
 
+        const retrieveUploadMaxFilesize = async () => {
+            get(`config/getConfiguration/uploadMaxFilesize`).then((response) => {
+                if (response.configuration) {
+                    setUploadMaxFilesize(response.configuration[0]?.data.value);
+                }
+            });
+        };
+
         retrieveWorkflows().then();
+        retrieveUploadMaxFilesize().then();
     }, [loadingUser, selectedModule]);
 
     const handleUpload = async () => {
@@ -195,7 +206,7 @@ export function UploadPage() {
                                 <div
                                     key={ workflow.id }
                                     onClick={ () => setSelectedWorkflow(workflow.id) }
-                                    className={ `flex items-center gap-1 p-2 border border-(--border-secondary) rounded-md cursor-pointer 
+                                    className={ `flex items-center gap-1 p-2 border border-(--border-secondary) rounded-md cursor-pointer
                                                  hover:border-(--border-primary) transition-colors min-w-0
                                                  ${ selectedWorkflow === workflow.id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }
                                 >
@@ -226,7 +237,7 @@ export function UploadPage() {
                     </div>
                 </div>
 
-                <div className={ `bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col 
+                <div className={ `bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col
                                   gap-4 ${ !selectedWorkflow ? 'opacity-50 pointer-events-none' : '' }` }>
                     <div className='flex items-center gap-4'>
                         <div className='rounded-full bg-(--color-primary) size-6 flex items-center justify-center
@@ -248,7 +259,7 @@ export function UploadPage() {
                         progressByFile={ progress }
                         completedFiles={ completedFiles }
                         onFilesAccepted={ setFiles }
-                        maxSize={ 10 * 1024 * 1024 }
+                        maxSize={ uploadMaxFilesize * 1024 * 1024 }
                         className="bg-(--bg-primary)"
                     />
                 </div>
