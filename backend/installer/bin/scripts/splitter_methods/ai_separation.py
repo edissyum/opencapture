@@ -35,7 +35,7 @@ def process(args):
                 blank_pages.append(cpt)
 
     from flask import current_app
-    model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/splitter_separation/')
+    model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/separation/')
     split(args['splitter'], list_files, blank_pages, model_dir)
 
     args['splitter'].get_result_documents(blank_pages)
