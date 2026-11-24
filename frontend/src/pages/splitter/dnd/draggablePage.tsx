@@ -32,6 +32,7 @@ interface DraggablePageProps {
     disabled?: boolean;
     isSelected: boolean;
     isDragOverlay?: boolean;
+    dragCount?: number;
     documentId: string | number;
     onZoom?: (page: any) => void;
     onSelectionChange?: (page: any, checked: boolean) => void;
@@ -41,6 +42,7 @@ export const DraggablePage = React.memo(function DraggablePage({
     page,
     onZoom,
     disabled,
+    dragCount,
     menuItems,
     documentId,
     isSelected,
@@ -70,13 +72,22 @@ export const DraggablePage = React.memo(function DraggablePage({
         transform: CSS.Transform.toString(transform)
     };
 
+    const isMultiDrag = isDragOverlay && (dragCount ?? 0) > 1;
+
     return (
         <div ref={ setNodeRef } style={ isDragOverlay ? {} : style }
              onClick={ () => !disabled && onSelectionChange?.(page, !isSelected) }
              className={ `DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary)
                 transition-colors bg-(--bg-secondary) cursor-default select-none h-full
                 hover:bg-(--bg-selected) hover:cursor-pointer min-w-64
-                ${ isSelected && 'bg-(--bg-selected) border-(--color-primary)' }` }>
+                ${ isSelected && 'bg-(--bg-selected) border-(--color-primary)' }
+                ${ isMultiDrag && 'relative shadow-[6px_6px_0_-1px_var(--bg-secondary),6px_6px_0_0_var(--border-secondary),12px_12px_0_-1px_var(--bg-secondary),12px_12px_0_0_var(--border-secondary)]' }` }>
+            { isMultiDrag && (
+                <div className="absolute -top-3 -right-3 z-10 flex items-center justify-center min-w-8 h-8 px-2
+                                rounded-full bg-(--color-primary) text-white text-sm font-semibold shadow-md">
+                    { dragCount }
+                </div>
+            ) }
             <div className={ `h-full w-full flex flex-col items-center cursor-grab active:cursor-grabbing
                               ${ disabled && 'pointer-events-none' }` }
                  { ...attributes }
