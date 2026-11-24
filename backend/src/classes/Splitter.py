@@ -490,6 +490,8 @@ class Splitter:
                         'file_name': metadata_file
                     })
                     res = _ws.send_documents(files, data_to_send)
+                    if not res[0]:
+                        return res
             return res
         else:
             return res

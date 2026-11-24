@@ -44,6 +44,7 @@ class OpenCaptureForMEMWebServices:
                     return [False, gettext('HOST_NOT_FOUND_OR_OTHER_ERROR')]
                 if 'message' in json.loads(res.text):
                     return [False, json.loads(res.text)['message']]
+
             if res.status_code == 200 and 'token' in json.loads(res.text):
                 self.access_token = json.loads(res.text)['token']
                 return [True, self.access_token]
@@ -55,7 +56,7 @@ class OpenCaptureForMEMWebServices:
 
 
     def get_processes(self):
-        self.headers['Authorization'] = f"Bearer {self.access_token[1]}"
+        self.headers['Authorization'] = f"Bearer {self.access_token}"
 
         args = json.dumps({'custom_id': self.custom_id})
         res = requests.post(self.base_url + '/get_process_list', data=args,
@@ -67,7 +68,7 @@ class OpenCaptureForMEMWebServices:
 
 
     def send_documents(self, files, output):
-        self.headers['Authorization'] = f"Bearer {self.access_token[1]}"
+        self.headers['Authorization'] = f"Bearer {self.access_token}"
         args = json.dumps({
             'files': files,
             'custom_id': self.custom_id,
@@ -80,7 +81,11 @@ class OpenCaptureForMEMWebServices:
 
         res = requests.post(self.base_url + '/upload', data=args, headers=self.headers,
                             timeout=self.timeout, verify=False)
-        if res.status_code not in (200, 201):
-            self.log.error('(' + str(res.status_code) + ') uploadError : ' + str(res.text))
-            return res.text, res.status_code
+        if res.text:
+            if res.status_code not in (200, 201):
+                self.log.error('(' + str(res.status_code) + ') uploadError : ' + str(res.text))
+                if 'message' in json.loads(res.text):
+                    return False, json.loads(res.text)['message']
+                if res.status_code >= 400:
+                    return False, gettext('HOST_NOT_FOUND_OR_OTHER_ERROR')
         return json.loads(res.text), 200
