@@ -25,11 +25,11 @@ class OpenCaptureForMEMWebServices:
     def __init__(self, host, secret_key, custom_id, log):
         self.log = log
         self.timeout = 60
+        self.access_token = ''
         self.custom_id = custom_id
         self.secret_key = secret_key
         self.base_url = re.sub("^/|/$", "", host)
         self.headers = {'Content-Type': 'application/json'}
-        self.access_token = self.get_access_token()
 
     def get_access_token(self):
         try:
@@ -45,8 +45,8 @@ class OpenCaptureForMEMWebServices:
                 if 'message' in json.loads(res.text):
                     return [False, json.loads(res.text)['message']]
             if res.status_code == 200 and 'token' in json.loads(res.text):
-                access_token = json.loads(res.text)['token']
-                return [True, access_token]
+                self.access_token = json.loads(res.text)['token']
+                return [True, self.access_token]
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout,
                 requests.exceptions.MissingSchema, json.decoder.JSONDecodeError) as request_error:
             self.log.error('Error connecting to the host. Exiting program..', False)

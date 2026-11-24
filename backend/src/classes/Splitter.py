@@ -443,7 +443,8 @@ class Splitter:
                 custom_id = key['value']
 
         _ws = OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
-        if _ws.access_token[0]:
+        res = _ws.get_access_token()
+        if res[0]:
             files = []
             for document in batch['documents']:
                 data_to_send = {
@@ -489,6 +490,8 @@ class Splitter:
                         'file_name': metadata_file
                     })
                     res = _ws.send_documents(files, data_to_send)
+            return res
+        else:
             return res
 
     @staticmethod
