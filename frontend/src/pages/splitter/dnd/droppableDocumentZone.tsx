@@ -65,10 +65,13 @@ export function DroppableDocumentZone({
 
     const virtualItems = virtualizer.getVirtualItems();
     const totalWidth = virtualizer.getTotalSize();
+    const isScrolled = (virtualizer.scrollOffset ?? 0) > 0;
+    const scrolledToTheEnd = virtualizer.getDistanceFromEnd() <= 5;
 
     return (
         <div ref={ setDropRef }
              className={ `DroppableDocument w-full transition-colors rounded-md
+                ${ !isScrolled ? 'mask-r-from-98%' : scrolledToTheEnd ? 'mask-l-from-98%' : 'mask-x-from-98%' }
                 ${ isEmpty && 'border-2 border-dashed border-(--border-secondary)' }
                 ${ isOver && 'bg-(--bg-selected) border-(--border-primary)' }` }>
             { isEmpty && !isOver && (
