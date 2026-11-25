@@ -113,6 +113,7 @@ def send_to_workflow(args):
             'user_info': args['user_info'],
             'custom_id': args['custom_id'],
             'original_filename': args['file'],
+            'current_step': args['log'].current_step,
             'task_id_monitor': args['log'].task_id_monitor
         })
 

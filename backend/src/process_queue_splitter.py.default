@@ -56,12 +56,15 @@ def launch(args):
     with app.app_context():
         start = time.time()
         created_batches = []
-
+        filename = os.path.basename(args['file'])
         if not retrieve_config_from_custom_id(args['custom_id']):
             sys.exit('Custom config file couldn\'t be found')
 
         database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, \
             _artificial_intelligence, nfz42020 = create_classes_from_custom_id(args['custom_id'], True)
+
+        if 'current_step' in args:
+            log.current_step = args['current_step']
 
         database.update({
             'table': ['monitoring'],
@@ -92,6 +95,9 @@ def launch(args):
             'where': ['id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'splitter']
         })
+
+        log.info('Processing file using workflow&nbsp;<strong>' + workflow_settings[0]['workflow_id'] +
+                 '</strong>&nbsp;: ' + str(args['original_filename']))
 
         if config['GLOBAL']['allowwfscripting'].lower() == 'true':
             datas = {
