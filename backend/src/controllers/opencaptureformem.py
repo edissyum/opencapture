@@ -28,6 +28,9 @@ def get_access_token(args):
         args['custom_id'],
         log
     )
+    res = _ws.get_access_token()
+    if not res[0]:
+        return res
     return _ws.access_token
 
 def get_processes(args):
@@ -39,5 +42,10 @@ def get_processes(args):
         args['custom_id'],
         log
     )
+
+    res = _ws.get_access_token()
+    if not res[0]:
+        return res
+
     processes = _ws.get_processes()
     return processes

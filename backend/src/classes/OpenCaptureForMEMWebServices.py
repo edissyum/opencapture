@@ -41,18 +41,18 @@ class OpenCaptureForMEMWebServices:
                                 timeout=self.timeout, verify=False)
             if res.text:
                 if res.status_code >= 400:
-                    return [False, gettext('HOST_NOT_FOUND_OR_OTHER_ERROR')]
+                    return False, gettext('HOST_NOT_FOUND_OR_OTHER_ERROR')
                 if 'message' in json.loads(res.text):
-                    return [False, json.loads(res.text)['message']]
+                    return False, json.loads(res.text)['message']
 
             if res.status_code == 200 and 'token' in json.loads(res.text):
                 self.access_token = json.loads(res.text)['token']
-                return [True, self.access_token]
+                return True, self.access_token
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout,
                 requests.exceptions.MissingSchema, json.decoder.JSONDecodeError) as request_error:
             self.log.error('Error connecting to the host. Exiting program..', False)
             self.log.error('More information : ' + str(request_error), False)
-            return [False, str(request_error)]
+            return False, str(request_error)
 
 
     def get_processes(self):
