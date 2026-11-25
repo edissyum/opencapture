@@ -33,9 +33,9 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('smtp', '{
     "type": "json",
     "value": {
         "smtpNotifOnError": false,
-        "smtpProtocoleSecure": "none",
+        "smtpProtocoleSecure": "tls",
         "smtpHost": "",
-        "smtpPort": "",
+        "smtpPort": "587",
         "smtpAuth": false,
         "smtpLogin": "",
         "smtpPwd": "",
