@@ -62,7 +62,7 @@
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@stylistic/eslint-plugin": "^6.0.1",
-        "@types/node": "^26.6.10",
+        "@types/node": "^26.6.11",
         "@types/papaparse": "^5.5.2",
         "@types/react": "^19.3.3",
         "@types/react-dom": "^19.3.0",
@@ -72,7 +72,7 @@
         "eslint-plugin-react-refresh": "^0.5.8",
         "globals": "^17.14.0",
         "i18next-cli": "^1.95.3",
-        "lucide-react": "^1.80.0",
+        "lucide-react": "^1.81.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.74.0",
         "vite": "^8.3.8"
