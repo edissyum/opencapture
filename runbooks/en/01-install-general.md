@@ -157,3 +157,51 @@ Logs and restart:
 docker logs -f opencapture_traefik
 docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml restart
 ```
+
+## Timezone (`TZ`)
+
+`TZ` is set in the global `.env` (default value) or in the tenant `.env` (for example
+`TZ=Indian/Reunion`). It is passed to every container: backend, workers, frontend,
+WebDAV. Postgres ignores the `TZ` variable (its timezone is frozen at initdb): the
+compose forces it through `-c timezone=…`.
+
+### Applying a change: recreate the containers
+
+A container keeps the environment it received when it was created. After changing `TZ`,
+a `restart` is **not** enough: the containers must be recreated, which `up -d` does
+when the configuration has changed.
+
+```bash
+DIR=install/docker/stub-tenants/$ID
+DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
+$DC up -d
+```
+
+For the global `.env`, recreate each affected tenant the same way.
+
+### Verifying
+
+Variable received and actual time in each container of the tenant:
+
+```bash
+$DC ps -q | xargs -I{} docker exec {} sh -c 'echo "$(hostname) TZ=$TZ → $(date "+%F %T %Z %z")"'
+```
+
+Each line must show the configured zone and its offset (for example
+`TZ=Indian/Reunion` → `+04`). A line showing the right `TZ` but `UTC +0000` means the
+image lacks `tzdata`: the zone is unknown there and glibc silently falls back to UTC.
+
+Postgres must be queried directly (its timezone does not depend on `TZ`):
+
+```bash
+$DC exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "show timezone; select now();"'
+```
+
+Expected: the configured zone, and a `now()` carrying its offset (for example
+`Indian/Reunion` and `+04`).
+
+The backend scheduler also prints the timezone at startup:
+
+```bash
+$DC logs | grep '\[scheduler\]'
+```
