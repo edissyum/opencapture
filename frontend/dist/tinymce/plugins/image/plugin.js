@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.10.1 (2026-10-28)
+ * TinyMCE version 8.11.0 (2026-11-25)
  */
 
 (function () {
@@ -314,7 +314,6 @@
         }
     }
 
-    const nativeSlice = Array.prototype.slice;
     const nativePush = Array.prototype.push;
     const flatten = (xs) => {
         // Note, this is possible because push supports multiple arguments:
@@ -333,7 +332,6 @@
     };
     const get = (xs, i) => i >= 0 && i < xs.length ? Optional.some(xs[i]) : Optional.none();
     const head = (xs) => get(xs, 0);
-    isFunction(Array.from) ? Array.from : (x) => nativeSlice.call(x);
     const findMap = (arr, f) => {
         for (let i = 0; i < arr.length; i++) {
             const r = f(arr[i], i);
@@ -462,19 +460,36 @@
         element.dom.removeAttribute(key);
     };
 
-    const getImageSize = (url) => new Promise((resolve, reject) => {
-        const img = document.createElement('img');
-        img.addEventListener('load', () => {
-            resolve({
-                width: img.naturalWidth,
-                height: img.naturalHeight
-            });
-        });
-        img.addEventListener('error', () => {
-            reject(`Failed to get image dimensions for: ${url}`);
-        });
-        img.src = url;
+    const getNaturalSize = (img) => ({
+        width: img.naturalWidth,
+        height: img.naturalHeight
     });
+    const waitForImageSize = (img, errorMessage) => new Promise((resolve, reject) => {
+        const resolveSize = () => {
+            resolve(getNaturalSize(img));
+        };
+        if (img.complete) {
+            resolveSize();
+        }
+        else {
+            const onLoad = () => {
+                img.removeEventListener('error', onError);
+                resolveSize();
+            };
+            const onError = () => {
+                img.removeEventListener('load', onLoad);
+                reject(new Error(errorMessage));
+            };
+            img.addEventListener('load', onLoad, { once: true });
+            img.addEventListener('error', onError, { once: true });
+        }
+    });
+    const getImageSizeFromImg = (img) => waitForImageSize(img, `Failed to get image dimensions for: ${img.src}`);
+    const getImageSizeFromUrl = (url) => {
+        const img = document.createElement('img');
+        img.src = url;
+        return getImageSizeFromImg(img);
+    };
 
     var global$3 = tinymce.util.Tools.resolve('tinymce.dom.DOMUtils');
 
@@ -1434,26 +1449,28 @@
                 changeSrc(helpers, info, state, api);
                 api.focus('src');
             };
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            blobToDataUri(file).then((dataUrl) => {
-                const blobInfo = helpers.createBlobCache(file, blobUri, dataUrl);
+            const handleError = (err) => {
+                finalize();
+                info.alertErr(err, () => {
+                    api.focus('fileinput');
+                });
+            };
+            blobToDataUri(file)
+                .then((dataUrl) => helpers.createBlobCache(file, blobUri, dataUrl))
+                .then((blobInfo) => {
                 if (info.automaticUploads) {
                     helpers.uploadImage(blobInfo).then((result) => {
                         updateSrcAndSwitchTab(result.url);
                         finalize();
-                    }).catch((err) => {
-                        finalize();
-                        info.alertErr(err, () => {
-                            api.focus('fileinput');
-                        });
-                    });
+                    }).catch(handleError);
                 }
                 else {
                     helpers.addToBlobCache(blobInfo);
                     updateSrcAndSwitchTab(blobInfo.blobUri());
                     api.unblock();
                 }
-            });
+            })
+                .catch(() => handleError('Failed to upload image'));
         });
     };
     const changeHandler = (helpers, info, state) => (api, evt) => {
@@ -1482,7 +1499,7 @@
                 type: 'tabpanel',
                 tabs: flatten([
                     [MainTab.makeTab(info)],
-                    info.hasAdvTab ? [AdvTab.makeTab(info)] : [],
+                    info.hasAdvTab ? [AdvTab.makeTab()] : [],
                     info.hasUploadTab && (info.hasUploadUrl || info.hasUploadHandler) ? [UploadTab.makeTab(info, () => new Promise((r) => info.alertErr('Selected images do not have allowed extensions', r)))] : []
                 ])
             };
@@ -1516,7 +1533,7 @@
             return Promise.resolve({ width: '', height: '' });
         }
         else {
-            return getImageSize(editor.documentBaseURI.toAbsolute(url)).then((dimensions) => ({
+            return getImageSizeFromUrl(editor.documentBaseURI.toAbsolute(url)).then((dimensions) => ({
                 width: String(dimensions.width),
                 height: String(dimensions.height)
             }));

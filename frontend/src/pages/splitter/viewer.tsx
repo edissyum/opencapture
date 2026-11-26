@@ -228,6 +228,7 @@ export function SplitterViewerPage() {
     }, [documents, previewPageId]);
 
     const [activeDragItem, setActiveDragItem] = useState<any>(null);
+    const multiDragGroupRef = useRef<any[] | null>(null);
 
     const menuItems: any = [
         {
@@ -566,9 +567,29 @@ export function SplitterViewerPage() {
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
-        if (active?.data?.current?.type === 'page') {
-            setActiveDragItem(active.data.current);
+        if (active?.data?.current?.type !== 'page') return;
+
+        const activePage = active.data.current.page;
+        const selectedIds = new Set(selectedPages.map((p: any) => p.id));
+        multiDragGroupRef.current = null;
+
+        // Multi-drag: if the dragged page is part of a multi-selection, temporarily pull the other
+        // selected pages out of their documents. They are re-inserted around the active page on drop.
+        if (selectedIds.has(activePage.id) && selectedIds.size > 1) {
+            const group: any[] = [];
+            documents.forEach((doc: any) => doc.pages.forEach((p: any) => {
+                if (selectedIds.has(p.id)) group.push(p);
+            }));
+            multiDragGroupRef.current = group;
+            setDocuments((docs: any[]) => docs.map((doc: any) => ({
+                ...doc,
+                pages: doc.pages.filter((p: any) => p.id === activePage.id || !selectedIds.has(p.id))
+            })));
+            setActiveDragItem({ ...active.data.current, count: group.length });
+            return;
         }
+
+        setActiveDragItem(active.data.current);
     };
 
     const handleDragOver = (event: DragOverEvent) => {
@@ -637,8 +658,28 @@ export function SplitterViewerPage() {
     };
 
     const handleDragEnd = () => {
+        const group = multiDragGroupRef.current;
+        const activePageId = activeDragItem?.page?.id;
+        multiDragGroupRef.current = null;
         setActiveDragItem(null);
-        normalizeDisplayOrder(documents);
+
+        if (!group || activePageId === undefined) {
+            normalizeDisplayOrder(documents);
+            return;
+        }
+
+        // Re-insert the grouped pages (in their original order) where the active page was dropped
+        setDocuments((docs: any[]) => {
+            const next = docs.map((doc: any) => {
+                const index = doc.pages.findIndex((p: any) => p.id === activePageId);
+                if (index === -1) return doc;
+                const pages = [...doc.pages];
+                pages.splice(index, 1, ...group);
+                return { ...doc, pages };
+            });
+            normalizeDisplayOrder(next);
+            return next;
+        });
     };
 
     const handleDownloadOriginalFile = () => {
@@ -1559,6 +1600,7 @@ export function SplitterViewerPage() {
                             onDragEnd={ handleDragEnd }
                             onDragOver={ handleDragOver }
                             onDragStart={ handleDragStart }
+                            onDragCancel={ handleDragEnd }
                             collisionDetection={ pointerWithin }
                         >
                             <div className='flex flex-col gap-2'>
@@ -1726,6 +1768,7 @@ export function SplitterViewerPage() {
                                         isDragOverlay
                                         isSelected={ false }
                                         page={ activeDragItem.page }
+                                        dragCount={ activeDragItem.count }
                                         documentId={ activeDragItem.documentId }
                                     />
                                 ) }

@@ -26,8 +26,8 @@ from flask_babel import gettext
 
 from flask import request
 from ..helpers import get_context_var
-from ..models import accounts, history
-from ..functions import check_order_by
+from ..models import accounts, history, user as user_model
+from ..functions import check_order_by, parse_id_list, serialize_id_list
 
 
 def get_suppliers(_args):
@@ -628,19 +628,19 @@ def update_customer(customer_id, data):
 
     if error is None:
         _set = {}
-        if 'address_id' in data:
+        if data.get('address_id', None):
             _set.update({'address_id': data['address_id']})
-        if 'name' in data:
+        if data.get('name', None):
             _set.update({'name': data['name']})
-        if 'siret' in data:
+        if data.get('siret', None):
             _set.update({'siret': data['siret']})
-        if 'siren' in data:
+        if data.get('siren', None):
             _set.update({'siren': data['siren']})
-        if 'vat_number' in data:
+        if data.get('vat_number', None):
             _set.update({'vat_number': data['vat_number']})
-        if 'company_number' in data:
+        if data.get('company_number', None):
             _set.update({'company_number': data['company_number']})
-        if 'module' in data:
+        if data.get('module', None):
             _set.update({'module': data['module']})
 
         _, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
@@ -673,13 +673,15 @@ def create_customer(data):
         'name': data['name'],
         'siret': data['siret'],
         'siren': data['siren'],
-        'vat_number': data['vat_number'],
         'company_number': data['company_number'],
-        'module': data['module'] if 'module' in data else 'verifier',
-        'address_id': data['address_id'] if 'address_id' in data else None
+        'module': data.get('module', 'verifier'),
+        'address_id': data.get('address_id', None)
     }
 
-    customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
+    customer = None
+    if data.get('vat_number', None):
+        _columns['vat_number'] = data['vat_number']
+        customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
 
     if not customer:
         res, error = accounts.create_customer({'columns': _columns})
@@ -710,12 +712,25 @@ def create_customer(data):
     return response, 400
 
 
+def remove_customer_from_users(customer_id):
+    for user_customers in user_model.get_users_customers():
+        customers_id = user_customers['customers_id']['data'] if user_customers['customers_id'] else '[]'
+        current_customers = parse_id_list(customers_id)
+        if int(customer_id) in current_customers:
+            remaining_customers = [_id for _id in current_customers if _id != int(customer_id)]
+            user_model.update_customers_by_user_id({
+                'set': {'customers_id': serialize_id_list(remaining_customers)},
+                'user_id': user_customers['user_id']
+            })
+
+
 def delete_customer(customer_id):
     customer, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
         _, error = accounts.delete_customer({'customer_id': customer_id})
         if error is None:
+            remove_customer_from_users(customer_id)
             history.add_history({
                 'module': 'accounts',
                 'ip': request.remote_addr,

@@ -28,6 +28,7 @@ import { InputSwitch } from "../../../components/InputSwitch";
 
 import { emptyToUndefined } from "../../../services/zod";
 import { AxiosApiCall } from "../../../services/hooks/AxiosApiCall";
+import { Loader } from "../../../components/loader/Loader.tsx";
 
 export function SettingsGeneralSMTP() {
     const { get, post, put } = AxiosApiCall();
@@ -36,7 +37,7 @@ export function SettingsGeneralSMTP() {
 
     const schema: any = z.object({
         smtpHost: z.string().min(1, { message: t('SMTP.smtp_host_required') }),
-        smtpPort: z.number().min(1).max(65535),
+        smtpPort: z.coerce.number().min(1).max(65535),
         smtpProtocoleSecure: smtpProtocoleSecureEnum,
         smtpAuth: z.boolean(),
         smtpLogin: z.string().optional(),
@@ -72,6 +73,8 @@ export function SettingsGeneralSMTP() {
     const [selectedEncryption, setSelectedEncryption] = useState('tls');
     const [destinationTestEmail, setDestinationTestEmail] = useState('');
     const [statusTestEmail, setStatusTestEmail] = useState('');
+
+    const [loading, setLoading] = useState(true);
     const [statusLoadingTestEmail, setStatusLoadingTestEmail] = useState(false);
     const [statusTestEmailMessage, setStatusTestEmailMessage] = useState('');
 
@@ -98,6 +101,7 @@ export function SettingsGeneralSMTP() {
                         }
                     });
                 }
+                setLoading(false);
             });
         }
 
@@ -166,6 +170,8 @@ export function SettingsGeneralSMTP() {
             console.error("Erreur envoi email de test :", err);
         }
     };
+
+    if (loading) return <Loader/>;
 
     return (
         <div className='flex h-full overflow-hidden'>

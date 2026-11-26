@@ -143,7 +143,7 @@ class SeparatorQR:
 
     def split_using_ai(self, file):
         from flask import current_app
-        model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/splitter_separation/')
+        model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/separation/')
 
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
@@ -173,7 +173,7 @@ class SeparatorQR:
         documents = [[kept_pages[0]]]
         try:
             model = get_model(model_dir, self.log)
-            embeddings = [model.embed(self.tmp_dir + '/result-' + str(cpt) + '.jpg') for cpt in kept_pages]
+            embeddings = model.embed_many([self.tmp_dir + '/result-' + str(cpt) + '.jpg' for cpt in kept_pages])
             for i in range(len(kept_pages) - 1):
                 probability = model.continuity(embeddings[i], embeddings[i + 1])
                 if probability < model.threshold:

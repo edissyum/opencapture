@@ -15,6 +15,7 @@
 
 # @dev : BRICH Oussama <oussama.brich@edissyum.com>
 
+import ast
 import json
 import unittest
 import warnings
@@ -163,6 +164,33 @@ class FormTest(unittest.TestCase):
         res = self.update_verifier_form_fields(form.json['id'])
         self.assertEqual(200, res.status_code)
 
+    def test_successful_delete_form_removes_users_link(self):
+        form_id = self.create_verifier_form().json['id']
+
+        user = {
+            "username": "test_form_link", "firstname": "Test", "lastname": "Test",
+            "password": "test", "password_check": "test", "email": "test@test.fr",
+            "mode": "standard", "role": "2", "customers": [1], "forms": [1, form_id]
+        }
+        user_response = self.app.post(f'/{CUSTOM_ID}/ws/users/create',
+                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
+                             data=json.dumps(user))
+        self.assertEqual(200, user_response.status_code)
+
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/forms/verifier/delete/{form_id}',
+                                   headers={"Content-Type": "application/json",
+                                            'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+
+        self.database.execute("SELECT forms_id FROM users_forms WHERE user_id = %s", (user_response.json['id'],))
+        users_forms = self.database.fetchall()
+        self.assertEqual([1], ast.literal_eval(users_forms[0]['forms_id']['data']))
+
     def tearDown(self) -> None:
+        self.database.execute("DELETE FROM users_forms WHERE user_id IN "
+                              "(SELECT id FROM users WHERE username = 'test_form_link')")
+        self.database.execute("DELETE FROM users_customers WHERE user_id IN "
+                              "(SELECT id FROM users WHERE username = 'test_form_link')")
+        self.database.execute("DELETE FROM users WHERE username = 'test_form_link'")
         self.database.execute("DELETE FROM form_models WHERE label = 'SPLITTER_TEST_FORM'")
         self.database.execute("DELETE FROM form_models WHERE label = 'VERIFIER_TEST_FORM'")

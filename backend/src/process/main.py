@@ -445,6 +445,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'file': file,
                 'ip': args['ip'],
                 'workflow_id': res,
+                'module': 'verifier',
                 'datas': args['datas'],
                 'user_info': args['user_info'],
                 'custom_id': args['custom_id']

@@ -541,6 +541,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                 <Select
                                                     id={ option.id }
                                                     label={ option.label }
+                                                    required={ option.required == 'true' }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (value) => {
                                                         handleSpecificLinksChange({ target: { value: value } }, option, 'parameters');
@@ -553,6 +554,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                 <Select
                                                     id={ option.id }
                                                     label={ option.label }
+                                                    required={ option.required == 'true' }
                                                     options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (value) => {
@@ -567,6 +569,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                     type={ option.type }
                                                     hint={ option.hint }
                                                     label={ option.label }
+                                                    required={ option.required == 'true' }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (e) => {
                                                         handleSpecificLinksChange(e, option, 'parameters');

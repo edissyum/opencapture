@@ -56,12 +56,15 @@ def launch(args):
     with app.app_context():
         start = time.time()
         created_batches = []
-
+        filename = os.path.basename(args['file'])
         if not retrieve_config_from_custom_id(args['custom_id']):
             sys.exit('Custom config file couldn\'t be found')
 
         database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, \
             _artificial_intelligence, nfz42020 = create_classes_from_custom_id(args['custom_id'], True)
+
+        if 'current_step' in args:
+            log.current_step = args['current_step']
 
         database.update({
             'table': ['monitoring'],
@@ -93,232 +96,240 @@ def launch(args):
             'data': [args['workflow_id'], 'splitter']
         })
 
+        log.info('Processing file using workflow&nbsp;<strong>' + workflow_settings[0]['workflow_id'] +
+                 '</strong>&nbsp;: ' + str(args['original_filename']))
+
         if config['GLOBAL']['allowwfscripting'].lower() == 'true':
             datas = {
                 'ip': args['ip'],
                 'user_info': args['user_info']
             }
-            launch_script_splitter(workflow_settings[0], docservers, 'input', log, database, args, config, datas)
+            change_workflow = launch_script_splitter(workflow_settings[0], docservers, 'input', log, database, args, config, datas)
 
-        if workflow_settings:
-            if not workflow_settings[0]['input'].get('certified_copy'):
-                nfz42020.enabled = False
+        if not change_workflow:
+            if workflow_settings:
+                if not workflow_settings[0]['input'].get('certified_copy'):
+                    nfz42020.enabled = False
 
-            if nfz42020.enabled:
-                log.info('Certified copy process enabled for this workflow, initializing NF Z42-020/26 module')
-                nfz42020.log = log
-                nfz42020.sanitized_filename = args['file']
-                nfz42020.original_filename = os.path.basename(args['original_filename'])
+                if nfz42020.enabled:
+                    log.info('Certified copy process enabled for this workflow, initializing NF Z42-020/26 module')
+                    nfz42020.log = log
+                    nfz42020.sanitized_filename = args['file']
+                    nfz42020.original_filename = os.path.basename(args['original_filename'])
 
-            if workflow_settings[0]['process']['use_interface'] and \
-                    'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
-                outputs = database.select({
-                    'select': ['outputs'],
-                    'table': ['form_models'],
-                    'where': ['id = %s'],
-                    'data': [workflow_settings[0]['process']['form_id']]
-                })
-                if outputs:
-                    outputs = outputs[0]['outputs']
-            else:
-                outputs = database.select({
-                    'select': ['output'],
-                    'table': ['workflows'],
-                    'where': ['id = %s', 'module = %s'],
-                    'data': [args['workflow_id'], 'splitter']
-                })
-                if outputs:
-                    outputs = outputs[0]['output']['outputs_id']
+                if workflow_settings[0]['process']['use_interface'] and \
+                        'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
+                    outputs = database.select({
+                        'select': ['outputs'],
+                        'table': ['form_models'],
+                        'where': ['id = %s'],
+                        'data': [workflow_settings[0]['process']['form_id']]
+                    })
+                    if outputs:
+                        outputs = outputs[0]['outputs']
+                else:
+                    outputs = database.select({
+                        'select': ['output'],
+                        'table': ['workflows'],
+                        'where': ['id = %s', 'module = %s'],
+                        'data': [args['workflow_id'], 'splitter']
+                    })
+                    if outputs:
+                        outputs = outputs[0]['output']['outputs_id']
 
-            args['customer_id'] = workflow_settings[0]['input']['customer_id']
-            splitter_method_id = workflow_settings[0]['input']['splitter_method_id']
-            remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
+                args['customer_id'] = workflow_settings[0]['input']['customer_id']
+                splitter_method_id = workflow_settings[0]['input']['splitter_method_id']
+                remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
 
-            for output_id in outputs:
-                outputs_settings = database.select({
-                    'select': ['ocrise'],
-                    'table': ['outputs'],
-                    'where': ['id = %s'],
-                    'data': [int(output_id)]
-                })
-                if outputs_settings:
-                    ocrise = outputs_settings[0]['ocrise']
+                for output_id in outputs:
+                    outputs_settings = database.select({
+                        'select': ['ocrise'],
+                        'table': ['outputs'],
+                        'where': ['id = %s'],
+                        'data': [int(output_id)]
+                    })
+                    if outputs_settings:
+                        ocrise = outputs_settings[0]['ocrise']
 
-        separator_qr = SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, splitter_method_id)
-        splitter = Splitter(config, database, separator_qr, log, docservers)
+            separator_qr = SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, splitter_method_id)
+            splitter = Splitter(config, database, separator_qr, log, docservers)
 
-        if args.get('isMail') is not None and args['isMail'] is True:
-            log = Log((args['log']), smtp, config['GLOBAL']['debugmode'])
-            log.task_id_monitor = args['task_id_monitor']
-            log.database = database
-            log.prefix = '[MailCollect]'
-            if 'current_step' in args:
-                log.current_step = args['current_step']
+            if args.get('isMail') is not None and args['isMail'] is True:
+                log = Log((args['log']), smtp, config['GLOBAL']['debugmode'])
+                log.task_id_monitor = args['task_id_monitor']
+                log.database = database
+                log.prefix = '[MailCollect]'
+                if 'current_step' in args:
+                    log.current_step = args['current_step']
 
-            if 'cpt' in args and 'nb_of_attachments' in args:
-                log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
+                if 'cpt' in args and 'nb_of_attachments' in args:
+                    log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
-        database.connect()
+            database.connect()
 
-        try:
-            if args['file'] is not None:
-                path = args['file']
+            try:
+                if args['file'] is not None:
+                    path = args['file']
 
-                os.mkdir(batch_folder_path)
-                os.mkdir(batch_thumbs_path)
+                    os.mkdir(batch_folder_path)
+                    os.mkdir(batch_thumbs_path)
 
-                try:
-                    os.chmod(batch_folder_path, int('775', base=8))
-                    os.chmod(batch_thumbs_path, int('775', base=8))
-                except OSError:
-                    pass
+                    try:
+                        os.chmod(batch_folder_path, int('775', base=8))
+                        os.chmod(batch_thumbs_path, int('775', base=8))
+                    except OSError:
+                        pass
 
-                error = False
-                attachments = []
-                if 'attachments' in args and args['attachments']:
-                    attachments = args['attachments']
+                    error = False
+                    attachments = []
+                    if 'attachments' in args and args['attachments']:
+                        attachments = args['attachments']
 
-                if check_file(files, path, log):
-                    if nfz42020.enabled:
-                        nfz42020.log_event('FILE_RECEIVED')
+                    if check_file(files, path, log):
+                        if nfz42020.enabled:
+                            nfz42020.log_event('FILE_RECEIVED')
 
-                    if 'workflow_id' in args and args['workflow_id']:
-                        splitter_methods_path = shared.custom_path + "/bin/scripts/splitter_methods/"
-                        available_split_methods_path = splitter_methods_path + "/splitter_methods.json"
+                        if 'workflow_id' in args and args['workflow_id']:
+                            splitter_methods_path = shared.custom_path + "/bin/scripts/splitter_methods/"
+                            available_split_methods_path = splitter_methods_path + "/splitter_methods.json"
 
-                        if splitter_method_id and os.path.isfile(available_split_methods_path):
-                            with open(available_split_methods_path, encoding='utf-8') as json_file:
-                                available_split_methods = json.load(json_file)
-                                for available_split_method in available_split_methods['methods']:
-                                    if available_split_method['id'] == splitter_method_id:
-                                        split_method = Splitter.import_method_from_script(splitter_methods_path,
-                                                                                          available_split_method['script'],
-                                                                                          available_split_method['method'])
-                                        log.info('Split using method : {}'.format(available_split_method['id']))
-                                        split_args = {
-                                            "log": log,
-                                            "ocr": ocr,
-                                            "file": path,
-                                            "regex": regex,
-                                            "files": files,
-                                            "ip": args['ip'],
-                                            "ocrise": ocrise,
-                                            "config": config,
-                                            "splitter": splitter,
-                                            "docservers": docservers,
-                                            "attachments": attachments,
-                                            "batch_folder": batch_folder,
-                                            "custom_id": args['custom_id'],
-                                            "user_info": args['user_info'],
-                                            "configurations": configurations,
-                                            "workflow_id": args['workflow_id'],
-                                            "customer_id": args['customer_id'],
-                                            "workflow_settings": workflow_settings[0],
-                                            "msg": args['msg'] if 'msg' in args else None,
-                                            "original_filename": args['original_filename'],
-                                            "artificial_intelligence": _artificial_intelligence,
-                                            "user_id": args['user_id'] if 'user_id' in args else None
-                                        }
-                                        split_res = split_method(split_args)
-                                        if split_res:
-                                            created_batches = split_res['batches_id']
-                                            log.info(f"Batches created successfully : <strong>{','.join(str(batch) for batch in created_batches)}</strong>")
-                                        else :
-                                            error = True
-                    else:
-                        log.error("The workflow_id doesn't exists in database")
+                            if splitter_method_id and os.path.isfile(available_split_methods_path):
+                                with open(available_split_methods_path, encoding='utf-8') as json_file:
+                                    available_split_methods = json.load(json_file)
+                                    for available_split_method in available_split_methods['methods']:
+                                        if available_split_method['id'] == splitter_method_id:
+                                            split_method = Splitter.import_method_from_script(splitter_methods_path,
+                                                                                              available_split_method['script'],
+                                                                                              available_split_method['method'])
+                                            log.info('Split using method : {}'.format(available_split_method['id']))
+                                            split_args = {
+                                                "log": log,
+                                                "ocr": ocr,
+                                                "file": path,
+                                                "regex": regex,
+                                                "files": files,
+                                                "ip": args['ip'],
+                                                "ocrise": ocrise,
+                                                "config": config,
+                                                "splitter": splitter,
+                                                "docservers": docservers,
+                                                "attachments": attachments,
+                                                "batch_folder": batch_folder,
+                                                "custom_id": args['custom_id'],
+                                                "user_info": args['user_info'],
+                                                "configurations": configurations,
+                                                "workflow_id": args['workflow_id'],
+                                                "customer_id": args['customer_id'],
+                                                "workflow_settings": workflow_settings[0],
+                                                "msg": args['msg'] if 'msg' in args else None,
+                                                "original_filename": args['original_filename'],
+                                                "artificial_intelligence": _artificial_intelligence,
+                                                "user_id": args['user_id'] if 'user_id' in args else None
+                                            }
+                                            split_res = split_method(split_args)
+                                            if split_res:
+                                                created_batches = split_res['batches_id']
+                                                log.info(f"Batches created successfully : <strong>{','.join(str(batch) for batch in created_batches)}</strong>")
+                                            else :
+                                                error = True
+                        else:
+                            log.error("The workflow_id doesn't exists in database")
+                            error = True
+                    else :
+                        log.error("This file doesn't exists")
                         error = True
-        except (Exception,):
-            _e = str(traceback.format_exc())
-            log.error(_e)
-            error = True
-        
-        if error and os.path.exists(batch_folder_path) and os.path.exists(batch_thumbs_path):
-            shutil.rmtree(batch_folder_path)
-            shutil.rmtree(batch_thumbs_path)
+            except (Exception,):
+                _e = str(traceback.format_exc())
+                log.error(_e)
+                error = True
 
-        end = time.time()
-        _timer = timer(start, end)
-        log.info('Process end after ' + _timer + '')
-        database.update({
-            'table': ['monitoring'],
-            'set': {
-                'document_ids': created_batches,
-                'elapsed_time': _timer,
-                'status': 'done',
-                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
-            },
-            'where': ['id = %s'],
-            'data': [args['task_id_monitor']]
-        })
+            if error and os.path.exists(batch_folder_path) and os.path.exists(batch_thumbs_path):
+                shutil.rmtree(batch_folder_path)
+                shutil.rmtree(batch_thumbs_path)
 
-        for batch_id in created_batches:
-            if nfz42020.enabled:
-                splitter_docservers = docservers['SPLITTER_ORIGINAL_DOC']
-                batch_data = database.select({
-                    'select': ['file_path'],
-                    'table': ['splitter_batches'],
-                    'where': ['id = %s'],
+            end = time.time()
+            _timer = timer(start, end)
+            log.info('Process end after ' + _timer + '')
+            database.update({
+                'table': ['monitoring'],
+                'set': {
+                    'document_ids': created_batches,
+                    'elapsed_time': _timer,
+                    'status': 'done',
+                    'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+                },
+                'where': ['id = %s'],
+                'data': [args['task_id_monitor']]
+            })
+
+            for batch_id in created_batches:
+                if nfz42020.enabled:
+                    splitter_docservers = docservers['SPLITTER_ORIGINAL_DOC']
+                    batch_data = database.select({
+                        'select': ['file_path'],
+                        'table': ['splitter_batches'],
+                        'where': ['id = %s'],
+                        'data': [batch_id]
+                    })
+                    if batch_data:
+                        stored_path = splitter_docservers + '/' + batch_data[0]['file_path']
+
+                database.insert({
+                    'table': 'history',
+                    'columns': {
+                        'user_ip': args['ip'],
+                        'history_module': 'splitter',
+                        'user_info': args['user_info'],
+                        'workflow_id': args['workflow_id'],
+                        'history_submodule': 'upload_file',
+                        'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                        'history_desc': f"{gettext('BATCH')} n°<strong>{str(batch_id)}</strong> {gettext('CREATED_USING')} <strong>{workflow_settings[0]['workflow_id']}</strong>"
+                    }
+                })
+
+                batch_documents = database.select({
+                    'select': ['id'],
+                    'table': ['splitter_documents'],
+                    'where': ['batch_id = %s'],
                     'data': [batch_id]
                 })
-                if batch_data:
-                    stored_path = splitter_docservers + '/' + batch_data[0]['file_path']
 
-            database.insert({
-                'table': 'history',
-                'columns': {
-                    'user_ip': args['ip'],
-                    'history_module': 'splitter',
-                    'user_info': args['user_info'],
-                    'workflow_id': args['workflow_id'],
-                    'history_submodule': 'upload_file',
-                    'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
-                    'history_desc': f"{gettext('BATCH')} n°<strong>{str(batch_id)}</strong> {gettext('CREATED_USING')} <strong>{workflow_settings[0]['workflow_id']}</strong>"
-                }
-            })
+                if nfz42020.enabled:
+                    documents_pages = []
+                    for document in batch_documents:
+                        batch_pages = database.select({
+                            'select': ['id', 'source_page'],
+                            'table': ['splitter_pages'],
+                            'where': ['document_id = %s'],
+                            'data': [document['id']]
+                        })
 
-            batch_documents = database.select({
-                'select': ['id'],
-                'table': ['splitter_documents'],
-                'where': ['batch_id = %s'],
-                'data': [batch_id]
-            })
+                        documents_pages.append({
+                            "id": document['id'],
+                            "pages_count": len(batch_pages),
+                            "pages": batch_pages,
+                        })
+
+                    nfz42020.log_event('BATCH_CREATED', batch_id, documents_pages, stored_file=stored_path)
+
+                if batch_documents:
+                    for document in batch_documents:
+                        database.insert({
+                            'table': 'history',
+                            'columns': {
+                                'user_ip': args['ip'],
+                                'history_module': 'splitter',
+                                'user_info': args['user_info'],
+                                'workflow_id': args['workflow_id'],
+                                'history_submodule': 'create_document',
+                                'custom_fields': json.dumps({"splitter_document_id": document['id']}),
+                                'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                                'history_desc': f"{gettext('DOCUMENT')} n°<strong>{str(document['id'])}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(batch_id)}</strong>"
+                            }
+                        })
 
             if nfz42020.enabled:
-                documents_pages = []
-                for document in batch_documents:
-                    batch_pages = database.select({
-                        'select': ['id', 'source_page'],
-                        'table': ['splitter_pages'],
-                        'where': ['document_id = %s'],
-                        'data': [document['id']]
-                    })
+                nfz42020.seal_journal()
 
-                    documents_pages.append({
-                        "id": document['id'],
-                        "pages_count": len(batch_pages),
-                        "pages": batch_pages,
-                    })
-
-                nfz42020.log_event('BATCH_CREATED', batch_id, documents_pages, stored_file=stored_path)
-
-            if batch_documents:
-                for document in batch_documents:
-                    database.insert({
-                        'table': 'history',
-                        'columns': {
-                            'user_ip': args['ip'],
-                            'history_module': 'splitter',
-                            'user_info': args['user_info'],
-                            'workflow_id': args['workflow_id'],
-                            'history_submodule': 'create_document',
-                            'custom_fields': json.dumps({"splitter_document_id": document['id']}),
-                            'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
-                            'history_desc': f"{gettext('DOCUMENT')} n°<strong>{str(document['id'])}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(batch_id)}</strong>"
-                        }
-                    })
-
-        if nfz42020.enabled:
-            nfz42020.seal_journal()
-
-        database.conn.close()
+            database.conn.close()
+        return None

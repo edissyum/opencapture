@@ -160,3 +160,52 @@ docker logs -f opencapture_traefik
 docker compose -f install/docker/shared/traefik/docker-compose.traefik-server.yml restart
 ```
 
+
+## Fuseau horaire (`TZ`)
+
+`TZ` se règle dans le `.env` global (valeur par défaut) ou dans le `.env` du tenant
+(par exemple `TZ=Indian/Reunion`). Il est transmis à tous les conteneurs : backend,
+workers, frontend, WebDAV. Postgres ignore la variable `TZ` (son fuseau est figé à
+l'initdb) : le compose le lui impose via `-c timezone=…`.
+
+### Appliquer un changement : recréer les conteneurs
+
+Un conteneur garde l'environnement qu'il a reçu à sa création. Après modification de
+`TZ`, un `restart` ne suffit **pas** : il faut recréer les conteneurs, ce que fait
+`up -d` lorsque la configuration a changé.
+
+```bash
+DIR=install/docker/stub-tenants/$ID
+DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
+$DC up -d
+```
+
+Pour le `.env` global, recréer de même chaque tenant concerné.
+
+### Vérifier
+
+Variable reçue et heure réelle dans chaque conteneur du tenant :
+
+```bash
+$DC ps -q | xargs -I{} docker exec {} sh -c 'echo "$(hostname) TZ=$TZ → $(date "+%F %T %Z %z")"'
+```
+
+Chaque ligne doit afficher le fuseau configuré et son décalage (par exemple
+`TZ=Indian/Reunion` → `+04`). Une ligne qui affiche le bon `TZ` mais `UTC +0000`
+signale une image sans `tzdata` : le fuseau y est inconnu et la glibc retombe
+silencieusement sur UTC.
+
+Postgres, à interroger directement (son fuseau ne dépend pas de `TZ`) :
+
+```bash
+$DC exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "show timezone; select now();"'
+```
+
+Attendu : le fuseau configuré, et un `now()` qui porte son décalage (par exemple
+`Indian/Reunion` et `+04`).
+
+Le planificateur du backend affiche aussi le fuseau au démarrage :
+
+```bash
+$DC logs | grep '\[scheduler\]'
+```

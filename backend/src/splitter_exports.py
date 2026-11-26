@@ -37,10 +37,11 @@ from .models import splitter, workflow, forms, outputs, attachments
 def get_output_parameters(parameters):
     data = {}
     for parameter in parameters:
-        if type(parameter['value']) is dict and 'id' in parameter['value']:
-            data[parameter['id']] = parameter['value']['id']
-        else:
-            data[parameter['id']] = parameter['value']
+        if parameter.get('value'):
+            if type(parameter['value']) is dict and 'id' in parameter['value']:
+                data[parameter['id']] = parameter['value']['id']
+            else:
+                data[parameter['id']] = parameter['value']
     return data
 
 

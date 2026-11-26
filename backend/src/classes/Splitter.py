@@ -443,17 +443,21 @@ class Splitter:
                 custom_id = key['value']
 
         _ws = OpenCaptureForMEMWebServices(host, secret_key, custom_id, log)
-        if _ws.access_token[0]:
+        res = _ws.get_access_token()
+        if res[0]:
             files = []
             for document in batch['documents']:
                 data_to_send = {
                     'process': output['parameters']['process'],
                     'pdf_filename': output['parameters']['pdf_filename'],
                     'separator': output['parameters']['separator'],
-                    'rdff': output['parameters']['rdff'],
-                    'destination': output['parameters']['destination'],
+                    'rdff': output['parameters'].get('rdff', 'False'),
                     'custom_fields': {}
                 }
+
+                if output['parameters'].get('destination'):
+                    data_to_send['destination'] = output['parameters']['destination']
+
                 if 'custom_fields' in output['parameters'] and output['parameters']['custom_fields']:
                     if isinstance(output['parameters']['custom_fields'], str):
                         data_to_send['custom_fields'] = json.loads(output['parameters']['custom_fields'])
@@ -486,6 +490,10 @@ class Splitter:
                         'file_name': metadata_file
                     })
                     res = _ws.send_documents(files, data_to_send)
+                    if not res[0]:
+                        return res
+            return res
+        else:
             return res
 
     @staticmethod

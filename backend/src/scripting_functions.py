@@ -24,8 +24,8 @@ import traceback
 import importlib
 from . import shared
 from flask_babel import gettext
+from .main_splitter import launch as launch_splitter
 from .main import launch, create_classes_from_custom_id
-
 
 def check_code(code, input_path, module, share_path):
     for line in code.split('\n'):
@@ -74,6 +74,8 @@ def check_code(code, input_path, module, share_path):
 
 
 def send_to_workflow(args):
+    module = args.get('module', 'verifier')
+
     database = create_classes_from_custom_id(args['custom_id'], True)[0]
     workflow = database.select({
         'select': ['id', 'input'],
@@ -90,20 +92,34 @@ def send_to_workflow(args):
 
     new_file_name = args['file'].replace('.pdf', '_copy.pdf')
     shutil.copy(args['file'], new_file_name)
-    launch({
-        'ip': args['ip'],
-        'file': new_file_name,
-        'workflow_id': workflow['id'],
-        'user_info': args['user_info'],
-        'custom_id': args['custom_id'],
-        'original_filename': args['file'],
-        'current_step': args['log'].current_step,
-        'task_id_monitor': args['log'].task_id_monitor,
-        'datas': args['datas'] if 'datas' in args else {}
-    })
+
+    if module == 'verifier':
+        launch({
+            'ip': args['ip'],
+            'file': new_file_name,
+            'workflow_id': workflow['id'],
+            'user_info': args['user_info'],
+            'custom_id': args['custom_id'],
+            'original_filename': args['file'],
+            'current_step': args['log'].current_step,
+            'task_id_monitor': args['log'].task_id_monitor,
+            'datas': args['datas'] if 'datas' in args else {}
+        })
+    else:
+        launch_splitter({
+            'ip': args['ip'],
+            'file': new_file_name,
+            'workflow_id': workflow['id'],
+            'user_info': args['user_info'],
+            'custom_id': args['custom_id'],
+            'original_filename': args['file'],
+            'current_step': args['log'].current_step,
+            'task_id_monitor': args['log'].task_id_monitor
+        })
 
     if os.path.isfile(args['file']):
         os.remove(args['file'])
+    return None
 
 
 def update_document_data(args):

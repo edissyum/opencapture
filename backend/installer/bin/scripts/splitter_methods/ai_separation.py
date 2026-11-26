@@ -35,7 +35,7 @@ def process(args):
                 blank_pages.append(cpt)
 
     from flask import current_app
-    model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/splitter_separation/')
+    model_dir = os.path.join(current_app.config['INSTANCE_PATH'], 'artificial_intelligence/separation/')
     split(args['splitter'], list_files, blank_pages, model_dir)
 
     args['splitter'].get_result_documents(blank_pages)
@@ -51,12 +51,13 @@ def process(args):
 def split(splitter, pages, blank_pages, model_dir):
     # Les pages blanches restent dans qr_pages (blank_pages contient des positions),
     # elles sont seulement exclues des paires évaluées par le modèle.
-    kept = [pos for pos in range(len(pages)) if pos not in set(blank_pages)]
+    blank = set(blank_pages)
+    kept = [pos for pos in range(len(pages)) if pos not in blank]
     document_starts = set(kept[:1])
 
     try:
         model = get_model(model_dir, splitter.log)
-        embeddings = [model.embed(pages[pos][1]) for pos in kept]
+        embeddings = model.embed_many([pages[pos][1] for pos in kept])
         for i in range(len(kept) - 1):
             probability = model.continuity(embeddings[i], embeddings[i + 1])
             if probability < model.threshold:
