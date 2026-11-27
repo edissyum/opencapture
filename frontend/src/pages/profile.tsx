@@ -68,7 +68,7 @@ export default function ProfilePage() {
             type: "text",
             label: t("USERS.firstname")
         })),
-        email: z.string().optional().describe(JSON.stringify({
+        email: z.email().describe(JSON.stringify({
             component: "input",
             required: false,
             type: "text",

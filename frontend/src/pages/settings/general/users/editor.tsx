@@ -68,7 +68,7 @@ export function SettingsGeneralUserEditor() {
             type: "text",
             label: t("USERS.firstname")
         })),
-        email: z.email(t('USERS.email_mandatory')).describe(JSON.stringify({
+        email: z.email().describe(JSON.stringify({
             component: "input",
             required: true,
             type: "text",
