@@ -15,24 +15,24 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import json
 import os
+import json
 import stat
-import sys
 import traceback
 from io import StringIO
 
 from flask import request
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
+from pyflakes.reporter import Reporter
 
 from .. import shared
-from ..classes.Config import Config
 from ..controllers import user
-from ..functions import retrieve_custom_from_url, check_order_by
+from ..classes.Config import Config
 from ..helpers import get_context_var
 from ..models import workflow, history
 from ..scripting_functions import check_code
+from ..functions import retrieve_custom_from_url, check_order_by
 
 
 def get_workflows(args):
@@ -438,12 +438,14 @@ def test_script(args):
                 "message": result_str
             }, 400
 
-        result = StringIO()
-        sys.stderr = result
-        pyflakes.check(args['codeContent'], '')
-        result_string = result.getvalue()
-        splitted_result = result_string.split(':')
+        errors = StringIO()
+        warnings = StringIO()
+        reporter = Reporter(warnings, errors)
 
+        pyflakes.check(args['codeContent'], '', reporter)
+        result_string = warnings.getvalue() + errors.getvalue()
+
+        splitted_result = result_string.split(':')
         if len(splitted_result) >= 3:
             result_str = '<strong>' + gettext('LINE') + ' ' + splitted_result[1] + ' ' + \
                          gettext('COLUMN') + ' ' + splitted_result[2] + '</strong> : ' + splitted_result[3]
