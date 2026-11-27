@@ -94,13 +94,16 @@ export function Button({
         variantStyles[variant] = variantStyles[variant].replace(/(border-\(|hover:border-)[^\s)]+/gm, '');
     }
     if (className?.includes('font-')) {
-        baseStyles = baseStyles.replace(/font-[^\s]+/gm, '');
+        baseStyles = baseStyles.replace(/font-\S+/gm, '');
+    }
+    if (className?.includes('justify-')) {
+        baseStyles = baseStyles.replace(/justify-\S+/gm, '');
     }
 
     const sizeStyles: Record<ButtonSize, string> = {
         sm: "p-1.5 text-sm",
         md: "py-2.5 px-8 text-base",
-        lg: "p-3.5 text-lg",
+        lg: "p-3.5 text-lg"
     };
 
     if (to) {

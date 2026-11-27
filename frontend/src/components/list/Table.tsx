@@ -71,7 +71,6 @@ export const renderMenuItems = (items: any[]) => items.map((item: any, index: nu
 type DataTableProps<T> = {
     data: T[];
     actions?: any[];
-    height?: string;
     baseLink?: string;
     loading?: boolean;
     selectedRows?: T[];
@@ -157,7 +156,7 @@ export function Table<T extends { id: string }>({
         onLazyParamsChange({
             ...lazyParams,
             sortField: fieldId,
-            sortOrder: newSortOrder,
+            sortOrder: newSortOrder
         });
     };
 
@@ -188,9 +187,8 @@ export function Table<T extends { id: string }>({
             <div className='flex-1 overflow-hidden flex flex-col rounded-lg'>
                 <div className={ `w-full overflow-hidden border border-(--border-secondary) rounded-md` }>
                     { pagination && (
-                        <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md
-                                        text-(--text-secondary) font-normal h-15"
-                        >
+                        <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md h-15
+                                        text-(--text-secondary) font-normal">
                             <Skeleton width='20%' className='dark:bg-(--bg-secondary)! h-3!'/>
                             <Skeleton width='30%' className='dark:bg-(--bg-secondary)! h-3!'/>
                         </div>
@@ -228,8 +226,8 @@ export function Table<T extends { id: string }>({
     return (
         <div className='border border-(--border-secondary) rounded-lg overflow-hidden w-full flex flex-col'>
             { pagination && (
-                <div className="flex items-center justify-between bg-(--bg-primary) px-4 border-b
-                                border-(--border-secondary) text-(--text-secondary) font-normal">
+                <div className="flex items-center justify-between bg-(--bg-primary) px-4 border-b font-normal
+                                border-(--border-secondary) text-(--text-secondary)">
                     { paginatorLeftData }
                     <Paginator
                         first={ lazyParams.first }
@@ -241,8 +239,10 @@ export function Table<T extends { id: string }>({
                 </div>
             ) }
             <div className='flex-1 overflow-y-auto overflow-x-hidden'>
-                <MantineTable stickyHeader
-                              className={ `table-fixed w-full ${ !baseLink && 'no_hover' } ${ checkboxSelection && 'checkbox' }` }>
+                <MantineTable
+                    stickyHeader
+                    className={ `table-fixed w-full ${ !baseLink && 'no_hover' } ${ checkboxSelection && 'checkbox' }` }
+                >
                     <MantineTable.Thead>
                         <MantineTable.Tr>
                             { checkboxSelection && (
@@ -250,8 +250,7 @@ export function Table<T extends { id: string }>({
                                     <Checkbox
                                         indeterminate={ selectedRows.length > 0 && selectedRows.length !== data.length }
                                         checked={ data.length > 0 && selectedRows.length === data.length }
-                                        onChange={ selectAll }
-                                    />
+                                        onChange={ selectAll }/>
                                 </MantineTable.Th>
                             ) }
 
