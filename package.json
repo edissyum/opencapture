@@ -1,6 +1,6 @@
 {
     "name": "opencapture",
-    "version": "3.6.3",
+    "version": "3.6.4",
     "license": "GPL-3.0",
     "author": "Edissyum Consulting <nathan.cheval@edissyum.com>",
     "description": "Open-Capture is the one and only 100% Open Source intelligent document capture solution",
@@ -29,7 +29,7 @@
         "ngx-toastr": "^20.0.5",
         "remove-accents": "^0.5.0",
         "svg-country-flags": "^1.2.10",
-        "tinymce": "^8.10.1"
+        "tinymce": "^8.11.0"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^20.3.16",
@@ -50,19 +50,19 @@
         "@fortawesome/fontawesome-free": "^7.3.1",
         "@ngx-translate/core": "^17.0.0",
         "@ngx-translate/http-loader": "^17.0.0",
-        "@tailwindcss/postcss": "^4.3.3",
+        "@tailwindcss/postcss": "^4.3.5",
         "@types/d3-scale": "^4.0.9",
-        "@types/d3-selection": "^3.0.12",
+        "@types/d3-selection": "^3.0.13",
         "@types/d3-shape": "^3.2.0",
         "@types/node": "^25.9.0",
-        "@vendure/ngx-translate-extract": "^10.3.1",
-        "eslint": "^10.13.0",
+        "@vendure/ngx-translate-extract": "^10.3.2",
+        "eslint": "^10.15.0",
         "jquery": "^3.7.1",
         "monaco-editor": "^0.55.1",
-        "postcss": "^8.5.32",
+        "postcss": "^8.5.34",
         "rxjs": "~7.8.2",
         "select-country-angular-20": "^20.2.0",
-        "tailwindcss": "^4.3.3",
+        "tailwindcss": "^4.3.5",
         "typescript": "~5.9.3",
         "zone.js": "~0.16.3"
     }
