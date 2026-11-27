@@ -152,7 +152,8 @@ export function Grid<T extends { id: string }>({
             <div>
                 { pagination && (
                     <div
-                        className="flex items-center justify-between mt-4 bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal h-18 mb-4">
+                        className="flex items-center justify-between bg-(--bg-primary) px-4
+                                   rounded-lg text-(--text-secondary) font-normal h-15.5 mb-4 border border-(--border-secondary)">
                         <Skeleton width='20%' height={ 17 } className='dark:bg-(--bg-secondary)!'/>
                         <Skeleton width='30%' height={ 17 } className='dark:bg-(--bg-secondary)!'/>
                     </div>
@@ -175,7 +176,7 @@ export function Grid<T extends { id: string }>({
         <>
             { pagination && (
                 <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg font-normal
-                                text-(--text-secondary)">
+                                text-(--text-secondary) border border-(--border-secondary)">
                     { paginatorLeftData }
                     <Paginator
                         first={ lazyParams.first }
