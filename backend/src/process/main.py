@@ -610,7 +610,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     if current_app.config['CONTACT_MODEL'] is not None:
                         supplier = find_contact.FindContact(log, files.jpg_name, database, customer_id).run()
                     else:
-                        log.info('The AI to detect contact is not available, skip it')
+                        log.warning('The AI to detect contact is not available, skip it')
 
             if supplier and supplier[2]:
                 datas['datas'].update({
