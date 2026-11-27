@@ -199,7 +199,7 @@ export function Grid<T extends { id: string }>({
                                           ${ selectedRows.some(r => r.id === row.id) ? 'border-(--color-primary)' : '' }` }>
                             <div
                                 className={`relative bg-[#D0DAD5] dark:bg-(--bg-secondary) border border-b-0 transition-colors
-                                           border-(--border-secondary) group-hover:border-(--text-secondary) rounded-b-none
+                                           border-(--border-secondary) group-hover:border-(--color-primary) rounded-b-none
                                            w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)
                                            ${ filtersChanged && 'border-2 border-(--color-primary)' }`}>
                                 <LazyBase64Image
@@ -216,7 +216,7 @@ export function Grid<T extends { id: string }>({
                                 />
                             </div>
                             <div className={`py-3 border border-t-0 rounded-md rounded-t-none transition-colors
-                                           border-(--border-secondary) group-hover:border-(--text-secondary)
+                                           border-(--border-secondary) group-hover:border-(--color-primary)
                                            ${ filtersChanged && 'border-2 border-(--color-primary)' }`}>
                                 <div className="flex gap-2 mb-1 pl-4">
                                     { columns.filter(col => col.id === 'nb_pages').map((col) => (

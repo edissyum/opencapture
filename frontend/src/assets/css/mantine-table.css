@@ -58,6 +58,7 @@
 
 .mantine-Table-tr:hover {
     @apply bg-(--bg-selected)!;
+    @apply text-(--color-primary);
 }
 
 .mantine-Table-td.truncate-data span:first-child {
