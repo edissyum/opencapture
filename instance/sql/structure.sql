@@ -363,7 +363,6 @@ CREATE TABLE "mailcollect" (
     "folder_trash"                  VARCHAR(255),
     "action_after_process"          VARCHAR(255) NOT NULL,
     "verifier_customer_id"          INTEGER,
-    "verifier_form_id"              VARCHAR(255),
     "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
     "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False,
     "sender_custom_id"              INTEGER      DEFAULT NULL,
